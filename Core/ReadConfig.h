@@ -353,7 +353,7 @@ void ReadConfig(bool command)
 {
 	if (command) {
 		modifiedFiles.clear();
-		readDir("./Configs");
+		readDir("./Bloody");
 		readDir("./Skills");
 		readDir("./Systems");
 		readDir("./Scania");
@@ -1735,7 +1735,7 @@ void ReadConfig(bool command)
 				int QuestFlag = 0;
 				char Particle[512];
 
-				if (sscanf(line, "(Emote (QuestFlag %d)(Particle '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &QuestFlag, Particle) == 2) {
+				if (sscanf(line, "(Emote (QuestFlag %d)(Particle '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &QuestFlag, Particle) == 2) {
 					EmoteSystem[QuestFlag] = Particle;
 				}
 			}
@@ -1757,7 +1757,7 @@ void ReadConfig(bool command)
 					amount = 0, count = 0, Expindex = 0, expcount = 0, HPx = 0, RPx = 0, DKPTx = 0, DKPWx = 0, PLTx = 0, PLWx = 0, SVTx = 0, SVWx = 0,
 					Honorindex = 0, Removeindex = 0, mana = 0, hp = 0, MaxHp = 0, MaxMp = 0, MD = 0, EBRate = 0;
 
-				if (sscanf(line, "(Buff (Item_Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Index %d)(Permanently %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Buff-> Str %d Agi %d Hth %d Int %d Def %d Crit %d Ref %d Speed %d))", &ItemN, &Buff, &Delete, &MinLevel, &MaxLevel, &LimitMsg, &StrBuff, &AgiBuff, &HthBuff, &IntBuff, &DefBuff, &CritBuff, &RefBuff, &SpeedBuff) == 14)
+				if (sscanf(line, "(Buff (Item_Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(Index %d)(Permanently %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(Buff-> Str %d Agi %d Hth %d Int %d Def %d Crit %d Ref %d Speed %d))", &ItemN, &Buff, &Delete, &MinLevel, &MaxLevel, &LimitMsg, &StrBuff, &AgiBuff, &HthBuff, &IntBuff, &DefBuff, &CritBuff, &RefBuff, &SpeedBuff) == 14)
 				{
 					BuffCheck[Buff].Buff = Buff;
 					BuffCheck[Buff].Delete = Delete;
@@ -1773,7 +1773,7 @@ void ReadConfig(bool command)
 					BuffCheck[Buff].RefBuff = RefBuff;
 					BuffCheck[Buff].SpeedBuff = SpeedBuff;
 				}
-				if (sscanf(line, "(Call (Item_Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Index %d)(Permanently %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Call-> LightningDefense %d IceDefense %d FireDefense %d OTPCall %d PhysicalAttack %d CallofDefense %d))", &ItemN, &Call, &Delete, &MinLevel, &MaxLevel, &LimitMsg, &LightningDefense, &IceDefense, &FireDefense, &OTPCall, &PhysicalAttack, &CallofDefense) == 12)
+				if (sscanf(line, "(Call (Item_Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(Index %d)(Permanently %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(Call-> LightningDefense %d IceDefense %d FireDefense %d OTPCall %d PhysicalAttack %d CallofDefense %d))", &ItemN, &Call, &Delete, &MinLevel, &MaxLevel, &LimitMsg, &LightningDefense, &IceDefense, &FireDefense, &OTPCall, &PhysicalAttack, &CallofDefense) == 12)
 				{
 					BuffCheck[Call].Call = Call;
 					BuffCheck[Call].Delete = Delete;
@@ -1787,7 +1787,7 @@ void ReadConfig(bool command)
 					BuffCheck[Call].PhysicalAttack = PhysicalAttack;
 					BuffCheck[Call].CallofDefense = CallofDefense;
 				}
-				if (sscanf(line, "(Maker (Item_Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Index %d)(Permanently %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Stats-> MinAttack %d MaxAttack %d Hp %d Str %d Int %d Wis %d Agi %d OTP %d Eva %d Def %d Fire_Resistance %d Ice_Resistance %d Lightning_Resistance %d Absorb %d CritRate %d CritDamage %d MaxHp %d MaxMp %d Explosive_Blow %d)(auto_heal Active_HP'%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' amount %d Active_MP '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' amount %d)(Damage_monster-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Decrease %d)(BuffIcon-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Time %d Sys %d BuffID %d [Login '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'])(Exp-> Exp_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Exp %d Egg_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Egg %d))", &ItemN, &Maker, &Delete, &MinLevel, &MaxLevel, &LimitMsg, &MinAttack, &MaxAttack, &Hp, &Str, &Int, &Wis, &Agi, &OTP, &Eva, &Def, &Fire_Resistance, &Ice_Resistance, &Lightning_Resistance, &Absorb, &CritRate, &CritDamage, &MaxHp, &MaxMp, &EBRate, &hp_heal, &hp, &mana_heal, &mana, &Damage, &MD, &BuffIcon, &Time, &Sys_name, &BuffID, &save, &ExpALLOW, &amount, &Egg, &count) == 40)
+				if (sscanf(line, "(Maker (Item_Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(Index %d)(Permanently %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(Stats-> MinAttack %d MaxAttack %d Hp %d Str %d Int %d Wis %d Agi %d OTP %d Eva %d Def %d Fire_Resistance %d Ice_Resistance %d Lightning_Resistance %d Absorb %d CritRate %d CritDamage %d MaxHp %d MaxMp %d Explosive_Blow %d)(auto_heal Active_HP'%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]' amount %d Active_MP '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]' amount %d)(Damage_monster-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]' Decrease %d)(BuffIcon-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]' Time %d Sys %d BuffID %d [Login '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'])(Exp-> Exp_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]' Exp %d Egg_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]' Egg %d))", &ItemN, &Maker, &Delete, &MinLevel, &MaxLevel, &LimitMsg, &MinAttack, &MaxAttack, &Hp, &Str, &Int, &Wis, &Agi, &OTP, &Eva, &Def, &Fire_Resistance, &Ice_Resistance, &Lightning_Resistance, &Absorb, &CritRate, &CritDamage, &MaxHp, &MaxMp, &EBRate, &hp_heal, &hp, &mana_heal, &mana, &Damage, &MD, &BuffIcon, &Time, &Sys_name, &BuffID, &save, &ExpALLOW, &amount, &Egg, &count) == 40)
 				{
 					BuffMakerCheck[Maker].Maker = Maker;
 					BuffMakerCheck[Maker].Delete = Delete;
@@ -1830,7 +1830,7 @@ void ReadConfig(bool command)
 					//BuffMakerCheck[Maker].count = count;
 				}
 
-				if (sscanf(line, "(NPC_Buff (Quest_Index %d)(Str %d)(Agi %d)(Hth %d)(Int %d)(Def %d)(Crit %d)(Speed %d)(Ref %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))",
+				if (sscanf(line, "(NPC_Buff (Quest_Index %d)(Str %d)(Agi %d)(Hth %d)(Int %d)(Def %d)(Crit %d)(Speed %d)(Ref %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))",
 					&Quest_Index, &StrBuff, &AgiBuff, &HthBuff, &IntBuff, &DefBuff, &CritBuff, &SpeedBuff, &RefBuff, &MinLevel, &MaxLevel, &LimitMsg) == 12)
 				{
 					BuffCheck[Quest_Index].Quest_Index = Quest_Index;
@@ -1847,7 +1847,7 @@ void ReadConfig(bool command)
 					BuffCheck[Quest_Index].SpeedBuff = SpeedBuff;
 				}
 
-				if (sscanf(line, "(NPC_Call (Quest_Index %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Call-> LightningDefense %d IceDefense %d FireDefense %d OTPCall %d PhysicalAttack %d CallofDefense %d))"
+				if (sscanf(line, "(NPC_Call (Quest_Index %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(Call-> LightningDefense %d IceDefense %d FireDefense %d OTPCall %d PhysicalAttack %d CallofDefense %d))"
 					, &CQuest_Index, &MinLevel, &MaxLevel, &LimitMsg, &LightningDefense, &IceDefense, &FireDefense, &OTPCall, &PhysicalAttack, &CallofDefense) == 10)
 				{
 					BuffCheck[CQuest_Index].CQuest_Index = CQuest_Index;
@@ -1911,7 +1911,7 @@ void ReadConfig(bool command)
 				int SkillID = 0, Class = 0, PVPReduces = 0, AOE = 0;
 				char Damage[BUFSIZ];
 				int maxDamage = 0, maxPVPDamage = 0;
-				if (sscanf(line, "(EditSkill (class %d)(action %d)(damage '%[a-z | A-Z | 0-9/<>|.,~*;` ():!^+%&=?_-£#$€]')(pvpreduce %d)(maxpvedamage %d)(maxpvpdamage %d)(AOE %d))", &Class, &SkillID, &Damage, &PVPReduces, &maxDamage, &maxPVPDamage, &AOE) == 7)
+				if (sscanf(line, "(EditSkill (class %d)(action %d)(damage '%[a-z | A-Z | 0-9/<>|.,~*;` ():!^+%&=?_-Â£#$Â€]')(pvpreduce %d)(maxpvedamage %d)(maxpvpdamage %d)(AOE %d))", &Class, &SkillID, &Damage, &PVPReduces, &maxDamage, &maxPVPDamage, &AOE) == 7)
 				{
 					SkillDamage sDmg = SkillDamage();
 					sDmg.damage = Damage;
@@ -1928,7 +1928,7 @@ void ReadConfig(bool command)
 					memset(Damage, 0, sizeof(Damage));
 
 					int Type = 0;
-					if (sscanf(line, "(AdvancedSkill (type %d)(class %d)(action %d)(damage '%[a-z | A-Z | 0-9/<>|.,~*;` ():!^+%&=?_-£#$€]')(maxdamage %d)(AOE %d))", &Type, &Class, &SkillID, &Damage, &maxDamage, &AOE) == 6)
+					if (sscanf(line, "(AdvancedSkill (type %d)(class %d)(action %d)(damage '%[a-z | A-Z | 0-9/<>|.,~*;` ():!^+%&=?_-Â£#$Â€]')(maxdamage %d)(AOE %d))", &Type, &Class, &SkillID, &Damage, &maxDamage, &AOE) == 6)
 					{
 						SkillDamage sDmg = SkillDamage();
 						sDmg.damage = Damage;
@@ -1968,7 +1968,7 @@ void ReadConfig(bool command)
 				else {
 					int Monster = 0, Speed = 0, Attack = 0, Delay = 0;
 					char effects[BUFSIZ];
-					if (sscanf(line, "(pet (index %d)(monster %d)(speed %d)(time %d)(heal %d)(hplimit %d)(autopick %d)(pickrange %d)(addexp %d)(attack %d)(AOEDelay %d)(effects '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &PetIndex, &Monster, &Speed, &GetPetTime, &Heal, &HPLimit, &AutoPick, &RangePick, &EXP, &Attack, &Delay, &effects) >= 9)
+					if (sscanf(line, "(pet (index %d)(monster %d)(speed %d)(time %d)(heal %d)(hplimit %d)(autopick %d)(pickrange %d)(addexp %d)(attack %d)(AOEDelay %d)(effects '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &PetIndex, &Monster, &Speed, &GetPetTime, &Heal, &HPLimit, &AutoPick, &RangePick, &EXP, &Attack, &Delay, &effects) >= 9)
 					{
 						std::string sEffects = std::string((const char*)effects);
 						ConfigPetTime pet = ConfigPetTime();
@@ -2212,7 +2212,7 @@ void ReadConfig(bool command)
 				}
 
 				char url[BUFSIZ];
-				if (sscanf(line, "(ItemWebsite (Index %d)(Link '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Remove %d))", &ItemN, &url, &Remove) == 3) {
+				if (sscanf(line, "(ItemWebsite (Index %d)(Link '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(Remove %d))", &ItemN, &url, &Remove) == 3) {
 					ItemWebsite[ItemN].URL = url;
 					ItemWebsite[ItemN].remove = Remove;
 				}
@@ -2296,7 +2296,7 @@ void ReadConfig(bool command)
 			{
 				int index = 0, dmg = 0, crit = 0, duration = 0, cooldown = 0, hp = 0;
 				char Effect[BUFSIZ];
-				if (sscanf(line, "(necklaceBuff (index %d) (dmg %d) (critchance %d) (duration %d) (cooldown %d) (effect '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &index, &dmg, &crit, &duration, &cooldown, &Effect) == 6)
+				if (sscanf(line, "(necklaceBuff (index %d) (dmg %d) (critchance %d) (duration %d) (cooldown %d) (effect '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &index, &dmg, &crit, &duration, &cooldown, &Effect) == 6)
 				{
 					NecklaceBuff nBuff = NecklaceBuff();
 					nBuff.Cooldown = cooldown;
@@ -2308,7 +2308,7 @@ void ReadConfig(bool command)
 					NecklaceBuffs[index] = nBuff;
 				}
 				else
-					if (sscanf(line, "(beltBuff (index %d) (hpincrease %d) (duration %d) (cooldown %d) (effect '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &index, &hp, &duration, &cooldown, &Effect) == 5)
+					if (sscanf(line, "(beltBuff (index %d) (hpincrease %d) (duration %d) (cooldown %d) (effect '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &index, &hp, &duration, &cooldown, &Effect) == 5)
 					{
 						BeltBuff bBuff = BeltBuff();
 						bBuff.Cooldown = cooldown;
@@ -2375,7 +2375,7 @@ void ReadConfig(bool command)
 					char msg[BUFSIZ];
 					memset(msg, 0, sizeof(msg));
 					signed __int64 EXP = 0;
-					if (sscanf(line, "(starter (Class %d)(Map %d)(X %d)(Y %d)(EXP %lld)(HTML %d)(WelcomeMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &Class, &Map, &X, &Y, &EXP, &HTML, &msg) >= 6)
+					if (sscanf(line, "(starter (Class %d)(Map %d)(X %d)(Y %d)(EXP %lld)(HTML %d)(WelcomeMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &Class, &Map, &X, &Y, &EXP, &HTML, &msg) >= 6)
 					{
 						StarterClass newClass = StarterClass();
 						newClass.CoordX = X;
@@ -2408,7 +2408,7 @@ void ReadConfig(bool command)
 				char type[BUFSIZ], day[BUFSIZ];
 				int hour = 0, minute = 0, second = 0, hend = 0, mend = 0, send = 0;
 
-				if (sscanf(line, "(system (Type '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Day '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Time '%d:%d:%d')(End '%d:%d:%d'))", &type, &day, &hour, &minute, &second, &hend, &mend, &send) == 8)
+				if (sscanf(line, "(system (Type '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(Day '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(Time '%d:%d:%d')(End '%d:%d:%d'))", &type, &day, &hour, &minute, &second, &hend, &mend, &send) == 8)
 				{
 					std::string realDay(day);
 
@@ -2422,7 +2422,7 @@ void ReadConfig(bool command)
 					EndTimer[indexend] += type;
 				}
 
-				else if (sscanf(line, "(system (Type '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Day '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Time '%d:%d:%d'))", &type, &day, &hour, &minute, &second) == 5)
+				else if (sscanf(line, "(system (Type '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(Day '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(Time '%d:%d:%d'))", &type, &day, &hour, &minute, &second) == 5)
 				{
 					std::string realDay(day);
 					int day = EventConfig(realDay);
@@ -2531,7 +2531,7 @@ void ReadConfig(bool command)
 				int PTSize = 0, QIndex = 0, QFlag = 0, PVPArena = 0, MinL = 0, MaxL = 0, RID = 0;
 				char RStart[BUFSIZ], REnd[BUFSIZ], StartTime[BUFSIZ], Day[BUFSIZ], commands[BUFSIZ];
 
-				if (sscanf(line, "(PartyVsParty (Quest %d %d) (PVPArena %d) (PartySize %d) (Level %d-%d) (RewardID %d) (Day '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (RegistrationTime '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'-'%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (StartTime '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (commands '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &QIndex, &QFlag, &PVPArena, &PTSize, &MinL, &MaxL, &RID, &Day, &RStart, &REnd, &StartTime, &commands) >= 11)
+				if (sscanf(line, "(PartyVsParty (Quest %d %d) (PVPArena %d) (PartySize %d) (Level %d-%d) (RewardID %d) (Day '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]') (RegistrationTime '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'-'%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]') (StartTime '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]') (commands '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &QIndex, &QFlag, &PVPArena, &PTSize, &MinL, &MaxL, &RID, &Day, &RStart, &REnd, &StartTime, &commands) >= 11)
 				{
 					if (PVPArena > 8)
 						PVPArena %= 8;
@@ -2697,7 +2697,7 @@ void ReadConfig(bool command)
 
 				char url[BUFSIZ];
 
-				if (sscanf(line, "(QuestWebsite (index %d %d)(Link '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &QIndex, &QFlag, &url) == 3) {
+				if (sscanf(line, "(QuestWebsite (index %d %d)(Link '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &QIndex, &QFlag, &url) == 3) {
 					for (int i = 0; i < strlen(url); i++) {
 						if (url[i] == '!')
 							url[i] = '-';
@@ -3196,7 +3196,7 @@ void ReadConfig(bool command)
 				int StartDay = 0, StartMonth = 0, StartHour = 0, StartMinute = 0;
 				int EndDay = 0, EndMonth = 0, EndHour = 0, EndMinute = 0;
 
-				if (sscanf(line, "(poll (quest %d) (flags %d;%d) (question '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$\\€]') (answerHTML %d) (start %d;%d %d:%d) (end %d;%d %d:%d))", &Index, &FlagMin, &FlagMax, &question, &HTML, &StartDay, &StartMonth, &StartHour, &StartMinute, &EndDay, &EndMonth, &EndHour, &EndMinute) == 13)
+				if (sscanf(line, "(poll (quest %d) (flags %d;%d) (question '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$\\Â€]') (answerHTML %d) (start %d;%d %d:%d) (end %d;%d %d:%d))", &Index, &FlagMin, &FlagMax, &question, &HTML, &StartDay, &StartMonth, &StartHour, &StartMinute, &EndDay, &EndMonth, &EndHour, &EndMinute) == 13)
 				{
 					for (int i = 0; i < strlen(question); i++) {
 						if (question[i] == ';')
@@ -3240,7 +3240,7 @@ void ReadConfig(bool command)
 						line[i] = '?';
 				}
 
-				if (sscanf(line, "(Tracker (Type '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (argument '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (file '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &type, &argument, &file) == 3)
+				if (sscanf(line, "(Tracker (Type '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]') (argument '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]') (file '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &type, &argument, &file) == 3)
 				{
 					for (int i = 0; i < strlen(argument); i++) {
 						if (argument[i] == '!')
@@ -3268,7 +3268,7 @@ void ReadConfig(bool command)
 				int QuestID, PTSize = 0, Cooldown = 0, QuestFlag, Duration, MinLvl, MaxLvl, TX = 0, TY = 0, Lapse = 0, ReqItem = 0, ReqAmount = 0;
 				char Reward[BUFSIZ], mobs[BUFSIZ], amounts[BUFSIZ], day[BUFSIZ], name[BUFSIZ], X[BUFSIZ], Y[BUFSIZ];
 				int hour = 0, minute = 0, second = 0, hourr = 0, minuter = 0, secondr = 0;
-				if (sscanf(line.c_str(), "(EventMap (Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (Quest %d %d) (ReqItem %d) (ReqAmount %d) (Level %d-%d) (Teleport %d %d) (Mobs %[0-9\\,-]) (Amount %[0-9\\,-]) (SpawnX %[0-9\\,-]) (SpawnY %[0-9\\,-]) (Day '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (Time '%d:%d:%d') (RegistrationTime '%d:%d:%d') (Duration %d) (Lapse %d) (Reward %[0-9\\,-]))", &name, &QuestID, &QuestFlag, &ReqItem, &ReqAmount, &MinLvl, &MaxLvl, &TX, &TY, &mobs, &amounts, &X, &Y, &day, &hour, &minute, &second, &hourr, &minuter, &secondr, &Duration, &Lapse, &Reward) == 23)
+				if (sscanf(line.c_str(), "(EventMap (Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]') (Quest %d %d) (ReqItem %d) (ReqAmount %d) (Level %d-%d) (Teleport %d %d) (Mobs %[0-9\\,-]) (Amount %[0-9\\,-]) (SpawnX %[0-9\\,-]) (SpawnY %[0-9\\,-]) (Day '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]') (Time '%d:%d:%d') (RegistrationTime '%d:%d:%d') (Duration %d) (Lapse %d) (Reward %[0-9\\,-]))", &name, &QuestID, &QuestFlag, &ReqItem, &ReqAmount, &MinLvl, &MaxLvl, &TX, &TY, &mobs, &amounts, &X, &Y, &day, &hour, &minute, &second, &hourr, &minuter, &secondr, &Duration, &Lapse, &Reward) == 23)
 				{
 					std::string sBIndexs = std::string((const char*)mobs);
 					std::string sBAmounts = std::string((const char*)amounts);
@@ -3326,7 +3326,7 @@ void ReadConfig(bool command)
 					}
 				}
 				else
-					if (sscanf(line.c_str(), "(InstanceDungeon (Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (PartySize %d) (Quest %d %d) (ReqItem %d) (ReqAmount %d) (Level %d-%d) (Teleport %d %d) (Mobs %[0-9\\,-]) (Amount %[0-9\\,-]) (SpawnX %[0-9\\,-]) (SpawnY %[0-9\\,-]) (Duration %d) (Lapse %d) (Cooldown %d) (Reward %[0-9\\,-]))", &name, &PTSize, &QuestID, &QuestFlag, &ReqItem, &ReqAmount, &MinLvl, &MaxLvl, &TX, &TY, &mobs, &amounts, &X, &Y, &Duration, &Lapse, &Cooldown, &Reward) == 18)
+					if (sscanf(line.c_str(), "(InstanceDungeon (Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]') (PartySize %d) (Quest %d %d) (ReqItem %d) (ReqAmount %d) (Level %d-%d) (Teleport %d %d) (Mobs %[0-9\\,-]) (Amount %[0-9\\,-]) (SpawnX %[0-9\\,-]) (SpawnY %[0-9\\,-]) (Duration %d) (Lapse %d) (Cooldown %d) (Reward %[0-9\\,-]))", &name, &PTSize, &QuestID, &QuestFlag, &ReqItem, &ReqAmount, &MinLvl, &MaxLvl, &TX, &TY, &mobs, &amounts, &X, &Y, &Duration, &Lapse, &Cooldown, &Reward) == 18)
 					{
 						std::string sBIndexs = std::string((const char*)mobs);
 						std::string sBAmounts = std::string((const char*)amounts);
@@ -3389,7 +3389,7 @@ void ReadConfig(bool command)
 				int QIndex = 0, QFlag = 0, RQuest = 0, RFlag = 0, ItemIndex = 0, ItemAmount = 0, MIndex = 0, MAmount = 0, X = 0, Y = 0, Map = 0, Check = 0, Limit = 0;
 				char notice[BUFSIZ];
 
-				if (sscanf(line, "(SummonQuest (Quest %d %d) (ReplyQuest %d %d) (Item_Index %d) (Item_Amount %d) (Monster_Index %d) (Monster_Amount %d) (Coordinates %d-%d-%d) (Notice '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (Check %d) (DailyLimit %d))", &QIndex, &QFlag, &RQuest, &RFlag, &ItemIndex, &ItemAmount, &MIndex, &MAmount, &Map, &X, &Y, &notice, &Check, &Limit) == 14)
+				if (sscanf(line, "(SummonQuest (Quest %d %d) (ReplyQuest %d %d) (Item_Index %d) (Item_Amount %d) (Monster_Index %d) (Monster_Amount %d) (Coordinates %d-%d-%d) (Notice '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]') (Check %d) (DailyLimit %d))", &QIndex, &QFlag, &RQuest, &RFlag, &ItemIndex, &ItemAmount, &MIndex, &MAmount, &Map, &X, &Y, &notice, &Check, &Limit) == 14)
 				{
 					MSummonConfig msConfig = MSummonConfig();
 					msConfig.Type = 0;
@@ -3438,17 +3438,17 @@ void ReadConfig(bool command)
 				char cmd[BUFSIZ];
 				int ShoutIndex = 0;
 
-				if (sscanf(line, "(CustomNotice (command '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (RGB %d %d %d))", &cmd, &R, &G, &B) == 4)
+				if (sscanf(line, "(CustomNotice (command '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]') (RGB %d %d %d))", &cmd, &R, &G, &B) == 4)
 					CustomNotices[cmd] = RGB(R, G, B);
 
-				if (sscanf(line, "(CustomShouts (command '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (RGB %d %d %d) (ItemIndex %d))", &cmd, &R, &G, &B, &ShoutsIndex) == 5) {
+				if (sscanf(line, "(CustomShouts (command '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]') (RGB %d %d %d) (ItemIndex %d))", &cmd, &R, &G, &B, &ShoutsIndex) == 5) {
 					CustomShouts[cmd] = ShoutData(RGB(R, G, B), ShoutsIndex);
 				}
 
 
 				int Ra = 0, Ga = 0, Ba = 0;
 				char day[BUFSIZ], time[BUFSIZ], notice[BUFSIZ];
-				if (sscanf(line, "(rgbnotice (day '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(time '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(RGB %d %d %d))", &day, &time, &notice, &Ra, &Ga, &Ba) == 6)
+				if (sscanf(line, "(rgbnotice (day '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(time '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(RGB %d %d %d))", &day, &time, &notice, &Ra, &Ga, &Ba) == 6)
 				{
 					RGBNotice noticeRGB = RGBNotice();
 					noticeRGB.day = day;
@@ -3476,7 +3476,7 @@ void ReadConfig(bool command)
 				char cmd[BUFSIZ];
 				int HouseIndex = 0;
 
-				if (sscanf(line, "(HouseCmd (command '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (RGB %d %d %d) (House %d))", &cmd, &R, &G, &B, &HouseIndex) == 5) {
+				if (sscanf(line, "(HouseCmd (command '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]') (RGB %d %d %d) (House %d))", &cmd, &R, &G, &B, &HouseIndex) == 5) {
 					CustomHouse[cmd] = ShoutData(RGB(R, G, B), HouseIndex);
 				}
 
@@ -3501,7 +3501,7 @@ void ReadConfig(bool command)
 				if (sscanf(line.c_str(), "(AdminHWID (PID %d) (HWID '%[a-z0-9-]+'))", &PID, hwids) == 2)
 					HWIDRestrictions[PID].HWIDs = hwids;
 
-				if (sscanf(line.c_str(), "(DisableCommand (PID %d) (Commands '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &PID, &cmds) == 2)
+				if (sscanf(line.c_str(), "(DisableCommand (PID %d) (Commands '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &PID, &cmds) == 2)
 					Restrictions[PID].Commands = cmds;
 
 				if (sscanf(line.c_str(), "(DisableSystems (PID %d) (Trade %d) (Shop %d) (Storage %d) (Mail %d) (Party %d) (Duel %d) (Attack %d) (Skill %d) (Drop %d) (Pick %d))", &PID, &Trade, &Shop, &Storage, &Mail, &Party, &Duel, &Attack, &Skill, &Drop, &Pick) == 11) {
@@ -3642,7 +3642,7 @@ void ReadConfig(bool command)
 			while (fgets(line, sizeof line, fileaym) != NULL)
 			{
 				char msg[BUFSIZ];
-				if (sscanf(line, "(text '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')", &msg) == 1)
+				if (sscanf(line, "(text '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')", &msg) == 1)
 				{
 					std::string MsgFilter = msg;
 					std::transform(MsgFilter.begin(), MsgFilter.end(), MsgFilter.begin(), ::tolower);
@@ -3780,7 +3780,7 @@ void ReadConfig(bool command)
 			{
 				int minutes, r, g, b;
 				char msg[BUFSIZ];
-				if (sscanf(line, "(AutoNotice (minutes %d)(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(RGB %d %d %d))", &minutes, &msg, &r, &g, &b) == 5)
+				if (sscanf(line, "(AutoNotice (minutes %d)(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(RGB %d %d %d))", &minutes, &msg, &r, &g, &b) == 5)
 				{
 
 					AutoNotices[l].minutes = minutes;
@@ -3951,7 +3951,7 @@ void ReadConfig(bool command)
 			while (fgets(line, sizeof line, fileor) != NULL)
 			{
 				char filename[BUFSIZ], filehash[BUFSIZ];
-				if (sscanf(line, "((File %[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]) (Hash %[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]))", &filename, &filehash) == 2)
+				if (sscanf(line, "((File %[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]) (Hash %[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]))", &filename, &filehash) == 2)
 					NbLines++;
 			}
 
@@ -3965,7 +3965,7 @@ void ReadConfig(bool command)
 			while (fgets(line, sizeof line, fileor) != NULL)
 			{
 				char filename[BUFSIZ], filehash[BUFSIZ];
-				if (sscanf(line, "((File %[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]) (Hash %[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]))", &filename, &filehash) == 2)
+				if (sscanf(line, "((File %[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]) (Hash %[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]))", &filename, &filehash) == 2)
 				{
 					count++;
 
@@ -4109,7 +4109,7 @@ void ReadConfig(bool command)
 					CheckPimp[GetPrefix].GetUpg = GetUpg;
 				}
 
-				if (sscanf(line, "(mix (prefix %d)(info %d)(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &MixPrefix, &MixInfo, &mixnotice) == 3)
+				if (sscanf(line, "(mix (prefix %d)(info %d)(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &MixPrefix, &MixInfo, &mixnotice) == 3)
 				{
 					MixConfigPrefix.insert(MixPrefix);
 					MixConfigInfo[MixPrefix] = MixInfo;
@@ -4130,7 +4130,7 @@ void ReadConfig(bool command)
 			{
 				char day[BUFSIZ], notice[BUFSIZ];
 				int hour = 0, minute = 0, second = 0;
-				if (sscanf(line, "(notice (day '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(time '%d:%d:%d')(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &day, &hour, &minute, &second, &notice) == 5)
+				if (sscanf(line, "(notice (day '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(time '%d:%d:%d')(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &day, &hour, &minute, &second, &notice) == 5)
 				{
 					int time = IntTime(0, hour, minute, second);
 					AutoNoticeConf noticeTime = AutoNoticeConf();
@@ -4171,7 +4171,7 @@ void ReadConfig(bool command)
 			{
 				int ID = 0, NamePad = 0, MinLvl = 0, ResetLevel = 0, RewardID = 0;
 				char tag[10];
-				if (sscanf(line, "(Reborn (Num %d)(NameTag '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(NamePad %d)(MinLvl %d)(ResetLvl %d)(RewardID %d))", &ID, &tag, &NamePad, &MinLvl, &ResetLevel, &RewardID) == 6)
+				if (sscanf(line, "(Reborn (Num %d)(NameTag '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(NamePad %d)(MinLvl %d)(ResetLvl %d)(RewardID %d))", &ID, &tag, &NamePad, &MinLvl, &ResetLevel, &RewardID) == 6)
 				{
 					Reborn rb = Reborn();
 					rb.NamePad = NamePad;
@@ -4217,7 +4217,7 @@ void ReadConfig(bool command)
 				char SBName[BUFSIZ];
 				char SBKey[BUFSIZ];
 
-				if (sscanf(line, "(GuildBuff (Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (Quest %d) (Flag %d) (FlagReply %d) (ItemIndex %d) (ItemAmount %d) (Buff %[0-9/,]) (Time %[0-9/,]) (Value %[0-9/,]) (SBName %[0-9/,]) (SBKey %[0-9/,]))", &Name, &Quest, &Flag, &RFlag, &Item, &Amount, &Buff, &BuffTime, &BuffValue, &SBName, &SBKey) == 11)
+				if (sscanf(line, "(GuildBuff (Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]') (Quest %d) (Flag %d) (FlagReply %d) (ItemIndex %d) (ItemAmount %d) (Buff %[0-9/,]) (Time %[0-9/,]) (Value %[0-9/,]) (SBName %[0-9/,]) (SBKey %[0-9/,]))", &Name, &Quest, &Flag, &RFlag, &Item, &Amount, &Buff, &BuffTime, &BuffValue, &SBName, &SBKey) == 11)
 				{
 					GuildBuffQuest guildBuff = GuildBuffQuest();
 					guildBuff.Name = Name;
@@ -4661,7 +4661,7 @@ void ReadConfig(bool command)
 			while (fgets(line, sizeof line, files) != NULL)
 			{
 				char day[BUFSIZ], notice[BUFSIZ]; int MobIndex = 0, hour = 0, minute = 0, second = 0, MobAmount = 0, MobMap = 0, MobX = 0, MobY = 0, MobDis = 0;
-				if (sscanf(line, "(summon (index %d)(amount %d)(map %d)(x %d)(y %d)(disappear %d)(day '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(time '%d:%d:%d')(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &MobIndex, &MobAmount, &MobMap, &MobX, &MobY, &MobDis, &day, &hour, &minute, &second, &notice) == 11)
+				if (sscanf(line, "(summon (index %d)(amount %d)(map %d)(x %d)(y %d)(disappear %d)(day '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(time '%d:%d:%d')(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &MobIndex, &MobAmount, &MobMap, &MobX, &MobY, &MobDis, &day, &hour, &minute, &second, &notice) == 11)
 				{
 					CheckSummonTimer timer = CheckSummonTimer();
 					timer.Index = MobIndex;
@@ -4924,7 +4924,7 @@ void ReadConfig(bool command)
 			{
 				int Class = 0, Level = 0, Index = 0, Prefix = 0, Amount = 0, Info = 0, Attack = 0, Magic = 0, Toa = 0, Upgrade = 0, Defense = 0, Evasion = 0, Endurance = 0; char rewardnotice[BUFSIZ];
 
-				if (sscanf(line, "(reward (level %d)(class %d)(index %d)(prefix %d)(amount %d)(info %d)(attack %d)(magic %d)(toa %d)(upgrade %d)(defense %d)(evasion %d)(endurance %d)(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &Level, &Class, &Index, &Prefix, &Amount, &Info, &Attack, &Magic, &Toa, &Upgrade, &Defense, &Evasion, &Endurance, &rewardnotice) == 14)
+				if (sscanf(line, "(reward (level %d)(class %d)(index %d)(prefix %d)(amount %d)(info %d)(attack %d)(magic %d)(toa %d)(upgrade %d)(defense %d)(evasion %d)(endurance %d)(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &Level, &Class, &Index, &Prefix, &Amount, &Info, &Attack, &Magic, &Toa, &Upgrade, &Defense, &Evasion, &Endurance, &rewardnotice) == 14)
 				{
 					ConfigLevelReward lvlReward = ConfigLevelReward();
 
@@ -5112,7 +5112,7 @@ void ReadConfig(bool command)
 			{
 				int ID, AOE, Cooldown, Buff, BuffTime, BuffValue, DamageMin, DamageMax, SBName, SBKey = 0, effectType = 0;
 				char effect[BUFSIZ];
-				if (sscanf(line, "(Skill (ID %d) (AOE %d) (Cooldown %d) (Effect '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (EffectType %d) (Buff %d) (BuffTime %d) (BuffValue %d) (Damage %d-%d) (SBName %d) (SBKey %d))", &ID, &AOE, &Cooldown, &effect, &effectType, &Buff, &BuffTime, &BuffValue, &DamageMin, &DamageMax, &SBName, &SBKey) == 12)
+				if (sscanf(line, "(Skill (ID %d) (AOE %d) (Cooldown %d) (Effect '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]') (EffectType %d) (Buff %d) (BuffTime %d) (BuffValue %d) (Damage %d-%d) (SBName %d) (SBKey %d))", &ID, &AOE, &Cooldown, &effect, &effectType, &Buff, &BuffTime, &BuffValue, &DamageMin, &DamageMax, &SBName, &SBKey) == 12)
 				{
 					MSkill mSkill = MSkill();
 					mSkill.AOERange = AOE;
@@ -5417,7 +5417,7 @@ void ReadConfig(bool command)
 				int Index = 0, Vote = 0;
 				char Hash[BUFSIZ];
 
-				if (sscanf(line.c_str(), "(PollVote (Index %d) (Vote %d) (Hash '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &Index, &Vote, &Hash) == 3)
+				if (sscanf(line.c_str(), "(PollVote (Index %d) (Vote %d) (Hash '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &Index, &Vote, &Hash) == 3)
 				{
 					if (Polls.count(Index)) {
 						std::set<int> votes = PollVotes.count(Hash) ? PollVotes.findValue(Hash) : std::set<int>();
@@ -5444,7 +5444,7 @@ void ReadConfig(bool command)
 			{
 				int type = 0, pid = 0, mclass = 0, level = 0;
 				char Name[BUFSIZ];
-				if (sscanf(line, "(registration (type %d)(PID %d)(name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(class %d)(level %d))", &type, &pid, &Name, &mclass, &level) == 5) {
+				if (sscanf(line, "(registration (type %d)(PID %d)(name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(class %d)(level %d))", &type, &pid, &Name, &mclass, &level) == 5) {
 					DuelRegistre reg;
 					reg.PID = pid;
 					reg.Name = Name;
@@ -5499,7 +5499,7 @@ void reloadBlock() {
 
 			int uid = 0;
 			char HWID[BUFSIZ], MAC[BUFSIZ], IP[BUFSIZ];
-			if (sscanf(line, "(hwidblock (uid %d)(hwid '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(mac '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(ip '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &uid, &HWID, &MAC, &IP) == 4)
+			if (sscanf(line, "(hwidblock (uid %d)(hwid '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(mac '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]')(ip '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &uid, &HWID, &MAC, &IP) == 4)
 			{
 				for (int i = 0; i < strlen(HWID); i++) {
 					if (HWID[i] == '!')
@@ -5535,10 +5535,10 @@ void reloadSV() {
 		{
 			int gid = 0;
 			char Name[BUFSIZ];
-			if (sscanf(line, "(registration (GID %d)(name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &gid, &Name) == 2)
+			if (sscanf(line, "(registration (GID %d)(name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &gid, &Name) == 2)
 				SufferingValleyRegistration.replaceInsert(gid, Name);
 			else
-				if (sscanf(line, "(chosen (GID %d)(name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &gid, &Name) == 2) {
+				if (sscanf(line, "(chosen (GID %d)(name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &gid, &Name) == 2) {
 					if (!SufferingValley::GuildFirst) {
 						SufferingValley::GuildFirst = gid;
 						SufferingValley::FirstGuild = Name;
@@ -5576,7 +5576,7 @@ void reloadGVG() {
 		{
 			int gid = 0;
 			char Name[BUFSIZ];
-			if (sscanf(line, "(registration (GID %d)(name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &gid, &Name) == 2) {
+			if (sscanf(line, "(registration (GID %d)(name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &gid, &Name) == 2) {
 				ScenarioRegistration.insert(gid);
 				Scenario::RegisterAmount += 1;
 				DKInfo dk = DKInfo();
@@ -5584,7 +5584,7 @@ void reloadGVG() {
 				dk.Name = Name;
 				ScenarioGuild.push_back(dk);
 			}else
-				if (sscanf(line, "(chosen (GID %d)(name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &gid, &Name) == 2) {
+				if (sscanf(line, "(chosen (GID %d)(name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &gid, &Name) == 2) {
 					if (!Scenario::GuildFirst) {
 						Scenario::GuildFirst = gid;
 						Scenario::FirstGuild = Name;
@@ -5621,12 +5621,12 @@ void reloadProtect() {
 		{
 			int gid = 0;
 			char Name[BUFSIZ];
-			if (sscanf(line, "(registration (GID %d)(name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &gid, &Name) == 2) {
+			if (sscanf(line, "(registration (GID %d)(name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &gid, &Name) == 2) {
 				ProtectLeaderList.push_back(gid);
 				ProtectLeaderName.replaceInsert(gid, Name);
 			}
 			else
-				if (sscanf(line, "(chosen (GID %d)(name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &gid, &Name) == 2) {
+				if (sscanf(line, "(chosen (GID %d)(name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-Â£#$Â€]'))", &gid, &Name) == 2) {
 					if (!Protect32::GuildFirst) {
 						Protect32::GuildFirst = gid;
 						Protect32::FirstGuild = Name;
