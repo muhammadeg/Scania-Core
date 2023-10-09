@@ -44,7 +44,7 @@ void __fastcall SoulDestruction(void *pSkill, void *pPlayer, int pPacket, int pP
 		
 		int GetWisdom = CChar::GetWis((int)IPlayer.GetOffset());
 
-		if (SDRange && (TargetAOE == 3 || (TargetAOE == 2 && ITarget.GetType() == 0) || (TargetAOE == 1 && ITarget.GetType() == 1)) && IPlayer.GetSpecialty() == 43) {
+		if (SDRange && (TargetAOE == 3 || (TargetAOE == 2 && ITarget.GetType() == 0) || (TargetAOE == 1 && ITarget.GetType() == 1)) && (IPlayer.GetSpecialty() == 43 || SDLOWAOE)) {
 			int Around = ITarget.GetObjectListAround(SDRange);
 			while (Around)
 			{
@@ -55,7 +55,6 @@ void __fastcall SoulDestruction(void *pSkill, void *pPlayer, int pPacket, int pP
 					if (ITarget.GetType() == 0)
 						nDmg = (nDmg * MSDReduce) / 100;
 
-					//IPlayer.XEAMagDamageArea(Object, nDmg, (int)pSkill);
 					IPlayer.OktayDamageArea(Object, nDmg, 40);
 					IPlayer._ShowBattleAnimation(Object, 40);
 				}
@@ -67,13 +66,11 @@ void __fastcall SoulDestruction(void *pSkill, void *pPlayer, int pPacket, int pP
 		else {
 			if ((*(int(__thiscall **)(int, int, DWORD))(*(DWORD *)IPlayer.GetOffset() + 176))((int)IPlayer.GetOffset(), (int)ITarget.GetOffset(), 0)) {
 				IPlayer.SetDirection(ITarget);
-				//(*(void(__thiscall **)(int, int))(*(DWORD*)ITarget.GetOffset() + 80))((int)ITarget.GetOffset(), (int)IPlayer.GetOffset());
 				int nDmg = ((GetWisdom * ISkill.GetGrade() + CTools::Rate(MSDMin, MSDMax)) * IPlayer.GetMagic() / 500) * MSDMul;
 
 				if (ITarget.GetType() == 0)
 					nDmg = (nDmg * MSDReduce) / 100;
 
-				//IPlayer.XEAMagDamageArea(ITarget, nDmg, (int)pSkill);
 				IPlayer.OktayDamageArea(ITarget, nDmg, 40);
 
 				IPlayer._ShowBattleAnimation(ITarget, 40);

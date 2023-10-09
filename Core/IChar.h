@@ -136,8 +136,6 @@ public:
 	DWORD MobUnAttack(DWORD amount);
 	DWORD MobDelay(DWORD amount);
 	void MobDelete();
-	void NPCDelete();
-	void NPCAppear();
 	void Blob();
 	void Rb(int time);
 	void UpdateHonor(int HP, int HK, int HD, int DKPT, int DKPW, int PLT, int PLW, int SVT, int SVW, int RP);
@@ -232,6 +230,7 @@ public:
 	void RemoveSetBlue();
 	void RemoveSetRed();
 	int GetGID();
+	void GuildColor();
 	int GetRectX();
 	int GetRectY();
 	void IncreaseCritRate(int Amount);
@@ -267,6 +266,7 @@ public:
 	void StartQuest(int QuestID, int Time, int Repeat, int Count);
 	void EndQuest(int QuestID, int Time, int Repeat, int Count);
 	void EndQuestMission(int QuestID, int Time, int Repeat, int Count);
+	void DeleteQuest(int QuestID);
 
 	void QuitQuest(int QuestID, int Time, int Repeat, int Count);
 	void DailyQuestUpdate(int QuestID,int Monster,int CountEach);

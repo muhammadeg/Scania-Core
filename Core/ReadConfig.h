@@ -26,6 +26,8 @@ volatile LONG CreatePacket = 0;
 volatile LONG LastIP = 0;
 int MautMap = 0, MautQuest = 0, MautQuestEnd = 0, MautRIndex = 0, MautRPrefix = 0, MautRAmount = 0, MautChance = 0, MautX = 0, MautY = 0, MautSpawnX = 0, MautSpawnY = 0, MautLevel = 0;
 int BossEXPChance = 0;
+int maxxStatPoints = 254;
+
 int Snow = 0;
 int tradePVP = 0;
 double DelaySpam = 0;
@@ -34,7 +36,7 @@ unsigned __int64 LotteryCheck = 0;
 int itemin=0,itemam=0,itempr=0;
 int JewelIndex = 0;
 int Gun = 0;
-int EmoteQuest = 0, EmoteCooldown = 0;
+int EmoteQuest = 0, EmoteCooldown = 0, EmoteItem = 0;
 int SendItemIndex = 0;
 int VODConf = 0;
 int KillerHPPL = 0, KillerRPPL = 0, KilledHPPL = 0, KilledRPPL = 0, KillerHPBF = 0, KillerRPBF = 0, KilledHPBF = 0, KilledRPBF = 0, KillerHPGVG = 0, KillerRPGVG = 0, KilledHPGVG = 0, KilledRPGVG = 0;
@@ -58,7 +60,7 @@ int AAEReduce = 0, AAEMul = 0, AAEMin = 0, AAEMax = 0;
 int AARReduce = 0, AARMul = 0, AARMin = 0, AARMax = 0;
 int EBSMul = 0, EBSReduce = 0, ERAReduce = 0, ERAMul = 0, ETBReduce = 0, ETBMul = 0;
 int ALAReduce = 0, ALAMul = 0;
-int ACSReduce = 0, ACSMul = 0, ACSMin = 0, ACSMax = 0;
+int ACSReduce = 0, ACSMul = 0, ACSMin = 0, ACSMax = 0, ACAOE = 0, ACPVPAOE = 0, ACAOERange = 0;
 int MLAReduce = 0, MLAMul = 0, MLAMin = 0, MLAMax = 0;
 int MFIReduce = 0, MFIMul = 0, MFIMin = 0, MFIMax = 0;
 int MMIReduce = 0, MMIMul = 0, MMIMin = 0, MMIMax = 0;
@@ -95,6 +97,7 @@ int WinnerLMS = 0, LoserLMS = 0;
 int WinnerHell = 0;
 int VoteReward = 0;
 int BossHuntReward = 0;
+int ScaleBuff = 0;
 
 int ExtensionTime = 0;
 int ScenarioQuestR = 0, ScenarioQuestB = 0;
@@ -107,7 +110,7 @@ int HellQuest = 0, HellMap = 0, HellX = 0, HellY = 0, HellReturnX = 0, HellRetur
 int F10BuffEnable = 0, F10BuffSys = 0, F10Agi = 0, F10Hth = 0, F10Int = 0, F10Wis = 0, F10Str = 0, F10Min = 0, F10Max = 0, F10EXPBuff = 0;
 int CaptureDuration = 0,HaninChance=0, HaninChange=0;
 int FilterCheck = 0;
-int SDAOE = 0;
+int SDAOE = 0, SDLOWAOE = 0;
 int F10Multiply = 0, MautMultiply = 0;
 int SDPVPAOE = 0;
 int SDRange = 0;
@@ -196,7 +199,7 @@ int F10Chance = 0;
 int NirvanaEnable = 0, NirvanaQuest = 0;
 int TrainingHit = 0, FreeTime = 0, TrainingPrice = 0;
 int namePadIndex = 0, namePadPrice = 0, namePadDuration = 0;
-int ShadowAOE = 0, ShadowRange = 0; 
+int ShadowAOEPVE = 0, ShadowRange = 0, ShadowAOEPVP; 
 int EFakePlayers = 0;
 int AuctionLimit = 0;
 int GuildLimit = 0;
@@ -204,9 +207,14 @@ int SQCheck = 0, maxAmountQ = 0;
 int DuelDuration = 0;
 int MinMacro = 0, MaxMacro = 0, MacroStartTime = 0;
 
+// NEW MYSTERY SKILLS
+int MystPAtkQ = 0, MystMAtkQ = 0, MystHPQ = 0, MystDefQ = 0, MystOTPQ = 0, MystEVAQ = 0;
+int MystPAtkS = 0, MystMAtkS = 0, MystHPS = 0, MystDefS = 0, MystOTPS = 0, MystEVAS = 0;
+int MystLevel = 0, MystLevelMax = 0, NewMystEnable = 0, NewMystReset = 0;
 int GuildEXPGrade4 = 0;
 int GuildEXPGrade3 = 0;
 int GuildEXPGrade2 = 0;
+int GuildColors = 0, LeaderColor = 0, SubLeaderColor = 0, ChiefColor = 0;
 
 int AuthTimer = 0;
 int MemberFull1 = 0;
@@ -295,13 +303,13 @@ int BoundAllow = 0;
 int ScrollEM = 0;
 int RebornQuest = 0, RebornActive = 0, RebornGZ = 0;
 int MageDifference = 0;
-int PDMul = 0;
-int PPSys = 0, PPSysB = 0, PPEXP = 0;
+int PDMul = 0, PDPVP = 0, BlessPVP = 0;
+int PPSys = 0, PPSysB = 0, PPEXP = 0, CJBEXP = 0, CJBSYS = 0, CJBSYSB = 0, CJBEXPActive = 0, CJBRange = 0, PPActive = 0;
 int itemIndex = 0;
 int EVGoodReward = 0, EVGoodLoser = 0, EVGoodDraw = 0;
 int PetBound = 0, TimedItemBound = 0;
+int ARRange = 0, MRange = 0, KRange = 0, TRange = 0, SRange = 0, RangeKick = 0;
 int BossEXPQuest = 0, BossEXPRange = 0, BossEXPTime = 0, BossEXPPrepare = 0, BossEXPMap = 0, BossEXPMob = 0, BossEXPMX = 0, BossEXPMY = 0, BossEXPPX = 0, BossEXPPY = 0;
-int t1 = 0, t2 = 0, t3 = 0, t4 = 0, t5 = 0, t6 = 0, t7 = 0, t8 = 0, t9 = 0, t10 = 0, t11 = 0, t12 = 0, t13 = 0, t14 = 0, t15 = 0, t16 = 0, t17 = 0, t18 = 0, t19 = 0, t20 = 0, t21 = 0, t22 = 0, t23 = 0;
 bool sortByChance(const ChanceItem &a, const ChanceItem &b)
 {
 	return a.Chance < b.Chance;
@@ -356,8 +364,6 @@ void ReadConfig(bool command)
 		readDir("./Configs");
 		readDir("./Skills");
 		readDir("./Systems");
-		readDir("./Scania");
-
 
 		if (modifiedFiles.empty())
 			return;
@@ -365,6 +371,7 @@ void ReadConfig(bool command)
 	int OldMD5Check = MD5Check;
 
 	PDMul = GetPrivateProfileIntA("PerfectDefense", "TimeMultiply", 5, "./Skills/Knight.txt");
+	PDPVP = GetPrivateProfileIntA("PerfectDefense", "PVPReduce", 50, "./Skills/Knight.txt");
 	PetBound = GetPrivateProfileIntA("Bound", "Active", 1, "./Configs/Pet.txt");
 	TimedItemBound = GetPrivateProfileIntA("Bound", "Active", 1, "./Configs/TimedItems.txt");
 
@@ -373,9 +380,15 @@ void ReadConfig(bool command)
 	RebornGZ = GetPrivateProfileIntA("GzMsg", "MinReborn", 1, "./Configs/Reborn.txt");
 
 	MageDifference = GetPrivateProfileIntA("MageShaman", "LevelHit", 30, "./Configs/Protection.txt");
+	PPActive = GetPrivateProfileIntA("PerfectParty", "Active", 1, "./Configs/Protection.txt");
 	PPSys = GetPrivateProfileIntA("PerfectParty", "SysKey", 2268, "./Configs/Protection.txt");
 	PPSysB = GetPrivateProfileIntA("PerfectParty", "BuffKey", 252, "./Configs/Protection.txt");
 	PPEXP = GetPrivateProfileIntA("PerfectParty", "EXP", 5, "./Configs/Protection.txt");
+	CJBEXP = GetPrivateProfileIntA("CJBParty", "EXP", 20, "./Configs/Protection.txt");
+	CJBSYS = GetPrivateProfileIntA("CJBParty", "SysKey", 0, "./Configs/Protection.txt");
+	CJBSYSB = GetPrivateProfileIntA("CJBParty", "BuffKey", 0, "./Configs/Protection.txt");
+	CJBEXPActive = GetPrivateProfileIntA("CJBParty", "Active", 1, "./Configs/Protection.txt");
+	CJBRange = GetPrivateProfileIntA("CJBParty", "Range", 30, "./Configs/Protection.txt");
 
 	ScrollEM = GetPrivateProfileIntA("SavingScroll", "Active", 1, "./Configs/EventMaps.txt");
 
@@ -390,30 +403,6 @@ void ReadConfig(bool command)
 	SEPtsPerMob = GetPrivateProfileIntA("Points", "PerMob", 1, "./Systems/SinEvent.txt");
 	SEPtsPerPlayer = GetPrivateProfileIntA("Points", "PerPlayer", 2, "./Systems/SinEvent.txt");
 	
-	t1 = GetPrivateProfileIntA("Test", "a1", 120, "./Configs/Test.txt");
-	t2 = GetPrivateProfileIntA("Test", "a2", 0, "./Configs/Test.txt");
-	t3 = GetPrivateProfileIntA("Test", "a3", 0, "./Configs/Test.txt");
-	t4 = GetPrivateProfileIntA("Test", "a4", 0, "./Configs/Test.txt");
-	t5 = GetPrivateProfileIntA("Test", "a5", 0, "./Configs/Test.txt");
-	t6 = GetPrivateProfileIntA("Test", "a6", 0, "./Configs/Test.txt");
-	t7 = GetPrivateProfileIntA("Test", "a7", 0, "./Configs/Test.txt");
-	t8 = GetPrivateProfileIntA("Test", "a8", 0, "./Configs/Test.txt");
-	t9 = GetPrivateProfileIntA("Test", "a9", 0, "./Configs/Test.txt");
-	t10 = GetPrivateProfileIntA("Test", "a10", 0, "./Configs/Test.txt");
-	t11 = GetPrivateProfileIntA("Test", "a11", 0, "./Configs/Test.txt");
-	t12 = GetPrivateProfileIntA("Test", "a12", 0, "./Configs/Test.txt");
-	t13 = GetPrivateProfileIntA("Test", "a13", 0, "./Configs/Test.txt");
-	t14 = GetPrivateProfileIntA("Test", "a14", 0, "./Configs/Test.txt");
-	t15 = GetPrivateProfileIntA("Test", "a15", 0, "./Configs/Test.txt");
-	t16 = GetPrivateProfileIntA("Test", "a16", 0, "./Configs/Test.txt");
-	t17 = GetPrivateProfileIntA("Test", "a17", 0, "./Configs/Test.txt");
-	t18 = GetPrivateProfileIntA("Test", "a18", 0, "./Configs/Test.txt");
-	t19 = GetPrivateProfileIntA("Test", "a19", 0, "./Configs/Test.txt");
-	t20 = GetPrivateProfileIntA("Test", "a20", 0, "./Configs/Test.txt");
-	t21 = GetPrivateProfileIntA("Test", "a21", 0, "./Configs/Test.txt");
-	t22 = GetPrivateProfileIntA("Test", "a22", 0, "./Configs/Test.txt");
-	t23 = GetPrivateProfileIntA("Test", "a23", 0, "./Configs/Test.txt");
-
 	BoundAllow = GetPrivateProfileIntA("Storage", "Allow", 0, "./Configs/BoundItems.txt");
 
 
@@ -451,12 +440,22 @@ void ReadConfig(bool command)
 	GetPrivateProfileStringA("SystemNames", "Hunting", "Hunting", HuntingSysName, 50, "./Systems/Names.txt");
 	GetPrivateProfileStringA("SystemNames", "Bandits", "Bandits", BanditsName, 50, "./Systems/Names.txt");
 
+
+	ARRange = GetPrivateProfileIntA("RangeProtection", "Archer", 9, "./Configs/Range.txt");
+	MRange = GetPrivateProfileIntA("RangeProtection", "Mage", 8, "./Configs/Range.txt");
+	KRange = GetPrivateProfileIntA("RangeProtection", "Knight", 3, "./Configs/Range.txt");
+	TRange = GetPrivateProfileIntA("RangeProtection", "Thief", 4, "./Configs/Range.txt");
+	SRange = GetPrivateProfileIntA("RangeProtection", "Shaman", 8, "./Configs/Range.txt");
+	RangeKick = GetPrivateProfileIntA("PlayerKick", "Enable", 0, "./Configs/Range.txt");
+
+
 	TestVV = GetPrivateProfileIntA("Test", "Value", 0, "./Configs/Test.txt");
 	BSOFSky = GetPrivateProfileIntA("BlessingSonOfTheSky", "ItemIndex", 0, "./Configs/Protection.txt");
 	NirvanaEnable = GetPrivateProfileIntA("Nirvana", "Enable", 0, "./Configs/Protection.txt");
 	NirvanaQuest = GetPrivateProfileIntA("Nirvana", "Quest", 0, "./Configs/Protection.txt");
-	EmoteQuest = GetPrivateProfileIntA("EmoteSystem", "QuestIndex", 0, "./Scania/EmoteSystem.txt");
-	EmoteCooldown = GetPrivateProfileIntA("EmoteSystem", "Cooldown", 0, "./Scania/EmoteSystem.txt");
+	EmoteQuest = GetPrivateProfileIntA("EmoteSystem", "QuestIndex", 0, "./Configs/EmoteSystem.txt");
+	EmoteCooldown = GetPrivateProfileIntA("EmoteSystem", "Cooldown", 0, "./Configs/EmoteSystem.txt");
+	EmoteItem = GetPrivateProfileIntA("EmoteSystem", "ItemIndex", 0, "./Configs/EmoteSystem.txt");
 
 	SVMap = GetPrivateProfileIntA("Map", "Index", 32, "./Systems/SufferingValley.txt");
 	SVPtMob = GetPrivateProfileIntA("Points", "MobKill", 1, "./Systems/SufferingValley.txt");
@@ -545,7 +544,7 @@ void ReadConfig(bool command)
 	thirdCheck2 = GetPrivateProfileIntA("ThirdJobUpgrade", "Level2", 71, "./Configs/Protection.txt");
 	fuseNotice = GetPrivateProfileIntA("FuseNotice", "Active", 0, "./Configs/Protection.txt");
 
-	TastyLvl = GetPrivateProfileIntA("TastyItems", "Level", 70, "./Configs/ItemUse.txt");
+	TastyLvl = GetPrivateProfileIntA("TastyItems", "Level", 30, "./Configs/ItemUse.txt");
 
 	IPEnable = GetPrivateProfileIntA("IP", "Active", 1, "./Configs/Protection.txt");
 	StBroken = GetPrivateProfileIntA("Break", "Active", 0, "./Configs/StandardBreak.txt");
@@ -555,204 +554,231 @@ void ReadConfig(bool command)
 	ACooldown = GetPrivateProfileIntA("Cooldown", "Time", 15, "./Configs/AreaQuests.txt");
 
 
-	SkillTestAction = GetPrivateProfileIntA("Skill", "Action", 0, "./Scania/SkillTest.txt");
-	SkillR1 = GetPrivateProfileIntA("Skill", "R1", 0, "./Scania/SkillTest.txt");
-	SkillR2 = GetPrivateProfileIntA("Skill", "R2", 0, "./Scania/SkillTest.txt");
-	SkillIndex = GetPrivateProfileIntA("Skill", "Index", 0, "./Scania/SkillTest.txt");
-	SkillTimer = GetPrivateProfileIntA("Skill", "Timer", 0, "./Scania/SkillTest.txt");
+	MystLevel = GetPrivateProfileIntA("Mystery", "MinLevel", 70, "./Configs/NewMystery.txt");
+	MystLevelMax = GetPrivateProfileIntA("Mystery", "MaxLevel", 100, "./Configs/NewMystery.txt");
+	NewMystEnable = GetPrivateProfileIntA("Mystery", "Enable", 0, "./Configs/NewMystery.txt");
+	NewMystReset = GetPrivateProfileIntA("Mystery", "ResetItem", 0, "./Configs/NewMystery.txt");
 
-	PeaceEvil = GetPrivateProfileIntA("PeaceEvil", "Active", 0, "./Scania/Hogwarts.txt");
-	SlytherinQuest = GetPrivateProfileIntA("Quest", "Slytherin", 0, "./Scania/Hogwarts.txt");
-	GryffindorQuest = GetPrivateProfileIntA("Quest", "Gryffindor", 0, "./Scania/Hogwarts.txt");
-	RavenQuest = GetPrivateProfileIntA("Quest", "Ravenclaw", 0, "./Scania/Hogwarts.txt");
-	HuffleQuest = GetPrivateProfileIntA("Quest", "Hufflepuff", 0, "./Scania/Hogwarts.txt");
-	SlytherinColor = GetPrivateProfileIntA("Color", "Slytherin", 0, "./Scania/Hogwarts.txt");
-	GryffindorColor = GetPrivateProfileIntA("Color", "Gryffindor", 0, "./Scania/Hogwarts.txt");
-	RavenColor = GetPrivateProfileIntA("Color", "Ravenclaw", 0, "./Scania/Hogwarts.txt");
-	HuffleColor = GetPrivateProfileIntA("Color", "Hufflepuff", 0, "./Scania/Hogwarts.txt");
-	SlytherinGCIndex = GetPrivateProfileIntA("TimerCoin", "Slytherin", 0, "./Scania/Hogwarts.txt");
-	GryffindorGCIndex = GetPrivateProfileIntA("TimerCoin", "Gryffindor", 0, "./Scania/Hogwarts.txt");
-	RavenGCIndex = GetPrivateProfileIntA("TimerCoin", "Ravenclaw", 0, "./Scania/Hogwarts.txt");
-	HuffleGCIndex = GetPrivateProfileIntA("TimerCoin", "Hufflepuff", 0, "./Scania/Hogwarts.txt");
+	MystPAtkQ = GetPrivateProfileIntA("PhyAttack", "QuestIndex", 0, "./Configs/NewMystery.txt");
+	MystPAtkS = GetPrivateProfileIntA("PhyAttack", "SysKey", 0, "./Configs/NewMystery.txt");
+
+	MystMAtkQ = GetPrivateProfileIntA("MagAttack", "QuestIndex", 0, "./Configs/NewMystery.txt");
+	MystMAtkS = GetPrivateProfileIntA("MagAttack", "SysKey", 0, "./Configs/NewMystery.txt");
+
+	MystHPQ = GetPrivateProfileIntA("Health", "QuestIndex", 0, "./Configs/NewMystery.txt");
+	MystHPS = GetPrivateProfileIntA("Health", "SysKey", 0, "./Configs/NewMystery.txt");
+
+	MystDefQ = GetPrivateProfileIntA("Defense", "QuestIndex", 0, "./Configs/NewMystery.txt");
+	MystDefS = GetPrivateProfileIntA("Defense", "SysKey", 0, "./Configs/NewMystery.txt");
+
+	MystEVAQ = GetPrivateProfileIntA("Evasion", "QuestIndex", 0, "./Configs/NewMystery.txt");
+	MystEVAS = GetPrivateProfileIntA("Evasion", "SysKey", 0, "./Configs/NewMystery.txt");
+
+	MystOTPQ = GetPrivateProfileIntA("OnTargetPoint", "QuestIndex", 0, "./Configs/NewMystery.txt");
+	MystOTPS = GetPrivateProfileIntA("OnTargetPoint", "SysKey", 0, "./Configs/NewMystery.txt");
 
 
-	TimerEP = GetPrivateProfileIntA("TimerCoin", "Timer", 0, "./Scania/Hogwarts.txt");
-	AmountEP = GetPrivateProfileIntA("TimerCoin", "Amount", 1, "./Scania/Hogwarts.txt");
-	GetPrivateProfileStringA("LoginMessage", "Slytherin", "", SlytherinLoginMSG, 512, "./Scania/Hogwarts.txt");
-	GetPrivateProfileStringA("LoginMessage", "Gryffindor", "", GryffindorLoginMSG, 512, "./Scania/Hogwarts.txt");
-	GetPrivateProfileStringA("LoginMessage", "Ravenclaw", "", RavenclawLoginMSG, 512, "./Scania/Hogwarts.txt");
-	GetPrivateProfileStringA("LoginMessage", "Hufflepuff", "", HufflepuffLoginMSG, 512, "./Scania/Hogwarts.txt");
+	SkillTestAction = GetPrivateProfileIntA("Skill", "Action", 0, "./Configs/SkillTest.txt");
+	SkillR1 = GetPrivateProfileIntA("Skill", "R1", 0, "./Configs/SkillTest.txt");
+	SkillR2 = GetPrivateProfileIntA("Skill", "R2", 0, "./Configs/SkillTest.txt");
+	SkillIndex = GetPrivateProfileIntA("Skill", "Index", 0, "./Configs/SkillTest.txt");
+	SkillTimer = GetPrivateProfileIntA("Skill", "Timer", 0, "./Configs/SkillTest.txt");
 
-	PECSlytherin = GetPrivateProfileIntA("LoginMessage", "ColorSlytherin", 1, "./Scania/Hogwarts.txt");
-	PECGryffindor = GetPrivateProfileIntA("LoginMessage", "ColorGryffindor", 1, "./Scania/Hogwarts.txt");
-	PECRavenclaw = GetPrivateProfileIntA("LoginMessage", "ColorRavenclaw", 1, "./Scania/Hogwarts.txt");
-	PECHufflepuff = GetPrivateProfileIntA("LoginMessage", "ColorHufflepuff", 1, "./Scania/Hogwarts.txt");
+	PeaceEvil = GetPrivateProfileIntA("PeaceEvil", "Active", 0, "./Configs/Hogwarts.txt");
+	SlytherinQuest = GetPrivateProfileIntA("Quest", "Slytherin", 0, "./Configs/Hogwarts.txt");
+	GryffindorQuest = GetPrivateProfileIntA("Quest", "Gryffindor", 0, "./Configs/Hogwarts.txt");
+	RavenQuest = GetPrivateProfileIntA("Quest", "Ravenclaw", 0, "./Configs/Hogwarts.txt");
+	HuffleQuest = GetPrivateProfileIntA("Quest", "Hufflepuff", 0, "./Configs/Hogwarts.txt");
+	SlytherinColor = GetPrivateProfileIntA("Color", "Slytherin", 0, "./Configs/Hogwarts.txt");
+	GryffindorColor = GetPrivateProfileIntA("Color", "Gryffindor", 0, "./Configs/Hogwarts.txt");
+	RavenColor = GetPrivateProfileIntA("Color", "Ravenclaw", 0, "./Configs/Hogwarts.txt");
+	HuffleColor = GetPrivateProfileIntA("Color", "Hufflepuff", 0, "./Configs/Hogwarts.txt");
+	SlytherinGCIndex = GetPrivateProfileIntA("TimerCoin", "Slytherin", 0, "./Configs/Hogwarts.txt");
+	GryffindorGCIndex = GetPrivateProfileIntA("TimerCoin", "Gryffindor", 0, "./Configs/Hogwarts.txt");
+	RavenGCIndex = GetPrivateProfileIntA("TimerCoin", "Ravenclaw", 0, "./Configs/Hogwarts.txt");
+	HuffleGCIndex = GetPrivateProfileIntA("TimerCoin", "Hufflepuff", 0, "./Configs/Hogwarts.txt");
 
-	PELoginHTML = GetPrivateProfileIntA("LoginImage", "HTML", 0, "./Scania/Hogwarts.txt");
-	HouseRewardTime = GetPrivateProfileIntA("HouseRank", "Time", 0, "./Scania/Hogwarts.txt");
-	HouseReward = GetPrivateProfileIntA("HouseRank", "RewardIndex", 0, "./Scania/Hogwarts.txt");
-	HouseRewardAmount = GetPrivateProfileIntA("HouseRank", "RewardAmount", 0, "./Scania/Hogwarts.txt");
+
+	TimerEP = GetPrivateProfileIntA("TimerCoin", "Timer", 0, "./Configs/Hogwarts.txt");
+	AmountEP = GetPrivateProfileIntA("TimerCoin", "Amount", 1, "./Configs/Hogwarts.txt");
+	GetPrivateProfileStringA("LoginMessage", "Slytherin", "", SlytherinLoginMSG, 512, "./Configs/Hogwarts.txt");
+	GetPrivateProfileStringA("LoginMessage", "Gryffindor", "", GryffindorLoginMSG, 512, "./Configs/Hogwarts.txt");
+	GetPrivateProfileStringA("LoginMessage", "Ravenclaw", "", RavenclawLoginMSG, 512, "./Configs/Hogwarts.txt");
+	GetPrivateProfileStringA("LoginMessage", "Hufflepuff", "", HufflepuffLoginMSG, 512, "./Configs/Hogwarts.txt");
+
+	PECSlytherin = GetPrivateProfileIntA("LoginMessage", "ColorSlytherin", 1, "./Configs/Hogwarts.txt");
+	PECGryffindor = GetPrivateProfileIntA("LoginMessage", "ColorGryffindor", 1, "./Configs/Hogwarts.txt");
+	PECRavenclaw = GetPrivateProfileIntA("LoginMessage", "ColorRavenclaw", 1, "./Configs/Hogwarts.txt");
+	PECHufflepuff = GetPrivateProfileIntA("LoginMessage", "ColorHufflepuff", 1, "./Configs/Hogwarts.txt");
+
+	PELoginHTML = GetPrivateProfileIntA("LoginImage", "HTML", 0, "./Configs/Hogwarts.txt");
+	HouseRewardTime = GetPrivateProfileIntA("HouseRank", "Time", 0, "./Configs/Hogwarts.txt");
+	HouseReward = GetPrivateProfileIntA("HouseRank", "RewardIndex", 0, "./Configs/Hogwarts.txt");
+	HouseRewardAmount = GetPrivateProfileIntA("HouseRank", "RewardAmount", 0, "./Configs/Hogwarts.txt");
 
 	// Bandits System
-	BanditsEnable = GetPrivateProfileIntA("Bandits", "Enable", 0, "./Scania/Bandits.txt");
-	BanditsMap = GetPrivateProfileIntA("Teleport", "Map", 0, "./Scania/Bandits.txt");
-	BanditsTX = GetPrivateProfileIntA("Teleport", "X", 0, "./Scania/Bandits.txt");
-	BanditsTY = GetPrivateProfileIntA("Teleport", "Y", 0, "./Scania/Bandits.txt");
-	BanditsMobSec = GetPrivateProfileIntA("Monsters", "SpawnEvery", 0, "./Scania/Bandits.txt");
-	BanditsMobIndex = GetPrivateProfileIntA("Monsters", "Index", 0, "./Scania/Bandits.txt");
-	BanditsBossSec = GetPrivateProfileIntA("Monsters", "Boss1Spawn", 0, "./Scania/Bandits.txt");
-	BanditsBoss2Sec = GetPrivateProfileIntA("Monsters", "Boss2Spawn", 0, "./Scania/Bandits.txt");
-	BanditsBossIndex = GetPrivateProfileIntA("Monsters", "BossIndex", 0, "./Scania/Bandits.txt");
-	BanditsMobAmount = GetPrivateProfileIntA("Monsters", "Amount", 0, "./Scania/Bandits.txt");
-	BanditsBossX = GetPrivateProfileIntA("Monsters", "BossX", 0, "./Scania/Bandits.txt");
-	BanditsBossY = GetPrivateProfileIntA("Monsters", "BossY", 0, "./Scania/Bandits.txt");
-	BanditsQuest = GetPrivateProfileIntA("Quest", "Index", 0, "./Scania/Bandits.txt");
-	BanditsLevel = GetPrivateProfileIntA("Quest", "Level", 0, "./Scania/Bandits.txt");
-	BanditsTime = GetPrivateProfileIntA("Bandits", "Time", 0, "./Scania/Bandits.txt");
-	BanditsCheck1 = GetPrivateProfileIntA("Quest", "Check1", 0, "./Scania/Bandits.txt");
-	BanditsCheck2 = GetPrivateProfileIntA("Quest", "Check2", 0, "./Scania/Bandits.txt");
-	BanditsCheck3 = GetPrivateProfileIntA("Quest", "Check3", 0, "./Scania/Bandits.txt");
-	BanditsCheck4 = GetPrivateProfileIntA("Quest", "Check4", 0, "./Scania/Bandits.txt");
-	BanditsCheck5 = GetPrivateProfileIntA("Quest", "Check5", 0, "./Scania/Bandits.txt");
-	BanditsCheck6 = GetPrivateProfileIntA("Quest", "Check6", 0, "./Scania/Bandits.txt");
-	Check1X = GetPrivateProfileIntA("Bandits", "Check1X", 0, "./Scania/Bandits.txt");
-	Check1Y = GetPrivateProfileIntA("Bandits", "Check1Y", 0, "./Scania/Bandits.txt");
-	Check2X = GetPrivateProfileIntA("Bandits", "Check2X", 0, "./Scania/Bandits.txt");
-	Check2Y = GetPrivateProfileIntA("Bandits", "Check2Y", 0, "./Scania/Bandits.txt");
-	Check3X = GetPrivateProfileIntA("Bandits", "Check3X", 0, "./Scania/Bandits.txt");
-	Check3Y = GetPrivateProfileIntA("Bandits", "Check3Y", 0, "./Scania/Bandits.txt");
-	Check4X = GetPrivateProfileIntA("Bandits", "Check4X", 0, "./Scania/Bandits.txt");
-	Check4Y = GetPrivateProfileIntA("Bandits", "Check4Y", 0, "./Scania/Bandits.txt");
-	Check5X = GetPrivateProfileIntA("Bandits", "Check5X", 0, "./Scania/Bandits.txt");
-	Check5Y = GetPrivateProfileIntA("Bandits", "Check5Y", 0, "./Scania/Bandits.txt");
-	Check6X = GetPrivateProfileIntA("Bandits", "Check6X", 0, "./Scania/Bandits.txt");
-	Check6Y = GetPrivateProfileIntA("Bandits", "Check6Y", 0, "./Scania/Bandits.txt");
-	BanditsReviveCD = GetPrivateProfileIntA("Bandits", "ReviveCD", 0, "./Scania/Bandits.txt");
-	BanditsIndex = GetPrivateProfileIntA("Bandits", "Index", 0, "./Scania/Bandits.txt");
-	BanditsAmount = GetPrivateProfileIntA("Bandits", "Amount", 0, "./Scania/Bandits.txt");
-	BanditsMaxDeath = GetPrivateProfileIntA("MaxDead", "Value", 10, "./Scania/Bandits.txt");
-	BanditsMaxDeathItem = GetPrivateProfileIntA("MaxDead", "Item", 0, "./Scania/Bandits.txt");
+	BanditsEnable = GetPrivateProfileIntA("Bandits", "Enable", 0, "./Configs/Bandits.txt");
+	BanditsMap = GetPrivateProfileIntA("Teleport", "Map", 24, "./Configs/Bandits.txt");
+	BanditsTX = GetPrivateProfileIntA("Teleport", "X", 0, "./Configs/Bandits.txt");
+	BanditsTY = GetPrivateProfileIntA("Teleport", "Y", 0, "./Configs/Bandits.txt");
+	BanditsMobSec = GetPrivateProfileIntA("Monsters", "SpawnEvery", 0, "./Configs/Bandits.txt");
+	BanditsMobIndex = GetPrivateProfileIntA("Monsters", "Index", 0, "./Configs/Bandits.txt");
+	BanditsBossSec = GetPrivateProfileIntA("Monsters", "Boss1Spawn", 0, "./Configs/Bandits.txt");
+	BanditsBoss2Sec = GetPrivateProfileIntA("Monsters", "Boss2Spawn", 0, "./Configs/Bandits.txt");
+	BanditsBossIndex = GetPrivateProfileIntA("Monsters", "BossIndex", 0, "./Configs/Bandits.txt");
+	BanditsMobAmount = GetPrivateProfileIntA("Monsters", "Amount", 0, "./Configs/Bandits.txt");
+	BanditsBossX = GetPrivateProfileIntA("Monsters", "BossX", 0, "./Configs/Bandits.txt");
+	BanditsBossY = GetPrivateProfileIntA("Monsters", "BossY", 0, "./Configs/Bandits.txt");
+	BanditsQuest = GetPrivateProfileIntA("Quest", "Index", 0, "./Configs/Bandits.txt");
+	BanditsLevel = GetPrivateProfileIntA("Quest", "Level", 0, "./Configs/Bandits.txt");
+	BanditsTime = GetPrivateProfileIntA("Bandits", "Time", 0, "./Configs/Bandits.txt");
+	BanditsCheck1 = GetPrivateProfileIntA("Quest", "Check1", 0, "./Configs/Bandits.txt");
+	BanditsCheck2 = GetPrivateProfileIntA("Quest", "Check2", 0, "./Configs/Bandits.txt");
+	BanditsCheck3 = GetPrivateProfileIntA("Quest", "Check3", 0, "./Configs/Bandits.txt");
+	BanditsCheck4 = GetPrivateProfileIntA("Quest", "Check4", 0, "./Configs/Bandits.txt");
+	BanditsCheck5 = GetPrivateProfileIntA("Quest", "Check5", 0, "./Configs/Bandits.txt");
+	BanditsCheck6 = GetPrivateProfileIntA("Quest", "Check6", 0, "./Configs/Bandits.txt");
+	Check1X = GetPrivateProfileIntA("Bandits", "Check1X", 0, "./Configs/Bandits.txt");
+	Check1Y = GetPrivateProfileIntA("Bandits", "Check1Y", 0, "./Configs/Bandits.txt");
+	Check2X = GetPrivateProfileIntA("Bandits", "Check2X", 0, "./Configs/Bandits.txt");
+	Check2Y = GetPrivateProfileIntA("Bandits", "Check2Y", 0, "./Configs/Bandits.txt");
+	Check3X = GetPrivateProfileIntA("Bandits", "Check3X", 0, "./Configs/Bandits.txt");
+	Check3Y = GetPrivateProfileIntA("Bandits", "Check3Y", 0, "./Configs/Bandits.txt");
+	Check4X = GetPrivateProfileIntA("Bandits", "Check4X", 0, "./Configs/Bandits.txt");
+	Check4Y = GetPrivateProfileIntA("Bandits", "Check4Y", 0, "./Configs/Bandits.txt");
+	Check5X = GetPrivateProfileIntA("Bandits", "Check5X", 0, "./Configs/Bandits.txt");
+	Check5Y = GetPrivateProfileIntA("Bandits", "Check5Y", 0, "./Configs/Bandits.txt");
+	Check6X = GetPrivateProfileIntA("Bandits", "Check6X", 0, "./Configs/Bandits.txt");
+	Check6Y = GetPrivateProfileIntA("Bandits", "Check6Y", 0, "./Configs/Bandits.txt");
+	BanditsReviveCD = GetPrivateProfileIntA("Bandits", "ReviveCD", 0, "./Configs/Bandits.txt");
+	BanditsIndex = GetPrivateProfileIntA("Bandits", "Index", 0, "./Configs/Bandits.txt");
+	BanditsAmount = GetPrivateProfileIntA("Bandits", "Amount", 0, "./Configs/Bandits.txt");
+	BanditsMaxDeath = GetPrivateProfileIntA("MaxDead", "Value", 10, "./Configs/Bandits.txt");
+	BanditsMaxDeathItem = GetPrivateProfileIntA("MaxDead", "Item", 0, "./Configs/Bandits.txt");
 
 	// Quest Message Box
-	QuestHistoryEN = GetPrivateProfileIntA("Quest", "HistoryEN", 0, "./Scania/WorldHistory.txt");
-	QuestEventsEN = GetPrivateProfileIntA("Quest", "EventsEN", 0, "./Scania/WorldHistory.txt");
-	QuestHistoryPL = GetPrivateProfileIntA("Quest", "HistoryPL", 0, "./Scania/WorldHistory.txt");
-	QuestEventsPL = GetPrivateProfileIntA("Quest", "EventsPL", 0, "./Scania/WorldHistory.txt");
-	GetPrivateProfileStringA("Message", "HistoryEN", "", HistoryENmsg, 512, "./Scania/WorldHistory.txt");
-	GetPrivateProfileStringA("Message", "EventsEN", "", EventsENmsg, 512, "./Scania/WorldHistory.txt");
-	GetPrivateProfileStringA("Message", "HistoryPL", "", HistoryPLmsg, 512, "./Scania/WorldHistory.txt");
-	GetPrivateProfileStringA("Message", "EventsPL", "", EventsPLmsg, 512, "./Scania/WorldHistory.txt");
+	QuestHistoryEN = GetPrivateProfileIntA("Quest", "HistoryEN", 0, "./Configs/WorldHistory.txt");
+	QuestEventsEN = GetPrivateProfileIntA("Quest", "EventsEN", 0, "./Configs/WorldHistory.txt");
+	QuestHistoryPL = GetPrivateProfileIntA("Quest", "HistoryPL", 0, "./Configs/WorldHistory.txt");
+	QuestEventsPL = GetPrivateProfileIntA("Quest", "EventsPL", 0, "./Configs/WorldHistory.txt");
+	GetPrivateProfileStringA("Message", "HistoryEN", "", HistoryENmsg, 512, "./Configs/WorldHistory.txt");
+	GetPrivateProfileStringA("Message", "EventsEN", "", EventsENmsg, 512, "./Configs/WorldHistory.txt");
+	GetPrivateProfileStringA("Message", "HistoryPL", "", HistoryPLmsg, 512, "./Configs/WorldHistory.txt");
+	GetPrivateProfileStringA("Message", "EventsPL", "", EventsPLmsg, 512, "./Configs/WorldHistory.txt");
+
+
+	ScaleBuff = GetPrivateProfileIntA("BuffScale", "Active", 0, "./Configs/StickBuff.txt");
 
 	// Honor Rank Buff
-	GetPrivateProfileStringA("Recruit", "Effect", "", Honor1, 512, "./Scania/HonorEffects.txt");
-	GetPrivateProfileStringA("Private", "Effect", "", Honor2, 512, "./Scania/HonorEffects.txt");
-	GetPrivateProfileStringA("Specialist", "Effect", "", Honor3, 512, "./Scania/HonorEffects.txt");
-	GetPrivateProfileStringA("Corporal", "Effect", "", Honor4, 512, "./Scania/HonorEffects.txt");
-	GetPrivateProfileStringA("Sergeant", "Effect", "", Honor5, 512, "./Scania/HonorEffects.txt");
-	GetPrivateProfileStringA("Lieutenant", "Effect", "", Honor6, 512, "./Scania/HonorEffects.txt");
-	GetPrivateProfileStringA("Captain", "Effect", "", Honor7, 512, "./Scania/HonorEffects.txt");
-	GetPrivateProfileStringA("Major", "Effect", "", Honor8, 512, "./Scania/HonorEffects.txt");
-	GetPrivateProfileStringA("Colonel", "Effect", "", Honor9, 512, "./Scania/HonorEffects.txt");
-	GetPrivateProfileStringA("General", "Effect", "", Honor10, 512, "./Scania/HonorEffects.txt");
+	GetPrivateProfileStringA("Recruit", "Effect", "", Honor1, 512, "./Configs/HonorEffects.txt");
+	GetPrivateProfileStringA("Private", "Effect", "", Honor2, 512, "./Configs/HonorEffects.txt");
+	GetPrivateProfileStringA("Specialist", "Effect", "", Honor3, 512, "./Configs/HonorEffects.txt");
+	GetPrivateProfileStringA("Corporal", "Effect", "", Honor4, 512, "./Configs/HonorEffects.txt");
+	GetPrivateProfileStringA("Sergeant", "Effect", "", Honor5, 512, "./Configs/HonorEffects.txt");
+	GetPrivateProfileStringA("Lieutenant", "Effect", "", Honor6, 512, "./Configs/HonorEffects.txt");
+	GetPrivateProfileStringA("Captain", "Effect", "", Honor7, 512, "./Configs/HonorEffects.txt");
+	GetPrivateProfileStringA("Major", "Effect", "", Honor8, 512, "./Configs/HonorEffects.txt");
+	GetPrivateProfileStringA("Colonel", "Effect", "", Honor9, 512, "./Configs/HonorEffects.txt");
+	GetPrivateProfileStringA("General", "Effect", "", Honor10, 512, "./Configs/HonorEffects.txt");
 
-	HonorTimer = GetPrivateProfileIntA("Timer", "Seconds", 3, "./Scania/HonorEffects.txt");
+	HonorTimer = GetPrivateProfileIntA("Timer", "Seconds", 3, "./Configs/HonorEffects.txt");
 
-	Honor1Sys = GetPrivateProfileIntA("Recruit", "SysKey", 0, "./Scania/HonorEffects.txt");
-	Honor2Sys = GetPrivateProfileIntA("Private", "SysKey", 0, "./Scania/HonorEffects.txt");
-	Honor3Sys = GetPrivateProfileIntA("Specialist", "SysKey", 0, "./Scania/HonorEffects.txt");
-	Honor4Sys = GetPrivateProfileIntA("Corporal", "SysKey", 0, "./Scania/HonorEffects.txt");
-	Honor5Sys = GetPrivateProfileIntA("Sergeant", "SysKey", 0, "./Scania/HonorEffects.txt");
-	Honor6Sys = GetPrivateProfileIntA("Lieutenant", "SysKey", 0, "./Scania/HonorEffects.txt");
-	Honor7Sys = GetPrivateProfileIntA("Captain", "SysKey", 0, "./Scania/HonorEffects.txt");
-	Honor8Sys = GetPrivateProfileIntA("Major", "SysKey", 0, "./Scania/HonorEffects.txt");
-	Honor9Sys = GetPrivateProfileIntA("Colonel", "SysKey", 0, "./Scania/HonorEffects.txt");
-	Honor10Sys = GetPrivateProfileIntA("General", "SysKey", 0, "./Scania/HonorEffects.txt");
+	Honor1Sys = GetPrivateProfileIntA("Recruit", "SysKey", 0, "./Configs/HonorEffects.txt");
+	Honor2Sys = GetPrivateProfileIntA("Private", "SysKey", 0, "./Configs/HonorEffects.txt");
+	Honor3Sys = GetPrivateProfileIntA("Specialist", "SysKey", 0, "./Configs/HonorEffects.txt");
+	Honor4Sys = GetPrivateProfileIntA("Corporal", "SysKey", 0, "./Configs/HonorEffects.txt");
+	Honor5Sys = GetPrivateProfileIntA("Sergeant", "SysKey", 0, "./Configs/HonorEffects.txt");
+	Honor6Sys = GetPrivateProfileIntA("Lieutenant", "SysKey", 0, "./Configs/HonorEffects.txt");
+	Honor7Sys = GetPrivateProfileIntA("Captain", "SysKey", 0, "./Configs/HonorEffects.txt");
+	Honor8Sys = GetPrivateProfileIntA("Major", "SysKey", 0, "./Configs/HonorEffects.txt");
+	Honor9Sys = GetPrivateProfileIntA("Colonel", "SysKey", 0, "./Configs/HonorEffects.txt");
+	Honor10Sys = GetPrivateProfileIntA("General", "SysKey", 0, "./Configs/HonorEffects.txt");
 
-	Honor1Stats = GetPrivateProfileIntA("Recruit", "Stats", 0, "./Scania/HonorEffects.txt");
-	Honor2Stats = GetPrivateProfileIntA("Private", "Stats", 0, "./Scania/HonorEffects.txt");
-	Honor3Stats = GetPrivateProfileIntA("Specialist", "Stats", 0, "./Scania/HonorEffects.txt");
-	Honor4Stats = GetPrivateProfileIntA("Corporal", "Stats", 0, "./Scania/HonorEffects.txt");
-	Honor5Stats = GetPrivateProfileIntA("Sergeant", "Stats", 0, "./Scania/HonorEffects.txt");
-	Honor6Stats = GetPrivateProfileIntA("Lieutenant", "Stats", 0, "./Scania/HonorEffects.txt");
-	Honor7Stats = GetPrivateProfileIntA("Captain", "Stats", 0, "./Scania/HonorEffects.txt");
-	Honor8Stats = GetPrivateProfileIntA("Major", "Stats", 0, "./Scania/HonorEffects.txt");
-	Honor9Stats = GetPrivateProfileIntA("Colonel", "Stats", 0, "./Scania/HonorEffects.txt");
-	Honor10Stats = GetPrivateProfileIntA("General", "Stats", 0, "./Scania/HonorEffects.txt");
+	Honor1Stats = GetPrivateProfileIntA("Recruit", "Stats", 0, "./Configs/HonorEffects.txt");
+	Honor2Stats = GetPrivateProfileIntA("Private", "Stats", 0, "./Configs/HonorEffects.txt");
+	Honor3Stats = GetPrivateProfileIntA("Specialist", "Stats", 0, "./Configs/HonorEffects.txt");
+	Honor4Stats = GetPrivateProfileIntA("Corporal", "Stats", 0, "./Configs/HonorEffects.txt");
+	Honor5Stats = GetPrivateProfileIntA("Sergeant", "Stats", 0, "./Configs/HonorEffects.txt");
+	Honor6Stats = GetPrivateProfileIntA("Lieutenant", "Stats", 0, "./Configs/HonorEffects.txt");
+	Honor7Stats = GetPrivateProfileIntA("Captain", "Stats", 0, "./Configs/HonorEffects.txt");
+	Honor8Stats = GetPrivateProfileIntA("Major", "Stats", 0, "./Configs/HonorEffects.txt");
+	Honor9Stats = GetPrivateProfileIntA("Colonel", "Stats", 0, "./Configs/HonorEffects.txt");
+	Honor10Stats = GetPrivateProfileIntA("General", "Stats", 0, "./Configs/HonorEffects.txt");
 
-	Honor1Atk = GetPrivateProfileIntA("Recruit", "Attack", 0, "./Scania/HonorEffects.txt");
-	Honor2Atk = GetPrivateProfileIntA("Private", "Attack", 0, "./Scania/HonorEffects.txt");
-	Honor3Atk = GetPrivateProfileIntA("Specialist", "Attack", 0, "./Scania/HonorEffects.txt");
-	Honor4Atk = GetPrivateProfileIntA("Corporal", "Attack", 0, "./Scania/HonorEffects.txt");
-	Honor5Atk = GetPrivateProfileIntA("Sergeant", "Attack", 0, "./Scania/HonorEffects.txt");
-	Honor6Atk = GetPrivateProfileIntA("Lieutenant", "Attack", 0, "./Scania/HonorEffects.txt");
-	Honor7Atk = GetPrivateProfileIntA("Captain", "Attack", 0, "./Scania/HonorEffects.txt");
-	Honor8Atk = GetPrivateProfileIntA("Major", "Attack", 0, "./Scania/HonorEffects.txt");
-	Honor9Atk = GetPrivateProfileIntA("Colonel", "Attack", 0, "./Scania/HonorEffects.txt");
-	Honor10Atk = GetPrivateProfileIntA("General", "Attack", 0, "./Scania/HonorEffects.txt");
+	Honor1Atk = GetPrivateProfileIntA("Recruit", "Attack", 0, "./Configs/HonorEffects.txt");
+	Honor2Atk = GetPrivateProfileIntA("Private", "Attack", 0, "./Configs/HonorEffects.txt");
+	Honor3Atk = GetPrivateProfileIntA("Specialist", "Attack", 0, "./Configs/HonorEffects.txt");
+	Honor4Atk = GetPrivateProfileIntA("Corporal", "Attack", 0, "./Configs/HonorEffects.txt");
+	Honor5Atk = GetPrivateProfileIntA("Sergeant", "Attack", 0, "./Configs/HonorEffects.txt");
+	Honor6Atk = GetPrivateProfileIntA("Lieutenant", "Attack", 0, "./Configs/HonorEffects.txt");
+	Honor7Atk = GetPrivateProfileIntA("Captain", "Attack", 0, "./Configs/HonorEffects.txt");
+	Honor8Atk = GetPrivateProfileIntA("Major", "Attack", 0, "./Configs/HonorEffects.txt");
+	Honor9Atk = GetPrivateProfileIntA("Colonel", "Attack", 0, "./Configs/HonorEffects.txt");
+	Honor10Atk = GetPrivateProfileIntA("General", "Attack", 0, "./Configs/HonorEffects.txt");
 
-	SlytherinDieX = GetPrivateProfileIntA("DeathSpawn", "SlytherinX", 257514, "./Scania/Hogwarts.txt");
-	SlytherinDieY = GetPrivateProfileIntA("DeathSpawn", "SlytherinY", 259273, "./Scania/Hogwarts.txt");
-	SlytherinDieZ = GetPrivateProfileIntA("DeathSpawn", "SlytherinZ", 0, "./Scania/Hogwarts.txt");
+	SlytherinDieX = GetPrivateProfileIntA("DeathSpawn", "SlytherinX", 257514, "./Configs/Hogwarts.txt");
+	SlytherinDieY = GetPrivateProfileIntA("DeathSpawn", "SlytherinY", 259273, "./Configs/Hogwarts.txt");
+	SlytherinDieZ = GetPrivateProfileIntA("DeathSpawn", "SlytherinZ", 0, "./Configs/Hogwarts.txt");
 
-	GryffindorDieX = GetPrivateProfileIntA("DeathSpawn", "GryffindorX", 257514, "./Scania/Hogwarts.txt");
-	GryffindorDieY = GetPrivateProfileIntA("DeathSpawn", "GryffindorY", 259273, "./Scania/Hogwarts.txt");
-	GryffindorDieZ = GetPrivateProfileIntA("DeathSpawn", "GryffindorZ", 0, "./Scania/Hogwarts.txt");
+	GryffindorDieX = GetPrivateProfileIntA("DeathSpawn", "GryffindorX", 257514, "./Configs/Hogwarts.txt");
+	GryffindorDieY = GetPrivateProfileIntA("DeathSpawn", "GryffindorY", 259273, "./Configs/Hogwarts.txt");
+	GryffindorDieZ = GetPrivateProfileIntA("DeathSpawn", "GryffindorZ", 0, "./Configs/Hogwarts.txt");
 
-	RavenDieX = GetPrivateProfileIntA("DeathSpawn", "RavenX", 257514, "./Scania/Hogwarts.txt");
-	RavenDieY = GetPrivateProfileIntA("DeathSpawn", "RavenY", 259273, "./Scania/Hogwarts.txt");
-	RavenDieZ = GetPrivateProfileIntA("DeathSpawn", "RavenZ", 0, "./Scania/Hogwarts.txt");
+	RavenDieX = GetPrivateProfileIntA("DeathSpawn", "RavenX", 257514, "./Configs/Hogwarts.txt");
+	RavenDieY = GetPrivateProfileIntA("DeathSpawn", "RavenY", 259273, "./Configs/Hogwarts.txt");
+	RavenDieZ = GetPrivateProfileIntA("DeathSpawn", "RavenZ", 0, "./Configs/Hogwarts.txt");
 
-	HuffleDieX = GetPrivateProfileIntA("DeathSpawn", "HuffleX", 257514, "./Scania/Hogwarts.txt");
-	HuffleDieY = GetPrivateProfileIntA("DeathSpawn", "HuffleY", 259273, "./Scania/Hogwarts.txt");
-	HuffleDieZ = GetPrivateProfileIntA("DeathSpawn", "HuffleZ", 0, "./Scania/Hogwarts.txt");
+	HuffleDieX = GetPrivateProfileIntA("DeathSpawn", "HuffleX", 257514, "./Configs/Hogwarts.txt");
+	HuffleDieY = GetPrivateProfileIntA("DeathSpawn", "HuffleY", 259273, "./Configs/Hogwarts.txt");
+	HuffleDieZ = GetPrivateProfileIntA("DeathSpawn", "HuffleZ", 0, "./Configs/Hogwarts.txt");
 
-	Slytherin0 = GetPrivateProfileIntA("SlytherinTags", "None", 0, "./Scania/Hogwarts.txt");
-	Slytherin1 = GetPrivateProfileIntA("SlytherinTags", "Recruit", 0, "./Scania/Hogwarts.txt");
-	Slytherin2 = GetPrivateProfileIntA("SlytherinTags", "Private", 0, "./Scania/Hogwarts.txt");
-	Slytherin3 = GetPrivateProfileIntA("SlytherinTags", "Specialist", 0, "./Scania/Hogwarts.txt");
-	Slytherin4 = GetPrivateProfileIntA("SlytherinTags", "Corporal", 0, "./Scania/Hogwarts.txt");
-	Slytherin5 = GetPrivateProfileIntA("SlytherinTags", "Sergeant", 0, "./Scania/Hogwarts.txt");
-	Slytherin6 = GetPrivateProfileIntA("SlytherinTags", "Lieutenant", 0, "./Scania/Hogwarts.txt");
-	Slytherin7 = GetPrivateProfileIntA("SlytherinTags", "Captain", 0, "./Scania/Hogwarts.txt");
-	Slytherin8 = GetPrivateProfileIntA("SlytherinTags", "Major", 0, "./Scania/Hogwarts.txt");
-	Slytherin9 = GetPrivateProfileIntA("SlytherinTags", "Colonel", 0, "./Scania/Hogwarts.txt");
-	Slytherin10 = GetPrivateProfileIntA("SlytherinTags", "General", 0, "./Scania/Hogwarts.txt");
+	Slytherin0 = GetPrivateProfileIntA("SlytherinTags", "None", 0, "./Configs/Hogwarts.txt");
+	Slytherin1 = GetPrivateProfileIntA("SlytherinTags", "Recruit", 0, "./Configs/Hogwarts.txt");
+	Slytherin2 = GetPrivateProfileIntA("SlytherinTags", "Private", 0, "./Configs/Hogwarts.txt");
+	Slytherin3 = GetPrivateProfileIntA("SlytherinTags", "Specialist", 0, "./Configs/Hogwarts.txt");
+	Slytherin4 = GetPrivateProfileIntA("SlytherinTags", "Corporal", 0, "./Configs/Hogwarts.txt");
+	Slytherin5 = GetPrivateProfileIntA("SlytherinTags", "Sergeant", 0, "./Configs/Hogwarts.txt");
+	Slytherin6 = GetPrivateProfileIntA("SlytherinTags", "Lieutenant", 0, "./Configs/Hogwarts.txt");
+	Slytherin7 = GetPrivateProfileIntA("SlytherinTags", "Captain", 0, "./Configs/Hogwarts.txt");
+	Slytherin8 = GetPrivateProfileIntA("SlytherinTags", "Major", 0, "./Configs/Hogwarts.txt");
+	Slytherin9 = GetPrivateProfileIntA("SlytherinTags", "Colonel", 0, "./Configs/Hogwarts.txt");
+	Slytherin10 = GetPrivateProfileIntA("SlytherinTags", "General", 0, "./Configs/Hogwarts.txt");
 
-	Hufflepuff0 = GetPrivateProfileIntA("HufflepuffTags", "None", 0, "./Scania/Hogwarts.txt");
-	Hufflepuff1 = GetPrivateProfileIntA("HufflepuffTags", "Recruit", 0, "./Scania/Hogwarts.txt");
-	Hufflepuff2 = GetPrivateProfileIntA("HufflepuffTags", "Private", 0, "./Scania/Hogwarts.txt");
-	Hufflepuff3 = GetPrivateProfileIntA("HufflepuffTags", "Specialist", 0, "./Scania/Hogwarts.txt");
-	Hufflepuff4 = GetPrivateProfileIntA("HufflepuffTags", "Corporal", 0, "./Scania/Hogwarts.txt");
-	Hufflepuff5 = GetPrivateProfileIntA("HufflepuffTags", "Sergeant", 0, "./Scania/Hogwarts.txt");
-	Hufflepuff6 = GetPrivateProfileIntA("HufflepuffTags", "Lieutenant", 0, "./Scania/Hogwarts.txt");
-	Hufflepuff7 = GetPrivateProfileIntA("HufflepuffTags", "Captain", 0, "./Scania/Hogwarts.txt");
-	Hufflepuff8 = GetPrivateProfileIntA("HufflepuffTags", "Major", 0, "./Scania/Hogwarts.txt");
-	Hufflepuff9 = GetPrivateProfileIntA("HufflepuffTags", "Colonel", 0, "./Scania/Hogwarts.txt");
-	Hufflepuff10 = GetPrivateProfileIntA("HufflepuffTags", "General", 0, "./Scania/Hogwarts.txt");
+	Hufflepuff0 = GetPrivateProfileIntA("HufflepuffTags", "None", 0, "./Configs/Hogwarts.txt");
+	Hufflepuff1 = GetPrivateProfileIntA("HufflepuffTags", "Recruit", 0, "./Configs/Hogwarts.txt");
+	Hufflepuff2 = GetPrivateProfileIntA("HufflepuffTags", "Private", 0, "./Configs/Hogwarts.txt");
+	Hufflepuff3 = GetPrivateProfileIntA("HufflepuffTags", "Specialist", 0, "./Configs/Hogwarts.txt");
+	Hufflepuff4 = GetPrivateProfileIntA("HufflepuffTags", "Corporal", 0, "./Configs/Hogwarts.txt");
+	Hufflepuff5 = GetPrivateProfileIntA("HufflepuffTags", "Sergeant", 0, "./Configs/Hogwarts.txt");
+	Hufflepuff6 = GetPrivateProfileIntA("HufflepuffTags", "Lieutenant", 0, "./Configs/Hogwarts.txt");
+	Hufflepuff7 = GetPrivateProfileIntA("HufflepuffTags", "Captain", 0, "./Configs/Hogwarts.txt");
+	Hufflepuff8 = GetPrivateProfileIntA("HufflepuffTags", "Major", 0, "./Configs/Hogwarts.txt");
+	Hufflepuff9 = GetPrivateProfileIntA("HufflepuffTags", "Colonel", 0, "./Configs/Hogwarts.txt");
+	Hufflepuff10 = GetPrivateProfileIntA("HufflepuffTags", "General", 0, "./Configs/Hogwarts.txt");
 
-	Gryffindor0 = GetPrivateProfileIntA("GryffindorTags", "None", 0, "./Scania/Hogwarts.txt");
-	Gryffindor1 = GetPrivateProfileIntA("GryffindorTags", "Recruit", 0, "./Scania/Hogwarts.txt");
-	Gryffindor2 = GetPrivateProfileIntA("GryffindorTags", "Private", 0, "./Scania/Hogwarts.txt");
-	Gryffindor3 = GetPrivateProfileIntA("GryffindorTags", "Specialist", 0, "./Scania/Hogwarts.txt");
-	Gryffindor4 = GetPrivateProfileIntA("GryffindorTags", "Corporal", 0, "./Scania/Hogwarts.txt");
-	Gryffindor5 = GetPrivateProfileIntA("GryffindorTags", "Sergeant", 0, "./Scania/Hogwarts.txt");
-	Gryffindor6 = GetPrivateProfileIntA("GryffindorTags", "Lieutenant", 0, "./Scania/Hogwarts.txt");
-	Gryffindor7 = GetPrivateProfileIntA("GryffindorTags", "Captain", 0, "./Scania/Hogwarts.txt");
-	Gryffindor8 = GetPrivateProfileIntA("GryffindorTags", "Major", 0, "./Scania/Hogwarts.txt");
-	Gryffindor9 = GetPrivateProfileIntA("GryffindorTags", "Colonel", 0, "./Scania/Hogwarts.txt");
-	Gryffindor10 = GetPrivateProfileIntA("GryffindorTags", "General", 0, "./Scania/Hogwarts.txt");
+	Gryffindor0 = GetPrivateProfileIntA("GryffindorTags", "None", 0, "./Configs/Hogwarts.txt");
+	Gryffindor1 = GetPrivateProfileIntA("GryffindorTags", "Recruit", 0, "./Configs/Hogwarts.txt");
+	Gryffindor2 = GetPrivateProfileIntA("GryffindorTags", "Private", 0, "./Configs/Hogwarts.txt");
+	Gryffindor3 = GetPrivateProfileIntA("GryffindorTags", "Specialist", 0, "./Configs/Hogwarts.txt");
+	Gryffindor4 = GetPrivateProfileIntA("GryffindorTags", "Corporal", 0, "./Configs/Hogwarts.txt");
+	Gryffindor5 = GetPrivateProfileIntA("GryffindorTags", "Sergeant", 0, "./Configs/Hogwarts.txt");
+	Gryffindor6 = GetPrivateProfileIntA("GryffindorTags", "Lieutenant", 0, "./Configs/Hogwarts.txt");
+	Gryffindor7 = GetPrivateProfileIntA("GryffindorTags", "Captain", 0, "./Configs/Hogwarts.txt");
+	Gryffindor8 = GetPrivateProfileIntA("GryffindorTags", "Major", 0, "./Configs/Hogwarts.txt");
+	Gryffindor9 = GetPrivateProfileIntA("GryffindorTags", "Colonel", 0, "./Configs/Hogwarts.txt");
+	Gryffindor10 = GetPrivateProfileIntA("GryffindorTags", "General", 0, "./Configs/Hogwarts.txt");
 
-	Ravenclaw0 = GetPrivateProfileIntA("RavenclawTags", "None", 0, "./Scania/Hogwarts.txt");
-	Ravenclaw1 = GetPrivateProfileIntA("RavenclawTags", "Recruit", 0, "./Scania/Hogwarts.txt");
-	Ravenclaw2 = GetPrivateProfileIntA("RavenclawTags", "Private", 0, "./Scania/Hogwarts.txt");
-	Ravenclaw3 = GetPrivateProfileIntA("RavenclawTags", "Specialist", 0, "./Scania/Hogwarts.txt");
-	Ravenclaw4 = GetPrivateProfileIntA("RavenclawTags", "Corporal", 0, "./Scania/Hogwarts.txt");
-	Ravenclaw5 = GetPrivateProfileIntA("RavenclawTags", "Sergeant", 0, "./Scania/Hogwarts.txt");
-	Ravenclaw6 = GetPrivateProfileIntA("RavenclawTags", "Lieutenant", 0, "./Scania/Hogwarts.txt");
-	Ravenclaw7 = GetPrivateProfileIntA("RavenclawTags", "Captain", 0, "./Scania/Hogwarts.txt");
-	Ravenclaw8 = GetPrivateProfileIntA("RavenclawTags", "Major", 0, "./Scania/Hogwarts.txt");
-	Ravenclaw9 = GetPrivateProfileIntA("RavenclawTags", "Colonel", 0, "./Scania/Hogwarts.txt");
-	Ravenclaw10 = GetPrivateProfileIntA("RavenclawTags", "General", 0, "./Scania/Hogwarts.txt");
+	Ravenclaw0 = GetPrivateProfileIntA("RavenclawTags", "None", 0, "./Configs/Hogwarts.txt");
+	Ravenclaw1 = GetPrivateProfileIntA("RavenclawTags", "Recruit", 0, "./Configs/Hogwarts.txt");
+	Ravenclaw2 = GetPrivateProfileIntA("RavenclawTags", "Private", 0, "./Configs/Hogwarts.txt");
+	Ravenclaw3 = GetPrivateProfileIntA("RavenclawTags", "Specialist", 0, "./Configs/Hogwarts.txt");
+	Ravenclaw4 = GetPrivateProfileIntA("RavenclawTags", "Corporal", 0, "./Configs/Hogwarts.txt");
+	Ravenclaw5 = GetPrivateProfileIntA("RavenclawTags", "Sergeant", 0, "./Configs/Hogwarts.txt");
+	Ravenclaw6 = GetPrivateProfileIntA("RavenclawTags", "Lieutenant", 0, "./Configs/Hogwarts.txt");
+	Ravenclaw7 = GetPrivateProfileIntA("RavenclawTags", "Captain", 0, "./Configs/Hogwarts.txt");
+	Ravenclaw8 = GetPrivateProfileIntA("RavenclawTags", "Major", 0, "./Configs/Hogwarts.txt");
+	Ravenclaw9 = GetPrivateProfileIntA("RavenclawTags", "Colonel", 0, "./Configs/Hogwarts.txt");
+	Ravenclaw10 = GetPrivateProfileIntA("RavenclawTags", "General", 0, "./Configs/Hogwarts.txt");
 
 	PKKillActive = GetPrivateProfileIntA("RandomItem", "Active", 0, "./Configs/PKKill.txt");
 	PKKillPlayer = GetPrivateProfileIntA("RandomItem", "AssassinOnly", 1, "./Configs/PKKill.txt");
@@ -807,6 +833,10 @@ void ReadConfig(bool command)
 	TempMemberFull = GetPrivateProfileIntA("MaxMembers", "TempMember", 10, "./Configs/Guild.txt");
 	AllyMemberFull = GetPrivateProfileIntA("MaxMembers", "Alliance", 8, "./Configs/Guild.txt");
 	MaxTimeAlly = GetPrivateProfileIntA("Alliance", "MaxDays", 15, "./Configs/Guild.txt");
+	GuildColors = GetPrivateProfileIntA("GuildColors", "Activate", 0, "./Configs/Guild.txt");
+	LeaderColor = GetPrivateProfileIntA("GuildColors", "Leader", 1, "./Configs/Guild.txt");
+	SubLeaderColor = GetPrivateProfileIntA("GuildColors", "SubLeader", 5, "./Configs/Guild.txt");
+	ChiefColor = GetPrivateProfileIntA("GuildColors", "Chief", 3, "./Configs/Guild.txt");
 
 	Insanity = GetPrivateProfileIntA("Insanity", "Rate", 0, "./Configs/Rates.txt");
 	Thunder = GetPrivateProfileIntA("Thunder", "Rate", 0, "./Configs/Rates.txt");
@@ -993,7 +1023,6 @@ void ReadConfig(bool command)
 	PLQuest = GetPrivateProfileIntA("Quest", "Index", 100, "./Systems/ProtectLeader.txt");
 	PLMap = GetPrivateProfileIntA("Map", "Index", 1, "./Systems/ProtectLeader.txt");
 
-	// new systems killing honor points scania
 	KillerHPPL = GetPrivateProfileIntA("HonorReward", "KillerHP", 0, "./Systems/ProtectLeader.txt");
 	KillerRPPL = GetPrivateProfileIntA("HonorReward", "KillerRP", 0, "./Systems/ProtectLeader.txt");
 	KilledHPPL = GetPrivateProfileIntA("HonorReward", "KilledHP", 0, "./Systems/ProtectLeader.txt");
@@ -1211,42 +1240,42 @@ void ReadConfig(bool command)
 	RedStoneY = GetPrivateProfileIntA("RedStone", "Y", 314195, "./Systems/Battlefield.txt");
 
 	//shelter
-	BFRedSafeX1G = GetPrivateProfileIntA("RedRectSafeZone", "X1", 0, "./Scania/Hogwarts.txt");
-	BFRedSafeY1G = GetPrivateProfileIntA("RedRectSafeZone", "Y1", 0, "./Scania/Hogwarts.txt");
-	BFRedSafeX2G = GetPrivateProfileIntA("RedRectSafeZone", "X2", 0, "./Scania/Hogwarts.txt");
-	BFRedSafeY2G = GetPrivateProfileIntA("RedRectSafeZone", "Y2", 0, "./Scania/Hogwarts.txt");
+	BFRedSafeX1G = GetPrivateProfileIntA("RedRectSafeZone", "X1", 0, "./Configs/Hogwarts.txt");
+	BFRedSafeY1G = GetPrivateProfileIntA("RedRectSafeZone", "Y1", 0, "./Configs/Hogwarts.txt");
+	BFRedSafeX2G = GetPrivateProfileIntA("RedRectSafeZone", "X2", 0, "./Configs/Hogwarts.txt");
+	BFRedSafeY2G = GetPrivateProfileIntA("RedRectSafeZone", "Y2", 0, "./Configs/Hogwarts.txt");
 
 	rectRedSafeG.left = min(BFRedSafeX1G, BFRedSafeX2G);
 	rectRedSafeG.right = max(BFRedSafeX1G, BFRedSafeX2G);
 	rectRedSafeG.top = min(BFRedSafeY1G, BFRedSafeY2G);
 	rectRedSafeG.bottom = max(BFRedSafeY1G, BFRedSafeY2G);
 
-	BFBlueSafeX1G = GetPrivateProfileIntA("BlueRectSafeZone", "X1", 0, "./Scania/Hogwarts.txt");
-	BFBlueSafeY1G = GetPrivateProfileIntA("BlueRectSafeZone", "Y1", 0, "./Scania/Hogwarts.txt");
-	BFBlueSafeX2G = GetPrivateProfileIntA("BlueRectSafeZone", "X2", 0, "./Scania/Hogwarts.txt");
-	BFBlueSafeY2G = GetPrivateProfileIntA("BlueRectSafeZone", "Y2", 0, "./Scania/Hogwarts.txt");
+	BFBlueSafeX1G = GetPrivateProfileIntA("BlueRectSafeZone", "X1", 0, "./Configs/Hogwarts.txt");
+	BFBlueSafeY1G = GetPrivateProfileIntA("BlueRectSafeZone", "Y1", 0, "./Configs/Hogwarts.txt");
+	BFBlueSafeX2G = GetPrivateProfileIntA("BlueRectSafeZone", "X2", 0, "./Configs/Hogwarts.txt");
+	BFBlueSafeY2G = GetPrivateProfileIntA("BlueRectSafeZone", "Y2", 0, "./Configs/Hogwarts.txt");
 
 	rectBlueSafeG.left = min(BFBlueSafeX1G, BFBlueSafeX2G);
 	rectBlueSafeG.right = max(BFBlueSafeX1G, BFBlueSafeX2G);
 	rectBlueSafeG.top = min(BFBlueSafeY1G, BFBlueSafeY2G);
 	rectBlueSafeG.bottom = max(BFBlueSafeY1G, BFBlueSafeY2G);
 
-	BFTeleRedXG = GetPrivateProfileIntA("RedTeleport", "X", 282821, "./Scania/Hogwarts.txt");
-	BFTeleRedYG = GetPrivateProfileIntA("RedTeleport", "Y", 217307, "./Scania/Hogwarts.txt");
-	BFTeleRedZG = GetPrivateProfileIntA("RedTeleport", "Z", 0, "./Scania/Hogwarts.txt");
-	BFTeleBlueXG = GetPrivateProfileIntA("BlueTeleport", "X", 274256, "./Scania/Hogwarts.txt");
-	BFTeleBlueYG = GetPrivateProfileIntA("BlueTeleport", "Y", 208690, "./Scania/Hogwarts.txt");
-	BFTeleBlueZG = GetPrivateProfileIntA("BlueTeleport", "Z", 0, "./Scania/Hogwarts.txt");
+	BFTeleRedXG = GetPrivateProfileIntA("RedTeleport", "X", 282821, "./Configs/Hogwarts.txt");
+	BFTeleRedYG = GetPrivateProfileIntA("RedTeleport", "Y", 217307, "./Configs/Hogwarts.txt");
+	BFTeleRedZG = GetPrivateProfileIntA("RedTeleport", "Z", 0, "./Configs/Hogwarts.txt");
+	BFTeleBlueXG = GetPrivateProfileIntA("BlueTeleport", "X", 274256, "./Configs/Hogwarts.txt");
+	BFTeleBlueYG = GetPrivateProfileIntA("BlueTeleport", "Y", 208690, "./Configs/Hogwarts.txt");
+	BFTeleBlueZG = GetPrivateProfileIntA("BlueTeleport", "Z", 0, "./Configs/Hogwarts.txt");
 
-	BlueStoneXG = GetPrivateProfileIntA("BlueStone", "X", 276460, "./Scania/Hogwarts.txt");
-	BlueStoneYG = GetPrivateProfileIntA("BlueStone", "Y", 315762, "./Scania/Hogwarts.txt");
-	RedStoneXG = GetPrivateProfileIntA("RedStone", "X", 275535, "./Scania/Hogwarts.txt");
-	RedStoneYG = GetPrivateProfileIntA("RedStone", "Y", 314195, "./Scania/Hogwarts.txt");
+	BlueStoneXG = GetPrivateProfileIntA("BlueStone", "X", 276460, "./Configs/Hogwarts.txt");
+	BlueStoneYG = GetPrivateProfileIntA("BlueStone", "Y", 315762, "./Configs/Hogwarts.txt");
+	RedStoneXG = GetPrivateProfileIntA("RedStone", "X", 275535, "./Configs/Hogwarts.txt");
+	RedStoneYG = GetPrivateProfileIntA("RedStone", "Y", 314195, "./Configs/Hogwarts.txt");
 
-	GVETime = GetPrivateProfileIntA("GoodVsEvil", "Time", 1800, "./Scania/Hogwarts.txt");
-	EVGoodReward = GetPrivateProfileIntA("GoodVsEvil", "WinnerRewardID", WinnerBF, "./Scania/Hogwarts.txt");
-	EVGoodLoser = GetPrivateProfileIntA("GoodVsEvil", "LoserRewardID", LoserBF, "./Scania/Hogwarts.txt");
-	EVGoodDraw = GetPrivateProfileIntA("GoodVsEvil", "DrawRewardID", DrawBF, "./Scania/Hogwarts.txt");
+	GVETime = GetPrivateProfileIntA("GoodVsEvil", "Time", 1800, "./Configs/Hogwarts.txt");
+	EVGoodReward = GetPrivateProfileIntA("GoodVsEvil", "WinnerRewardID", WinnerBF, "./Configs/Hogwarts.txt");
+	EVGoodLoser = GetPrivateProfileIntA("GoodVsEvil", "LoserRewardID", LoserBF, "./Configs/Hogwarts.txt");
+	EVGoodDraw = GetPrivateProfileIntA("GoodVsEvil", "DrawRewardID", DrawBF, "./Configs/Hogwarts.txt");
 	//shelterend
 
 	BattlefieldLevel = GetPrivateProfileIntA("Limit", "Level", 50, "./Systems/Battlefield.txt");
@@ -1351,7 +1380,8 @@ void ReadConfig(bool command)
 	TSSMul = GetPrivateProfileIntA("ShadowSlash", "Multiply", 1, "./Skills/Thief.txt");
 	TSSMin = GetPrivateProfileIntA("ShadowSlash", "GradeDamageIncreaseMin", 1, "./Skills/Thief.txt");
 	TSSMax = GetPrivateProfileIntA("ShadowSlash", "GradeDamageIncreaseMax", 1, "./Skills/Thief.txt");
-	ShadowAOE = GetPrivateProfileIntA("ShadowSlash", "AOE", 0, "./Skills/Thief.txt");
+	ShadowAOEPVE = GetPrivateProfileIntA("ShadowSlash", "PVEAOE", 0, "./Skills/Thief.txt");
+	ShadowAOEPVP = GetPrivateProfileIntA("ShadowSlash", "PVPAOE", 0, "./Skills/Thief.txt");
 	ShadowRange = GetPrivateProfileIntA("ShadowSlash", "Range", 4, "./Skills/Thief.txt");
 	TWOHReduce = GetPrivateProfileIntA("WrathOfHeaven", "PVPReduce", 1, "./Skills/Thief.txt");
 	TWOHMul = GetPrivateProfileIntA("WrathOfHeaven", "Multiply", 1, "./Skills/Thief.txt");
@@ -1379,10 +1409,16 @@ void ReadConfig(bool command)
 	MLAMul = GetPrivateProfileIntA("LightningArrow", "Multiply", 1, "./Skills/Mage.txt");
 	MLAMin = GetPrivateProfileIntA("LightningArrow", "GradeDamageIncreaseMin", 1, "./Skills/Mage.txt");
 	MLAMax = GetPrivateProfileIntA("LightningArrow", "GradeDamageIncreaseMax", 1, "./Skills/Mage.txt");
+	BlessPVP = GetPrivateProfileIntA("Blessing", "PVPReduce", 50, "./Skills/Mage.txt");
+
 	ACSReduce = GetPrivateProfileIntA("CombativeSpirit", "PVPReduce", 1, "./Skills/Archer.txt");
 	ACSMul = GetPrivateProfileIntA("CombativeSpirit", "Multiply", 1, "./Skills/Archer.txt");
 	ACSMin = GetPrivateProfileIntA("CombativeSpirit", "GradeDamageIncreaseMin", 1, "./Skills/Archer.txt");
 	ACSMax = GetPrivateProfileIntA("CombativeSpirit", "GradeDamageIncreaseMax", 1, "./Skills/Archer.txt");
+	ACAOE = GetPrivateProfileIntA("CombativeSpirit", "PVEAOE", 1, "./Skills/Archer.txt");
+	ACPVPAOE = GetPrivateProfileIntA("CombativeSpirit", "PVPAOE", 1, "./Skills/Archer.txt");
+	ACAOERange = GetPrivateProfileIntA("CombativeSpirit", "AOERange", 1, "./Skills/Archer.txt");
+
 	ALAReduce = GetPrivateProfileIntA("LifeAbsorption", "PVPReduce", 1, "./Skills/Archer.txt");
 	ALAMul = GetPrivateProfileIntA("LifeAbsorption", "Multiply", 1, "./Skills/Archer.txt");
 	ETBReduce = GetPrivateProfileIntA("Thunderbolt", "PVPReduce", 1, "./Skills/Egg.txt");
@@ -1431,6 +1467,7 @@ void ReadConfig(bool command)
 	SDPVPAOE = GetPrivateProfileIntA("SoulDestruction", "PVPAOE", 0, "./Skills/Mage.txt");
 	SDRange = GetPrivateProfileIntA("SoulDestruction", "AOERange", 0, "./Skills/Mage.txt");
 	SDAOE = GetPrivateProfileIntA("SoulDestruction", "AOE", 0, "./Skills/Mage.txt");
+	SDLOWAOE = GetPrivateProfileIntA("SoulDestruction", "AOESpecialty", 0, "./Skills/Mage.txt");
 	MageManaCirculation = GetPrivateProfileIntA("ManaCirculation", "Increase", 1, "./Skills/Mage.txt");
 	MRIAmount = GetPrivateProfileIntA("HealRage", "Increase", 1, "./Skills/Mage.txt");
 	KSDReduce = GetPrivateProfileIntA("SwordDance", "PVPReduce", 1, "./Skills/Knight.txt");
@@ -1491,7 +1528,7 @@ void ReadConfig(bool command)
 	MacroStartTime = GetPrivateProfileIntA("Macro", "Cooldown", 30, "./Configs/AFKCheck.txt");
 	FilterCheck = GetPrivateProfileIntA("WordFilter", "Active", 0, "./Configs/Filter.txt");
 	GetPrivateProfileStringA("Topofmmos", "ApiKey", "", VoteAPIKey, 50, "./Systems/Vote.txt");
-	GetPrivateProfileStringA("Server", "Name", "TheNexusCompany", ServerName, 50, "./Configs/Protection.txt");
+	GetPrivateProfileStringA("Server", "Name", "KalTechSolutions", ServerName, 50, "./Configs/Protection.txt");
 	GetPrivateProfileStringA("Server", "AuthServer", "AuthSvr.exe", AuthSvr, 50, "./Configs/Protection.txt");
 	GZLvl = GetPrivateProfileIntA("Server", "GzMsgLvl", 80, "./Configs/Protection.txt");
 	GetPrivateProfileStringA("2ndPwd", "Active", "true", Active2ndPwd, 50, "./Configs/Protection.txt");
@@ -1648,8 +1685,8 @@ void ReadConfig(bool command)
 	}
 
 
-	if (!command || (command && modifiedFiles.count("./Scania/EXPItem.txt"))) {
-		FILE* filekd = fopen("./Scania/EXPItem.txt", "r");
+	if (!command || (command && modifiedFiles.count("./Configs/EXPItem.txt"))) {
+		FILE* filekd = fopen("./Configs/EXPItem.txt", "r");
 		if (filekd != NULL) {
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filekd) != NULL) {
@@ -1666,8 +1703,8 @@ void ReadConfig(bool command)
 
 
 
-	if (!command || (command && modifiedFiles.count("./Scania/Missions.txt"))) {
-		FILE* Missions = fopen("./Scania/Missions.txt", "r");
+	if (!command || (command && modifiedFiles.count("./Configs/Missions.txt"))) {
+		FILE* Missions = fopen("./Configs/Missions.txt", "r");
 		if (Missions != NULL) {
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, Missions) != NULL) {
@@ -1704,31 +1741,102 @@ void ReadConfig(bool command)
 	}
 
 
-	if (!command || (command && modifiedFiles.count("./Scania/GoldenEXP.txt"))) {
-		FILE *filegol = fopen("./Scania/GoldenEXP.txt", "r");
-		if (filegol != NULL)
-		{
+	if (!command || (command && modifiedFiles.count("./Configs/ExpTable.txt"))) {
+		FILE* fileExpTable = fopen("./Configs/ExpTable.txt", "r");
+		if (fileExpTable != NULL) {
 			char line[BUFSIZ];
-			while (fgets(line, sizeof line, filegol) != NULL)
-			{
-				int StoneBuff = 0, StoneValue = 0;
+			int expTableIndex = 0;
 
-				if (sscanf(line, "(GoldenEXPStone (Buff %d)(Value %d))", &StoneBuff, &StoneValue) == 2)
-				{
-					GoldenEXPBuffs[StoneBuff] = StoneValue;
-				}
-
-				if (sscanf(line, "(GoldenEggStone (Buff %d)(Value %d))", &StoneBuff, &StoneValue) == 2)
-				{
-					GoldenEggBuffs[StoneBuff] = StoneValue;
+			while (fgets(line, sizeof line, fileExpTable) != NULL) {
+				if (strstr(line, "{") != NULL) {
+					break;
 				}
 			}
-			fclose(filegol);
+
+			while (fgets(line, sizeof line, fileExpTable) != NULL && expTableIndex < sizeof(_ExpTable) / sizeof(_ExpTable[0])) {
+				if (strstr(line, "}") != NULL) {
+					break;
+				}
+
+				char* token = strtok(line, ",");
+				while (token != NULL) {
+					unsigned __int64 expValue;
+					if (sscanf(token, "%llu", &expValue) == 1) {
+						_ExpTable[expTableIndex++] = expValue;
+					}
+					token = strtok(NULL, ",");
+				}
+			}
+
+			fclose(fileExpTable);
 		}
 	}
 
-	if (!command || (command && modifiedFiles.count("./Scania/EmoteSystem.txt"))) {
-		FILE *fileemote = fopen("./Scania/EmoteSystem.txt", "r");
+
+	//if (!command || (command && modifiedFiles.count("./Configs/GoldenEXP.txt"))) {
+	//	FILE *filegol = fopen("./Configs/GoldenEXP.txt", "r");
+	//	if (filegol != NULL)
+	//	{
+	//		char line[BUFSIZ];
+	//		while (fgets(line, sizeof line, filegol) != NULL)
+	//		{
+	//			int StoneBuff = 0, StoneValue = 0;
+
+	//		//	if (sscanf(line, "(GoldenEXPStone (Buff %d)(Value %d))", &StoneBuff, &StoneValue) == 2)
+	//		//		GoldenEXPBuffs[StoneBuff] = StoneValue;
+
+	//			if (sscanf(line, "(GoldenEggStone (Buff %d)(Value %d))", &StoneBuff, &StoneValue) == 2)
+	//				GoldenEggBuffs[StoneBuff] = StoneValue;
+	//		}
+	//		fclose(filegol);
+	//	}
+	//}
+
+	if (!command || (command && modifiedFiles.count("./Configs/StickBuff.txt"))) {
+		FILE *filessbf = fopen("./Configs/StickBuff.txt", "r");
+		if (filessbf != NULL)
+		{
+			char line[BUFSIZ];
+			while (fgets(line, sizeof line, filessbf) != NULL)
+			{
+				int def = 0, hp = 0, str = 0, agi = 0, intel = 0, crit = 0, atk = 0, stickg = 0;
+				char buffName[BUFSIZ];
+
+				if (sscanf(line, "(Stick (Grade %d)(BuffName '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Def %d)(Str %d)(HP %d)(Agi %d)(Intel %d)(Crit %d)(Ref %d))", &stickg, &buffName, &def, &str, &hp, &agi, &intel, &crit, &atk) == 9) {
+					BuffScale[stickg].Sgrade = stickg;
+					BuffScale[stickg].atk = atk;
+					BuffScale[stickg].str = atk;
+					BuffScale[stickg].hp = atk;
+					BuffScale[stickg].agi = atk;
+					BuffScale[stickg].intel = atk;
+					BuffScale[stickg].crit = atk;
+					BuffScale[stickg].def = atk;
+					BuffScale[stickg].BuffName = buffName;
+				}
+				fclose(filessbf);
+			}
+		}
+	}
+
+
+	//if (!command || (command && modifiedFiles.count("./Configs/EmoteSystem.txt"))) {
+	//	FILE *fileemote = fopen("./Configs/EmoteSystem.txt", "r");
+	//	if (fileemote != NULL) {
+	//		EmoteSystem.clear();
+	//		char line[BUFSIZ];
+	//		while (fgets(line, sizeof line, fileemote) != NULL) {
+	//			int QuestFlag = 0, itemIndex = 0;
+	//			char Particle[512];
+
+	//			if (sscanf(line, "(Emote (QuestFlag %d)(Particle '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(ItemIndex %d))", &QuestFlag, Particle, &itemIndex) == 3) {
+	//				EmoteSystem[QuestFlag] = std::make_pair(Particle, itemIndex);
+	//			}
+	//		}
+	//		fclose(fileemote);
+	//	}
+	//}
+	if (!command || (command && modifiedFiles.count("./Configs/EmoteSystem.txt"))) {
+		FILE *fileemote = fopen("./Configs/EmoteSystem.txt", "r");
 		if (fileemote != NULL) {
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, fileemote) != NULL) {
@@ -1742,9 +1850,8 @@ void ReadConfig(bool command)
 			fclose(fileemote);
 		}
 	}
-
-	if (!command || (command && modifiedFiles.count("./Scania/BuffSystem.txt"))) {
-		FILE *Sys = fopen("./Scania/BuffSystem.txt", "r");
+	if (!command || (command && modifiedFiles.count("./Configs/BuffSystem.txt"))) {
+		FILE *Sys = fopen("./Configs/BuffSystem.txt", "r");
 		if (Sys != NULL)
 		{
 			char line[1000], LimitMsg[BUFSIZ], BuffIcon[BUFSIZ], ExpALLOW[BUFSIZ], save[BUFSIZ], Egg[BUFSIZ], ItemN[BUFSIZ], mana_heal[BUFSIZ], hp_heal[BUFSIZ], Damage[BUFSIZ];
@@ -1755,8 +1862,17 @@ void ReadConfig(bool command)
 					, MinAttack = 0, MaxAttack = 0, Hp = 0, Str = 0, Int = 0, Wis = 0, Agi = 0, OTP = 0, Eva = 0, Def = 0, Fire_Resistance = 0, Ice_Resistance = 0
 					, Lightning_Resistance = 0, Absorb = 0, CritRate = 0, CritDamage = 0, exp = 0, HTML = 0, Time = 0, Sys_name = 0, BuffID = 0,
 					amount = 0, count = 0, Expindex = 0, expcount = 0, HPx = 0, RPx = 0, DKPTx = 0, DKPWx = 0, PLTx = 0, PLWx = 0, SVTx = 0, SVWx = 0,
-					Honorindex = 0, Removeindex = 0, mana = 0, hp = 0, MaxHp = 0, MaxMp = 0, MD = 0, EBRate = 0;
+					Honorindex = 0, Removeindex = 0, mana = 0, hp = 0, MaxHp = 0, MaxMp = 0, MD = 0, EBRate = 0, altBuff = 0, BuffDisableIndex = 0, BuffDisableID = 0;
 
+<<<<<<< Updated upstream
+=======
+				if (sscanf(line, "(ItemBuffDisable (Index %d) (Buff %d))", &BuffDisableIndex, &BuffDisableID) == 2)
+				{
+					BuffDisableCheck[BuffDisableIndex].BuffDisableIndex = BuffDisableIndex;
+					BuffDisableCheck[BuffDisableIndex].BuffDisableID = BuffDisableID;
+
+				}
+>>>>>>> Stashed changes
 				if (sscanf(line, "(Buff (Item_Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Index %d)(Permanently %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Buff-> Str %d Agi %d Hth %d Int %d Def %d Crit %d Ref %d Speed %d))", &ItemN, &Buff, &Delete, &MinLevel, &MaxLevel, &LimitMsg, &StrBuff, &AgiBuff, &HthBuff, &IntBuff, &DefBuff, &CritBuff, &RefBuff, &SpeedBuff) == 14)
 				{
 					BuffCheck[Buff].Buff = Buff;
@@ -1787,7 +1903,11 @@ void ReadConfig(bool command)
 					BuffCheck[Call].PhysicalAttack = PhysicalAttack;
 					BuffCheck[Call].CallofDefense = CallofDefense;
 				}
+<<<<<<< Updated upstream
 				if (sscanf(line, "(Maker (Item_Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Index %d)(Permanently %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Stats-> MinAttack %d MaxAttack %d Hp %d Str %d Int %d Wis %d Agi %d OTP %d Eva %d Def %d Fire_Resistance %d Ice_Resistance %d Lightning_Resistance %d Absorb %d CritRate %d CritDamage %d MaxHp %d MaxMp %d Explosive_Blow %d)(auto_heal Active_HP'%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' amount %d Active_MP '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' amount %d)(Damage_monster-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Decrease %d)(BuffIcon-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Time %d Sys %d BuffID %d [Login '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'])(Exp-> Exp_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Exp %d Egg_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Egg %d))", &ItemN, &Maker, &Delete, &MinLevel, &MaxLevel, &LimitMsg, &MinAttack, &MaxAttack, &Hp, &Str, &Int, &Wis, &Agi, &OTP, &Eva, &Def, &Fire_Resistance, &Ice_Resistance, &Lightning_Resistance, &Absorb, &CritRate, &CritDamage, &MaxHp, &MaxMp, &EBRate, &hp_heal, &hp, &mana_heal, &mana, &Damage, &MD, &BuffIcon, &Time, &Sys_name, &BuffID, &save, &ExpALLOW, &amount, &Egg, &count) == 40)
+=======
+				if (sscanf(line, "(Maker (Item_Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Index %d)(Permanently %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Stats-> PhyAtk %d MagAtk %d Hp %d Str %d Int %d Wis %d Agi %d OTP %d Eva %d Def %d Fire_Resistance %d Ice_Resistance %d Lightning_Resistance %d Absorb %d CritRate %d CritDamage %d MaxHp %d MaxMp %d Explosive_Blow %d)(auto_heal Active_HP'%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' amount %d Active_MP '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' amount %d)(Damage_monster-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Decrease %d)(BuffIcon-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Time %d Sys %d BuffID %d [Login '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'])(Exp-> Exp_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Exp %d Egg_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Egg %d AltBuff %d))", &ItemN, &Maker, &Delete, &MinLevel, &MaxLevel, &LimitMsg, &MinAttack, &MaxAttack, &Hp, &Str, &Int, &Wis, &Agi, &OTP, &Eva, &Def, &Fire_Resistance, &Ice_Resistance, &Lightning_Resistance, &Absorb, &CritRate, &CritDamage, &MaxHp, &MaxMp, &EBRate, &hp_heal, &hp, &mana_heal, &mana, &Damage, &MD, &BuffIcon, &Time, &Sys_name, &BuffID, &save, &ExpALLOW, &amount, &Egg, &count, &altBuff) == 41)
+>>>>>>> Stashed changes
 				{
 					BuffMakerCheck[Maker].Maker = Maker;
 					BuffMakerCheck[Maker].Delete = Delete;
@@ -1817,17 +1937,18 @@ void ReadConfig(bool command)
 					BuffMakerCheck[Maker].Sys_name = Sys_name;
 					BuffMakerCheck[Maker].BuffID = BuffID;
 					BuffMakerCheck[Maker].EBRate = EBRate;
-					//BuffMakerCheck[Maker].save = save;
+					BuffMakerCheck[Maker].save = save;
 					//BuffMakerCheck[Maker].mana = mana;
 					//BuffMakerCheck[Maker].hp = hp;
 					//BuffMakerCheck[Maker].mana_heal = mana_heal;
 					//BuffMakerCheck[Maker].hp_heal = hp_heal;
-					//BuffMakerCheck[Maker].Damage = Damage;
-					//BuffMakerCheck[Maker].MD = MD;
-					//BuffMakerCheck[Maker].ExpALLOW = ExpALLOW;
-					//BuffMakerCheck[Maker].amount = amount;
-					//BuffMakerCheck[Maker].Egg = Egg;
-					//BuffMakerCheck[Maker].count = count;
+					BuffMakerCheck[Maker].Damage = Damage;
+					BuffMakerCheck[Maker].MD = MD;
+					BuffMakerCheck[Maker].ExpALLOW = ExpALLOW;
+					BuffMakerCheck[Maker].amount = amount;
+					BuffMakerCheck[Maker].Egg = Egg;
+					BuffMakerCheck[Maker].count = count;
+					BuffMakerCheck[Maker].altBuff = altBuff;
 				}
 
 				if (sscanf(line, "(NPC_Buff (Quest_Index %d)(Str %d)(Agi %d)(Hth %d)(Int %d)(Def %d)(Crit %d)(Speed %d)(Ref %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))",
@@ -2152,7 +2273,7 @@ void ReadConfig(bool command)
 					ItemUsed[ItemIndex].Remove = Remove;
 				}
 
-				int ItemIndeX = 0, ItemIndeXPerm = 0;
+				int ItemIndeX = 0, ItemIndeXPerm = 0, ItemBuffServer = 0;
 				if (sscanf(line, "(ItemTasty (Index %d))", &ItemIndeX) == 1)
 				{
 					ItemTasty[ItemIndeX].index = ItemIndeX;
@@ -2183,6 +2304,10 @@ void ReadConfig(bool command)
 					ItemScrollsPerm[ItemIndeXPerm].index = ItemIndeXPerm;
 				}
 
+				if (sscanf(line, "(ItemBuffServer (Index %d))", &ItemBuffServer) == 1)
+				{
+					ItemBuffSrv[ItemBuffServer].index = ItemBuffServer;
+				}
 
 
 				int Item = 0, Quest = 0, Flag = 0;
@@ -2445,9 +2570,8 @@ void ReadConfig(bool command)
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filte) != NULL)
 			{
-				int BoxIndex = 0, RewardIndex = 0, Amount = 0, Bof = 0, Dss = 0, Def = 0, Eva = 0, Prefix = 0, Atk = 0, Magic = 0, TOA = 0, UPG = 0, Mix = 0, stat = 0, bound = 0;
-
-				if (sscanf(line, "(box (index %d)(rewardindex %d)(amount %d)(prefix %d)(defense %d)(evasion %d)(attack %d)(magic %d)(toa %d)(upgrade %d)(mix %d)(bof %d)(dss %d)(itemstat %d)(bound %d))", &BoxIndex, &RewardIndex, &Amount, &Prefix, &Def, &Eva, &Atk, &Magic, &TOA, &UPG, &Mix, &Bof, &Dss, &stat, &bound) >= 13)
+				int BoxIndex = 0, Bof = 0, RewardIndex = 0, Amount = 0, Dss = 0, Def = 0, Eva = 0, Prefix = 0, Atk = 0, Magic = 0, TOA = 0, UPG = 0, Mix = 0, stat = 0, bound = 0, rewardID = 0;
+				if (sscanf(line, "(box (index %d)(rewardindex %[0-9/,])(amount %[0-9/,])(prefix %d)(defense %d)(evasion %d)(attack %d)(magic %d)(toa %d)(upgrade %d)(mix %d)(bof %d)(dss %d)(itemstat %d)(bound %d))", &BoxIndex, &RewardIndex, &Amount, &Prefix, &Def, &Eva, &Atk, &Magic, &TOA, &UPG, &Mix, &Bof, &Dss, &stat, &bound) >= 13)
 				{
 					Items t = Items();
 					t.Index = RewardIndex;
@@ -2466,6 +2590,7 @@ void ReadConfig(bool command)
 					t.ItemStat = stat;
 					Boxes[BoxIndex].push_back(t);
 				}
+
 			}
 			fclose(filte);
 		}
@@ -2479,8 +2604,9 @@ void ReadConfig(bool command)
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filte) != NULL)
 			{
-				char indexes[BUFSIZ], amounts[BUFSIZ];
+				char indexes[BUFSIZ], amounts[BUFSIZ], keyLine[BUFSIZ];
 				int ID = 0, HonorPts = 0, RewardPts = 0, HTML = 0, Bound = 0, HousePoints = 0;
+				int userKey = 0;
 				signed __int64 EXP = 0;
 				if (sscanf(line, "(Reward (ID %d) (ItemIndex %[0-9/,]) (ItemAmount %[0-9/,]) (HonorPt %d) (RewardPt %d) (EXP %lld) (HTML %d) (Bound %d))", &ID, &indexes, &amounts, &HonorPts, &RewardPts, &EXP, &HTML, &Bound) >= 7)
 				{
@@ -2516,9 +2642,35 @@ void ReadConfig(bool command)
 					if (pReward.Indexes.size() == pReward.Amounts.size())
 						Rewards[ID] = pReward;
 				}
+				_snprintf(keyLine, sizeof(keyLine), "ExpReward (Key %d)", userKey);
+				if (strstr(line, keyLine)) {
+						int Level = 0;
+						int Percentage = 0;
+						if (sscanf(line, "(Exp (Level %d) (Percentage %d))", &Level, &Percentage) == 2) {
+							std::string sBIndexs = std::string((const char*)indexes);
+							std::string sBAmounts = std::string((const char*)amounts);
+
+							Reward pReward = Reward();
+							pReward.Indexes = explode(",", 0);
+							pReward.Amounts = explode(",", 0);
+							pReward.EXP = 0;
+							pReward.HonorPts = 0;
+							pReward.RewardPts = 0;
+							pReward.HTML = 0;
+							pReward.Bound = 0;
+							pReward.HousePoints = 0;
+							pReward.userKey = userKey;
+							if (pReward.Indexes.size() == pReward.Amounts.size())
+								Rewards[userKey] = pReward;
+							F10EXPRewards[Level].Level = Level;
+							F10EXPRewards[Level].Progress = Percentage;
+
+						}
+					}
+				}
 			}
 		}
-	}
+	
 
 	if (!command || (command && modifiedFiles.count("./Systems/PartyVsParty.txt"))) {
 		FILE *filte = fopen("./Systems/PartyVsParty.txt", "r");
@@ -3434,15 +3586,20 @@ void ReadConfig(bool command)
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filetwsu) != NULL)
 			{
-				int R = 0, G = 0, B = 0, ShoutsIndex = 0;
+				int R = 0, G = 0, B = 0, ShoutsIndex = 0, Removal = 0;
 				char cmd[BUFSIZ];
 				int ShoutIndex = 0;
 
 				if (sscanf(line, "(CustomNotice (command '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (RGB %d %d %d))", &cmd, &R, &G, &B) == 4)
 					CustomNotices[cmd] = RGB(R, G, B);
 
+<<<<<<< Updated upstream
 				if (sscanf(line, "(CustomShouts (command '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (RGB %d %d %d) (ItemIndex %d))", &cmd, &R, &G, &B, &ShoutsIndex) == 5) {
 					CustomShouts[cmd] = ShoutData(RGB(R, G, B), ShoutsIndex);
+=======
+				if (sscanf(line, "(CustomShouts (command '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (RGB %d %d %d) (ItemIndex %d) (Remove %d))", &cmd, &R, &G, &B, &ShoutsIndex, &Removal) == 6) {
+					CustomShouts[cmd] = ShoutData(RGB(R, G, B), ShoutsIndex, Removal);
+>>>>>>> Stashed changes
 				}
 
 
@@ -3463,8 +3620,8 @@ void ReadConfig(bool command)
 		}
 	}
 
-	if (!command || (command && modifiedFiles.count("./Scania/Hogwarts.txt"))) {
-		FILE *filehogw = fopen("./Scania/Hogwarts.txt", "r");
+	if (!command || (command && modifiedFiles.count("./Configs/Hogwarts.txt"))) {
+		FILE *filehogw = fopen("./Configs/Hogwarts.txt", "r");
 		if (filehogw != NULL)
 		{
 			RGBAutoNotice.clear();
@@ -3472,12 +3629,17 @@ void ReadConfig(bool command)
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filehogw) != NULL)
 			{
-				int R = 0, G = 0, B = 0, ShoutsIndex = 0;
+				int R = 0, G = 0, B = 0, ShoutsIndex = 0, Removal = 0;
 				char cmd[BUFSIZ];
 				int HouseIndex = 0;
 
+<<<<<<< Updated upstream
 				if (sscanf(line, "(HouseCmd (command '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (RGB %d %d %d) (House %d))", &cmd, &R, &G, &B, &HouseIndex) == 5) {
 					CustomHouse[cmd] = ShoutData(RGB(R, G, B), HouseIndex);
+=======
+				if (sscanf(line, "(HouseCmd (command '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (RGB %d %d %d) (House %d) (Remove %d))", &cmd, &R, &G, &B, &HouseIndex, &Removal) == 6) {
+					CustomHouse[cmd] = ShoutData(RGB(R, G, B), HouseIndex, Removal);
+>>>>>>> Stashed changes
 				}
 
 			}
@@ -3702,6 +3864,23 @@ void ReadConfig(bool command)
 		}
 	}
 
+	if (!command || (command && modifiedFiles.count("./Configs/Range.txt"))) {
+		FILE *filerange = fopen("./Configs/Range.txt", "r");
+		if (filerange != NULL)
+		{
+			char line[BUFSIZ];
+			while (fgets(line, sizeof line, filerange) != NULL)
+			{
+				int classId = 0, skillId = 0, maxRange = 0;
+				if (sscanf(line, "(SkillRange (Class %d)(Action %d)(MaxRange %d))", &classId, &skillId, &maxRange) == 3)
+					CheckRangeConfig[skillId + (classId * 100)].maxRange = maxRange;
+
+			}
+			fclose(filerange);
+		}
+
+	}
+
 	if (!command || (command && modifiedFiles.count("./Configs/PvPSkillDamage.txt"))) {
 		FILE *filegw = fopen("./Configs/PvPSkillDamage.txt", "r");
 		if (filegw != NULL)
@@ -3797,10 +3976,47 @@ void ReadConfig(bool command)
 		}
 	}
 
-	if (!command || (command && modifiedFiles.count("./Scania/MonsterBuffs.txt"))) {
-		FILE *filemobuf = fopen("./Scania/MonsterBuffs.txt", "r");
+	if (!command || (command && modifiedFiles.count("./Configs/QuestsNotice.txt"))){
+		FILE *filemQON = fopen("./Configs/QuestsNotice.txt", "r");
+		if (filemQON != NULL)
+		{
+			QuestsNotice.clear();
+
+			char line[BUFSIZ];
+			while (fgets(line, sizeof line, filemQON) != NULL)
+			{
+				int qIndex = 0, qItem = 0, qAmount = 0, qFlag = 0;
+				int clearQ = 0;
+				char qNotice[BUFSIZ];
+				if (sscanf(line, "(QuestNotice (QuestIndex %d %d)(QuestNotice '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(QuestItem %d)(QuestAmount %d))", &qIndex, &qFlag, &qNotice, &qItem, &qAmount) == 5)
+				{
+					QuestsNotice[qIndex].QuestIndex = qIndex;
+					QuestsNotice[qIndex].Notice = qNotice;
+					QuestsNotice[qIndex].qFlag = qFlag;
+					QuestsNotice[qIndex].QuestItem = qItem;
+					QuestsNotice[qIndex].qAmount = qAmount;
+
+				}
+				else if (sscanf(line, "(QuestNotice (QuestIndex %d %d)(QuestNotice '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(ClearedQuest %d))", &qIndex, &qFlag, &qNotice, &clearQ) == 4)
+				{
+					cQuestsNotice[qIndex].QuestIndex = qIndex;
+					cQuestsNotice[qIndex].Notice = qNotice;
+					cQuestsNotice[qIndex].clearQ = clearQ;
+					cQuestsNotice[qIndex].qFlag = qFlag;
+
+				}
+
+			}
+			fclose(filemQON);
+		}
+	}
+
+	if (!command || (command && modifiedFiles.count("./Configs/MonsterBuffs.txt"))) {
+		FILE *filemobuf = fopen("./Configs/MonsterBuffs.txt", "r");
 		if (filemobuf != NULL)
 		{
+			MonstersBuff.clear();
+			RMonstersBuff.clear();
 
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filemobuf) != NULL)
@@ -3808,10 +4024,16 @@ void ReadConfig(bool command)
 				int monsterindex, buff, grade;
 				if (sscanf(line, "(MonsterBuff (MobIndex %d)(BuffID %d)(Grade %d))", &monsterindex, &buff, &grade) == 3)
 				{
-
 					MonstersBuff[monsterindex].mobindex = monsterindex;
 					MonstersBuff[monsterindex].buffid = buff;
 					MonstersBuff[monsterindex].buffgrade = grade;
+
+				}
+				else if (sscanf(line, "(RandomBuff (MobIndex %d)(Grade %d))", &monsterindex, &grade) == 2)
+				{
+					RMonstersBuff[monsterindex].mobindex = monsterindex;
+					RMonstersBuff[monsterindex].buffid = 0;
+					RMonstersBuff[monsterindex].buffgrade = grade;
 
 				}
 
@@ -3819,8 +4041,9 @@ void ReadConfig(bool command)
 			fclose(filemobuf);
 		}
 	}
-	if (!command || (command && modifiedFiles.count("./Scania/MonstersRewards.txt"))) {
-		FILE *filemorewa = fopen("./Scania/MonstersRewards.txt", "r");
+
+	if (!command || (command && modifiedFiles.count("./Configs/MonstersRewards.txt"))) {
+		FILE *filemorewa = fopen("./Configs/MonstersRewards.txt", "r");
 		if (filemorewa != NULL)
 		{
 			MonstersItem.clear();
@@ -3960,7 +4183,7 @@ void ReadConfig(bool command)
 
 			fileor = fopen("./Configs/MD5Check.txt", "r");
 			ofstream temp;
-			temp.open("./checksum.xea");
+			temp.open("./checksum.scn");
 			int count = 0;
 			while (fgets(line, sizeof line, fileor) != NULL)
 			{
@@ -3991,7 +4214,7 @@ void ReadConfig(bool command)
 			if (command) {
 				if (!OldMD5Check && MD5Check)
 					UpdateMD5();
-				CConsole::Black("[MD5 Check] Client file Checksum.xea file has been generated.");
+				CConsole::Blue("[MD5 Check] Client file checksum.scn file has been generated.");
 			}
 			 
 			fclose(fileor);
@@ -4059,7 +4282,7 @@ void ReadConfig(bool command)
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filen) != NULL)
 			{
-				int ArmorGetPrefix = 0, ArmorGetDef = 0, BofPrefix = 0, BofPrefixG2 = 0, BofPrefixG3 = 0, DGPrefix = 0, ImpPrefix = 0, InPrefix = 0, QiPrefix = 0, GetA = 0, GetM = 0, GetTOA = 0, GetUpg = 0, GetPrefix = 0, MixPrefix = 0, MixInfo = 0; char mixnotice[BUFSIZ];
+				int ArmorGetPrefix = 0, ArmorGetDef = 0, BofGrade = 0, ImpGrade = 0, BofPrefix = 0, DGPrefix = 0, ImpPrefix = 0, InPrefix = 0, QiPrefix = 0, GetA = 0, GetM = 0, GetTOA = 0, GetUpg = 0, GetPrefix = 0, MixPrefix = 0, MixInfo = 0; char mixnotice[BUFSIZ];
 				if (sscanf(line, "(armorpimp (prefix %d)(defense %d))", &ArmorGetPrefix, &ArmorGetDef) == 2)
 				{
 					ArmorPimpConfig[ArmorGetPrefix] = ArmorGetDef;
@@ -4068,6 +4291,11 @@ void ReadConfig(bool command)
 				if (sscanf(line, "(bof (prefix %d))", &BofPrefix) == 1)
 				{
 					BofConfigRead = BofPrefix;
+				}
+
+				if (sscanf(line, "(HighBof (prefix %d) (grade %d))", &BofPrefix, &BofGrade) == 2)
+				{
+					HighGradeBof[BofGrade] = BofPrefix;
 				}
 
 				int dmgPrefix = 0, type = 0, damagePimp = 0;
@@ -4098,6 +4326,10 @@ void ReadConfig(bool command)
 				if (sscanf(line, "(imp (prefix %d))", &ImpPrefix) == 1)
 				{
 					ImpConfigRead = ImpPrefix;
+				}
+				if (sscanf(line, "(HighImp (prefix %d) (grade %d))", &ImpPrefix, &ImpGrade) == 2)
+				{
+					HighGradeImperial[ImpGrade] = ImpPrefix;
 				}
 
 				if (sscanf(line, "(pimp (prefix %d)(attack %d)(magic %d)(toa %d)(upgrade %d))", &GetPrefix, &GetA, &GetM, &GetTOA, &GetUpg) == 5)
@@ -4626,25 +4858,34 @@ void ReadConfig(bool command)
 					DisablePrefix.insert((disableI + 100000)*disableP);
 
 				int wrprefix = 0, wrindex = 0, wrnewindex = 0, arprefix = 0, arindex = 0, arnewindex = 0, orprefix = 0, orindex = 0, ornewindex = 0;
-				if (sscanf(line, "(weapon (prefix %d)(index %d)(newindex %d))", &wrprefix, &wrindex, &wrnewindex) == 3)
+				char wrmsg[BUFSIZ], armsg[BUFSIZ], ormsg[BUFSIZ];
+				if (sscanf(line, "(weapon (prefix %d)(index %d)(newindex %d)(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')", &wrprefix, &wrindex, &wrnewindex, &wrmsg) >= 3)
 				{
 					WeaponReplacePrefix.insert(wrprefix);
 					WeaponReplace[(wrindex + 100000)*wrprefix] = wrprefix;
 					WeaponReplaceIndex[(wrindex + 100000)*wrprefix] = wrnewindex;
+					if (wrmsg)
+					WeaponReplaceMsg[(wrindex + 100000)*wrprefix] = wrmsg;
+
 				}
 
-				if (sscanf(line, "(armor (prefix %d)(index %d)(newindex %d))", &arprefix, &arindex, &arnewindex) == 3)
+				if (sscanf(line, "(armor (prefix %d)(index %d)(newindex %d)(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &arprefix, &arindex, &arnewindex, &armsg) >= 3)
 				{
 					WeaponReplacePrefix.insert(arprefix);
 					WeaponReplace[(arindex + 100000)*arprefix] = arprefix;
 					WeaponReplaceIndex[(arindex + 100000)*arprefix] = arnewindex;
+					if (armsg)
+					WeaponReplaceMsg[(arindex + 100000)*arprefix] = armsg;
+
 				}
 
-				if (sscanf(line, "(ornament (prefix %d)(index %d)(newindex %d))", &orprefix, &orindex, &ornewindex) == 3)
+				if (sscanf(line, "(ornament (prefix %d)(index %d)(newindex %d)(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &orprefix, &orindex, &ornewindex, &ormsg) >= 3)
 				{
 					WeaponReplacePrefix.insert(orprefix);
 					WeaponReplace[(orindex + 100000)*orprefix] = orprefix;
 					WeaponReplaceIndex[(orindex + 100000)*orprefix] = ornewindex;
+					if (ormsg)
+						WeaponReplaceMsg[(orindex + 100000)*orprefix] = ormsg;
 				}
 
 			}
@@ -5646,7 +5887,7 @@ void reloadProtect() {
 }
 
 void CleanLoadConfig() {
-
+	EmoteSystem.clear();
 	ItemWebsite.clear();
 	FishingList.clear();
 	MD5File.clear();
@@ -5663,6 +5904,7 @@ void CleanLoadConfig() {
 	WeaponReplacePrefix.clear();
 	WeaponReplaceIndex.clear();
 	WeaponReplace.clear();
+	WeaponReplaceMsg.clear();
 	PVPConfigCalculations.clear();
 	ConfigCalculations.clear();
 	AutoCenterNotices.clear();
@@ -5691,6 +5933,11 @@ void CleanLoadConfig() {
 	MakeMinerals.clear();
 	Macro.clear();
 	DisableSkillFile.clear();
+	MonstersBuff.clear();
+	RMonstersBuff.clear();
+	QuestsNotice.clear();
+	CheckCooldownConfig.clear();
+	CheckEggCooldownConfig.clear();
 
 	ReadConfig(false);
 }

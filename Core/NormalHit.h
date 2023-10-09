@@ -19,6 +19,7 @@ int __fastcall NormalHit(void *Player, void *edx, int bType, int nTargetID)
 		IPlayer.CancelBuff(40);
 		return 0;
 	}
+
 	
 	if (IPlayer.IsValid() && IPlayer.IsBuff(349))
 	{

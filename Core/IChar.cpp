@@ -473,6 +473,8 @@ void IChar::Kick()
 	}
 }
 
+
+
 void IChar::SetX(int Value)
 {
 	if (this->IsOnline())
@@ -733,6 +735,7 @@ int IChar::IsShopping()
 	else
 		return 0;
 }
+
 int IChar::GetSkillPointer(int SkillID)
 {
 	if (this->IsOnline() && this->GetType() == 0)
@@ -1221,40 +1224,6 @@ DWORD IChar::MobDelay(DWORD amount)
 		return 0;
 	}
 }
-
-void IChar::NPCDelete()
-{
-	if (this->IsOnline())
-	{
-		CChar::WriteInSight(this->GetOffset(), 52, "db", this->GetID(), 7);
-
-	}
-}
-
-#define g_NPCCount *(DWORD*)0x4E1A98;
-
-void IChar::NPCAppear()
-{
-	if (this->IsOnline())
-	{
-		auto npcCount = g_NPCCount;
-		auto npccurindex = 1;
-			do {
-				int NPC = CNPC::FindNPC(static_cast<char>(npccurindex));
-				if (NPC) {
-					CChar::WriteInSight(this->GetOffset(), 52, "dw", *(DWORD *)(NPC + 28), npccurindex);
-					CChar::WriteInSight(this->GetOffset(), 56, "db", this->GetID(), 7);
-					CChar::WriteInSight(this->GetOffset(), 61, "db", this->GetID(), 9);
-					*(DWORD *)((int)this->GetOffset() + 468) = GetTickCount() + 10000;
-				}
-				npcCount = g_NPCCount;
-				npccurindex++;
-			} while (npcCount > 0);
-
-
-		}
-
-	}
 
 
 
@@ -2617,6 +2586,14 @@ void IChar::RemoveSetRed()
 		CChar::WriteInSight(this->GetOffset(),46,"dI",this->GetID(),(__int64)0);
 }
 
+void IChar::GuildColor()
+{
+	int GID = *(DWORD *)((int)this->Offset + 480);
+	if (this->IsOnline() && GID)
+		CDBSocket::Write(121, "d", this->GetPID());
+
+}
+
 int IChar::GetGID()
 {
 	if (this->IsOnline())
@@ -2939,6 +2916,14 @@ void IChar::StartQuest(int QuestID, int Time, int Repeat, int Count)
 			CDBSocket::Write(14, "dwbbddd", this->GetPID(), QuestID, 1, 0, Time, Repeat, Count);
 		else
 			CDBSocket::Write(13, "dwbbddd", this->GetPID(), QuestID, 1, 0, Time, Repeat, Count);
+	}
+}
+
+void IChar::DeleteQuest(int QuestID)
+{
+	if (this->IsOnline())
+	{
+		CDBSocket::Write(122, "dd", this->GetPID(), QuestID);
 	}
 }
 

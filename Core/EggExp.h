@@ -29,13 +29,21 @@ int __fastcall UpdateExp(int PlayerEgg ,void *edx, int Player, int Check)
 		ExpTime += (ExpTime * 10000 / 100);
 	}
 
-	for (std::map<int, int>::iterator it = GoldenEggBuffs.begin(); it != GoldenEggBuffs.end(); ++it) {
-		int buffID = it->first;
-		int buffValue = it->second;
-		if (IPlayer.IsBuff(buffID)) {
-			ExpKill += (ExpKill * buffValue) / 100;
+	//for (std::map<int, int>::iterator it = GoldenEggBuffs.begin(); it != GoldenEggBuffs.end(); ++it) {
+	//	int buffID = it->first;
+	//	int buffValue = it->second;
+	//	if (IPlayer.IsBuff(buffID)) {
+	//		ExpKill += (ExpKill * buffValue) / 100;
+	//	}
+	//}
+
+	for (std::map<int, BuffMaker>::const_iterator it = BuffMakerCheck.begin(); it != BuffMakerCheck.end(); ++it) {
+		const BuffMaker& buff = it->second;
+		if (IPlayer.IsBuff(buff.BuffID) && buff.Egg == "true") {
+			ExpKill -= (ExpKill * buff.count) / 100;
 		}
 	}
+
 
 	if (Check)
 	{

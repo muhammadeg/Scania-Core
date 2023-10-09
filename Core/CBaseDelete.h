@@ -3,6 +3,81 @@ void insertOfflineReward(int PID, int Index, int Amount, int Class, int Prefix, 
 	CDBSocket::Write(115, "dddddddddddddds", PID, Index, Amount, Class, Prefix, Info, Attack, Magic, TOA, Upgrade, Defense, Evasion, Endurance, ItemStat, Message);
 }
 
+bool CheckRangeProtection(int Player, signed int SkillID, int Target, int pPacket, int pPos)
+{
+	IChar IPlayer((void*)Player);
+	IChar ITarget((void*)Target);
+
+	int maxrange = 0;
+	if (CheckRangeConfig.count(SkillID + (IPlayer.GetClass() * 100)))
+		maxrange = CheckRangeConfig.find(SkillID + (IPlayer.GetClass() * 100))->second.maxRange;
+	else
+	{
+		if (IPlayer.GetClass() == 0)
+			maxrange = KRange;
+		else if (IPlayer.GetClass() == 1)
+			maxrange = MRange;
+		else if (IPlayer.GetClass() == 2)
+			maxrange = ARRange;
+		else if (IPlayer.GetClass() == 3)
+			maxrange = TRange;
+		else if (IPlayer.GetClass() == 4)
+			maxrange = SRange;
+	}
+
+	int Around = IPlayer.GetObjectListAround(maxrange);
+	bool isValidRange = false;
+
+	while (Around)
+	{
+		IChar Object((void*)CBaseList::Offset((void*)Around));
+
+		if (ITarget.GetOffset())
+		{
+			if (ITarget.GetOffset() == Object.GetOffset())
+			{
+				isValidRange = true;
+				break;
+			}
+		}
+		else {
+
+			if (Object.GetOffset() && IPlayer.GetOffset() != Object.GetOffset())
+			{
+				isValidRange = true;
+				break; // No need to check further
+			}
+		}
+
+		Around = CBaseList::Pop((void*)Around);
+	}
+
+	return isValidRange;
+
+}
+
+void ProcessNPCList(bool showNPC) {
+	for (auto i = 1; i < 100000; i++) {
+		int NPC = CNPC::FindNPC((char)i);
+		IChar INPC((void*)NPC);
+		if (NPC) {
+			if (showNPC)
+				CPlayer::WriteAll(52, "dwbdddwId", *(DWORD *)(NPC + 28), *(DWORD*)((int)NPC + 448), *(DWORD *)(NPC + 452), INPC.GetX(), INPC.GetY(), INPC.GetZ(), *(DWORD *)(NPC + 348), (unsigned __int64)*(DWORD *)(NPC + 280), 0);
+			else
+				CPlayer::WriteAll(57, "d", *(DWORD *)(NPC + 28));
+		}
+		CIOObject::Release((void*)NPC);
+	}
+}
+
+void DeleteNPCList() {
+	ProcessNPCList(false);
+}
+
+void ShowNPCList() {
+	ProcessNPCList(true);
+}
+
 void UpdateAutoMission(void* Player, void* Monster) {
 	IChar IPlayer(Player);
 	IChar ITarget(Monster);

@@ -520,3 +520,21 @@ void __fastcall NPCSendCreate(int Npc, void *edx, int Player, int Argument)
 			CPlayer::Write((void*)Player, 46, "dI", (*(DWORD*)(Npc + 28)), __int64(0x400 << TriangularBattle::DemonScore));
 	}
 }
+
+void __fastcall SendDelete(int Npc, void *edx, int Player, int Argument)
+{
+	CNPC::SendDelete(Npc, Player, Argument);
+
+	if (TriangularBattle::Active) {
+		int ID = (*(DWORD*)(Npc + 448));
+
+		if (ID == 729)
+			CPlayer::Write((void*)Player, 46, "dI", (*(DWORD*)(Npc + 28)), __int64(0x400 << TriangularBattle::HumanScore));
+
+		if (ID == 730)
+			CPlayer::Write((void*)Player, 46, "dI", (*(DWORD*)(Npc + 28)), __int64(0x400 << TriangularBattle::DoggebiScore));
+
+		if (ID == 731)
+			CPlayer::Write((void*)Player, 46, "dI", (*(DWORD*)(Npc + 28)), __int64(0x400 << TriangularBattle::DemonScore));
+	}
+}

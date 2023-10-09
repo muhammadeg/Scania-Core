@@ -48,7 +48,7 @@ void __fastcall PKKill(void *Player, void *edx, int Playerr)
 		}
 	}
 
-	if (PSActive && AssassinKiller && Killer.GetBuffValue(BuffNames::IPAddress) != Killed.GetBuffValue(BuffNames::IPAddress)) {
+	if (PSActive && AssaCheck && Killer.GetBuffValue(BuffNames::IPAddress) != Killed.GetBuffValue(BuffNames::IPAddress)) {
 		if (PSLimit) {
 			int KillerIsBuff = Killer.IsBuff(BuffNames::AssaPointsLimit);
 			int KilledIsBuff = Killed.IsBuff(BuffNames::AssaPointsLimit);

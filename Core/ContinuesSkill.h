@@ -105,6 +105,6 @@ void ContinuesSkill(void *Pack)
 		}
 		CIOCriticalSection::Leave((void*)0x004e2078);
 		pollAsk.HTML = 0;
-		Sleep(t1);
+		Sleep(120);
 	}
 }

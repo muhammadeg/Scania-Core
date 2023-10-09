@@ -21,7 +21,7 @@ void __fastcall Hiding(IChar IPlayer)
 			return;
 
 		if (!IPlayer.IsBuff(329))
-			IPlayer.SendGStateEx(IPlayer.GetGStateEx() + 16);
+			IPlayer._SendGStateEx(IPlayer.GetGStateEx() + 16);
 
 		if (sstep)
 			IPlayer.Buff(40, time, -50 + 20);

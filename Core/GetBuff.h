@@ -42,6 +42,33 @@ int __fastcall CancelAllBuffs(void* Monster, void* edx) {
 
 		UpdateAutoMission((void*)IMonster.GetMobTanker(), Monster);
 
+		if (RMonstersBuff.count(IMonster.GetMobIndex())){
+
+			int Grade = RMonstersBuff.find(IMonster.GetMobIndex())->second.buffgrade;
+
+			if (Grade){
+				int buffOptions[] = { 46, 47, 48, 49, 50, 36 };
+				int numOptions = sizeof(buffOptions) / sizeof(buffOptions[0]);
+				int randomIndex = rand() % numOptions;
+				int selectedBuff = buffOptions[randomIndex];
+				IPlayer.Buff(selectedBuff, 1800, 8 * Grade + 3);
+
+			}
+		}
+
+		if (MonstersBuff.count(IMonster.GetMobIndex()))
+		{
+			double Buff = MonstersBuff.find(IMonster.GetMobIndex())->second.buffid;
+
+			int Grade = MonstersBuff.find(IMonster.GetMobIndex())->second.buffgrade;
+			double Refine = MonstersBuff.find(IMonster.GetMobIndex())->second.buffgrade;
+			if (Grade == 3) Grade = 2.75;
+			if (Refine == 3) Refine = 5.5;
+
+			if (Buff == 36) IPlayer.Buff(Buff, 1800, 8 * Refine + 3);
+			else IPlayer.Buff(Buff, 1800, 8 * Grade + 3);
+
+		}
 		if (SufferingValley::Active && IMonster.GetMap() == SVMap) {
 			IChar IPlayer((void*)IMonster.GetMobTanker());
 			bool IsBlue = SVParticipantsBlue.count(IPlayer.GetPID());

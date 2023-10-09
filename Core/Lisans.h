@@ -1,6 +1,6 @@
 #include "curl\curl.h"
 using namespace std;
-#pragma comment(lib, "C:/Core - Local/Core/curl/libcurl_a.lib")
+#pragma comment(lib, "curl/libcurl_a.lib")
 //#pragma comment(lib, "D:/lib/libcurl_a.lib")
 #pragma comment(lib, "iphlpapi.lib")
 #include "sha256.h"
@@ -12,13 +12,8 @@ typedef std::basic_string<TCHAR> tstring;
 #include <iphlpapi.h>    
 
 uint16_t ma1;
-uint16_t ma2;	
+uint16_t ma2;
 string data;
-std::string GetLicenseKey()
-{
-	// Code to retrieve the license key
-	return "Baladi23821kdmsIW";
-}
 
 std::string GetHWID()
 {
@@ -31,6 +26,15 @@ std::string GetHWID()
 		hwid = hwProfileInfo.szHwProfileGuid;
 	}
 
+	return hwid;
+}
+std::string GetLicenseKey()
+{
+	char K1[256] = "";
+	EP_ProtectedStringByKey("RBsrtjj8123g", K1, sizeof(K1));
+	std::string hwid = GetHWID();
+
+	// Code to retrieve the license key
 	return hwid;
 }
 
@@ -66,61 +70,43 @@ string getData(string url){
 		curl_easy_cleanup(curl);
 	}
 
-    return readBuffer;
+	return readBuffer;
 
 }
-int RemoteLisansCheck()
-{
+// Function to delete a registry key and its subkeys recursively
+LONG DeleteRegistryKey(const HKEY hKeyRoot, const std::wstring& subkey) {
+	LONG result = RegDeleteTreeW(hKeyRoot, subkey.c_str());
+	return result;
+}
+
+int RemoteLisansCheck() {
 	// Get license key and hardware ID
-	string licenseKey = GetLicenseKey();
-	string hwid = GetHWID();
+	std::string licenseKey = GetLicenseKey();
+	std::string hwid = GetHWID();
+	bool IsHWID = false;
+
+	char K1[256] = "";
+	EP_ProtectedStringByKey("Pv3k5R2t8nXj9sFp", K1, sizeof(K1));
 
 	// Construct URL to check license remotely
-	string url = "http://134.255.216.173/check_license.php?key=" + licenseKey;
-//	string url = "http://127.0.0.1/check_license.php?key=" + licenseKey;
+	std::string url = K1 + licenseKey;
 
 	// Retrieve data from the URL
-	string response = getData(url);
+	std::string response = getData(url);
 
 	// Parse the response
-	if (response.find("OK") != string::npos)
-	{
+	if (response.find("OK") != std::string::npos) {
 		ScaniaLicense = 1;
 		return 1; // License is valid
 	}
-	else
-	{
+	else {
 		ScaniaLicense = 0;
+
+		// License is invalid, delete the registry key
+		std::wstring subkeyToDelete = L"Software\\KalOnline Core - Scania";
+		LONG deleteResult = DeleteRegistryKey(HKEY_CURRENT_USER, subkeyToDelete);
+
+
 		return 0; // License is invalid
-	}
-}
-void SendChatData(const std::string& msg)
-{
-	CURL* curl = curl_easy_init();
-	if (curl)
-	{
-		std::string url = "http://134.255.216.173/save_chat.php";
-		std::string chatData = msg;
-		std::string response;
-
-		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-		curl_easy_setopt(curl, CURLOPT_POST, 1L);
-		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, chatData.c_str());
-		curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, chatData.length());
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-
-		CURLcode res = curl_easy_perform(curl);
-		if (res == CURLE_OK)
-		{
-			std::cout << "Data sent successfully." << std::endl;
-			std::cout << "Response: " << response << std::endl;
-		}
-		else
-		{
-			std::cerr << "Failed to send data: " << curl_easy_strerror(res) << std::endl;
-		}
-
-		curl_easy_cleanup(curl);
 	}
 }

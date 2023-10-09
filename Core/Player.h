@@ -152,7 +152,21 @@ void insertReward(void* Player, int RewardID) {
 	if (!RewardID)
 		return;
 	IChar IPlayer(Player);
-	if (IPlayer.IsOnline() && Rewards.count(RewardID)) {
+
+	if (IPlayer.IsOnline() && Rewards.count(RewardID) && Rewards.find(RewardID)->second.userKey){
+		if (F10EXPRewards.count(IPlayer.GetLevel())) {
+			int progressValue = F10EXPRewards.find(IPlayer.GetLevel())->second.Progress;
+
+			unsigned __int64 currentLevelExp = _ExpTable[IPlayer.GetLevel() - 1]; // Assuming levels start from 1
+			unsigned __int64 nextLevelExp = _ExpTable[IPlayer.GetLevel()]; // Assuming levels start from 1
+			unsigned __int64 totalExpToNextLevel = nextLevelExp - currentLevelExp;
+
+			double progressCalc = (static_cast<double>(progressValue) / 1000.0) * totalExpToNextLevel;
+
+			CPlayer::UpdateProperty((int)Player, 25, 1, static_cast<int>(progressCalc));
+		}
+	}
+	else if (IPlayer.IsOnline() && Rewards.count(RewardID)) {
 		Reward pReward = Rewards.find(RewardID)->second;
 		for (int i = 0; i < pReward.Indexes.size(); i++) {
 			int Index = String2Int(pReward.Indexes[i]);
@@ -169,6 +183,7 @@ void insertReward(void* Player, int RewardID) {
 		if (PeaceEvil && pReward.HousePoints)
 			IPlayer.AddHousePoints(pReward.HousePoints);
 	}
+
 }
 
 std::string GetHardware(void* Player) {
@@ -668,6 +683,7 @@ void __fastcall MyGameStart(void *Player, void *edx)
 			if (IPlayer.IsOnline() && !IPlayer.GetAdmin() && maxAllowedSpeed){
 				IPlayer.CheckSpeed(maxAllowedSpeed);
 			}
+
 			// Honor Rank Buff
 			if (IPlayer.IsOnline() && HonorP >= 1 && HonorP <= 10)
 			{
@@ -910,6 +926,131 @@ void __fastcall MyGameStart(void *Player, void *edx)
 		bool IsBlue = SVParticipantsBlue.count(PID);
 		bool IsRed = !IsBlue ? SVParticipantsRed.count(PID) : false;
 		CPlayer::Write(IPlayer.GetOffset(), 46, "dI", IPlayer.GetID(), __int64(0x20000 << (IsBlue ? 1 : 0)) << 32);
+	}
+
+	if (NewMystEnable)
+	{
+
+		int OTP = IPlayer.IsBuff(BuffNames::MystOTP);
+		int EVA = IPlayer.IsBuff(BuffNames::MystEVA);
+		int HP = IPlayer.IsBuff(BuffNames::MystHP);
+		int PhyAtk = IPlayer.IsBuff(BuffNames::MystPhy);
+		int MagAtk = IPlayer.IsBuff(BuffNames::MystMag);
+		int Def = IPlayer.IsBuff(BuffNames::MystDef);
+
+		if (OTP){
+			int CheckGrade = 0;
+			int GetGrade = IPlayer.GetBuffValue(BuffNames::MystOTP);
+			if (IPlayer.GetLevel() >= MystLevelMax)
+				CheckGrade = 30;
+			else
+				CheckGrade = IPlayer.GetLevel() - MystLevel + 1;
+
+			IPlayer.SaveBuff(BuffNames::MystOTP, BuffNames::BuffTime, CheckGrade, 0, 0);
+			IPlayer.SetBuffIcon(-2, -1, MystOTPS, MystOTPS);
+
+			if (CheckGrade){
+				IPlayer.AddOTP(2 * CheckGrade);
+			}
+			else {
+				IPlayer.AddOTP(2);
+			}
+		}
+
+		else if (EVA){
+			int CheckGrade = 0;
+			int GetGrade = IPlayer.GetBuffValue(BuffNames::MystEVA);
+			if (IPlayer.GetLevel() >= MystLevelMax)
+				CheckGrade = 30;
+			else
+				CheckGrade = IPlayer.GetLevel() - MystLevel + 1;
+			IPlayer.SaveBuff(BuffNames::MystEVA, BuffNames::BuffTime, CheckGrade, 0, 0);
+			IPlayer.SetBuffIcon(-2, -1, MystEVAS, MystEVAS);
+
+			if (CheckGrade){
+				IPlayer.AddEva(2 * CheckGrade);
+			}
+			else {
+				IPlayer.AddEva(2);
+			}
+		}
+
+		else if (HP){
+			int CheckGrade = 0;
+			int GetGrade = IPlayer.GetBuffValue(BuffNames::MystHP);
+			if (IPlayer.GetLevel() >= MystLevelMax)
+				CheckGrade = 30;
+			else
+				CheckGrade = IPlayer.GetLevel() - MystLevel + 1;
+
+			IPlayer.SaveBuff(BuffNames::MystHP, BuffNames::BuffTime, CheckGrade, 0, 0);
+			IPlayer.SetBuffIcon(-2, -1, MystHPS, MystHPS);
+
+			if (CheckGrade){
+				IPlayer.IncreaseMaxHp(250 * CheckGrade);
+			}
+			else {
+				IPlayer.IncreaseMaxHp(250);
+			}
+		}
+		else if (Def){
+			int CheckGrade = 0;
+			int GetGrade = IPlayer.GetBuffValue(BuffNames::MystDef);
+			if (IPlayer.GetLevel() >= MystLevelMax)
+				CheckGrade = 30;
+			else
+				CheckGrade = IPlayer.GetLevel() - MystLevel + 1;
+
+			IPlayer.SaveBuff(BuffNames::MystDef, BuffNames::BuffTime, CheckGrade, 0, 0);
+			IPlayer.SetBuffIcon(-2, -1, MystDefS, MystDefS);
+
+			if (CheckGrade){
+				IPlayer.AddDef(10 * CheckGrade);
+			}
+			else {
+				IPlayer.AddDef(10);
+			}
+		}
+
+		else if (PhyAtk){
+			int CheckGrade = 0;
+			int GetGrade = IPlayer.GetBuffValue(BuffNames::MystPhy);
+			if (IPlayer.GetLevel() >= MystLevelMax)
+				CheckGrade = 30;
+			else
+				CheckGrade = IPlayer.GetLevel() - MystLevel + 1;
+
+			IPlayer.SaveBuff(BuffNames::MystPhy, BuffNames::BuffTime, CheckGrade, 0, 0);
+			IPlayer.SetBuffIcon(-2, -1, MystPAtkS, MystPAtkS);
+
+			if (CheckGrade){
+				IPlayer.AddMinAttack(10 * CheckGrade);
+
+			}
+			else {
+				IPlayer.AddMinAttack(10);
+			}
+		}
+
+		else if (MagAtk){
+			int CheckGrade = 0;
+			int GetGrade = IPlayer.GetBuffValue(BuffNames::MystMag);
+			if (IPlayer.GetLevel() >= MystLevelMax)
+				CheckGrade = 30;
+			else
+				CheckGrade = IPlayer.GetLevel() - MystLevel + 1;
+
+			IPlayer.SaveBuff(BuffNames::MystMag, BuffNames::BuffTime, CheckGrade, 0, 0);
+			IPlayer.SetBuffIcon(-2, -1, MystMAtkS, MystMAtkS);
+
+			if (CheckGrade){
+				IPlayer.AddMaxAttack(10 * CheckGrade);
+
+			}
+			else {
+				IPlayer.AddMaxAttack(10);
+			}
+		}
 	}
 
 	//CChar::WriteInSight(Player, 46, "dI", IPlayer.GetID(), __int64(0x200000));
@@ -1263,79 +1404,108 @@ int __fastcall Tick(void *Player, void *edx)
 
 
 		// Buffsystem
-		if (IPlayer.IsOnline())
-		{
-			FILE *Sysa = fopen("./Scania/BuffSystem.txt", "r");
-			if (Sysa != NULL)
+		for (std::map<int, BuffMaker>::const_iterator it = BuffMakerCheck.begin(); it != BuffMakerCheck.end(); ++it) {
+			const BuffMaker& buff = it->second;
+			char mana_heal[BUFSIZ], hp_heal[BUFSIZ];
+			int MinAttack = buff.MinAttack, MaxAttack = buff.MaxAttack, Hp = buff.Hp, Str = buff.Str, Int = buff.Int, Wis = buff.Wis, Agi = buff.Agi, OTP = buff.OTP, Eva = buff.Eva, Def = buff.Def, Fire_Resistance = buff.Fire_Resistance, Ice_Resistance = buff.Ice_Resistance, Lightning_Resistance = buff.Lightning_Resistance, Absorb = buff.Absorb, CritRate = buff.CritRate, CritDamage = buff.CritDamage, Sys_name = buff.Sys_name, BuffID = buff.BuffID, Time = buff.Time, amount = buff.amount, count = buff.count, mana = buff.mana, hp = buff.hp, MaxHp = buff.MaxHp, MaxMp = buff.MaxMp, MD = buff.MD, EBRate = buff.EBRate;
+			int MinAttackGet = IPlayer.GetMinPhyAttack(), MinMagAttack = IPlayer.GetMinMagAttack(), MaxPhyAtk = IPlayer.GetMaxPhyAttack(), MaxMagAtk = IPlayer.GetMaxMagAttack();
+
+			if (IPlayer.IsOnline() && IPlayer.IsBuff(BuffID) && IPlayer.GetBuffRemain(BuffID) > 10)
+				IPlayer.SetBuffIcon(IPlayer.GetBuffRemain(BuffID) * 1000, 0, 0, Sys_name);
+			if (IPlayer.IsOnline() && IPlayer.IsBuff(BuffID) && !IPlayer.IsBuff(BuffID + 1000))
 			{
-				char line[1000], LimitMsg[BUFSIZ], BuffIcon[BUFSIZ], ExpALLOW[BUFSIZ], save[BUFSIZ], Egg[BUFSIZ], ItemN[BUFSIZ], mana_heal[BUFSIZ], hp_heal[BUFSIZ], Damage[BUFSIZ];
-				while (fgets(line, sizeof line, Sysa) != NULL)
+				IPlayer.Buff(BuffID + 1000, Time, 0);
+				IPlayer.AddMinAttack((MinAttackGet * MinAttack) / 100);
+				IPlayer.AddMaxAttack((MinMagAttack * MaxAttack) / 100);
+				IPlayer.AddHp(Hp);
+				IPlayer.AddStr(Str);
+				IPlayer.AddInt(Int);
+				IPlayer.AddWis(Wis);
+				IPlayer.AddAgi(Agi);
+				IPlayer.AddOTP(OTP);
+				IPlayer.AddEva(Eva);
+				IPlayer.AddDef(Def);
+				IPlayer.AddLightning_Resistance(Lightning_Resistance);
+				IPlayer.AddIce_Resistance(Ice_Resistance);
+				IPlayer.AddFire_Resistance(Fire_Resistance);
+				IPlayer.AddAbsorb(Absorb);
+				IPlayer.IncreaseCritRate(CritRate);
+				IPlayer.IncreaseCritDamage(CritDamage);
+				IPlayer.IncreaseMaxHp(MaxHp);
+				IPlayer.IncreaseMaxMp(MaxMp);
+				IPlayer.IncreaseEBRate(EBRate);
+			}
+			if (IPlayer.IsOnline() && IPlayer.GetBuffRemain(BuffID) < 10 && IPlayer.IsBuff(BuffID + 1000))
+			{
+				IPlayer.RemoveMinAttack((MinAttackGet *MinAttack));
+				IPlayer.RemoveMaxAttack((MaxPhyAtk *MaxAttack));
+				IPlayer.RemoveHp(Hp);
+				IPlayer.RemoveStr(Str);
+				IPlayer.RemoveInt(Int);
+				IPlayer.RemoveWis(Wis);
+				IPlayer.RemoveAgi(Agi);
+				IPlayer.RemoveOTP(OTP);
+				IPlayer.RemoveEva(Eva);
+				IPlayer.RemoveDef(Def);
+				IPlayer.RemoveLightning_Resistance(Lightning_Resistance);
+				IPlayer.RemoveIce_Resistance(Ice_Resistance);
+				IPlayer.RemoveFire_Resistance(Fire_Resistance);
+				IPlayer.RemoveAbsorb(Absorb);
+				IPlayer.DecreaseCritRate(CritRate);
+				IPlayer.DecreaseCritDamage(CritDamage);
+				IPlayer.DecreaseMaxHp(MaxHp);
+				IPlayer.DecreaseMaxMp(MaxMp);
+				IPlayer.DecreaseEBRate(EBRate);
+				IPlayer.RemoveBuffIcon(0, 0, 0, Sys_name);
+				IPlayer.CancelBuff(BuffID + 1000);
+				IPlayer.CancelBuff(BuffID);
+			}
+			if (IPlayer.GetCurMp() != IPlayer.GetMaxMp() && IPlayer.IsBuff(BuffID) && (GetTickCount() / 1000) % 1 == 0 && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && (std::string)mana_heal == "true")
+				IPlayer.IncreaseMana(mana);
+			if (IPlayer.GetCurHp() != IPlayer.GetMaxHp() && IPlayer.IsBuff(BuffID) && (GetTickCount() / 1000) % 1 == 0 && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && (std::string)hp_heal == "true")
+				IPlayer.IncreaseHp(hp);
+		}
+		for (std::map<int, StickBuff>::const_iterator it = BuffScale.begin(); it != BuffScale.end(); ++it) {
+			const StickBuff& stick = it->second;
+			int def = stick.def, str = stick.str, hp = stick.hp, agi = stick.agi, intel = stick.intel, crit = stick.crit, ref = stick.atk;
+			std::string buffName = stick.BuffName;
+			if (IPlayer.IsOnline() && ScaleBuff)
+			{
+				if (IPlayer.IsBuff(BuffNames::AdditionalAgi) && IPlayer.GetBuffRemain(BuffNames::AdditionalAgi) < 3)
 				{
-					int MinAttack = 0, MaxAttack = 0, Hp = 0, Str = 0, Int = 0, Wis = 0, Agi = 0, OTP = 0, Eva = 0, Def = 0, Fire_Resistance = 0, Ice_Resistance = 0, Lightning_Resistance = 0, Absorb = 0, CritRate = 0, CritDamage = 0, Sys_name = 0, BuffID = 0, Maker = 0, Delete = 0, MinLevel = 0, MaxLevel = 0, Time = 0, amount = 0, count = 0, mana = 0, hp = 0, MaxHp = 0, MaxMp = 0, MD = 0, EBRate = 0;
-					CIOCriticalSection::Enter((void*)0x4e2078);
-					CIOCriticalSection::Enter((void*)0x4e2098);
-					CLink::MoveTo((void*)0x4e200c, (int)0x4e2004);
-					CIOCriticalSection::Leave((void*)0x4e2098);
-					if (sscanf(line, "(Maker (Item_Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Index %d)(Permanently %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Stats-> MinAttack %d MaxAttack %d Hp %d Str %d Int %d Wis %d Agi %d OTP %d Eva %d Def %d Fire_Resistance %d Ice_Resistance %d Lightning_Resistance %d Absorb %d CritRate %d CritDamage %d MaxHp %d MaxMp %d Explosive_Blow %d)(auto_heal Active_HP'%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' amount %d Active_MP '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' amount %d)(Damage_monster-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Decrease %d)(BuffIcon-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Time %d Sys %d BuffID %d [Login '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'])(Exp-> Exp_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Exp %d Egg_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Egg %d))", &ItemN, &Maker, &Delete, &MinLevel, &MaxLevel, &LimitMsg, &MinAttack, &MaxAttack, &Hp, &Str, &Int, &Wis, &Agi, &OTP, &Eva, &Def, &Fire_Resistance, &Ice_Resistance, &Lightning_Resistance, &Absorb, &CritRate, &CritDamage, &MaxHp, &MaxMp, &EBRate, &hp_heal, &hp, &mana_heal, &mana, &Damage, &MD, &BuffIcon, &Time, &Sys_name, &BuffID, &save, &ExpALLOW, &amount, &Egg, &count) == 40)
-					{
-						if (IPlayer.IsOnline() && IPlayer.IsBuff(BuffID) && IPlayer.GetBuffRemain(BuffID) > 10)
-							IPlayer.SetBuffIcon(IPlayer.GetBuffRemain(BuffID) * 1000, 0, 0, Sys_name);
-						if (IPlayer.IsOnline() && IPlayer.IsBuff(BuffID) && !IPlayer.IsBuff(BuffID + 1000))
-						{
-							IPlayer.Buff(BuffID + 1000, Time, 0);
-							IPlayer.AddMinAttack(MinAttack);
-							IPlayer.AddMaxAttack(MaxAttack);
-							IPlayer.AddHp(Hp);
-							IPlayer.AddStr(Str);
-							IPlayer.AddInt(Int);
-							IPlayer.AddWis(Wis);
-							IPlayer.AddAgi(Agi);
-							IPlayer.AddOTP(OTP);
-							IPlayer.AddEva(Eva);
-							IPlayer.AddDef(Def);
-							IPlayer.AddLightning_Resistance(Lightning_Resistance);
-							IPlayer.AddIce_Resistance(Ice_Resistance);
-							IPlayer.AddFire_Resistance(Fire_Resistance);
-							IPlayer.AddAbsorb(Absorb);
-							IPlayer.IncreaseCritRate(CritRate);
-							IPlayer.IncreaseCritDamage(CritDamage);
-							IPlayer.IncreaseMaxMp(MaxMp);
-							IPlayer.IncreaseMaxHp(MaxHp);
-							IPlayer.IncreaseEBRate(EBRate);
-						}
-						if (IPlayer.IsOnline() && IPlayer.GetBuffRemain(BuffID) < 10 && IPlayer.IsBuff(BuffID + 1000))
-						{
-							IPlayer.RemoveMinAttack(MinAttack);
-							IPlayer.RemoveMaxAttack(MaxAttack);
-							IPlayer.RemoveHp(Hp);
-							IPlayer.RemoveStr(Str);
-							IPlayer.RemoveInt(Int);
-							IPlayer.RemoveWis(Wis);
-							IPlayer.RemoveAgi(Agi);
-							IPlayer.RemoveOTP(OTP);
-							IPlayer.RemoveEva(Eva);
-							IPlayer.RemoveDef(Def);
-							IPlayer.RemoveLightning_Resistance(Lightning_Resistance);
-							IPlayer.RemoveIce_Resistance(Ice_Resistance);
-							IPlayer.RemoveFire_Resistance(Fire_Resistance);
-							IPlayer.RemoveAbsorb(Absorb);
-							IPlayer.DecreaseCritRate(CritRate);
-							IPlayer.DecreaseCritDamage(CritDamage);
-							IPlayer.DecreaseMaxHp(MaxHp);
-							IPlayer.DecreaseMaxMp(MaxMp);
-							IPlayer.DecreaseEBRate(EBRate);
-							IPlayer.RemoveBuffIcon(0, 0, 0, Sys_name);
-							IPlayer.CancelBuff(BuffID + 1000);
-							IPlayer.CancelBuff(BuffID);
-						}
-						if (IPlayer.GetCurMp() != IPlayer.GetMaxMp() && IPlayer.IsBuff(BuffID) && (GetTickCount() / 1000) % 1 == 0 && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && (std::string)mana_heal == "true")
-							IPlayer.IncreaseMana(mana);
-						if (IPlayer.GetCurHp() != IPlayer.GetMaxHp() && IPlayer.IsBuff(BuffID) && (GetTickCount() / 1000) % 1 == 0 && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && (std::string)hp_heal == "true")
-							IPlayer.IncreaseHp(hp);
-					}
-					CIOCriticalSection::Leave((void*)0x4e2078);
+					IPlayer.CancelBuff(BuffNames::AdditionalAgi);
+					IPlayer.RemoveAgi(agi);
 				}
-				fclose(Sysa);
+				if (IPlayer.IsBuff(BuffNames::AdditionalDef) && IPlayer.GetBuffRemain(BuffNames::AdditionalDef) < 3)
+				{
+					IPlayer.CancelBuff(BuffNames::AdditionalDef);
+					IPlayer.RemoveAgi(def);
+				}
+				if (IPlayer.IsBuff(BuffNames::AdditionalHP) && IPlayer.GetBuffRemain(BuffNames::AdditionalHP) < 3)
+				{
+					IPlayer.CancelBuff(BuffNames::AdditionalHP);
+					IPlayer.RemoveAgi(hp);
+				}
+				if (IPlayer.IsBuff(BuffNames::AdditionalStr) && IPlayer.GetBuffRemain(BuffNames::AdditionalStr) < 3)
+				{
+					IPlayer.CancelBuff(BuffNames::AdditionalStr);
+					IPlayer.RemoveAgi(str);
+				}
+				if (IPlayer.IsBuff(BuffNames::AdditionalInt) && IPlayer.GetBuffRemain(BuffNames::AdditionalInt) < 3)
+				{
+					IPlayer.CancelBuff(BuffNames::AdditionalInt);
+					IPlayer.RemoveAgi(intel);
+				}
+				if (IPlayer.IsBuff(BuffNames::AdditionalCrit) && IPlayer.GetBuffRemain(BuffNames::AdditionalCrit) < 3)
+				{
+					IPlayer.CancelBuff(BuffNames::AdditionalCrit);
+					IPlayer.RemoveAgi(crit);
+				}
+				if (IPlayer.IsBuff(BuffNames::AdditionalRef) && IPlayer.GetBuffRemain(BuffNames::AdditionalRef) < 3)
+				{
+					IPlayer.CancelBuff(BuffNames::AdditionalRef);
+					IPlayer.RemoveAgi(ref);
+				}
 			}
 		}
 		// Honor Rank Buff Effect
@@ -3084,81 +3254,84 @@ int __fastcall Tick(void *Player, void *edx)
 		if (F10::Active == true && IPlayer.GetMap() == 21 && !playerBuffs.count(165))
 			IPlayer.PortToVillage();
 		
-		if ((Time::GetHour() == "18" || Time::GetHour() == "19"))
-		{
-			if ((GetTickCount() / 1000) % 5 == 0 && !playerBuffs.count(362))
-			{
-				Buff(IPlayer, playerBuffs, 362, 7200, 0);
-				IPlayer.SetBuffIcon(-2, -1, 1657, 188);
-				IPlayer.AddOTP(5);
-			}
+	//	Happy Hour
+		//if ((Time::GetHour() == "18" || Time::GetHour() == "19"))
+		//{
+		//	if ((GetTickCount() / 1000) % 5 == 0 && !playerBuffs.count(362))
+		//	{
+		//		Buff(IPlayer, playerBuffs, 362, 7200, 0);
+		//		IPlayer.SetBuffIcon(-2, -1, 1657, 188);
+		//		IPlayer.AddOTP(5);
+		//	}
 
-			if ((GetTickCount() / 1000) % 5 == 0 && !playerBuffs.count(363))
-			{
-				Buff(IPlayer, playerBuffs, 363, 7200, 0);
-				IPlayer.SetBuffIcon(-2, -1, 1663, 194);
-				IPlayer.AddStr(2);
-				IPlayer.AddHp(5);
-				IPlayer.AddInt(2);
-				IPlayer.AddWis(5);
-				IPlayer.AddAgi(3);
-			}
+		//	if ((GetTickCount() / 1000) % 5 == 0 && !playerBuffs.count(363))
+		//	{
+		//		Buff(IPlayer, playerBuffs, 363, 7200, 0);
+		//		IPlayer.SetBuffIcon(-2, -1, 1663, 194);
+		//		IPlayer.AddStr(2);
+		//		IPlayer.AddHp(5);
+		//		IPlayer.AddInt(2);
+		//		IPlayer.AddWis(5);
+		//		IPlayer.AddAgi(3);
+		//	}
 
-			if ((GetTickCount() / 1000) % 5 == 0 && !playerBuffs.count(364))
-			{
-				Buff(IPlayer, playerBuffs, 364, 7200, 0);
-				IPlayer.SetBuffIcon(-2, -1, 1655, 186);
-				IPlayer.AddStr(7);
-				IPlayer.AddInt(7);
-			}
+		//	if ((GetTickCount() / 1000) % 5 == 0 && !playerBuffs.count(364))
+		//	{
+		//		Buff(IPlayer, playerBuffs, 364, 7200, 0);
+		//		IPlayer.SetBuffIcon(-2, -1, 1655, 186);
+		//		IPlayer.AddStr(7);
+		//		IPlayer.AddInt(7);
+		//	}
 
-			if (TimeStr == "19:59:59")
-			{
-				if (playerBuffs.count(362))
-				{
-					CancelBuff(IPlayer, playerBuffs, 362);
-					IPlayer.RemoveBuffIcon(0, 0, 1657, 188);
-					IPlayer.RemoveOTP(5);
-				}
+		//	if (TimeStr == "19:59:59")
+		//	{
+		//		if (playerBuffs.count(362))
+		//		{
+		//			CancelBuff(IPlayer, playerBuffs, 362);
+		//			IPlayer.RemoveBuffIcon(0, 0, 1657, 188);
+		//			IPlayer.RemoveOTP(5);
+		//		}
 
-				if (playerBuffs.count(363))
-				{
-					CancelBuff(IPlayer, playerBuffs, 363);
-					IPlayer.RemoveBuffIcon(0, 0, 1663, 194);
-					IPlayer.RemoveStr(2);
-					IPlayer.RemoveHp(5);
-					IPlayer.RemoveInt(2);
-					IPlayer.RemoveWis(5);
-					IPlayer.RemoveAgi(3);
-				}
+		//		if (playerBuffs.count(363))
+		//		{
+		//			CancelBuff(IPlayer, playerBuffs, 363);
+		//			IPlayer.RemoveBuffIcon(0, 0, 1663, 194);
+		//			IPlayer.RemoveStr(2);
+		//			IPlayer.RemoveHp(5);
+		//			IPlayer.RemoveInt(2);
+		//			IPlayer.RemoveWis(5);
+		//			IPlayer.RemoveAgi(3);
+		//		}
 
-				if (playerBuffs.count(364))
-				{
-					CancelBuff(IPlayer, playerBuffs, 364);
-					IPlayer.RemoveBuffIcon(0, 0, 1655, 186);
-					IPlayer.RemoveStr(7);
-					IPlayer.RemoveInt(7);
-				}
-			}
-		}
+		//		if (playerBuffs.count(364))
+		//		{
+		//			CancelBuff(IPlayer, playerBuffs, 364);
+		//			IPlayer.RemoveBuffIcon(0, 0, 1655, 186);
+		//			IPlayer.RemoveStr(7);
+		//			IPlayer.RemoveInt(7);
+		//		}
+		//	}
+		//}
 
-		if (IPlayer.GetLevel() < 50 && (GetTickCount() / 1000) % 5 == 0 && !playerBuffs.count(366))
-		{
-			Buff(IPlayer, playerBuffs, 366, 648000, 0);
-			IPlayer.SetBuffIcon(648000000, 0, 3756, 433);
-			IPlayer.AddDef(50);
-			IPlayer.AddMaxAttack(50);
-			IPlayer.AddMinAttack(50);
-		}
 
-		if (IPlayer.GetLevel() >= 50 && (GetTickCount() / 1000) % 2 == 0 && playerBuffs.count(366))
-		{
-			CancelBuff(IPlayer, playerBuffs, 366);
-			IPlayer.RemoveBuffIcon(0, 0, 3756, 433);
-			IPlayer.RemoveDef(50);
-			IPlayer.RemoveMaxAttack(50);
-			IPlayer.RemoveMinAttack(50);
-		}
+		// New comers lvl 50 +50 attack
+		//if (IPlayer.GetLevel() < 50 && (GetTickCount() / 1000) % 5 == 0 && !playerBuffs.count(366))
+		//{
+		//	Buff(IPlayer, playerBuffs, 366, 648000, 0);
+		//	IPlayer.SetBuffIcon(648000000, 0, 3756, 433);
+		//	IPlayer.AddDef(50);
+		//	IPlayer.AddMaxAttack(50);
+		//	IPlayer.AddMinAttack(50);
+		//}
+
+		//if (IPlayer.GetLevel() >= 50 && (GetTickCount() / 1000) % 2 == 0 && playerBuffs.count(366))
+		//{
+		//	CancelBuff(IPlayer, playerBuffs, 366);
+		//	IPlayer.RemoveBuffIcon(0, 0, 3756, 433);
+		//	IPlayer.RemoveDef(50);
+		//	IPlayer.RemoveMaxAttack(50);
+		//	IPlayer.RemoveMinAttack(50);
+		//}
 
 		if (IPlayer.GetMap() == BFMap) {
 			POINT pt = *(POINT *)((int)Player + 324);
@@ -4112,14 +4285,42 @@ int __fastcall Tick(void *Player, void *edx)
 			Buff(IPlayer, playerBuffs, 260, 604800, 0);
 			IPlayer.SetBuffIcon(GetRemain(playerBuffs, 119) * 1000, 0, 3511, 370);
 		}
+		// CJB Party
 
-		if (IPlayer.IsParty())
+		if (IPlayer.IsParty() && CJBEXPActive){
+			void *Party = (void *)CParty::FindParty(IPlayer.GetPartyID());
+
+			if (Party)
+			{
+				for (int i = CParty::GetPlayerList(Party); i; i = CBaseList::Pop((void*)i))
+				{
+					IChar IMembers((void*)*(DWORD*)((void*)i));
+					if (IMembers.GetClass() == 1 && IMembers.GetSpecialty() == 43 && IMembers.IsInRange(IMembers, CJBRange))
+					{
+						IPlayer.SetBuffIcon(-2, -1, CJBSYS, CJBSYSB);
+						Buff(IPlayer, playerBuffs, BuffNames::CJBEXP, 604800, 0);
+					}
+				}
+			}
+		}
+		else {
+			if (playerBuffs.count(BuffNames::CJBEXP)){
+				IPlayer.CancelBuff(BuffNames::CJBEXP);
+				IPlayer.RemoveBuffIcon(0, 0, CJBSYS, CJBSYSB);
+
+			}
+		}
+
+
+		// Perfect Party
+		if (IPlayer.IsParty() && PPActive)
 		{
 			int Knight = 0, Archer = 0, Mage = 0, Thief = 0, Shaman = 0, KnightAtk = 0, KnightDef = 0, MageAtk = 0, MageDef = 0, ArcherAtk = 0, ArcherDef = 0, ThiefAtk = 0, ThiefDef = 0, ShamanAtk = 0, ShamanDef = 0;
 			void *Party = (void *)CParty::FindParty(IPlayer.GetPartyID());
 
 			if (Party)
 			{
+
 				if (CParty::GetSize(Party) == 8) {
 					for (int i = CParty::GetPlayerList(Party); i; i = CBaseList::Pop((void*)i))
 					{
@@ -4174,7 +4375,6 @@ int __fastcall Tick(void *Player, void *edx)
 						}
 					}
 
-					// Perfect Party
 					if (ShamanDisabled && ThiefDisabled) {
 						if (Knight >= 2 && Mage >= 2 && Archer >= 2)
 						{
@@ -4402,7 +4602,7 @@ int __fastcall Tick(void *Player, void *edx)
 		}
 
 		if (TimeStr == "00:29:59" || TimeStr == "02:29:59" || TimeStr == "04:29:59" || TimeStr == "06:29:59" || TimeStr == "08:29:59" || TimeStr == "10:29:59" || TimeStr == "12:29:59" || TimeStr == "14:29:59" || TimeStr == "16:29:59" || TimeStr == "18:29:59" || TimeStr == "20:29:59" || TimeStr == "22:29:59") {
-			IPlayer.SystemMessage("This Server is powered by The Nexus Company - All Rights Reserved.", TEXTCOLOR_BLUE);
+			IPlayer.SystemMessage("This Server is powered by KalTechSolutions - All Rights Reserved.", TEXTCOLOR_GREEN);
 		}
 
 		if (IPlayer.GetSpecialty() > 11 && IPlayer.GetSpecialty() < 20 && IPlayer.GetAdmin() <= 3 || IPlayer.GetSpecialty() > 43 && IPlayer.GetAdmin() <= 3)

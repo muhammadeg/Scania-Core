@@ -139,6 +139,30 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			return;
 		}
 	}
+	//if (IPlayer.IsOnline() && Quest.GetIndex() == EmoteQuest) {
+	//	int questFlag = Quest.GetFlag();
+	//	if (EmoteSystem.count(questFlag)) {
+	//		const std::pair<std::string, int>& emoteData = EmoteSystem.find(questFlag)->second;
+	//		const std::string& particle = emoteData.first;
+	//		int itemIndex = emoteData.second;
+
+	//		if (!IPlayer.IsBuff(BuffNames::Emote)) {
+	//			if (itemIndex && !CPlayer::FindItem((void*)PlayerOffset, itemIndex, 1)){
+	//				IPlayer.SystemMessage("You dont have the required item to use Emote.", TEXTCOLOR_RED);
+	//				return;
+	//			}
+
+	//			IPlayer.AddParticleE(particle.c_str(), 0);
+	//			IPlayer.Buff(BuffNames::Emote, EmoteCooldown, 0);
+	//			return;
+	//		}
+	//		else {
+	//			IPlayer.SystemMessage("You need to wait " + Int2String(IPlayer.GetBuffRemain(BuffNames::Emote)) + " seconds to use Emote Feature", TEXTCOLOR_RED);
+	//			return;
+	//		}
+	//	}
+	//	return;
+	//}
 
 	if (IPlayer.IsOnline() && Quest.GetIndex() == EmoteQuest) {
 		int questFlag = Quest.GetFlag();
@@ -1669,10 +1693,33 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 		return;
 	}
 
+	if (IPlayer.IsOnline() && QuestsNotice.count(Quest.GetIndex()))
+	{
+		if (Quest.GetFlag() == QuestsNotice.find(Quest.GetIndex())->second.qFlag){
+			if (CPlayer::FindItem(IPlayer.GetOffset(), QuestsNotice.find(Quest.GetIndex())->second.QuestItem, QuestsNotice.find(Quest.GetIndex())->second.qAmount)){
+
+				std::string msg = (std::string)IPlayer.GetName() + " " + QuestsNotice.find(Quest.GetIndex())->second.Notice;
+				CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), NOTICECOLOR_WHITE);
+			}
+		}
+	}
+
+	if (IPlayer.IsOnline() && cQuestsNotice.count(Quest.GetIndex()))
+	{
+	//		int QuestIn = (CQuestsNotice.find(Quest.GetIndex())->second.clearQ << 16);
+		int ClearQ = CPlayer::CheckQuestClear((int)IPlayer.GetOffset(), cQuestsNotice.find(Quest.GetIndex())->second.clearQ);
+			if (Quest.GetFlag() == cQuestsNotice.find(Quest.GetIndex())->second.qFlag){
+				if (ClearQ){
+					std::string msg = (std::string)IPlayer.GetName() + " " + QuestsNotice.find(Quest.GetIndex())->second.Notice;
+					CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), NOTICECOLOR_WHITE);
+				}
+			}
+	}
+
 	if (IPlayer.IsOnline() && Quest.GetIndex() == (DNPCRQ % 65536))
 	{
 		int CheckItemLeft = DNPCIA - DNPCECollectedTotalItem;
-		std::string msg = Int2String(DNPCECollectedTotalItem) + " damage event items have been collected in total!" + Int2String(CheckItemLeft) + " needed to start event";;
+		std::string msg = Int2String(DNPCECollectedTotalItem) + " damage event items have been collected in total! " + Int2String(CheckItemLeft) + " needed to start event";;
 		IPlayer.SystemMessage(msg, TEXTCOLOR_GREEN);
 		return;
 	}
@@ -1707,7 +1754,7 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 
 				NPCECollectedTotalItem += CheckItem;
 				EventQuests.insert(2, NPCECollectedTotalItem);
-				std::string msg = Int2String(CheckItem) + " event items have been collected from you. " + Int2String(NPCECollectedTotalItem) + " event items have been collected in total!" + Int2String(CheckItemLeft) + " needed to start event";;;
+				std::string msg = Int2String(CheckItem) + " event items have been collected from you. " + Int2String(NPCECollectedTotalItem) + " event items have been collected in total! " + Int2String(CheckItemLeft) + " needed to start event";;;
 				IPlayer.SystemMessage(msg, TEXTCOLOR_GREEN);
 				CPlayer::RemoveItem(IPlayer.GetOffset(), 9, ENPCII, CheckItem);
 			}
@@ -1743,7 +1790,7 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 	if (IPlayer.IsOnline() && Quest.GetIndex() == (ENPCRQ % 65536))
 	{
 		int CheckItemLeft = ENPCIA - NPCECollectedTotalItem;
-		std::string msg = Int2String(NPCECollectedTotalItem) + " event items have been collected in total!" + Int2String(CheckItemLeft) + " needed to start event";;;
+		std::string msg = Int2String(NPCECollectedTotalItem) + " event items have been collected in total! " + Int2String(CheckItemLeft) + " needed to start event";;;
 		IPlayer.SystemMessage(msg, TEXTCOLOR_GREEN);
 		return;
 	}
@@ -2346,6 +2393,163 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 
 		return;
 	}
+
+	// new mystery
+
+	if (IPlayer.IsOnline() && (Quest.GetIndex() == (MystPAtkQ % 65536) || Quest.GetIndex() == (MystMAtkQ % 65536) || Quest.GetIndex() == (MystHPQ % 65536) || Quest.GetIndex() == (MystOTPQ % 65536) || Quest.GetIndex() == (MystEVAQ % 65536) || Quest.GetIndex() == (MystDefQ % 65536)))
+	{
+		int OTP = IPlayer.IsBuff(BuffNames::MystOTP);
+		int EVA = IPlayer.IsBuff(BuffNames::MystEVA);
+		int HP = IPlayer.IsBuff(BuffNames::MystHP);
+		int PhyAtk = IPlayer.IsBuff(BuffNames::MystPhy);
+		int MagAtk = IPlayer.IsBuff(BuffNames::MystMag);
+		int Def = IPlayer.IsBuff(BuffNames::MystDef);
+
+		if (!NewMystEnable){
+			IPlayer.BoxMsg("Mystery skills are disabled.");
+			return;
+		}
+
+		if (IPlayer.GetLevel() < MystLevel){
+			IPlayer.BoxMsg("You must be atleast " + Int2String(MystLevel) + " to learn Mystery Skills.");
+			return;
+		}
+
+		if (OTP || EVA || HP || PhyAtk || MagAtk || Def){
+			IPlayer.BoxMsg("You already learnt a Mystery Skill.");
+			return;
+		}
+
+		if (Quest.GetIndex() == MystPAtkQ){
+			int CheckGrade = 0;
+			int GetGrade = IPlayer.GetBuffValue(BuffNames::MystPhy);
+			if (IPlayer.GetLevel() >= MystLevelMax)
+				CheckGrade = 30;
+			else
+				CheckGrade = IPlayer.GetLevel() - MystLevel + 1;
+
+					IPlayer.SaveBuff(BuffNames::MystPhy, BuffNames::BuffTime, CheckGrade, 0 , 0);
+					IPlayer.SetBuffIcon(-2, -1, MystPAtkS, MystPAtkS);
+
+					if (CheckGrade){
+						IPlayer.AddMinAttack(10 * CheckGrade);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Physical Attack.");
+					}
+					else {
+						IPlayer.AddMinAttack(10);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Physical Attack.");
+					}
+			}
+
+		else if (Quest.GetIndex() == MystMAtkQ){
+			int CheckGrade = 0;
+			int GetGrade = IPlayer.GetBuffValue(BuffNames::MystMag);
+			if (IPlayer.GetLevel() >= MystLevelMax)
+				CheckGrade = 30;
+			else
+				CheckGrade = IPlayer.GetLevel() - MystLevel + 1;
+
+					IPlayer.SaveBuff(BuffNames::MystMag, BuffNames::BuffTime, CheckGrade, 0, 0);
+					IPlayer.SetBuffIcon(-2, -1, MystMAtkS, MystMAtkS);
+
+					if (CheckGrade){
+						IPlayer.AddMaxAttack(10 * CheckGrade);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Magical Attack.");
+					}
+					else {
+						IPlayer.AddMaxAttack(10);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Magical Attack.");
+					}
+
+		}
+
+		else if (Quest.GetIndex() == MystDefQ){
+			int CheckGrade = 0;
+			int GetGrade = IPlayer.GetBuffValue(BuffNames::MystDef);
+			if (IPlayer.GetLevel() >= MystLevelMax)
+				CheckGrade = 30;
+			else
+				CheckGrade = IPlayer.GetLevel() - MystLevel + 1;
+
+					IPlayer.SaveBuff(BuffNames::MystDef, BuffNames::BuffTime, CheckGrade, 0, 0);
+					IPlayer.SetBuffIcon(-2, -1, MystDefS, MystDefS);
+
+					if (CheckGrade){
+						IPlayer.AddDef(10 * CheckGrade);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Defense.");
+					}
+					else {
+						IPlayer.AddDef(10);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Defense.");
+					}
+
+		}
+
+		else if (Quest.GetIndex() == MystHPQ){
+			int CheckGrade = 0;
+			int GetGrade = IPlayer.GetBuffValue(BuffNames::MystHP);
+			if (IPlayer.GetLevel() >= MystLevelMax)
+				CheckGrade = 30;
+			else
+				CheckGrade = IPlayer.GetLevel() - MystLevel + 1;
+
+					IPlayer.SaveBuff(BuffNames::MystHP, BuffNames::BuffTime, CheckGrade, 0, 0);
+					IPlayer.SetBuffIcon(-2, -1, MystHPS, MystHPS);
+
+					if (CheckGrade){
+						IPlayer.IncreaseMaxHp(250 * CheckGrade);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Health Point.");
+					}
+					else {
+						IPlayer.IncreaseMaxHp(250);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Health Point.");
+					}
+		}
+
+		else if (Quest.GetIndex() == MystEVAQ){
+			int CheckGrade = 0;
+			int GetGrade = IPlayer.GetBuffValue(BuffNames::MystEVA);
+			if (IPlayer.GetLevel() >= MystLevelMax)
+				CheckGrade = 30;
+			else
+				CheckGrade = IPlayer.GetLevel() - MystLevel + 1;
+
+					IPlayer.SaveBuff(BuffNames::MystEVA, BuffNames::BuffTime, CheckGrade, 0, 0);
+					IPlayer.SetBuffIcon(-2, -1, MystEVAS, MystEVAS);
+
+					if (CheckGrade){
+						IPlayer.AddEva(2 * CheckGrade);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Evasion Point.");
+					}
+					else {
+						IPlayer.AddEva(2);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Evasion Point.");
+					}
+		}
+
+
+		else if (Quest.GetIndex() == MystOTPQ){
+			int CheckGrade = 0;
+			int GetGrade = IPlayer.GetBuffValue(BuffNames::MystOTP);
+			if (IPlayer.GetLevel() >= MystLevelMax)
+				CheckGrade = 30;
+			else
+				CheckGrade = IPlayer.GetLevel() - MystLevel + 1;
+
+					IPlayer.SaveBuff(BuffNames::MystOTP, BuffNames::BuffTime, CheckGrade, 0, 0);
+					IPlayer.SetBuffIcon(-2, -1, MystOTPS, MystOTPS);
+
+					if (CheckGrade){
+						IPlayer.AddOTP(2 * CheckGrade);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of On Target Point.");
+					}
+					else {
+						IPlayer.AddOTP(2);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of On Target Point.");
+					}
+		}
+	}
+
 
 	if (IPlayer.IsOnline() && Quest.GetIndex() == (MysteryQuest % 65536))
 	{

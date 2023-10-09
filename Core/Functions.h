@@ -7,6 +7,7 @@ struct PlayerBuffs
 	int Remain;
 }; 
 
+
 int GetLevelDiff();
 bool isPlayerInPVP(void* Player);
 void PortToStart(void* Player);
@@ -231,6 +232,7 @@ namespace CConfigs
 namespace CScreen {
 	static void(__cdecl* Add)(int Screen, int nType, const char* format, ...) = (void(__cdecl*)(int, int, const char*, ...))0x0047E320;
 	static void(__thiscall* AddString)(int Screen, int nType, const char* string) = (void(__thiscall*)(int, int, const char*))0x0047E3D0;
+	static int* color = (int*)0x4D62A0;
 }
 
 namespace CIOBuffer
@@ -778,6 +780,9 @@ namespace CNPCSiegeGun
 namespace CNPC
 {
 	static void(__thiscall *SendCreate)(int NPC, int Player, int Argument) = (void(__thiscall*)(int, int, int))0x004491B0;
+	static void(__thiscall *SendDelete)(int NPC, int Player, int Argument) = (void(__thiscall*)(int, int, int))0x00449180;
+	static int(__thiscall *Remove)(int Npc) = (int(__thiscall*)(int))0x00449400;
+
 	static int(__cdecl *FindNPC)(char Npc) = (int(__cdecl*)(char))0x00448FA0;
 	static int(__cdecl *OpenNPC)(char ID, int Player) = (int(__cdecl*)(char, int))0x004490A0;
 	static int(__thiscall *OnDelete)(int Npc) = (int(__thiscall*)(int))0x00449130;

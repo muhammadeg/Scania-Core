@@ -431,10 +431,10 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 		}
 
 		if (packet == 177) {
-			//int ID = 0;
-			//CPacket::Read((char*)pPacket, (char*)pPos, "d", &ID);
+			int ID = 0;
+			CPacket::Read((char*)pPacket, (char*)pPos, "d", &ID);
 
-			//IPlayer.UpdateBuff(BuffNames::TargetAttack, BuffNames::BuffTime, ID);
+		//	IPlayer.UpdateBuff(BuffNames::TargetAttack, BuffNames::BuffTime, ID);
 			return;
 		}
 
@@ -2165,6 +2165,25 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				return;
 			}
 			IPlayer.Buff(256, 2, 0);
+
+			int IID = 0;
+			CPacket::Read((char*)pPacket, (char*)pPos, "d", &IID);
+
+			int Item = IPlayer.ItemPointerLock(IID);
+
+			if (!Item)
+				return;
+			IItem IItem((void*)Item);
+
+
+			for (std::map<int, StickBuff>::const_iterator it = BuffScale.begin(); it != BuffScale.end(); ++it) {
+				const StickBuff& stick = it->second;
+				int def = stick.def, str = stick.str, hp = stick.hp, agi = stick.agi, intel = stick.intel, crit = stick.crit, ref = stick.atk, sgrade = stick.Sgrade;
+				std::string buffName = stick.BuffName;
+
+				if (IPlayer.IsBuff(BuffNames::StickScale + (sgrade * 2)) && IPlayer.GetClass() == 1 && ScaleBuff && IPlayer.GetSpecialty() == 11 && CItem::GetLevel((int)IItem.GetOffset()) == stick.Sgrade)
+					IPlayer.RemoveSavedBuff(BuffNames::StickScale + (sgrade * 2));
+			}
 		}
 
 		if (packet == 65) {
@@ -2184,6 +2203,15 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			if (!Item)
 				return;
 			IItem IItem((void*)Item);
+
+			for (std::map<int, StickBuff>::const_iterator it = BuffScale.begin(); it != BuffScale.end(); ++it) {
+				const StickBuff& stick = it->second;
+				int def = stick.def, str = stick.str, hp = stick.hp, agi = stick.agi, intel = stick.intel, crit = stick.crit, ref = stick.atk, sgrade = stick.Sgrade;
+				std::string buffName = stick.BuffName;
+
+				if (!IPlayer.IsBuff(BuffNames::StickScale + (sgrade * 2)) && IPlayer.GetClass() == 1 && ScaleBuff && IPlayer.GetSpecialty() == 11 && CItem::GetLevel((int)IItem.GetOffset()) == stick.Sgrade)
+					IPlayer.SaveBuff(BuffNames::StickScale + (sgrade * 2), BuffNames::BuffTime);
+			}
 
 			int MapX = IPlayer.GetX() >> 13;
 			int MapY = IPlayer.GetY() >> 13;
@@ -7138,7 +7166,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			{
 				int Type = 0, DssRate = CTools::Rate(1,100);
 
-				if(DssRate>= 100-Insanity) {
+				if(DssRate >= 100-Insanity) {
 					int Rate = CTools::Rate(36, 40);
 					SetType += Rate;
 					Type = 1;
@@ -7504,6 +7532,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						IPlayer.SystemMessage("You still have " + Int2String(BeltB) + " seconds before being able to use the buff again.", TEXTCOLOR_RED);
 				}
 			}
+
 
 			return;
 		}

@@ -17,8 +17,9 @@ void LoadConfig(std::string configName) {
 	int *p_qPtr = new int;
 	if (CObjectDB::Open((int)p_qPtr, configName.c_str()))
 		CConsole::Blue("%s has been reloaded.", configName.c_str());
+
 	else
-		CConsole::Red("%s reloading has failed.", configName.c_str());
+		CConsole::Blue("%s reloading has failed.", configName.c_str());
 	delete[] p_qPtr;
 }
 
@@ -141,23 +142,23 @@ void InitMonsterReload() {
 	reloadingM = 0;
 }
 
-//InitNPC
+
 void InitNPCReload() {
-	IChar INPC;
 	auto npcCount = g_NPCCount;
 	auto npccurindex = 1;
 	do {
 		int NPC = CNPC::FindNPC((char)npccurindex);
+		IChar INPC((void*)NPC);
 		if (NPC) {
 			CBase::Delete((void*)NPC);
 			*(DWORD *)(NPC + 16) = -6;
 			CIOObject::Release((void*)NPC);
+			CPlayer::WriteAll(57, "d", *(DWORD *)(NPC + 28));
 
 		}
 		npcCount = g_NPCCount;
 		npccurindex++;
 	} while (npcCount > 0);
-
 	CNPC::InitClose();
 	int nObject = 0, nPtr = 0, nOffset = 0, nOther = 0;
 
@@ -183,8 +184,10 @@ void InitNPCReload() {
 	Unnamed::sub_446000((void*)0x4E1AA8);
 
 	LoadConfig("Config\\InitNPC.txt");
-	CNPC::Start(); 
+	CNPC::Start();
 	GetNPCList();
+	ShowNPCList();
+
 }
 
 

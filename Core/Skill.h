@@ -35,23 +35,9 @@ void __fastcall ExecuteSkill(void *pSkill, void* edx, signed int SkillID, int pP
 	int SkillPointerCheck = IPlayer.GetSkillPointer(SkillID);
 	DWORD CdTime = 0, CooldownCheck = 0, DelayTime = 0;
 
-	/*if (!(IPlayer.GetClass() == 1 && SkillID == 74)) {
-	int nTargetID = 0; char bType = 0;
-	CPacket::Read((char*)pPacket, (char*)pPos, "bd", &bType, &nTargetID);
-	if (nTargetID > 0 && (bType == 0 || bType == 1) && nTargetID != IPlayer.GetID()) {
-	TargetFind myTarget(bType, 0, nTargetID);
-	void *pTarget = myTarget.getTarget();
-
-	if (pTarget && nTargetID != IPlayer.GetBuffValue(BuffNames::TargetAttack)) {
-	CConsole::Red("Skill Hack detected : PID %d Skill %d", IPlayer.GetPID(), SkillID);
-	//IPlayer.Kick();
-	goto LABEL_1;
-	}
-	}
-	}*/
 
 	IPlayer.Buff(313, 3, 0);
-
+	
 	if (skillDebug == 1 || skillDebug == 3) {
 		std::string Datoe = "./Debugger/Skill/SKILL_" + Time::GetDay() + "_" + Time::GetMonth() + "_" + Time::GetYear() + "_" + Time::GetHour() + "." + Time::GetMinute() + ".txt";
 		std::fstream CHLOG;
@@ -115,10 +101,88 @@ void __fastcall ExecuteSkill(void *pSkill, void* edx, signed int SkillID, int pP
 		}
 
 		CdTime = CheckCooldownConfig.find(SkillID + (IPlayer.GetClass() * 100))->second.CooldownConfig;
+		DelayTime = CheckCooldownConfig.find(SkillID + (IPlayer.GetClass() * 100))->second.DelayConfig;
+
 	}
 
+	if (IPlayer.IsValid()) {
+
+		int nTargetID = 0;
+		char bType = 0;
+		void *pTarget = 0;
+		CPacket::Read((char*)pPacket, (char*)pPos, "bd", &bType, &nTargetID);
+
+		TargetFind myTarget(bType, 0, nTargetID);
+		pTarget = myTarget.getTarget();
+		IChar Target(pTarget);
+
+		if (!CheckRangeProtection((int)IPlayer.GetOffset(), SkillID, (int)Target.GetOffset(), pPacket, pPos))
+		{
+			IPlayer.SystemMessage("Invalid range detected.", TEXTCOLOR_RED);
+			CConsole::Red("Invalid Skill range detected (PID : %d SkillID : %d Class : %d)", IPlayer.GetPID(), SkillID, IPlayer.GetClass());
+			if (RangeKick)
+				IPlayer.Kick();
+
+			return; // Exit early if the range is invalid
+		}
+	}
+	
 	if (IPlayer.IsValid() && !CChar::IsGState((int)IPlayer.GetOffset(), 512))
 	{
+
+		for (std::map<int, StickBuff>::const_iterator it = BuffScale.begin(); it != BuffScale.end(); ++it) {
+			const StickBuff& stick = it->second;
+			int def = stick.def, str = stick.str, hp = stick.hp, agi = stick.agi, intel = stick.intel, crit = stick.crit, ref = stick.atk, sgrade = stick.Sgrade;
+			std::string buffName = stick.BuffName;
+			if (IPlayer.GetClass() == 1 && ScaleBuff && IPlayer.GetSpecialty() == 11 && IPlayer.IsBuff(BuffNames::StickScale + (sgrade * 2)))
+			{
+				int nTargetID = 0; char bType = 0; void *pTarget = 0;
+				CPacket::Read((char*)pPacket, (char*)pPos, "bd", &bType, &nTargetID);
+
+				TargetFind myTarget(bType, 0, nTargetID);
+				pTarget = myTarget.getTarget();
+
+				if (pTarget) {
+					IChar ITarget(pTarget);
+
+
+					if (SkillID == 39 && ITarget.IsValid() && buffName == "Defense" && !ITarget.IsBuff(BuffNames::AdditionalDef)){
+						ITarget.AddDef(def);
+						ITarget.Buff(BuffNames::AdditionalDef, 1800, 1);
+					}
+					if (SkillID == 49 && ITarget.IsValid() && buffName == "Strength" && !ITarget.IsBuff(BuffNames::AdditionalStr)){
+						ITarget.AddStr(str);
+						ITarget.Buff(BuffNames::AdditionalStr, 1800, 1);
+					}
+					if (SkillID == 50 && ITarget.IsValid() && buffName == "Health" && !ITarget.IsBuff(BuffNames::AdditionalHP)){
+						ITarget.AddHp(hp);
+						ITarget.Buff(BuffNames::AdditionalHP, 1800, 1);
+					}
+					if (SkillID == 52 && ITarget.IsValid() && buffName == "Intelligence" && !ITarget.IsBuff(BuffNames::AdditionalInt)){
+						ITarget.AddInt(intel);
+						ITarget.Buff(BuffNames::AdditionalInt, 1800, 1);
+					}
+					if (SkillID == 51 && ITarget.IsValid() && buffName == "Agility" && !ITarget.IsBuff(BuffNames::AdditionalAgi)){
+						ITarget.AddAgi(agi);
+						ITarget.Buff(BuffNames::AdditionalAgi, 1800, 1);
+					}
+					if (SkillID == 53 && ITarget.IsValid() && buffName == "Critical" && !ITarget.IsBuff(BuffNames::AdditionalCrit)){
+						ITarget.IncreaseCritRate(crit);
+						ITarget.Buff(BuffNames::AdditionalCrit, 1800, 1);
+
+					}
+					if (SkillID == 38 && ITarget.IsValid() && buffName == "Refining" && !ITarget.IsBuff(BuffNames::AdditionalRef))
+					{
+						ITarget.AddMinAttack(ref);
+						ITarget.AddMaxAttack(ref);
+						ITarget.Buff(BuffNames::AdditionalRef, 1800, 1);
+
+					}
+				}
+			}
+		}
+
+
 		if (IPlayer.GetClass() == 1 && IPlayer.GetMap() == 21 && (SkillID == 43 || SkillID == 45 || SkillID == 48)) {
 			IPlayer.SystemMessage("Storms execution is disabled in F10.", TEXTCOLOR_RED);
 			return;
@@ -155,16 +219,30 @@ void __fastcall ExecuteSkill(void *pSkill, void* edx, signed int SkillID, int pP
 			DelayTime = 0;
 		}
 
-		if (CdTime || DelayTime)
-			CooldownCheck = IPlayer.GetBuffValue(5200 + SkillID);
-
-		if (CooldownCheck > GetTickCount())
+		if (CdTime)
 		{
-			IPlayer.SystemMessage("Invalid skill time detected!", TEXTCOLOR_RED);
-			return;
+			CooldownCheck = IPlayer.GetBuffValue(5200 + SkillID);
+			if (CooldownCheck > GetTickCount())
+			{
+				IPlayer.SystemMessage("Invalid skill cooldown time detected!", TEXTCOLOR_RED);
+				return;
+			}
 		}
+
+		if (DelayTime)
+		{
+			CooldownCheck = IPlayer.GetBuffValue(5200 + SkillID);
+			if (CooldownCheck > GetTickCount())
+			{
+				IPlayer.SystemMessage("Invalid skill delay time detected!", TEXTCOLOR_RED);
+				return;
+			}
+		}
+
+
 		else if (CdTime || DelayTime)
 			IPlayer.UpdateBuff(5200 + SkillID, BuffNames::BuffTime, GetTickCount() + CdTime + DelayTime);
+
 
 		if (IPlayer.GetClass() == 1 && IPlayer.GetSpecialty() == 23)
 			IPlayer.UpdateBuff(BuffNames::MageMICheck, BuffNames::BuffTime, SkillID);
@@ -327,6 +405,8 @@ void __fastcall ExecuteSkill(void *pSkill, void* edx, signed int SkillID, int pP
 			SoulDestruction((void*)SkillPointerCheck, IPlayer.GetOffset(), pPacket, pPos);
 			goto LABEL_1;
 		}
+
+
 
 		if (IPlayer.GetClass() == 1 && SkillID == 59)
 		{

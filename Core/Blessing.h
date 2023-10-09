@@ -31,13 +31,15 @@ void __fastcall Blessing(IChar IPlayer, int pPacket, int pPos)
 
 				if(IPlayer.GetID() != Target.GetID())
 				{
-					Target.Buff(24,(nSkillGrade*3)+3,40);
-					Target.RemoveBuffIcon(0,0,703,34);
+//					Target.Buff(24,(nSkillGrade*3)+3,40);
+					Target.Buff(BuffNames::Blessing, (nSkillGrade * 3) + 3, 1);
+			//		Target.RemoveBuffIcon(0,0,703,34);
 					CChar::AddMState(Target.GetOffset(),0,2147483648);
 				}
 
-				IPlayer.Buff(24,(nSkillGrade*3)+3,40);
-				IPlayer.RemoveBuffIcon(0,0,703,34);
+//				IPlayer.Buff(24,(nSkillGrade*3)+3,40);
+				IPlayer.Buff(BuffNames::Blessing, (nSkillGrade * 3) + 3, 1);
+			//	IPlayer.RemoveBuffIcon(0,0,703,34);
 				CChar::AddMState(IPlayer.GetOffset(),0,2147483648);
 				IPlayer._ShowBattleAnimation(Target,69);
 				IPlayer.DecreaseMana(nMana);
@@ -92,8 +94,9 @@ void __fastcall GroupBlessing(IChar IPlayer, int pPacket, int pPos)
 							{
 								if (CChar::GetRange((int)IPlayer.GetOffset() + 332, Members + 332) <= 300)
 								{
-									IMembers.Buff(24, Time, 40);
-									IMembers.RemoveBuffIcon(0, 0, 703, 34);
+								//	IMembers.Buff(24, Time, 40);
+									IMembers.Buff(BuffNames::Blessing, Time, 1);
+								//	IMembers.RemoveBuffIcon(0, 0, 703, 34);
 									CChar::AddMState(IMembers.GetOffset(), 0, 2147483648);
 								}
 							}

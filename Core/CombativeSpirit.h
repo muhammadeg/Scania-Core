@@ -4,6 +4,14 @@ void __fastcall CombativeSpirit(IChar IPlayer, int pPacket, int pPos)
 
 	if (IPlayer.IsValid() && pSkill)
 	{
+		int TargetAOE = 0;
+		if (ACAOE && ACPVPAOE)
+			TargetAOE = 3;
+		else if (ACPVPAOE)
+			TargetAOE = 2;
+		else if (ACAOE)
+			TargetAOE = 1;
+
 		ISkill xSkill((void*)pSkill);
 		int nSkillGrade = xSkill.GetGrade();
 		int nTargetID = 0; char bType = 0; void *pTarget = 0;
@@ -43,7 +51,7 @@ void __fastcall CombativeSpirit(IChar IPlayer, int pPacket, int pPos)
 				{
 					IPlayer.SetDirection(Target);
 					IPlayer._ShowBattleAnimation(Target,51);
-					int Around = Target.GetObjectListAround(3);
+					int Around = Target.GetObjectListAround(ACAOERange);
 
 					while(Around)
 					{
@@ -56,8 +64,12 @@ void __fastcall CombativeSpirit(IChar IPlayer, int pPacket, int pPos)
 							if (Target.GetType() == 0)
 								nDmg = (nDmg * ACSReduce) / 100;
 
-							if (Object.GetX() <= max(IPlayer.GetX(), Target.GetX()) && Object.GetX() >= min(IPlayer.GetX(), Target.GetX()) && Object.GetY() <= max(IPlayer.GetY(), Target.GetY()) && Object.GetY() >= min(IPlayer.GetY(), Target.GetY()))
+							if (ACAOE && (TargetAOE == 3 || (TargetAOE && !Target.IsValid()) || (TargetAOE == 2 && Target.GetType() == 0) || (TargetAOE == 1 && Target.GetType() == 1)))
 								IPlayer.OktayDamageArea(Object,nDmg,51);
+							else if
+								 (Object.GetX() <= max(IPlayer.GetX(), Target.GetX()) && Object.GetX() >= min(IPlayer.GetX(), Target.GetX()) && Object.GetY() <= max(IPlayer.GetY(), Target.GetY()) && Object.GetY() >= min(IPlayer.GetY(), Target.GetY()))
+								 IPlayer.OktayDamageArea(Object, nDmg, 51);
+
 						}
 
 						Around = CBaseList::Pop((void*)Around);

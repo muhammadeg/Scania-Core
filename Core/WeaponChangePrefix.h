@@ -53,7 +53,7 @@ void __fastcall WeaponUpgradeDestroy(int Item, void *edx, int Player)
 			v8 = CItem::GetLevel(v9) - 40;
 
 		int ItemType = *(DWORD *)(*(DWORD *)(v9 + 40) + 72);
-		
+
 		if (abs(ItemType) == 1)
 		{
 			if (*(DWORD *)(v9 + 104) >= 20)
@@ -137,7 +137,7 @@ signed int __fastcall WeaponUpgradeLevel(void* Item, void *edx, int Player)
 								if (*(DWORD *)(v8 + 124) <= 0)
 									CDBSocket::Write(28, "ddbb", *(DWORD *)(v8 + 36), *(DWORD *)(v8 + 32), 2, 0);
 								else
-									CDBSocket::Write(28,"ddbb",*(DWORD *)(v8 + 36),	*(DWORD *)(v8 + 32),2,--*(DWORD *)(v8 + 124));
+									CDBSocket::Write(28, "ddbb", *(DWORD *)(v8 + 36), *(DWORD *)(v8 + 32), 2, --*(DWORD *)(v8 + 124));
 								result = CItem::SendItemInfo((void *)v8, Player, 92);
 							}
 						}
@@ -145,14 +145,14 @@ signed int __fastcall WeaponUpgradeLevel(void* Item, void *edx, int Player)
 						{
 							if (!(*(int(__thiscall **)(int, int, signed int, int))(*(DWORD *)v11 + 120))(v11, Player, 47, -v10))
 								CPlayer::_OutOfInven((void*)Player, v11);
-							 CPlayer::Write((void*)Player, 67, "b", 81);
-							 result = 1;
+							CPlayer::Write((void*)Player, 67, "b", 81);
+							result = 1;
 						}
 					}
 					else
 					{
 						if (!(*(int(__thiscall **)(int, int, signed int, int))(*(DWORD *)v11 + 120))(v11, Player, 47, -v10))
-							CPlayer::_OutOfInven((void*)Player,v11);
+							CPlayer::_OutOfInven((void*)Player, v11);
 						*(DWORD *)(v8 + 128) = 0;
 						CDBSocket::Write(28, "ddbb", *(DWORD *)(v8 + 36), *(DWORD *)(v8 + 32), 2, ++*(DWORD *)(v8 + 124));
 						result = CItem::SendItemInfo((void *)v8, Player, 92);
@@ -314,7 +314,7 @@ signed int __fastcall WeaponChangePrefix(void *Item, void *edx, int Player, int 
 		return 0;
 	}
 
-	if (CItem::IsState((int)IItem.GetOffset(), 1) || ID >= 0 && ID )
+	if (CItem::IsState((int)IItem.GetOffset(), 1) || ID >= 0 && ID)
 		return 0;
 
 	if (IItem.Prefix())
@@ -326,7 +326,7 @@ signed int __fastcall WeaponChangePrefix(void *Item, void *edx, int Player, int 
 
 	for (signed int i = 0; i < 2; ++i)
 	{
-		if ( Rate <= (int)*(DWORD*)(Chance + 4 * i) )
+		if (Rate <= (int)*(DWORD*)(Chance + 4 * i))
 		{
 			NewPrefix = *(DWORD *)(Argument + 4 * i);
 			break;
@@ -340,10 +340,10 @@ signed int __fastcall WeaponChangePrefix(void *Item, void *edx, int Player, int 
 
 	if (CurrentPrefix == NewPrefix)
 	{
-		if ( CheckPolish )
+		if (CheckPolish)
 		{
-			CDBSocket::Write(21, "dddbb",IItem.GetIID(),IPlayer.GetID(),64,0,255);
-			CItem::SubState((int)IItem.GetOffset(),64);
+			CDBSocket::Write(21, "dddbb", IItem.GetIID(), IPlayer.GetID(), 64, 0, 255);
+			CItem::SubState((int)IItem.GetOffset(), 64);
 			CItem::SendItemInfo(IItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
 			return 1;
 		}
@@ -355,18 +355,20 @@ signed int __fastcall WeaponChangePrefix(void *Item, void *edx, int Player, int 
 
 		if (IItem.GetEndurance() <= 0)
 		{
-			CPlayer::Write(IPlayer.GetOffset(), 91, "db",IItem.GetIID(),IItem.GetEndurance());
-			CDBSocket::Write(3,"ddwdbddd",IItem.GetIID(),IPlayer.GetID(),IItem.CheckIndex(),1,27,0,0,0);
+			CPlayer::Write(IPlayer.GetOffset(), 91, "db", IItem.GetIID(), IItem.GetEndurance());
+			CDBSocket::Write(3, "ddwdbddd", IItem.GetIID(), IPlayer.GetID(), IItem.CheckIndex(), 1, 27, 0, 0, 0);
 
-			if ( CItem::GetLevel((int)IItem.GetOffset()) >= 40 )
+			if (CItem::GetLevel((int)IItem.GetOffset()) >= 40)
 				CItem::InsertItem((int)IPlayer.GetOffset(), 27, 517, 0, 15, -1);
 
 			CBase::Delete(IItem.GetOffset());
-		} else {
-			CPlayer::Write(IPlayer.GetOffset(), 91, "db",IItem.GetIID(),IItem.GetEndurance());
-			CDBSocket::Write(18,"ddb",IItem.GetIID(),IPlayer.GetID(),IItem.GetEndurance());
 		}
-	} else {
+		else {
+			CPlayer::Write(IPlayer.GetOffset(), 91, "db", IItem.GetIID(), IItem.GetEndurance());
+			CDBSocket::Write(18, "ddb", IItem.GetIID(), IPlayer.GetID(), IItem.GetEndurance());
+		}
+	}
+	else {
 		int CurrentInfo = 0, CurrentMixInfo = 0, SetMixInfo = 0;
 
 		if (IItem.GetInfo())
@@ -529,15 +531,15 @@ signed int __fastcall WeaponChangePrefix(void *Item, void *edx, int Player, int 
 			IItem.SetTalismanOA(pimp.GetA);
 			IItem.SetTalismanOM(pimp.GetM);
 
-			if(pimp.GetTOA)
+			if (pimp.GetTOA)
 				IItem.SetTOA(pimp.GetTOA);
 
 			IItem.SetUpgrade(pimp.GetUpg);
 
-			CDBSocket::Write(17, "ddbbb",IItem.GetIID(),IPlayer.GetPID(),27,IItem.GetTalismanOA(),0);
-			CDBSocket::Write(17, "ddbbb",IItem.GetIID(),IPlayer.GetPID(),28,IItem.GetTalismanOM(),0);
-			CDBSocket::Write(17, "ddbbb",IItem.GetIID(),IPlayer.GetPID(),9,IItem.GetTOA(),0);
-			CDBSocket::Write(28, "ddbb",IItem.GetIID(),IPlayer.GetPID(),2,IItem.GetUpgrade());
+			CDBSocket::Write(17, "ddbbb", IItem.GetIID(), IPlayer.GetPID(), 27, IItem.GetTalismanOA(), 0);
+			CDBSocket::Write(17, "ddbbb", IItem.GetIID(), IPlayer.GetPID(), 28, IItem.GetTalismanOM(), 0);
+			CDBSocket::Write(17, "ddbbb", IItem.GetIID(), IPlayer.GetPID(), 9, IItem.GetTOA(), 0);
+			CDBSocket::Write(28, "ddbb", IItem.GetIID(), IPlayer.GetPID(), 2, IItem.GetUpgrade());
 			CItem::SendItemInfo(IItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
 			return 1;
 		}
@@ -545,21 +547,21 @@ signed int __fastcall WeaponChangePrefix(void *Item, void *edx, int Player, int 
 		if (MixConfigPrefix.count(NewPrefix))
 		{
 			SetMixInfo = MixConfigInfo.find(NewPrefix)->second;
-			CDBSocket::Write(21, "dddbb",IItem.GetIID(),IPlayer.GetID(),IItem.GetInfo(),0,0);
+			CDBSocket::Write(21, "dddbb", IItem.GetIID(), IPlayer.GetID(), IItem.GetInfo(), 0, 0);
 			IItem.SetInfo(CurrentInfo + SetMixInfo);
-			CDBSocket::Write(21, "dddbb",IItem.GetIID(),IPlayer.GetID(),CurrentInfo + SetMixInfo,8,7);
-			CItem::SendItemInfo(IItem.GetOffset(), (int)IPlayer.GetOffset(), 92);		
+			CDBSocket::Write(21, "dddbb", IItem.GetIID(), IPlayer.GetID(), CurrentInfo + SetMixInfo, 8, 7);
+			CItem::SendItemInfo(IItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
 			CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddddd", 242, 10, 0, 128, 255);
 
 			if (MixConfigMsg.count(NewPrefix))
-				IPlayer.SystemMessage(MixConfigMsg.find(NewPrefix)->second,TEXTCOLOR_DARKGREEN);
+				IPlayer.SystemMessage(MixConfigMsg.find(NewPrefix)->second, TEXTCOLOR_DARKGREEN);
 
 			return 1;
 		}
 
-		if (WeaponReplace.count((IItem.CheckIndex()+100000)*NewPrefix) && WeaponReplaceIndex.count((IItem.CheckIndex()+100000)*NewPrefix))
+		if (WeaponReplace.count((IItem.CheckIndex() + 100000)*NewPrefix) && WeaponReplaceIndex.count((IItem.CheckIndex() + 100000)*NewPrefix))
 		{
-			if (WeaponReplace.find((IItem.CheckIndex()+100000)*NewPrefix)->second == NewPrefix)
+			if (WeaponReplace.find((IItem.CheckIndex() + 100000)*NewPrefix)->second == NewPrefix)
 			{
 				if (CBase::IsDeleted((int)Item))
 					return 0;
@@ -567,13 +569,13 @@ signed int __fastcall WeaponChangePrefix(void *Item, void *edx, int Player, int 
 				if (IPlayer.IsBuff(328))
 					return 0;
 				else
-					IPlayer.Buff(328,3,0);
+					IPlayer.Buff(328, 3, 0);
 
 				int ReplacePrefix = 0, ReplaceItem = 0, ReplaceInfo = 0, ReplaceA = 0, ReplaceM = 0, ReplaceTOA = 0, ReplaceEB = 0, ReplaceGem = 0;
 				int ItemStat = 0;
-			
+
 				itemStat.Enter();
-				if(GetItemStat.count(IItem.GetIID()))
+				if (GetItemStat.count(IItem.GetIID()))
 					ItemStat = GetItemStat.find(IItem.GetIID())->second;
 				itemStat.Leave();
 
@@ -599,11 +601,11 @@ signed int __fastcall WeaponChangePrefix(void *Item, void *edx, int Player, int 
 					ReplaceGem = *(DWORD *)((int)Item + 84);
 
 				int ItemNewIndex = IItem.CheckIndex();
-				int DeleteCheck = (*(int (__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)Item + 120))((int)Item,IPlayer.GetOffset(),9,-1);
+				int DeleteCheck = (*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)Item + 120))((int)Item, IPlayer.GetOffset(), 9, -1);
 
 				if (!DeleteCheck)
 				{
-					ReplaceItem = CItem::CreateItem(WeaponReplaceIndex.find((ItemNewIndex+100000)*NewPrefix)->second, ReplacePrefix, 1, -1);
+					ReplaceItem = CItem::CreateItem(WeaponReplaceIndex.find((ItemNewIndex + 100000)*NewPrefix)->second, ReplacePrefix, 1, -1);
 
 					if (ReplaceItem)
 					{
@@ -615,7 +617,7 @@ signed int __fastcall WeaponChangePrefix(void *Item, void *edx, int Player, int 
 						*(DWORD *)(ReplaceItem + 124) = ReplaceEB;
 						*(DWORD *)(ReplaceItem + 84) = ReplaceGem;
 
-						if ( CPlayer::_InsertItem(IPlayer.GetOffset(), 27, ReplaceItem) != 1 )
+						if (CPlayer::_InsertItem(IPlayer.GetOffset(), 27, ReplaceItem) != 1)
 						{
 							CConsole::Red("Real time weapon replace insert item Null error [PID (%d)] ", IPlayer.GetPID());
 							CBase::Delete((void *)ReplaceItem);
@@ -628,17 +630,18 @@ signed int __fastcall WeaponChangePrefix(void *Item, void *edx, int Player, int 
 						GetItemStat[*(DWORD *)(ReplaceItem + 36)] = ItemStat;
 						itemStat.Leave();
 
-						CDBSocket::Write(90,"dd",ItemStat,*(DWORD *)(ReplaceItem + 36));
-						CDBSocket::Write(87,"ddd",IPlayer.GetPID(),*(DWORD *)(ReplaceItem + 84),*(DWORD *)(ReplaceItem + 36));
-						CDBSocket::Write(21, "dddbb",*(DWORD *)(ReplaceItem + 36),*(DWORD *)(ReplaceItem + 32),*(DWORD *)(ReplaceItem + 48),8,7);
-						CDBSocket::Write(17, "ddbbb",*(DWORD *)(ReplaceItem + 36),*(DWORD *)(ReplaceItem + 32),27,*(DWORD *)(ReplaceItem + 100),0);
-						CDBSocket::Write(17, "ddbbb",*(DWORD *)(ReplaceItem + 36),*(DWORD *)(ReplaceItem + 32),28,*(DWORD *)(ReplaceItem + 104),0);
-						CDBSocket::Write(17, "ddbbb",*(DWORD *)(ReplaceItem + 36),*(DWORD *)(ReplaceItem + 32),9,*(DWORD *)(ReplaceItem + 112),0);
-						CDBSocket::Write(28, "ddbb",*(DWORD *)(ReplaceItem + 36),*(DWORD *)(ReplaceItem + 32),2,*(DWORD *)(ReplaceItem + 124));
+						CDBSocket::Write(90, "dd", ItemStat, *(DWORD *)(ReplaceItem + 36));
+						CDBSocket::Write(87, "ddd", IPlayer.GetPID(), *(DWORD *)(ReplaceItem + 84), *(DWORD *)(ReplaceItem + 36));
+						CDBSocket::Write(21, "dddbb", *(DWORD *)(ReplaceItem + 36), *(DWORD *)(ReplaceItem + 32), *(DWORD *)(ReplaceItem + 48), 8, 7);
+						CDBSocket::Write(17, "ddbbb", *(DWORD *)(ReplaceItem + 36), *(DWORD *)(ReplaceItem + 32), 27, *(DWORD *)(ReplaceItem + 100), 0);
+						CDBSocket::Write(17, "ddbbb", *(DWORD *)(ReplaceItem + 36), *(DWORD *)(ReplaceItem + 32), 28, *(DWORD *)(ReplaceItem + 104), 0);
+						CDBSocket::Write(17, "ddbbb", *(DWORD *)(ReplaceItem + 36), *(DWORD *)(ReplaceItem + 32), 9, *(DWORD *)(ReplaceItem + 112), 0);
+						CDBSocket::Write(28, "ddbb", *(DWORD *)(ReplaceItem + 36), *(DWORD *)(ReplaceItem + 32), 2, *(DWORD *)(ReplaceItem + 124));
 						CItem::SendItemInfo((void*)ReplaceItem, (int)IPlayer.GetOffset(), 92);
 						CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddddd", 242, 0, 0, 128, 255);
 					}
-				} else {
+				}
+				else {
 					return 0;
 				}
 
@@ -654,22 +657,22 @@ signed int __fastcall WeaponChangePrefix(void *Item, void *edx, int Player, int 
 
 		if (NewPrefix == ImpConfigRead)
 		{
-			if ( IItem.CheckIndex() >= 769 && IItem.CheckIndex() <= 801 
-				|| IItem.CheckIndex() >= 1433 && IItem.CheckIndex() <= 1441 
-				|| IItem.CheckIndex() >= 1700 && IItem.CheckIndex() <= 1704 
+			if (IItem.CheckIndex() >= 769 && IItem.CheckIndex() <= 801
+				|| IItem.CheckIndex() >= 1433 && IItem.CheckIndex() <= 1441
+				|| IItem.CheckIndex() >= 1700 && IItem.CheckIndex() <= 1704
 				|| IItem.CheckIndex() >= 3033 && IItem.CheckIndex() <= 3039
-				|| IItem.CheckIndex() >= 1921 && IItem.CheckIndex() <= 1927 
-				|| IItem.CheckIndex() >= 1821 && IItem.CheckIndex() <= 1824 
-				|| IItem.CheckIndex() >= 1448 && IItem.CheckIndex() <= 1453 
-				|| IItem.CheckIndex() >= 1442 && IItem.CheckIndex() <= 1445 
-				|| IItem.CheckIndex() >= 2676 && IItem.CheckIndex() <= 2682 
-				|| IItem.CheckIndex() >= 2688 && IItem.CheckIndex() <= 2693 
-				|| IItem.CheckIndex() >= 2700 && IItem.CheckIndex() <= 2705 
-				|| IItem.CheckIndex() >= 4329 && IItem.CheckIndex() <= 4335 
-				|| IItem.CheckIndex() == 1853 || IItem.CheckIndex() == 1669 
-				|| IItem.CheckIndex() == 1668 )
+				|| IItem.CheckIndex() >= 1921 && IItem.CheckIndex() <= 1927
+				|| IItem.CheckIndex() >= 1821 && IItem.CheckIndex() <= 1824
+				|| IItem.CheckIndex() >= 1448 && IItem.CheckIndex() <= 1453
+				|| IItem.CheckIndex() >= 1442 && IItem.CheckIndex() <= 1445
+				|| IItem.CheckIndex() >= 2676 && IItem.CheckIndex() <= 2682
+				|| IItem.CheckIndex() >= 2688 && IItem.CheckIndex() <= 2693
+				|| IItem.CheckIndex() >= 2700 && IItem.CheckIndex() <= 2705
+				|| IItem.CheckIndex() >= 4329 && IItem.CheckIndex() <= 4335
+				|| IItem.CheckIndex() == 1853 || IItem.CheckIndex() == 1669
+				|| IItem.CheckIndex() == 1668)
 			{
-				IPlayer.SystemMessage("Your weapon already imperial.",TEXTCOLOR_RED);
+				IPlayer.SystemMessage("Your weapon already imperial.", TEXTCOLOR_RED);
 				return 0;
 			}
 
@@ -1079,19 +1082,19 @@ signed int __fastcall WeaponChangePrefix(void *Item, void *edx, int Player, int 
 			}
 
 			return 1;
-		
+
 		}
 
 		AddPrefix = CItem::FindPrefix(NewPrefix);
 
-		if ( !AddPrefix )
+		if (!AddPrefix)
 			return 0;
 
 		*(DWORD *)((int)IItem.GetOffset() + 44) = AddPrefix;
-		CDBSocket::Write(19,"ddbb",IItem.GetIID(),IPlayer.GetID(),NewPrefix);
+		CDBSocket::Write(19, "ddbb", IItem.GetIID(), IPlayer.GetID(), NewPrefix);
 
-		if ( CheckPolish )
-			CItem::SubState((int)IItem.GetOffset(),64);
+		if (CheckPolish)
+			CItem::SubState((int)IItem.GetOffset(), 64);
 
 		CItem::SendItemInfo(IItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
 	}

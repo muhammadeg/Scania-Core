@@ -1,3 +1,4 @@
+
 void __fastcall RealBlob(int Monster, void *edx)
 {
 	IChar IMonster((void*)Monster);
@@ -413,7 +414,7 @@ void __fastcall Start(int Start, void *edx, u_short hostshort)
 		StartAuction();
 	}
 
-	CConsole::Black("[MD5 Check] Client file Checksum.xea file has been generated.");
+	CConsole::Black("[MD5 Check] Client file Checksum.scn file has been generated.");
 
 	CIOServer::Start(Start,hostshort);
 	Interface<IMemory> Memory;
@@ -478,7 +479,7 @@ void __fastcall Start(int Start, void *edx, u_short hostshort)
 		CaptureRegistration = SystemRegistration<int>("Capture");
 		//RewardLimit = SystemRegistration<std::string>();
 		initSummonTracker();
-		CConsole::Blue("Scania Developments [%s Edition] . . .", ServerName);
+		CConsole::Blue("KalTechSolutions [%s Version] . . .", ServerName);
 		_beginthread(ContinuesSkill, 0, 0);
 	}
 	else
@@ -488,7 +489,8 @@ void __fastcall Start(int Start, void *edx, u_short hostshort)
 int __cdecl Black(char *Msg, ...)
 {
 	std::string GetMsg = std::string(Msg);
-
+	time_t MyTime = time(0);
+	tm *MT = localtime(&MyTime);
 	if ( GetMsg.substr(0,2) == "##" || GetMsg.substr(0,2) == "$$" || GetMsg.substr(0,2) == "@@" )
 		return 0;
 
@@ -507,6 +509,19 @@ int __cdecl Black(char *Msg, ...)
 	if ( GetMsg.substr(0,20) == "close pending socket" )
 		return 0;
 
+	//if (GetMsg.substr(0, 40) == "DB server version (Version:%d, IID:0x%x)")
+	//	return 0;
+
+	//if (GetMsg.substr(0, 32) == "Auth server version (Version:%d)")
+	//	return 0;
+
+	//if (GetMsg.substr(0, 75) == "Server is ready on port %d (time stamp: %02d/%02d/%02d %02d:%02d:%02d (KR))")
+	//{
+
+	//	ConsoleWrite(SADDLE_BROWN, "Server is ready on port %d (time stamp: %02d/%02d/%02d %02d:%02d:%02d)", *(DWORD *)0x004E1170,
+	//		MT->tm_year % 100, MT->tm_mon + 1, MT->tm_mday, MT->tm_hour, MT->tm_min, MT->tm_sec);
+	//	return 0;
+	//}
 	va_list va;
 	va_start(va,Msg);
 	int Check = CLog::AddV(1,Msg,va);
@@ -523,6 +538,79 @@ int __cdecl Blue(char *Msg, ...)
 
 	if ( GetMsg.substr(0,20) == "close pending socket" )
 		return 0;
+
+	//if (GetMsg.substr(0, 19) == "Reading [Map] . . .")
+	//{
+	//	ConsoleWrite(SADDLE_BROWN, "Reading [Map] . . .");
+	//	return 0;
+	//}
+
+	//if (GetMsg.substr(0, 27) == "Reading [InitMonster] . . .")
+	//{
+	//	ConsoleWrite(SADDLE_BROWN, "Reading [InitMonster] . . .");
+	//	return 0;
+	//}
+
+	//if (GetMsg.substr(0, 26) == "Reading [GenMonster] . . .")
+	//{
+	//	ConsoleWrite(SADDLE_BROWN, "Reading [GenMonster] . . .");
+	//	return 0;
+	//}
+
+	//if (GetMsg.substr(0, 24) == "Reading [InitItem] . . .")
+	//{
+	//	ConsoleWrite(SADDLE_BROWN, "Reading [InitItem] . . .");
+	//	return 0;
+	//}
+
+	//if (GetMsg.substr(0, 22) == "Reading [Prefix] . . .")
+	//{
+	//	ConsoleWrite(SADDLE_BROWN, "Reading [Prefix] . . .");
+	//	return 0;
+	//}
+
+	//if (GetMsg.substr(0, 25) == "Reading [ItemGroup] . . .")
+	//{
+	//	ConsoleWrite(SADDLE_BROWN, "Reading [ItemGroup] . . .");
+	//	return 0;
+	//}
+
+	//if (GetMsg.substr(0, 21) == "Reading [Goods] . . .")
+	//{
+	//	ConsoleWrite(SADDLE_BROWN, "Reading [Goods] . . .");
+	//	return 0;
+	//}
+
+	//if (GetMsg.substr(0, 23) == "Reading [InitNPC] . . .")
+	//{
+	//	ConsoleWrite(SADDLE_BROWN, "Reading [InitNPC] . . .");
+	//	return 0;
+	//}
+
+	//if (GetMsg.substr(0, 25) == "Reading [InitSkill] . . .")
+	//{
+	//	ConsoleWrite(SADDLE_BROWN, "Reading [InitSkill] . . .");
+	//	return 0;
+	//}
+
+	//if (GetMsg.substr(0, 21) == "Reading [Quest] . . .")
+	//{
+	//	ConsoleWrite(SADDLE_BROWN, "Reading [Quest] . . .");
+	//	return 0;
+	//}
+
+	//if (GetMsg.substr(0, 25) == "Reading [Etc] . . .")
+	//{
+	//	ConsoleWrite(SADDLE_BROWN, "Reading [Etc] . . .");
+	//	return 0;
+	//}
+
+	//if (GetMsg.substr(0, 25) == "Another Server is running")
+	//{
+	//	ConsoleWrite(SADDLE_BROWN, "Another Server is running");
+	//	return 0;
+	//}
+
 
 	va_list va;
 	va_start(va,Msg);

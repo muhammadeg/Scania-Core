@@ -561,7 +561,7 @@ int __cdecl CDBProcess(char *Data)
 			string loginMsg = "Dear " + (std::string)IPlayer.GetName() + ", Welcome back to " + thisServerName + ", enjoy the game, dont forget to follow the rules and play fair! You have last logged in at: " + std::string(Message);
 			IPlayer.SystemMessage(loginMsg.c_str(), TEXTCOLOR_GREEN);
 
-			IPlayer.BoxMsg("You have last logged in at: " + std::string(Message));
+		//	IPlayer.BoxMsg("You have last logged in at: " + std::string(Message));
 		}
 
 		return 0;
@@ -584,6 +584,36 @@ int __cdecl CDBProcess(char *Data)
 		else 
 			insertOfflineReward(PID, HouseReward, HouseRewardAmount, PID, 0, 128, 0, 0, 0, 0, 0, 0, 0, 0, "Congratulations Warrior! Your house has won the weekly reward..");
 
+		return 0;
+	}
+
+	if ((unsigned char)Data[2] == 73)
+	{
+		int PID = 0;
+		int Leader = 0, SubLeader = 0, Chief = 0;
+		int GPosition = 0;
+		Interface<ITools> Tools;
+		CPacket::xRead((char*)(void*)(Data + 3), "dd", &PID, &GPosition);
+		TargetFind myTarget(0, 1, PID);
+		int Player = (int)myTarget.getTarget();
+		IChar IPlayer((void*)Player);
+		
+		if (GuildColors){
+
+			if (GPosition == 1)
+				Leader = 1;
+			if (GPosition == 2)
+				SubLeader = 1;
+			if (GPosition == 3 || GPosition == 4)
+				Chief = 1;
+
+			if (IPlayer.IsOnline() && Leader && GuildColors)
+				IPlayer.Buff(BuffNames::NamePad, BuffNames::BuffTime, LeaderColor);
+			if (IPlayer.IsOnline() && SubLeader && GuildColors)
+				IPlayer.Buff(BuffNames::NamePad, BuffNames::BuffTime, SubLeaderColor);
+			if (IPlayer.IsOnline() && Chief && GuildColors)
+				IPlayer.Buff(BuffNames::NamePad, BuffNames::BuffTime, ChiefColor);
+		}
 		return 0;
 	}
 

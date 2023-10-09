@@ -245,7 +245,6 @@ int __fastcall SummonAI(void *Monster, void *edx)
 int __fastcall SummonDie(int Monster, void *edx, int TankerID, int Arg1, int Arg2, int Arg3)
 {
 
-
 	IChar IMonster((void*)Monster);
 
 	if (SinEvent::Active && IMonster.GetMapX() == SEMapX && IMonster.GetMapY() == SEMapY) {
@@ -253,23 +252,6 @@ int __fastcall SummonDie(int Monster, void *edx, int TankerID, int Arg1, int Arg
 		IPlayer.UpdateBuff(BuffNames::SinEventMobs, BuffNames::BuffTime, IPlayer.GetBuffValue(BuffNames::SinEventMobs) + SEPtsPerMob);
 	}
 
-
-	// Monster Buffs
-	if (MonstersBuff.count(IMonster.GetMobIndex()))
-	{
-			IChar IPlayer((void*)TankerID);
-			double Buff = MonstersBuff.find(IMonster.GetMobIndex())->second.buffid;
-			int Grade = MonstersBuff.find(IMonster.GetMobIndex())->second.buffgrade;
-			double Refine = MonstersBuff.find(IMonster.GetMobIndex())->second.buffgrade;
-			if (Grade == 3) Buff = 2.75;
-			if (Refine == 3) Refine = 5.5;
-
-			if (Buff == 36) IPlayer.Buff(Buff, 1800, 8 * Refine + 3);
-			else {
-				IPlayer.Buff(Buff, 1800, 8 * Grade + 3);
-			}
-
-	}
 	// Monsters Rewards
 	if (MonstersRewards.count(IMonster.GetMobIndex())) {
 		int RewardID = MonstersRewards.find(IMonster.GetMobIndex())->second.rewardid;

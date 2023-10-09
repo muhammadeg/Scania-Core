@@ -1609,7 +1609,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 
 			if (minutes != 0 && (minutes % 30) == 0 && seconds == 0)
 			{
-				CPlayer::WriteAll(15, "s", "This Server is Sponsored by The Nexus Company - All rights reserved.");
+				CPlayer::WriteAll(15, "s", "This Server is Sponsored by KalTechSolutions - All rights reserved.");
 			}
 		}
 
@@ -1746,7 +1746,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 		}
 
 		if (TimeStr == "01:59:59" || TimeStr == "03:59:59" || TimeStr == "05:59:59" || TimeStr == "07:59:59" || TimeStr == "09:59:59" || TimeStr == "13:59:59" || TimeStr == "15:59:59" || TimeStr == "17:59:59" || TimeStr == "19:59:59" || TimeStr == "21:59:59" || TimeStr == "02:59:59" || TimeStr == "04:59:59" || TimeStr == "06:59:59" || TimeStr == "08:59:59" || TimeStr == "10:59:59" || TimeStr == "12:59:59" || TimeStr == "14:59:59" || TimeStr == "16:59:59" || TimeStr == "18:59:59" || TimeStr == "20:59:59" || TimeStr == "22:59:59" || TimeStr == "00:59:59") {
-			CPlayer::WriteAll(0xFF, "dsd", 247, "This Server Is Sponsored By The Nexus Company.", 5);
+			CPlayer::WriteAll(0xFF, "dsd", 247, "This Server Is Sponsored By KalTechSolutions.", NOTICECOLOR_WHITE);
 		}
 
 		if (TimeNow->tm_wday == CWTCD && TimeNow->tm_hour < CWTCSH && (int)*(DWORD**)0x004E0964 != 1 && (int)*(DWORD**)0x004E0964 != 4)
@@ -1802,7 +1802,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 			IChar IPlayer((void*)InterlockedExchangeAdd(&PlayerLevelNotice, 0));
 			if (IPlayer.IsOnline()) {
 				string congratsMsg = "Dear " + (std::string)IPlayer.GetName() + ", Congratulations on reaching level " + Int2String(IPlayer.GetLevel());
-				CPlayer::WriteAll(0xFF, "dsd", 247, congratsMsg.c_str(), NOTICECOLOR_YELLOW);
+				CPlayer::WriteAll(0xFF, "dsd", 247, congratsMsg.c_str(), NOTICECOLOR_WHITE);
 			}
 			InterlockedExchange(&PlayerLevelNotice, 0);
 		}

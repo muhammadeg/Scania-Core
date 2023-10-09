@@ -1123,6 +1123,8 @@ signed int __fastcall OrnamentChangePrefix(void *Item, void* _edx, int Player, i
 	} else {
 		if (WeaponReplace.count((IItem.CheckIndex()+100000)*NewPrefix) && WeaponReplaceIndex.count((IItem.CheckIndex()+100000)*NewPrefix))
 		{
+			std::string msg = (std::string)IPlayer.GetName();
+
 			if (WeaponReplace.find((IItem.CheckIndex()+100000)*NewPrefix)->second && WeaponReplace.find((IItem.CheckIndex()+100000)*NewPrefix)->second == NewPrefix)
 			{
 				if (WeaponReplaceIndex.find((IItem.CheckIndex()+100000)*NewPrefix)->second)
@@ -1166,6 +1168,12 @@ signed int __fastcall OrnamentChangePrefix(void *Item, void* _edx, int Player, i
 							CIOObject::Release((void *)ReplaceItem);
 							CDBSocket::Write(21, "dddbb",*(DWORD *)(ReplaceItem + 36),*(DWORD *)(ReplaceItem + 32),*(DWORD *)(ReplaceItem + 48),8,7);
 							CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddddd", 242, 0, 0, 128, 255);
+							std::string& successMsg = WeaponReplaceMsg.find((ItemNewIndex + 100000)*NewPrefix)->second;
+							if (WeaponReplaceMsg.count((ItemNewIndex + 100000)*NewPrefix) && !successMsg.empty()){
+								msg = msg + " " + successMsg;
+								CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), NOTICECOLOR_BLUE);
+							}
+
 						}
 					} else {
 						return 0;

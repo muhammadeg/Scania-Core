@@ -140,6 +140,11 @@ int __fastcall OnLoadPlayer(void *Player, void *edx, int Value)
 			IPlayer.Buff(BuffNames::EPEvent, BuffNames::BuffTime, GetTickCount() + (TimerEP * 1000));
 		}
 
+		if (GuildColors)
+			IPlayer.GuildColor();
+
+
+
 		if (IPlayer.GetClass() == 3 && IPlayer.GetStr() < 14 && IPlayer.GetLevel() == 1)
 		{
 			IPlayer.IncreaseStat(14,0);

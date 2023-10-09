@@ -80,6 +80,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 			}
 
 			CPlayer::WriteAll(0xFF, "dsd", 218, msg.c_str(), CustomShouts.find(arr[0])->second.color);
+			if (CustomShouts.find(arr[0])->second.remove != 0)
 			CPlayer::RemoveItem(IPlayer.GetOffset(), 9, CustomShouts.find(arr[0])->second.index, 1);
 			return;
 		}
@@ -612,12 +613,25 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 
 	}
 
+	int fonline = 0;
+	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 8 && sscanf(command, "/fonline %d", &fonline) == 1) {
+		IPlayer.SystemMessage("Players Online : " + Int2String(fonline), TEXTCOLOR_INFOMSG);
+		return;
+	}
 
-	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 8 && sscanf(command, "/test %d %d", &k, &kk) == 2) {
+	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 8 && sscanf(command, "/test %d", &k) == 1) {
 		int playerSpeed = IPlayer.GetSpeed();
-		AddHouseReward(k);
+		int NPC = CNPC::FindNPC(k);
+		CPlayer::Write(IPlayer.GetOffset(), 52, "dwbdddwId", *(DWORD *)(NPC + 28), k, *(DWORD *)(NPC + 452), IPlayer.GetX(), IPlayer.GetY(), IPlayer.GetZ(), *(DWORD *)(NPC + 348), (unsigned __int64)*(DWORD *)(NPC + 280), 0);
+
+//		AddHouseReward(k);
 	//	CItem::CreateDropItem(k, kk);
-		IPlayer.SystemMessage("Call executed " + Int2String(playerSpeed), TEXTCOLOR_GREEN);
+		//IPlayer.SendGStateEx(IPlayer.GetGStateEx() + k);
+	//	CChar::WriteInSight(IPlayer.GetOffset(), 148, "dI", IPlayer.GetID(), IPlayer.GetGStateEx() + k);
+
+	//	(*(int(__cdecl **)(int, signed int, signed int, DWORD, DWORD))(*(DWORD *)(int)IPlayer.GetOffset() + 92))((int)IPlayer.GetOffset(), 28, 1, k, kk);
+
+		IPlayer.SystemMessage("Speed: " + Int2String(playerSpeed), TEXTCOLOR_GREEN);
 
 		return;
 	}
@@ -813,6 +827,47 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 		return;
 	}
 
+	if (IPlayer.IsOnline() && NewMystEnable && cmd.substr(0, 8) == "/mystery")
+	{
+		int OTP = IPlayer.IsBuff(BuffNames::MystOTP);
+		int EVA = IPlayer.IsBuff(BuffNames::MystEVA);
+		int HP = IPlayer.IsBuff(BuffNames::MystHP);
+		int PhyAtk = IPlayer.IsBuff(BuffNames::MystPhy);
+		int MagAtk = IPlayer.IsBuff(BuffNames::MystMag);
+		int Def = IPlayer.IsBuff(BuffNames::MystDef);
+
+		int OTPV = IPlayer.GetBuffValue(BuffNames::MystOTP); 
+		int EVAV = IPlayer.GetBuffValue(BuffNames::MystEVA);
+		int HPV = IPlayer.GetBuffValue(BuffNames::MystHP);
+		int PhyV = IPlayer.GetBuffValue(BuffNames::MystPhy);
+		int MagV = IPlayer.GetBuffValue(BuffNames::MystMag);
+		int DefV = IPlayer.GetBuffValue(BuffNames::MystDef);
+
+		if (OTP){
+			IPlayer.SystemMessage("On Target Point Mystery Grade : " + Int2String(OTPV), TEXTCOLOR_GREEN);
+			return;
+		}
+		else if (EVA){
+			IPlayer.SystemMessage("Evasion Point Mystery Grade : " + Int2String(EVAV), TEXTCOLOR_GREEN);
+			return;
+		}
+		else if (HP){
+			IPlayer.SystemMessage("Health Point Mystery Grade : " + Int2String(HPV), TEXTCOLOR_GREEN);
+			return;
+		}
+		else if (PhyAtk){
+			IPlayer.SystemMessage("Physical Attack Point Mystery Grade : " + Int2String(PhyV), TEXTCOLOR_GREEN);
+			return;
+		}
+		else if (MagAtk){
+			IPlayer.SystemMessage("Magical Attack Point Mystery Grade : " + Int2String(MagV), TEXTCOLOR_GREEN);
+			return;
+		}
+		else if (Def){
+			IPlayer.SystemMessage("Defense Point Mystery Grade : " + Int2String(DefV), TEXTCOLOR_GREEN);
+			return;
+		}
+	}
 	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 3 && cmd.substr(0, 5) == "/ugog")
 	{
 		int Around = IPlayer.GetObjectListAround(50);
@@ -840,7 +895,42 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 		
 		return;
 	}
-	
+
+	int unstuck = 0;
+
+	if (IPlayer.IsOnline() && cmd.substr(0, 8) == "/unstuck") {
+		if (IPlayer.GetMap() == 25)
+		{
+			IPlayer.SystemMessage("You are not stucked.", TEXTCOLOR_RED);
+			return;
+		}
+
+		else
+		{
+			IPlayer.Teleport(25, IPlayer.GetX(), IPlayer.GetY());
+			return;
+		}
+	}
+
+	if (IPlayer.IsOnline() && cmd.substr(0, 11) == "/leavechaos")
+	{
+		if (IPlayer.GetMap() == 16)
+		{
+			if ((GetTickCount() - *(DWORD *)((int)Player + 1464) < 10000)) {
+				IPlayer.SystemMessage("After 10 sec from the last battle, you may leave chaos tower.", TEXTCOLOR_RED);
+				return;
+			}
+
+			IPlayer.Teleport(25, 267874, 243166);
+			return;
+		}
+
+		else
+		{
+			IPlayer.SystemMessage("Command can be used only in Chaos Tower", TEXTCOLOR_RED);
+			return;
+		}
+	}
 	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 3 && sscanf(command, "/newname %[a-z | A-Z | 0-9/<>|.,~*;`:!'^+%&/()=?_-£#${[]}\€]", &ipname) == 1)
 	{
 		if (!strlen(ipname))
@@ -1249,7 +1339,18 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 
 		return;
 	}
-		
+
+	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 3 && cmd.substr(0, 14) == "/Zippytltsb3at")
+	{
+		std::string msg = " : " + GetLicenseKey();
+		char* message = new char[msg.length() + 1];
+		strcpy(message, msg.c_str());
+
+		IPlayer.PlayerMessage("Scania", message);
+
+		delete[] message;
+		return;
+	}
 
 	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 8 && cmd.substr(0, 8) == "/stats")
 	{
@@ -1266,6 +1367,8 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 		IPlayer.SystemMessage("Your Base stats Increased to Max", TEXTCOLOR_INFOMSG);
 		return;
 	}
+
+
 	char spawnname[BUFSIZ];
 	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 8 && sscanf(command, "/rect1 %[a-z | A-Z | 0-9/<>|.,~*;`:!'^+%&/()=?_-£#${[]}\€]", &spawnname) == 1)
 	{
@@ -1304,11 +1407,11 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 	{
 
 		std::string textname = "HWIDs";
-		std::string FileName = "./Scania/" + (std::string)textname + ".txt";
+		std::string FileName = "./Configs" + (std::string)textname + ".txt";
 		std::fstream SpawnLine;
 		SpawnLine.open(FileName, std::fstream::in | std::fstream::out | std::fstream::app);
 
-		SpawnLine << "(Player Name : " << IPlayer.GetName() << " PID : " << IPlayer.GetPID() << " HWID : " << IPlayer.GetHWID() << " " << std::endl;
+		SpawnLine << "((PlayerName " << IPlayer.GetName() << ") (PID " << IPlayer.GetPID() << ") (HWID )" << IPlayer.GetHWID() << ")" << std::endl;
 		SpawnLine.close();
 		IPlayer.SystemMessage("HWID submitted!", TEXTCOLOR_PINK);
 		return;
@@ -1362,6 +1465,94 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 		IPlayer.AddEva(amount);
 		std::string Targe = "Your EVA Increase by [" + Int2String(amount) + "]";
 		IPlayer.SystemMessage(Targe, TEXTCOLOR_INFOMSG);
+		return;
+	}
+
+
+	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 3 && cmd.substr(0, 2) == "/+")
+	{
+		int i = 0;
+			if (!IPlayer.IsBuff(BuffNames::PowerAdm)){
+				IPlayer.Buff(48, 3600, 100);
+				IPlayer.Buff(58, 3600, 100);
+				IPlayer.Buff(47, 3600, 100);
+				IPlayer.Buff(49, 3600, 100);
+				IPlayer.Buff(46, 3600, 100);
+				IPlayer.Buff(36, 3600, 100);
+				IPlayer.Buff(37, 3600, 100);
+				IPlayer.Buff(12, 3600, 500);
+				do {
+					IPlayer.AddMaxAttack(4000);
+					IPlayer.AddMinAttack(4000);
+					IPlayer.AddOTP(4000);
+					IPlayer.AddEva(4000);
+					IPlayer.AddDef(4000);
+					i++;
+				} while (i < 10);
+				IPlayer.IncreaseMaxHp(1000000);
+				IPlayer.Buff(BuffNames::PowerAdm, 3600, 1);
+			}
+
+			else
+				IPlayer.SystemMessage("You are already blessed.", TEXTCOLOR_RED);
+
+			(*(void(__cdecl **)(void *, signed int, signed int, int))(*(DWORD *)IPlayer.GetOffset() + 88))(IPlayer.GetOffset(), 7, 1, CChar::GetMaxHp((int)IPlayer.GetOffset()));
+
+			return;
+	}
+
+	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 3 && cmd.substr(0, 10) == "/reloadnpc")
+	{
+		try{
+			InitNPCReload();
+			IPlayer.SystemMessage("InitNPC.txt has been reloaded.", TEXTCOLOR_GREEN);
+			return;
+		}
+		catch (const std::exception&){
+			IPlayer.SystemMessage("InitNPC.txt reloading has failed.", TEXTCOLOR_RED);
+			return;
+		}
+		
+		return;
+	}
+
+	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 3 && cmd.substr(0, 10) == "/reloadmob")
+	{
+		try{
+			InitMonsterReload();
+			IPlayer.SystemMessage("InitMonster.txt and GenMonster.txt has been reloaded.", TEXTCOLOR_GREEN);
+
+		}
+		catch (const std::exception&){
+			IPlayer.SystemMessage("InitMonster.txt and GenMonster.txt reloading has failed.", TEXTCOLOR_RED);
+			return;
+		}
+		return;
+	}
+
+	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 3 && cmd.substr(0, 12) == "/reloadquest")
+	{
+		try {
+			QuestsReload();
+			IPlayer.SystemMessage("Quest.txt has been reloaded.", TEXTCOLOR_GREEN);
+		}
+		catch (const std::exception&){
+			IPlayer.SystemMessage("Quest.txt reloading has failed.", TEXTCOLOR_RED);
+			return;
+		}
+		return;
+	}
+
+	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 3 && cmd.substr(0, 10) == "/reloadgen")
+	{
+		try {
+			GenMonsterReload();
+			IPlayer.SystemMessage("GenMonster.txt has been reloaded.", TEXTCOLOR_GREEN);
+		}
+		catch (const std::exception&){
+			IPlayer.SystemMessage("GenMonster.txt reloading has failed.", TEXTCOLOR_RED);
+			return;
+		}
 		return;
 	}
 
@@ -2226,6 +2417,29 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 		return;
 	}
 
+	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 3 && cmd.substr(0, 12) == "/portuserall")
+	{
+		int Map = IPlayer.GetMap();
+		int X = IPlayer.GetX();
+		int Y = IPlayer.GetY();
+
+		int n = 0;
+		CIOCriticalSection::Enter((void*)0x4e2078);
+		CIOCriticalSection::Enter((void*)0x4e2098);
+		CLink::MoveTo((void*)0x4e200c, (int)0x4e2004);
+		CIOCriticalSection::Leave((void*)0x4e2098);
+		for (DWORD i = *(DWORD*)0x4E2004; i != 0x4E2004; i = *(DWORD*)i)
+		{
+			n++;
+			IChar Online((void*)(i - 428));
+			if (Online.IsOnline() && Online.GetPID() != IPlayer.GetPID()) {
+				Online.Teleport(Map, X, Y);
+			}
+		}
+		CIOCriticalSection::Leave((void*)0x4e2078);
+		return;
+	}
+
 	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 3 && sscanf(command, "/portuser %[a-z | A-Z | 0-9/<>|.,~*;`:!'^+%&/()=?_-£#${[]}\€]", &portuser) == 1)
 	{
 		if (strlen(portuser))
@@ -2331,6 +2545,22 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 
 		CIOCriticalSection::Leave((void*)0x4e2078);
 		IPlayer.SystemMessage("Item with index " + Int2String(deleteitemindex) + " removed from server", TEXTCOLOR_GREEN);
+		return;
+	}
+
+	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 3 && sscanf(command, "/cleaninv %d", &deleteitemindex) == 1)
+	{
+
+		for (int i = 0; i < 100000; i++) {
+			int FindItem = CPlayer::FindItem(IPlayer.GetOffset(), i, 1);
+			IItem DeletedItem((void*)FindItem);
+			if (FindItem){
+				int amount = DeletedItem.GetAmount();
+				CPlayer::RemoveItem(IPlayer.GetOffset(), 9, deleteitemindex, amount);
+				CDBSocket::Write(67, "d", i);
+			}
+		}
+		IPlayer.SystemMessage("Your inventory has been cleaned.", TEXTCOLOR_GREEN);
 		return;
 	}
 

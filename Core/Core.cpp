@@ -231,10 +231,11 @@ enum ItemType {
 struct ShoutData {
 	COLORREF color;
 	int index;
+	int remove;
 
-	ShoutData() : color(0), index(0) {} // Default constructor
+	ShoutData() : color(0), index(0), remove(0) {} // Default constructor
 
-	ShoutData(COLORREF c, int i) : color(c), index(i) {}
+	ShoutData(COLORREF c, int i, int r) : color(c), index(i), remove(r) {}
 };
 enum TextColor
 {
@@ -255,7 +256,56 @@ enum TextColor
 	TEXTCOLOR_CLASSMATE = RGB(   0, 128,   0 ),
 	TEXTCOLOR_PUPIL     = RGB( 255, 128,  64 ),
 	TEXTCOLOR_PINK      = RGB( 255, 155, 255 ),
+	TEXTCOLOR_Undefined = RGB(152, 155, 189),
+	TEXTCOLOR_UndefinedI = RGB(150, 10, 25),
+	TEXTCOLOR_DARK_MAGENTA = RGB(139, 0, 139),
+	TEXTCOLOR_DAMAGE = RGB(255, 187, 153),
+	GRAY = RGB(190, 190, 190),
+	RED = RGB(255, 0, 0),
+	DARK_RED = RGB(139, 0, 0),
+	ORANGE_RED = RGB(255, 69, 0),
+	BLUE = RGB(0, 128, 255),
+	DARK_BLUE = RGB(0, 0, 139),
+	DARK_SKYBLUE = RGB(0, 178, 238),
+	STEAL_BLUE = RGB(99, 184, 255),
+	YELLOW = RGB(238, 238, 0),
+	GREEN_YELLOW = RGB(173, 255, 47),
+	ORANGE = RGB(255, 165, 0),
+	DARK_ORANGE = RGB(255, 140, 0),
+	GREEN = RGB(0, 255, 0),
+	LIME_GREEN = RGB(50, 205, 50),
+	DARK_GREEN = RGB(0, 100, 0),
+	LAWN_GREEN = RGB(124, 252, 0),
+	FOREST_GREEN = RGB(34, 139, 34),
+	CYAN = RGB(0, 255, 255),
+	DARK_CYAN = RGB(0, 139, 139),
+	SADDLE_BROWN = RGB(139, 69, 19),
+	SANDY_BROWN = RGB(244, 164, 96),
+	PERU = RGB(205, 133, 63),
+	MAGENTA = RGB(255, 0, 255),
+	DARK_MAGENTA = RGB(139, 0, 139),
+	DARK_ORCHID = RGB(153, 50, 204),
+	PURPLE = RGB(160, 32, 240),
+	DEEP_PURPLE = RGB(255, 20, 147),
+	GOLD = RGB(255, 215, 0),
+	DARK_GOLD = RGB(184, 134, 11),
+	MyOrange = RGB(184, 80, 11),
+
 };
+//#define ConsoleColAdr *(DWORD*)0x4D62A8
+//
+//void ConsoleWrite(COLORREF Color, const char *Text, ...)
+//{
+//	ConsoleColAdr = Color;
+//	va_list va;
+//	va_start(va, Text);
+//	//std::string _Tag = ("Quickly ~ ");
+//	std::string _Text(Text);
+//	std::string _RetText = (/*_Tag +*/ _Text);
+//	CLog::AddV(2, _RetText.c_str(), va);
+//	va_end(va);
+//	ConsoleColAdr = 0x0000FF;
+//}
 
 enum NoticeColor
 {
@@ -530,7 +580,25 @@ namespace BuffNames {
 		CurrentMissionBuff = 61546,
 		NextMissionBuff = 61547,
 		Gryffindor = 61548,
-		Emote = 61549
+		Emote = 61549,
+		CJBEXP = 61550,
+		MystPhy = 61551,
+		MystMag = 61552,
+		MystDef = 61553,
+		MystHP = 61554,
+		MystOTP = 61555,
+		MystEVA = 61556,
+		PowerAdm = 61557,
+		AdditionalDef = 61558,
+		AdditionalStr = 61559,
+		AdditionalHP = 61560,
+		AdditionalAgi = 61561,
+		AdditionalInt = 61562,
+		AdditionalCrit = 61563,
+		AdditionalRef = 61564,
+		StickScale = 61565,
+		Blessing = 61566
+
 	};
 }
 
@@ -805,6 +873,12 @@ struct ConfigBuff
 	int CQuest_Index;
 	int Honorindex;
 };
+
+struct BuffDisable
+{
+	int BuffDisableIndex;
+	int BuffDisableID;
+};
 struct BuffMaker
 {
 	int MinLevel;
@@ -849,12 +923,10 @@ struct BuffMaker
 	int MD;
 	int amount;
 	int count;
+	int altBuff;
+	int BuffDisableIndex;
+	int BuffDisableID;
 };
-std::map<int, ConfigBuff> BuffCheck;
-std::map<int, BuffMaker> BuffMakerCheck;
-std::map<std::string, ShoutData> CustomShouts;
-std::map<std::string, ShoutData> CustomHouse;
-std::unordered_map<int, int> PlayerMissionProgress;
 
 namespace Hell
 {
@@ -966,6 +1038,10 @@ struct CheckSummonTimer
 	int Disappear;
 	std::string Msg;
 	std::string Day;
+};
+
+struct SkillRangeConfig {
+	int maxRange;
 };
 
 struct CheckCalculations
@@ -1213,6 +1289,7 @@ struct Items
 {
 	int Index;
 	int Amount;
+	int reward;
 	int Prefix;
 	int Bound;
 	int Info;
@@ -1279,10 +1356,6 @@ struct AreaExpItem
 	int time;
 };
 
-std::vector<AreaExpItem> AreasExpItems; // declare a vector to hold the areas
-std::map<int, int> GoldenEXPBuffs;
-std::map<int, int> GoldenEggBuffs;
-std::unordered_map<int, std::string> EmoteSystem;
 
 struct MissionInfo {
 	int nextmission;
@@ -1296,16 +1369,7 @@ struct MissionInfo {
 	int rewardID;
 	int progress;
 };
-std::unordered_map<int, MissionInfo> MissionQuests;
-// Define a struct to store quest progress
-struct MissionData {
-	int currentMission;
-	int nextMission;
-	int missionProgress;
-};
 
-// Create a map to store mission data for each player
-std::unordered_map<int, MissionData> PlayerMissionData;
 
 namespace CoordinatesGet
 {
@@ -1443,6 +1507,20 @@ struct CMonstersRewards
 	int itemamount;
 	int pickchance;
 
+};
+struct pRewards
+{
+	int Level;
+	int Progress;
+};
+struct CQuestsNotice
+{
+	int QuestIndex;
+	int QuestItem;
+	int clearQ;
+	int qAmount;
+	int qFlag;
+	std::string Notice;
 };
 struct CMonstersBuff
 {
@@ -1730,7 +1808,17 @@ struct SwapMineral {
 	std::string itemAmounts;
 	std::string chances;
 };
-
+struct StickBuff {
+	int Sgrade;
+	int hp;
+	int str;
+	int agi;
+	int def;
+	int intel;
+	int crit;
+	int atk;
+	std::string BuffName;
+};
 struct CenterNotice {
 	std::string Day;
 	std::string Msg;
@@ -1821,6 +1909,7 @@ struct Reward {
 	int Bound;
 	int HTML;
 	int HousePoints;
+	int userKey;
 };
 
 struct DuelRegistre {
@@ -2250,14 +2339,14 @@ struct ItemExchange
 };
 
 static int ShamanBuffs[] = { 401, 403, 407, 409, 413 };
-
+unsigned __int64 _ExpTable[312]; // Definition of the global variable
 Poll pollAsk;
 time_t uptimestart; 
 int GuildWinnerCW = 0, AllyWinnerCW = 0, WarEndTime = 0;
 int CryptKey = 0;
 std::string ConfigCheckDB1, ConfigCheckDB2;
 int firstDig = 0;
-int BofConfigRead = 0, BofConfigReadG2 = 0, BofConfigReadG3 = 0, dgConfigRead = 0, insanityRead = 0, qigongRead = 0, ImpConfigRead = 0, ScaniaLicense = 0, NailKill = 0;
+int BofConfigRead = 0, dgConfigRead = 0, insanityRead = 0, qigongRead = 0, ImpConfigRead = 0, ScaniaLicense = 0, NailKill = 0;
 time_t notices,timeReloading;
 volatile LONG OnlinePlayers = 0;
 volatile LONG PlayerLevelNotice = 0;
@@ -2293,6 +2382,15 @@ Lock blockLock = Lock();
 Lock packetLock = Lock();
 Lock rewardLock = Lock();
 
+std::vector<AreaExpItem> AreasExpItems; // declare a vector to hold the areas
+//std::map<int, int> GoldenEXPBuffs;
+; std::map<int, int> GoldenEggBuffs;
+std::map<int, int> HighGradeBof;
+std::map<int, int> HighGradeImperial;
+//std::unordered_map<int, std::pair<std::string, int>> EmoteSystem;
+std::unordered_map<int, std::string> EmoteSystem;
+std::unordered_map<int, MissionInfo> MissionQuests;
+
 std::set<int> BoundAllowedItems;
 std::map<int, std::vector<MLMReward>> MLMRewards;
 std::map<int, Combinator> Combinators;
@@ -2315,7 +2413,13 @@ ConcurrentMap<int, int> ChannelItems;
 std::map<int, GuildRaidLevel> GuildRaidLevels;
 std::map<int, NecklaceBuff> NecklaceBuffs;
 std::map<int, BeltBuff> BeltBuffs;
-
+std::map<int, ConfigBuff> BuffCheck;
+std::map<int, BuffMaker> BuffMakerCheck;
+std::map<int, BuffDisable> BuffDisableCheck;
+std::map<std::string, ShoutData> CustomShouts;
+std::map<std::string, ShoutData> CustomHouse;
+std::unordered_map<int, int> PlayerMissionProgress;
+std::unordered_map<char, int> npcMap;
 std::map<int, ItemExchange> ItemExchanges;
 std::map<int, Reborn> Reborns;
 std::map<int, int> FatalDmg;
@@ -2355,6 +2459,7 @@ ConcurrentMap<int, FakePlayers_> FakePlayers;
 ConcurrentMap<int, FakeItems_> FakeItems;
 ConcurrentMap<std::string, int> FakeNames;
 ConcurrentSet<int> DailyLoginLimits;
+std::map<int, StickBuff>BuffScale;
 
 std::map<int, SecretBlackSmithSkill>SecretBlackSmith;
 std::map<int, SwapMineral>MakeMinerals;
@@ -2449,6 +2554,7 @@ std::map<int, CItemTasty> ItemHpDef;
 std::map<int, CItemTasty> ItemHpDefPerm;
 std::map<int, CItemTasty> ItemScrolls;
 std::map<int, CItemTasty> ItemScrollsPerm;
+std::map<int, CItemTasty> ItemBuffSrv;
 
 std::map<int, ItemLimit> ItemLimits;
 std::map<int, ItemQuestRepeat> ItemQuestRepeats;
@@ -2458,6 +2564,11 @@ std::map<int, SummonNPC> ItemNPCSummoned;
 std::map<int, SummonNPC> NPCSummoned;
 std::map<int, CAutoNotice> AutoNotices;
 std::map<int, CMonstersBuff> MonstersBuff;
+std::map<int, CMonstersBuff> RMonstersBuff;
+std::map<int, CQuestsNotice> QuestsNotice;
+std::map<int, CQuestsNotice> cQuestsNotice;
+std::map<int, pRewards> F10EXPRewards;
+
 std::map<int, CMonstersRewards> MonstersRewards;
 
 std::set<int> QuestDisable;
@@ -2503,6 +2614,7 @@ std::map<int, HaninRate> HaninLow;
 std::map<int, HaninRate> HaninMiddle;
 std::map<int, HaninRate> HaninHigh;
 std::map<int,CheckCalculations> PVPConfigCalculations;
+std::map<int, SkillRangeConfig> CheckRangeConfig;
 std::set<int> ItemDisable;
 std::set<int> AuctionItemDisable;
 ConcurrentMap<int,int> PlayerOffset;
@@ -2559,6 +2671,8 @@ SystemRegistration<int> BossEXPRegistration;
 std::map<int,int> WeaponReplace;
 SystemRegistration<int> CaptureRegistration;
 std::map<int,int> WeaponReplaceIndex;
+std::unordered_map<int, std::string> WeaponReplaceMsg;
+
 //std::vector<int> HighestDamage;
 std::set<int> WeaponReplacePrefix;
 std::set<int> DisablePrefix;

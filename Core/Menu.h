@@ -46,7 +46,11 @@ HMENU CreateMainWindowMenu(HMENU hBaseMenu) {
 	AppendMenu(hMenuPopupClean, MF_STRING, KXMENU_CleanInitPrefix, TEXT("Prefix.txt Cleaner"));
 
 	AppendMenu(hBaseMenu, MF_STRING, KXMENU_AboutMassageBox, TEXT("About"));
-	AppendMenu(hBaseMenu, MF_STRING, KXMENU_KickPlayer, TEXT("Kick Player"));
+
+	auto hMenuPopupTools = CreatePopupMenu();
+	AppendMenu(hBaseMenu, MF_POPUP, (UINT_PTR)hMenuPopupTools, TEXT("Server Tools"));
+	AppendMenu(hMenuPopupTools, MF_STRING, KXMENU_KickPlayer, TEXT("Kick Player"));
+
 
 	return hBaseMenu;
 }
@@ -159,12 +163,13 @@ LRESULT CALLBACK Proc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
 		}
 
 		case KXMENU_AboutMassageBox: {
-										 CConsole::Black("[Scania Developments] KalOnline Main Server Addon, Copyright © Scania - 2023");
+										 CConsole::Black("[KalTechSolutions] KalOnline Main Server Addon, Copyright © Scania - 2023");
 										 break;
 		}
 
 		case KXMENU_KickPlayer: {
 									std::string playerName;
+									bool playerFound = false;
 									Console();
 									cout << "Enter Player Name to kick: ";
 									cin >> playerName;
@@ -185,9 +190,11 @@ LRESULT CALLBACK Proc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
 												if (IPlayer.IsOnline() && IPlayer.GetName() == playerName){
 													IPlayer.Kick();
 													CConsole::Blue("Player %s was kicked", playerName.c_str());
+													playerFound = true;
 												}
 												else {
 													CConsole::Red("Player is not online.");
+													playerFound = true;
 												}
 
 											}
@@ -195,8 +202,12 @@ LRESULT CALLBACK Proc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
 										CIOCriticalSection::Leave((void*)0x004e2078);
 
 									}
+									if (!playerFound)
+										CConsole::Red("Player name is incorrect");
+
 									if (playerName.empty())
 										CConsole::Red("Failed to kick Player");
+
 									FreeConsole();
 									break;
 		}

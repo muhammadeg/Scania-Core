@@ -218,6 +218,11 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 			ITarget.IncreaseHp(100000);
 			return 1;
 		}
+		// meat while attack fix
+		if (IPlayer.IsBuff(19))
+			IPlayer.CancelBuff(19);
+		if (IPlayer.IsBuff(18))
+			IPlayer.CancelBuff(18);
 
 		if (GuildRaid::Active && Target == GuildRaid::Boss)
 			return 1;
@@ -257,10 +262,21 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 		if (IPlayer.GetType() == 1 && ITarget.GetType() == 0 && ITarget.IsBuff(52) && CheckDamage)
 			CheckDamage -= (CheckDamage * 10) / 100;
 
+		if (CheckDamage > 0 && IPlayer.GetType() == 0 && ITarget.GetType() == 1)
+		{
+			for (std::map<int, BuffMaker>::const_iterator it = BuffMakerCheck.begin(); it != BuffMakerCheck.end(); ++it) {
+				const BuffMaker& buff = it->second;
+				if (IPlayer.IsBuff(buff.BuffID) && buff.Damage == "true") {
+					CheckDamage -= (CheckDamage * buff.MD) / 100;
+				}
+			}
+
+		}
+
 		int AddCheck = IPlayer.GetBuffValue(2125);
 
 		if (CheckDamage > 0 && IPlayer.GetType() == 0 && ITarget.GetType() == 1 && AddCheck && AddCheck <= 100)
-			CheckDamage += (CheckDamage * AddCheck) / 100;
+			CheckDamage -= (CheckDamage * AddCheck) / 100;
 
 		int AddCheck2 = ITarget.GetBuffValue(2128);
 		if (IPlayer.GetType() == 1 && ITarget.GetType() == 0 && AddCheck2 && AddCheck2 < 100)
@@ -489,8 +505,15 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 
 		if (ITarget.GetType() == 0)
 		{
-			if (ITarget.IsBuff(284) && CheckDamage > 10)
+			if (ITarget.IsBuff(284) && CheckDamage > 10 && ITarget.GetType() == 0)
+				CheckDamage *= (PDPVP / 100);
+			if (ITarget.IsBuff(284) && CheckDamage > 10 && ITarget.GetType() != 0)
 				CheckDamage /= 10;
+
+			if (ITarget.IsBuff(BuffNames::Blessing) && CheckDamage > 10 && ITarget.GetType() == 0)
+				CheckDamage *= (BlessPVP / 100);
+			if (ITarget.IsBuff(BuffNames::Blessing) && CheckDamage > 10 && ITarget.GetType() != 0)
+				CheckDamage = 0;
 		}
 
 		if (ITarget.GetType() == 0)
@@ -806,6 +829,7 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 			if (UnAggro.count(ITarget.GetMobIndex()))
 				IPlayer.SetProperty(PlayerProperty::DamageAggro, CheckDamage);
 		}
+
 	}
 
 	return CheckDamage;
