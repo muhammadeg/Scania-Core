@@ -1997,6 +1997,12 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 
 	if (IPlayer.IsOnline() && Quest.GetIndex() == (DTQuest % 65536))
 	{
+
+		if (IPlayer.GetLevel() < DTLimit)
+		{
+			IPlayer.SystemMessage("You must be atleast " + Int2String(DTLimit) + " to register for duel tournament.", TEXTCOLOR_RED);
+			return;
+		}
 		if (IPlayer.IsOnline() && DuelTournament::Active)
 		{
 			IPlayer.SystemMessage("Duel Tournament already running. Please try again later.", TEXTCOLOR_RED);

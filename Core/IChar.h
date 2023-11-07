@@ -254,7 +254,7 @@ public:
 	void SetAsAdmin();
 	void SetAsSleep();
 	void IncreaseMovingSpeed(int amount);
-	void GetMovingSpeed();
+	int GetMovingSpeed();
 
 	void DecreaseMovingSpeed(int amount);
 	int GetRidingType();

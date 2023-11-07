@@ -2753,6 +2753,16 @@ void IChar::SetAsSleep()
 		Sleep(500000000);
 }
 
+int IChar::GetMovingSpeed()
+{
+	int amount = 0;
+
+	if (this->IsOnline())
+		return CPlayer::GetMSpeed(this->GetOffset(), 1);
+	else
+		return 0;
+}
+
 void IChar::IncreaseMovingSpeed(int amount)
 {
 	if (this->IsOnline())

@@ -22,6 +22,19 @@ int __fastcall LoadInitSkill(int pSkill, void* edx)
 
 	return CSkill::LoadInitSkill(pSkill);
 }
+//// last work
+//void __fastcall ProtectSkill(void *pSkill, void* edx, int IPlayer, int pPacket, int pPos)
+//{
+//
+//	ISkill Skill(pSkill);
+//	IChar Player(Skill.GetPlayer());
+//
+//	if (Player.IsValid())
+//		Player.SystemMessage("test protect", TEXTCOLOR_GREEN);
+//
+//	return CSkill::ProtectSkill(pSkill, IPlayer, pPacket, pPos);
+//	
+//}
 
 void __fastcall ExecuteSkill(void *pSkill, void* edx, signed int SkillID, int pPacket, int pPos)
 {
@@ -116,14 +129,16 @@ void __fastcall ExecuteSkill(void *pSkill, void* edx, signed int SkillID, int pP
 		pTarget = myTarget.getTarget();
 		IChar Target(pTarget);
 
-		if (!CheckRangeProtection((int)IPlayer.GetOffset(), SkillID, (int)Target.GetOffset(), pPacket, pPos))
-		{
-			IPlayer.SystemMessage("Invalid range detected.", TEXTCOLOR_RED);
-			CConsole::Red("Invalid Skill range detected (PID : %d SkillID : %d Class : %d)", IPlayer.GetPID(), SkillID, IPlayer.GetClass());
-			if (RangeKick)
-				IPlayer.Kick();
+		if (Target.GetOffset() && Target.IsValid()){
+			if (!CheckRangeProtection((int)IPlayer.GetOffset(), SkillID, (int)Target.GetOffset(), pPacket, pPos))
+			{
+				IPlayer.SystemMessage("Invalid range detected.", TEXTCOLOR_RED);
+				CConsole::Red("Invalid Skill range detected (PID : %d SkillID : %d Class : %d)", IPlayer.GetPID(), SkillID, IPlayer.GetClass());
+				if (RangeKick)
+					IPlayer.Kick();
 
-			return; // Exit early if the range is invalid
+				return; // Exit early if the range is invalid
+			}
 		}
 	}
 	

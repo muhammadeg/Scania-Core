@@ -2195,6 +2195,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			}
 			IPlayer.Buff(256, 2, 0);
 
+
 			int IID = 0;
 			CPacket::Read((char*)pPacket, (char*)pPos, "d", &IID);
 
@@ -2212,6 +2213,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				if (!IPlayer.IsBuff(BuffNames::StickScale + (sgrade * 2)) && IPlayer.GetClass() == 1 && ScaleBuff && IPlayer.GetSpecialty() == 11 && CItem::GetLevel((int)IItem.GetOffset()) == stick.Sgrade)
 					IPlayer.SaveBuff(BuffNames::StickScale + (sgrade * 2), BuffNames::BuffTime);
 			}
+
 
 			int MapX = IPlayer.GetX() >> 13;
 			int MapY = IPlayer.GetY() >> 13;
@@ -3060,7 +3062,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			return;
 		}
 		
-/*		if (packet == 218){
+		if (packet == 218){
 			if(MD5Check==1)
 			{
 				int engineCheck = 0, Type = 0, Veri = 0;
@@ -3082,9 +3084,9 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			}
 			return;
 		}
-*/
 
-/*		if(packet == 215){
+
+		if(packet == 215){
 			const char *pcname="none";
 			int Type=0,hwid=0;
 			CPacket::Read((char*)pPacket, (char*)pPos, "dsd", &Type,&pcname,17,&hwid);
@@ -3096,7 +3098,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 			return;
 		}
-*/
+
 
 		if (packetDebugger == 1) {
 			std::string Dato = "./Debugger/Packet/PACKETS_" + Time::GetDay() + "_" + Time::GetMonth() + "_" + Time::GetYear() + "_" + Time::GetHour() + "." + Time::GetMinute() + ".txt";

@@ -621,8 +621,9 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 
 	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 8 && sscanf(command, "/test %d", &k) == 1) {
 		int playerSpeed = IPlayer.GetSpeed();
-		int NPC = CNPC::FindNPC(k);
-		CPlayer::Write(IPlayer.GetOffset(), 52, "dwbdddwId", *(DWORD *)(NPC + 28), k, *(DWORD *)(NPC + 452), IPlayer.GetX(), IPlayer.GetY(), IPlayer.GetZ(), *(DWORD *)(NPC + 348), (unsigned __int64)*(DWORD *)(NPC + 280), 0);
+		int MovingSpeed = IPlayer.GetMovingSpeed();
+		//int NPC = CNPC::FindNPC(k);
+		//CPlayer::Write(IPlayer.GetOffset(), 52, "dwbdddwId", *(DWORD *)(NPC + 28), k, *(DWORD *)(NPC + 452), IPlayer.GetX(), IPlayer.GetY(), IPlayer.GetZ(), *(DWORD *)(NPC + 348), (unsigned __int64)*(DWORD *)(NPC + 280), 0);
 
 //		AddHouseReward(k);
 	//	CItem::CreateDropItem(k, kk);
@@ -632,9 +633,12 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 	//	(*(int(__cdecl **)(int, signed int, signed int, DWORD, DWORD))(*(DWORD *)(int)IPlayer.GetOffset() + 92))((int)IPlayer.GetOffset(), 28, 1, k, kk);
 
 		IPlayer.SystemMessage("Speed: " + Int2String(playerSpeed), TEXTCOLOR_GREEN);
+		IPlayer.SystemMessage("Moving Speed: " + Int2String(MovingSpeed), TEXTCOLOR_GREEN);
 
 		return;
 	}
+
+
 
 	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 3 && sscanf(command, "/fake %d", &EFakePlayers) == 1)
 	{
@@ -757,7 +761,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 
 			DGkLOG.close();
 
-			IPlayer.SystemMessage("Buff infos successfully generated in /Buffs folder.", TEXTCOLOR_GREEN);
+			IPlayer.SystemMessage("Buff infos successfully generated in /Buff folder.", TEXTCOLOR_GREEN);
 			return;
 		}
 
@@ -1481,6 +1485,8 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 				IPlayer.Buff(36, 3600, 100);
 				IPlayer.Buff(37, 3600, 100);
 				IPlayer.Buff(12, 3600, 500);
+				IPlayer.SystemMessage("Power mode activated.", TEXTCOLOR_GREEN);
+
 				do {
 					IPlayer.AddMaxAttack(4000);
 					IPlayer.AddMinAttack(4000);
@@ -1494,7 +1500,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 			}
 
 			else
-				IPlayer.SystemMessage("You are already blessed.", TEXTCOLOR_RED);
+				IPlayer.SystemMessage("Power mode already enabled.", TEXTCOLOR_RED);
 
 			(*(void(__cdecl **)(void *, signed int, signed int, int))(*(DWORD *)IPlayer.GetOffset() + 88))(IPlayer.GetOffset(), 7, 1, CChar::GetMaxHp((int)IPlayer.GetOffset()));
 
@@ -2548,7 +2554,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 		return;
 	}
 
-	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 3 && sscanf(command, "/cleaninv %d", &deleteitemindex) == 1)
+	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 3 && cmd.substr(0, 9) == "/clearinv")
 	{
 
 		for (int i = 0; i < 100000; i++) {
@@ -2556,8 +2562,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 			IItem DeletedItem((void*)FindItem);
 			if (FindItem){
 				int amount = DeletedItem.GetAmount();
-				CPlayer::RemoveItem(IPlayer.GetOffset(), 9, deleteitemindex, amount);
-				CDBSocket::Write(67, "d", i);
+				CPlayer::RemoveItem(IPlayer.GetOffset(), 9, i, amount);
 			}
 		}
 		IPlayer.SystemMessage("Your inventory has been cleaned.", TEXTCOLOR_GREEN);

@@ -17,6 +17,7 @@ int EmokQuestIndex = 0, EmokX = 0, EmokY = 0, EmokMap = 0, EmokCert = 0;
 int MysteryResetItem = 0, MysteryQuest = 0, MysteryEnable = 0;
 int MD5Check = 0, HellCooldown=0, testcmd=0,tmcd=0;
 int Shouts = 0;
+int iceStoneMax = 0, iceStoneValue = 0, iceStoneDebuff = 0;
 int IPEnable = 0;
 int SkillTestAction = 0, SkillR1 = 0, SkillR2 = 0, SkillTimer = 0, SkillIndex = 0;
 int testK = 0;
@@ -561,7 +562,7 @@ void ReadConfig(bool command)
 
 	MystPAtkQ = GetPrivateProfileIntA("PhyAttack", "QuestIndex", 0, "./Configs/NewMystery.txt");
 	MystPAtkS = GetPrivateProfileIntA("PhyAttack", "SysKey", 0, "./Configs/NewMystery.txt");
-
+		
 	MystMAtkQ = GetPrivateProfileIntA("MagAttack", "QuestIndex", 0, "./Configs/NewMystery.txt");
 	MystMAtkS = GetPrivateProfileIntA("MagAttack", "SysKey", 0, "./Configs/NewMystery.txt");
 
@@ -1515,6 +1516,9 @@ void ReadConfig(bool command)
 	ConfigMaxPhyAtk = GetPrivateProfileIntA("Protection", "MaxPhyAtk", 10000, "./Configs/Protection.txt");
 	EggExpTime = GetPrivateProfileIntA("EggExp", "ByTime", 1, "./Configs/Protection.txt");
 	EggExpKill = GetPrivateProfileIntA("EggExp", "ByKill", 1, "./Configs/Protection.txt");
+	iceStoneMax = GetPrivateProfileIntA("IceStone", "MaxIcedTimes", 10, "./Configs/Mix.txt");
+	iceStoneValue = GetPrivateProfileIntA("IceStone", "ValuePerHit", -10, "./Configs/Mix.txt");
+	iceStoneDebuff = GetPrivateProfileIntA("IceStone", "DebuffValue", 5, "./Configs/Mix.txt");
 	ConfigMix = GetPrivateProfileIntA("Mix", "Rate", 1, "./Configs/Mix.txt");
 	ConfigImp = GetPrivateProfileIntA("Imp", "Rate", 1, "./Configs/Mix.txt");
 	MD5Check = GetPrivateProfileIntA("MD5", "Active", 0, "./Configs/MD5Check.txt");
@@ -1773,24 +1777,6 @@ void ReadConfig(bool command)
 	}
 
 
-	//if (!command || (command && modifiedFiles.count("./Configs/GoldenEXP.txt"))) {
-	//	FILE *filegol = fopen("./Configs/GoldenEXP.txt", "r");
-	//	if (filegol != NULL)
-	//	{
-	//		char line[BUFSIZ];
-	//		while (fgets(line, sizeof line, filegol) != NULL)
-	//		{
-	//			int StoneBuff = 0, StoneValue = 0;
-
-	//		//	if (sscanf(line, "(GoldenEXPStone (Buff %d)(Value %d))", &StoneBuff, &StoneValue) == 2)
-	//		//		GoldenEXPBuffs[StoneBuff] = StoneValue;
-
-	//			if (sscanf(line, "(GoldenEggStone (Buff %d)(Value %d))", &StoneBuff, &StoneValue) == 2)
-	//				GoldenEggBuffs[StoneBuff] = StoneValue;
-	//		}
-	//		fclose(filegol);
-	//	}
-	//}
 
 	if (!command || (command && modifiedFiles.count("./Configs/StickBuff.txt"))) {
 		FILE *filessbf = fopen("./Configs/StickBuff.txt", "r");
@@ -1864,15 +1850,12 @@ void ReadConfig(bool command)
 					amount = 0, count = 0, Expindex = 0, expcount = 0, HPx = 0, RPx = 0, DKPTx = 0, DKPWx = 0, PLTx = 0, PLWx = 0, SVTx = 0, SVWx = 0,
 					Honorindex = 0, Removeindex = 0, mana = 0, hp = 0, MaxHp = 0, MaxMp = 0, MD = 0, EBRate = 0, altBuff = 0, BuffDisableIndex = 0, BuffDisableID = 0;
 
-<<<<<<< Updated upstream
-=======
 				if (sscanf(line, "(ItemBuffDisable (Index %d) (Buff %d))", &BuffDisableIndex, &BuffDisableID) == 2)
 				{
 					BuffDisableCheck[BuffDisableIndex].BuffDisableIndex = BuffDisableIndex;
 					BuffDisableCheck[BuffDisableIndex].BuffDisableID = BuffDisableID;
 
 				}
->>>>>>> Stashed changes
 				if (sscanf(line, "(Buff (Item_Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Index %d)(Permanently %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Buff-> Str %d Agi %d Hth %d Int %d Def %d Crit %d Ref %d Speed %d))", &ItemN, &Buff, &Delete, &MinLevel, &MaxLevel, &LimitMsg, &StrBuff, &AgiBuff, &HthBuff, &IntBuff, &DefBuff, &CritBuff, &RefBuff, &SpeedBuff) == 14)
 				{
 					BuffCheck[Buff].Buff = Buff;
@@ -1903,11 +1886,7 @@ void ReadConfig(bool command)
 					BuffCheck[Call].PhysicalAttack = PhysicalAttack;
 					BuffCheck[Call].CallofDefense = CallofDefense;
 				}
-<<<<<<< Updated upstream
-				if (sscanf(line, "(Maker (Item_Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Index %d)(Permanently %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Stats-> MinAttack %d MaxAttack %d Hp %d Str %d Int %d Wis %d Agi %d OTP %d Eva %d Def %d Fire_Resistance %d Ice_Resistance %d Lightning_Resistance %d Absorb %d CritRate %d CritDamage %d MaxHp %d MaxMp %d Explosive_Blow %d)(auto_heal Active_HP'%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' amount %d Active_MP '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' amount %d)(Damage_monster-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Decrease %d)(BuffIcon-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Time %d Sys %d BuffID %d [Login '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'])(Exp-> Exp_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Exp %d Egg_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Egg %d))", &ItemN, &Maker, &Delete, &MinLevel, &MaxLevel, &LimitMsg, &MinAttack, &MaxAttack, &Hp, &Str, &Int, &Wis, &Agi, &OTP, &Eva, &Def, &Fire_Resistance, &Ice_Resistance, &Lightning_Resistance, &Absorb, &CritRate, &CritDamage, &MaxHp, &MaxMp, &EBRate, &hp_heal, &hp, &mana_heal, &mana, &Damage, &MD, &BuffIcon, &Time, &Sys_name, &BuffID, &save, &ExpALLOW, &amount, &Egg, &count) == 40)
-=======
 				if (sscanf(line, "(Maker (Item_Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Index %d)(Permanently %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Stats-> PhyAtk %d MagAtk %d Hp %d Str %d Int %d Wis %d Agi %d OTP %d Eva %d Def %d Fire_Resistance %d Ice_Resistance %d Lightning_Resistance %d Absorb %d CritRate %d CritDamage %d MaxHp %d MaxMp %d Explosive_Blow %d)(auto_heal Active_HP'%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' amount %d Active_MP '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' amount %d)(Damage_monster-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Decrease %d)(BuffIcon-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Time %d Sys %d BuffID %d [Login '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'])(Exp-> Exp_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Exp %d Egg_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Egg %d AltBuff %d))", &ItemN, &Maker, &Delete, &MinLevel, &MaxLevel, &LimitMsg, &MinAttack, &MaxAttack, &Hp, &Str, &Int, &Wis, &Agi, &OTP, &Eva, &Def, &Fire_Resistance, &Ice_Resistance, &Lightning_Resistance, &Absorb, &CritRate, &CritDamage, &MaxHp, &MaxMp, &EBRate, &hp_heal, &hp, &mana_heal, &mana, &Damage, &MD, &BuffIcon, &Time, &Sys_name, &BuffID, &save, &ExpALLOW, &amount, &Egg, &count, &altBuff) == 41)
->>>>>>> Stashed changes
 				{
 					BuffMakerCheck[Maker].Maker = Maker;
 					BuffMakerCheck[Maker].Delete = Delete;
@@ -1938,10 +1917,10 @@ void ReadConfig(bool command)
 					BuffMakerCheck[Maker].BuffID = BuffID;
 					BuffMakerCheck[Maker].EBRate = EBRate;
 					BuffMakerCheck[Maker].save = save;
-					//BuffMakerCheck[Maker].mana = mana;
-					//BuffMakerCheck[Maker].hp = hp;
-					//BuffMakerCheck[Maker].mana_heal = mana_heal;
-					//BuffMakerCheck[Maker].hp_heal = hp_heal;
+					BuffMakerCheck[Maker].mana = mana;
+					BuffMakerCheck[Maker].hp = hp;
+					BuffMakerCheck[Maker].mana_heal = mana_heal;
+					BuffMakerCheck[Maker].hp_heal = hp_heal;
 					BuffMakerCheck[Maker].Damage = Damage;
 					BuffMakerCheck[Maker].MD = MD;
 					BuffMakerCheck[Maker].ExpALLOW = ExpALLOW;
@@ -2259,6 +2238,7 @@ void ReadConfig(bool command)
 		}
 	}
 
+
 	if (!command || (command && modifiedFiles.count("./Configs/ItemUse.txt"))) {
 		FILE *filewe = fopen("./Configs/ItemUse.txt", "r");
 		if (filewe != NULL)
@@ -2266,42 +2246,46 @@ void ReadConfig(bool command)
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filewe) != NULL)
 			{
-				int ItemIndex = 0, HTMLPage = 0, Remove = 0;
+				int ItemIndex = 0, HTMLPage = 0, Remove = 0, Time = 0;
 				if (sscanf(line, "(ItemWindow (Index %d)(HTML %d)(Remove %d))", &ItemIndex, &HTMLPage, &Remove) == 3)
 				{
 					ItemUsed[ItemIndex].HTML = HTMLPage;
 					ItemUsed[ItemIndex].Remove = Remove;
 				}
 
-				int ItemIndeX = 0, ItemIndeXPerm = 0, ItemBuffServer = 0;
-				if (sscanf(line, "(ItemTasty (Index %d))", &ItemIndeX) == 1)
+				int ItemIndeX = 0, ItemIndeXPerm = 0, ItemBuffServer = 0, ItemRemove = 0, ItemLevel = 0;
+				if (sscanf(line, "(ItemTasty (Index %d)(Remove %d)(Level %d))", &ItemIndeX, &ItemRemove, &ItemLevel) == 3)
 				{
 					ItemTasty[ItemIndeX].index = ItemIndeX;
+					ItemTasty[ItemIndeX].remove = ItemRemove;
+					ItemTasty[ItemIndeX].level = ItemLevel;
+
 				}
 
-				if (sscanf(line, "(ItemTastyPerm (Index %d))", &ItemIndeXPerm) == 1)
+				if (sscanf(line, "(ItemExpansion (Index %d)(Days %d)(Remove %d)(Level %d))", &ItemIndeX, &Time, &ItemRemove, &ItemLevel) == 4)
 				{
-					ItemTastyPerm[ItemIndeXPerm].index = ItemIndeXPerm;
+					ItemExpansion[ItemIndeX].index = ItemIndeX;
+					ItemExpansion[ItemIndeX].remove = ItemRemove;
+					ItemExpansion[ItemIndeX].level = ItemLevel;
+					ItemExpansion[ItemIndeX].Time = Time;
+
+
 				}
 
-				if (sscanf(line, "(ItemHpDef (Index %d))", &ItemIndeX) == 1)
+				if (sscanf(line, "(ItemAbsorb (Index %d)(Remove %d)(Level %d))", &ItemIndeX, &ItemRemove, &ItemLevel) == 3)
 				{
 					ItemHpDef[ItemIndeX].index = ItemIndeX;
+					ItemHpDef[ItemIndeX].remove = ItemRemove;
+					ItemHpDef[ItemIndeX].level = ItemLevel;
+
 				}
 
-				if (sscanf(line, "(ItemHpDefPerm (Index %d))", &ItemIndeXPerm) == 1)
-				{
-					ItemHpDefPerm[ItemIndeXPerm].index = ItemIndeXPerm;
-				}
-
-				if (sscanf(line, "(ItemScrolls (Index %d))", &ItemIndeX) == 1)
+				if (sscanf(line, "(ItemScrolls (Index %d)(Remove %d)(Level %d))", &ItemIndeX, &ItemRemove, &ItemLevel) == 3)
 				{
 					ItemScrolls[ItemIndeX].index = ItemIndeX;
-				}
+					ItemScrolls[ItemIndeX].remove = ItemRemove;
+					ItemScrolls[ItemIndeX].level = ItemLevel;
 
-				if (sscanf(line, "(ItemScrollsPerm (Index %d))", &ItemIndeXPerm) == 1)
-				{
-					ItemScrollsPerm[ItemIndeXPerm].index = ItemIndeXPerm;
 				}
 
 				if (sscanf(line, "(ItemBuffServer (Index %d))", &ItemBuffServer) == 1)
@@ -2377,7 +2361,6 @@ void ReadConfig(bool command)
 			fclose(filewe);
 		}
 	}
-
 	if (!command || (command && modifiedFiles.count("./Configs/Jail.txt"))) {
 		FILE *JailCoordsFile = fopen("./Configs/Jail.txt", "r");
 		if (JailCoordsFile != NULL)
@@ -2463,6 +2446,24 @@ void ReadConfig(bool command)
 				}
 			}
 			fclose(AntiKsFile);
+		}
+	}
+
+
+	if (!command || (command && modifiedFiles.count("./Configs/PVEWeapon.txt"))) {
+		FILE *PVEFile = fopen("./Configs/PVEWeapon.txt", "r");
+		if (PVEFile != NULL)
+		{
+			PVEWeapon.clear();
+			char line[BUFSIZ];
+			while (fgets(line, sizeof line, PVEFile) != NULL)
+			{
+				int index = 0;
+
+				if (sscanf(line, "(PVEWeapon (Index %d))", &index) == 1)
+					PVEWeapon[index].index = index;
+			}
+			fclose(PVEFile);
 		}
 	}
 
@@ -3593,13 +3594,8 @@ void ReadConfig(bool command)
 				if (sscanf(line, "(CustomNotice (command '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (RGB %d %d %d))", &cmd, &R, &G, &B) == 4)
 					CustomNotices[cmd] = RGB(R, G, B);
 
-<<<<<<< Updated upstream
-				if (sscanf(line, "(CustomShouts (command '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (RGB %d %d %d) (ItemIndex %d))", &cmd, &R, &G, &B, &ShoutsIndex) == 5) {
-					CustomShouts[cmd] = ShoutData(RGB(R, G, B), ShoutsIndex);
-=======
 				if (sscanf(line, "(CustomShouts (command '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (RGB %d %d %d) (ItemIndex %d) (Remove %d))", &cmd, &R, &G, &B, &ShoutsIndex, &Removal) == 6) {
 					CustomShouts[cmd] = ShoutData(RGB(R, G, B), ShoutsIndex, Removal);
->>>>>>> Stashed changes
 				}
 
 
@@ -3633,13 +3629,8 @@ void ReadConfig(bool command)
 				char cmd[BUFSIZ];
 				int HouseIndex = 0;
 
-<<<<<<< Updated upstream
-				if (sscanf(line, "(HouseCmd (command '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (RGB %d %d %d) (House %d))", &cmd, &R, &G, &B, &HouseIndex) == 5) {
-					CustomHouse[cmd] = ShoutData(RGB(R, G, B), HouseIndex);
-=======
 				if (sscanf(line, "(HouseCmd (command '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (RGB %d %d %d) (House %d) (Remove %d))", &cmd, &R, &G, &B, &HouseIndex, &Removal) == 6) {
 					CustomHouse[cmd] = ShoutData(RGB(R, G, B), HouseIndex, Removal);
->>>>>>> Stashed changes
 				}
 
 			}
@@ -3814,7 +3805,6 @@ void ReadConfig(bool command)
 			fclose(fileaym);
 		}
 	}
-
 	if (!command || (command && modifiedFiles.count("./Configs/SkillBook.txt"))) {
 		FILE *filey = fopen("./Configs/SkillBook.txt", "r");
 		if (filey != NULL)
@@ -3822,13 +3812,20 @@ void ReadConfig(bool command)
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filey) != NULL)
 			{
-				int Class = 0, Index = 0, SkillID = 0, UpgradeAmount = 0, MaxGrade = 0;
+				int Class = 0, Index = 0, SkillID = 0, UpgradeAmount = 0, MaxGrade = 0, downgradeAmount = 0, rewardPoints = 0;
 				if (sscanf(line, "(skillbook (class %d)(index %d)(action %d)(upgradeamount %d)(maxgrade %d))", &Class, &Index, &SkillID, &UpgradeAmount, &MaxGrade) == 5)
 				{
 					SkillBook[Index].Class = Class;
 					SkillBook[Index].Action = SkillID;
 					SkillBook[Index].UpgradeAmount = UpgradeAmount;
 					SkillBook[Index].UpgradeMax = MaxGrade;
+				}
+				if (sscanf(line, "(downgrade (class %d)(index %d)(action %d)(downgradeamount %d)(rewardPoint %d))", &Class, &Index, &SkillID, &downgradeAmount, &rewardPoints) == 5)
+				{
+					SkillDowngrade[Index].Class = Class;
+					SkillDowngrade[Index].Action = SkillID;
+					SkillDowngrade[Index].DowngradeAmount = downgradeAmount;
+					SkillDowngrade[Index].RewardPoints = rewardPoints;
 				}
 			}
 			fclose(filey);
@@ -3868,6 +3865,7 @@ void ReadConfig(bool command)
 		FILE *filerange = fopen("./Configs/Range.txt", "r");
 		if (filerange != NULL)
 		{
+			CheckRangeConfig.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filerange) != NULL)
 			{
@@ -4398,10 +4396,11 @@ void ReadConfig(bool command)
 		if (fileo != NULL)
 		{
 			Reborns.clear();
+			RebornsPenalty.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, fileo) != NULL)
 			{
-				int ID = 0, NamePad = 0, MinLvl = 0, ResetLevel = 0, RewardID = 0;
+				int ID = 0, NamePad = 0, MinLvl = 0, ResetLevel = 0, RewardID = 0, Penalty = 0;
 				char tag[10];
 				if (sscanf(line, "(Reborn (Num %d)(NameTag '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(NamePad %d)(MinLvl %d)(ResetLvl %d)(RewardID %d))", &ID, &tag, &NamePad, &MinLvl, &ResetLevel, &RewardID) == 6)
 				{
@@ -4412,6 +4411,13 @@ void ReadConfig(bool command)
 					rb.RewardID = RewardID;
 					rb.NameTag = tag;
 					Reborns[ID] = rb;
+				}
+
+				if (sscanf(line, "(RebornPenalty (Num %d)(Penalty %d))", &ID, &Penalty) == 2)
+				{
+					RbPenalty rb = RbPenalty();
+					rb.rbPenalty = Penalty;
+					RebornsPenalty[ID] = rb;
 				}
 			}
 			fclose(fileo);
@@ -5938,6 +5944,12 @@ void CleanLoadConfig() {
 	QuestsNotice.clear();
 	CheckCooldownConfig.clear();
 	CheckEggCooldownConfig.clear();
+	SkillDowngrade.clear();
+	SkillBook.clear();
+	PVEWeapon.clear();
+	RebornsPenalty.clear();
+
+
 
 	ReadConfig(false);
 }

@@ -204,6 +204,8 @@ namespace CSkill
 	static int (__thiscall *BlessingOfAgility) (int SkillPointer, int Player, int Target, int Argument) = (int (__thiscall*) (int, int, int,int))0x00489E60;
 	static int (__thiscall *BlessingOfStrength) (int SkillPointer, int Player, int Target, int Argument) = (int (__thiscall*) (int, int, int,int))0x00489D90;
 	static int (__thiscall *BlessingOfIntelligence) (int SkillPointer, int Player, int Target, int Argument) = (int (__thiscall*) (int, int, int,int))0x00489EE0;
+	static void(__thiscall *LongRangeProtectSkill) (void *SkillID, int IPlayer, int Argument, int Value) = (void(__thiscall*)(void*, int, int, int))0x00487EF0;
+
 	static int (__thiscall *ExecuteSkill) (void *SkillPointer, signed int SkillID, int Argument, int Value) = (int (__thiscall*)(void*,signed int,int,int))0x0047FBB0;
 	static void (__thiscall *RefiningWeapon) (void* pSkill, void* pPlayer, char* pPacket, char* pPos) = (void (__thiscall*) (void*, void*, char*, char*))0x00488820;
 	static void (__thiscall *DefenseImprovement) (void* pSkill, void* pPlayer, char* pPacket, char* pPos) = (void (__thiscall*) (void*, void*, char*, char*))0x004889F0;

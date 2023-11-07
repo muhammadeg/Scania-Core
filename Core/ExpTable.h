@@ -113,8 +113,6 @@ int __cdecl MyUpdateProperty(int Player, int Type, int InOut, signed __int64 Exp
 	if (Type == 25 && IPlayer.IsOnline() && InOut)
 	{
 
-		if (IPlayer.GetLevel() == levellimit)
-			Exp = 0;
 
 		if (!IPlayer.GetProperty(PlayerProperty::UnGap)) {
 			if (LevelGap.count(IPlayer.GetLevel()))
@@ -171,13 +169,6 @@ int __cdecl MyUpdateProperty(int Player, int Type, int InOut, signed __int64 Exp
 			}
 		}
 
-		//for (std::map<int, int>::iterator it = GoldenEXPBuffs.begin(); it != GoldenEXPBuffs.end(); ++it) {
-		//	int buffID = it->first;
-		//	int buffValue = it->second;
-		//	if (IPlayer.IsBuff(buffID)) {
-		//		Exp += (Exp * buffValue) / 100;
-		//	}
-		//}
 
 		for (std::map<int, BuffMaker>::const_iterator it = BuffMakerCheck.begin(); it != BuffMakerCheck.end(); ++it) {
 			const BuffMaker& buff = it->second;
@@ -198,6 +189,25 @@ int __cdecl MyUpdateProperty(int Player, int Type, int InOut, signed __int64 Exp
 				Exp += (Exp*0.40);
 		}
 		*/
+
+
+		if (IPlayer.GetProperty(PlayerProperty::Reborn))
+		{
+			int CurrentReborn = IPlayer.GetProperty(PlayerProperty::Reborn);
+			if (RebornsPenalty.count(CurrentReborn)) {
+
+				RbPenalty rb = RebornsPenalty.find(CurrentReborn)->second;
+				if (rb.rbPenalty)
+				{
+					Exp = (Exp / rb.rbPenalty * 100);
+				}
+			}
+
+		}
+
+		if (IPlayer.GetLevel() == levellimit)
+			Exp = 0;
+
 	}
 
 	return CPlayer::UpdateProperty(Player, Type, InOut, Exp);
@@ -482,11 +492,7 @@ int __fastcall MonsterAllotEXP(int Monster, void *edx, int a2, int TankerID, int
 
 			if (PTLvl > 100) {
 				int MobLvl = IMonster.GetLevel();
-/*				if (MobLvl == 120 || MobLvl == 111)
-				{
-					CInitMonster::DropItem(*(DWORD*)((int)IMonster.GetOffset() + 440), (int)IMonster.GetOffset(), NULL, IPlayer.GetID(), (int)IPlayer.GetOffset(), 0);
-				}
-				*/
+
 				if (IMonster.GetLevel() <= (PTLvl - 14)) {
 					return 0;
 				}
@@ -2147,6 +2153,7 @@ void ExpMultiplier()
 	int GCoinTime = GoldenCoinT * 1000;
 	int DMGLevelCheck = 24;
 	signed int ResetLevelMax = 127;
+
 	/*
 	std::vector<TeleCoordinates> Tele_Scrolls = CreateTeleScrolls();
 	const uintptr_t* p_tele = reinterpret_cast<const uintptr_t*>(Tele_Scrolls.data());
@@ -2240,6 +2247,8 @@ void ExpMultiplier()
 	Memory->Set(0x0045d081, "\xff\x75\xf4\x90\x90", 5);
 	Memory->Hook(0x004918eb, SendExclusiveCreate);
 	Memory->Set(0x004918e4, "\xff\x75\x08\x90\x90", 5);
+
+	Memory->Copy((void*)0x0045CA7D, &iceStoneValue, 1);
 
 	Memory->Copy((void*)0x00463497, &ResetLevelMax, 1);
 	Memory->Copy((void*)0x00463360, &ResetLevelMax, 1);

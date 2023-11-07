@@ -43,31 +43,37 @@ void QuestsReload() {
 
 
 void removeMobs(std::vector<mobReload> &UnReloaded) {
-	auto monsterCount = g_MonsterCount;
-	do {
-		TargetFind target(1, 0, index);
-		IChar IMonster(target.getTarget());
+	try {
+		auto monsterCount = g_MonsterCount;
+		do {
+			TargetFind target(1, 0, index);
+			IChar IMonster(target.getTarget());
 
-		if (IMonster.IsOnline()) {
-			if (UnReload.count(IMonster.GetMobIndex())) {
-				mobReload reloadMob = mobReload();
-				reloadMob.Index = IMonster.GetMobIndex();
-				reloadMob.X = IMonster.GetX();
-				reloadMob.Y = IMonster.GetY();
-				reloadMob.Map = IMonster.GetMap();
-				reloadMob.leftSpawn = MonsterDisappear.count((int)IMonster.GetOffset()) ? MonsterDisappear.findValue((int)IMonster.GetOffset()) - GetTickCount() : 0;
+			if (IMonster.IsOnline()) {
+				if (UnReload.count(IMonster.GetMobIndex())) {
+					mobReload reloadMob = mobReload();
+					reloadMob.Index = IMonster.GetMobIndex();
+					reloadMob.X = IMonster.GetX();
+					reloadMob.Y = IMonster.GetY();
+					reloadMob.Map = IMonster.GetMap();
+					reloadMob.leftSpawn = MonsterDisappear.count((int)IMonster.GetOffset()) ? MonsterDisappear.findValue((int)IMonster.GetOffset()) - GetTickCount() : 0;
 
-				UnReloaded.push_back(reloadMob);
+					UnReloaded.push_back(reloadMob);
+				}
+
+				if (IMonster.GetDef() != 54123) {
+					IMonster.MobDelete();
+					*(DWORD *)((int)IMonster.GetOffset() + 16) = -6;
+				}
 			}
-
-			if (IMonster.GetDef() != 54123) {
-				IMonster.MobDelete();
-				*(DWORD *)((int)IMonster.GetOffset() + 16) = -6;
-			}
-		}
-		monsterCount = g_MonsterCount;
-		index++;
-	} while (monsterCount > InterlockedExchangeAdd(&summonPets, 0));
+			monsterCount = g_MonsterCount;
+			index++;
+		} while (monsterCount > InterlockedExchangeAdd(&summonPets, 0));
+	}
+	catch (const std::exception&){
+		CConsole::Red("Monsters reloading has failed.");
+		return;
+	}
 }
 
 void ClearGenMonster() {

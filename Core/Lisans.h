@@ -1,7 +1,6 @@
 #include "curl\curl.h"
 using namespace std;
 #pragma comment(lib, "curl/libcurl_a.lib")
-//#pragma comment(lib, "D:/lib/libcurl_a.lib")
 #pragma comment(lib, "iphlpapi.lib")
 #include "sha256.h"
 #include <stdint.h>
@@ -14,6 +13,15 @@ typedef std::basic_string<TCHAR> tstring;
 uint16_t ma1;
 uint16_t ma2;
 string data;
+
+std::string GetLicenseKey()
+{
+	char K1[256] = "";
+	EP_ProtectedStringByKey("RBsrtjj8123g", K1, sizeof(K1));
+
+	// Code to retrieve the license key
+	return K1;
+}
 
 std::string GetHWID()
 {
@@ -28,22 +36,13 @@ std::string GetHWID()
 
 	return hwid;
 }
-std::string GetLicenseKey()
-{
-	char K1[256] = "";
-	EP_ProtectedStringByKey("RBsrtjj8123g", K1, sizeof(K1));
-	std::string hwid = GetHWID();
-
-	// Code to retrieve the license key
-	return hwid;
-}
 
 std::vector<std::string> getExplode(const std::string delimiter, const std::string ender, const std::string str) {
 
 	std::vector<std::string> results;
 
 	std::vector<std::string> arr = explode(delimiter, str);
-	for (size_t i = 1; i<arr.size(); i++) {
+	for (size_t i = 1; i < arr.size(); i++) {
 		std::vector<std::string> arrend = explode(ender, arr[i]);
 		results.push_back(arrend[0]);
 	}
@@ -83,8 +82,6 @@ int RemoteLisansCheck() {
 	// Get license key and hardware ID
 	std::string licenseKey = GetLicenseKey();
 	std::string hwid = GetHWID();
-	bool IsHWID = false;
-
 	char K1[256] = "";
 	EP_ProtectedStringByKey("Pv3k5R2t8nXj9sFp", K1, sizeof(K1));
 

@@ -597,7 +597,9 @@ namespace BuffNames {
 		AdditionalCrit = 61563,
 		AdditionalRef = 61564,
 		StickScale = 61565,
-		Blessing = 61566
+		Blessing = 61566,
+		StandardOn = 61567,
+		IceStone = 61568
 
 	};
 }
@@ -1026,6 +1028,8 @@ struct CheckSkillBook
 	int Action;
 	int UpgradeAmount;
 	int UpgradeMax;
+	int DowngradeAmount;
+	int RewardPoints;
 };
 
 struct CheckSummonTimer
@@ -1452,6 +1456,9 @@ struct CItemUsed
 struct CItemTasty
 {
 	int index;
+	int remove;
+	int level;
+	int Time;
 
 };
 
@@ -2208,6 +2215,11 @@ struct ItemLimitConf
 	}
 };
 
+struct PVEWeaponsS
+{
+	int index;
+};
+
 struct NecklaceBuff
 {
 	int Dmg;
@@ -2323,6 +2335,11 @@ struct Reborn
 	int RewardID;
 };
 
+struct RbPenalty
+{
+	int rbIndex;
+	int rbPenalty;
+};
 struct RentQuest
 {
 	int ReqItem;
@@ -2383,8 +2400,7 @@ Lock packetLock = Lock();
 Lock rewardLock = Lock();
 
 std::vector<AreaExpItem> AreasExpItems; // declare a vector to hold the areas
-//std::map<int, int> GoldenEXPBuffs;
-; std::map<int, int> GoldenEggBuffs;
+
 std::map<int, int> HighGradeBof;
 std::map<int, int> HighGradeImperial;
 //std::unordered_map<int, std::pair<std::string, int>> EmoteSystem;
@@ -2422,6 +2438,8 @@ std::unordered_map<int, int> PlayerMissionProgress;
 std::unordered_map<char, int> npcMap;
 std::map<int, ItemExchange> ItemExchanges;
 std::map<int, Reborn> Reborns;
+std::map<int, RbPenalty> RebornsPenalty;
+
 std::map<int, int> FatalDmg;
 std::map<int, MSkill> MSkills;
 std::map<int, std::vector<int>> MonsterSkills;
@@ -2549,11 +2567,9 @@ std::map<int, std::set<int>> DisableSkillFile;
 std::set<int> RidingDisableSkill;
 std::map<int, CItemUsed> ItemUsed;
 std::map<int, CItemTasty> ItemTasty;
-std::map<int, CItemTasty> ItemTastyPerm;
+std::map<int, CItemTasty> ItemExpansion;
 std::map<int, CItemTasty> ItemHpDef;
-std::map<int, CItemTasty> ItemHpDefPerm;
 std::map<int, CItemTasty> ItemScrolls;
-std::map<int, CItemTasty> ItemScrollsPerm;
 std::map<int, CItemTasty> ItemBuffSrv;
 
 std::map<int, ItemLimit> ItemLimits;
@@ -2606,6 +2622,8 @@ std::set<int> UnChannel;
 std::set<int> ChannelMaps;
 std::set<int> UnReload;
 std::set<int> AntiKs;
+std::map<int, PVEWeaponsS> PVEWeapon;
+
 std::set<std::string> Filter;
 std::map<int, Restriction> Restrictions;
 std::map<int, Restriction> HWIDRestrictions;
@@ -2631,6 +2649,7 @@ std::map<int,ConfigBuffer> BufferCheck;
 std::map<int,ConfigRentArmor> RentArmor;
 std::map<int, ConfigRentWeapon> RentWeapon;
 std::map<int,CheckSkillBook> SkillBook;
+std::map<int, CheckSkillBook> SkillDowngrade;
 std::map<int,CheckConfigCooldown> CheckCooldownConfig;
 std::map<int,CheckConfigEggCooldown> CheckEggCooldownConfig;
 std::map<int,CheckCalculations> ConfigCalculations;
@@ -2982,6 +3001,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 				DetourAttach(&(PVOID&)CItemGeneral::Use, ItemUse);
 				DetourAttach(&(PVOID&)CSkill::ExecuteTransformSkill, ExecuteTransformSkill);
 				DetourAttach(&(PVOID&)CSkill::ExecuteSkill, ExecuteSkill);
+//				DetourAttach(&(PVOID&)CSkill::ProtectSkill, ProtectSkill);
 				DetourAttach(&(PVOID&)CPlayer::DropItemONPKDie, DropItemONPKDie);
 				DetourAttach(&(PVOID&)CItemDefense::ApplySpec, DefenseApplySpec);
 				DetourAttach(&(PVOID&)CItemDefense::PutOff, DefensePutOff);
@@ -3134,6 +3154,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 			DetourDetach(&(PVOID&)CItemGeneral::Use, ItemUse);
 			DetourDetach(&(PVOID&)CSkill::ExecuteTransformSkill, ExecuteTransformSkill);
 			DetourDetach(&(PVOID&)CSkill::ExecuteSkill, ExecuteSkill);
+//			DetourDetach(&(PVOID&)CSkill::ProtectSkill, ProtectSkill);
 			DetourDetach(&(PVOID&)CPlayer::DropItemONPKDie, DropItemONPKDie);
 			DetourDetach(&(PVOID&)CItemDefense::ApplySpec, DefenseApplySpec);
 			DetourDetach(&(PVOID&)CItemDefense::PutOff, DefensePutOff);

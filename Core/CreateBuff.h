@@ -4,19 +4,19 @@ int __fastcall CBuffCBuffPrtyExIsExpired(int Buff, void *edx, int Player)
 
 	if (*(DWORD*)(Buff + 4) == 400 && Object.IsOnline() && Object.IsValid())
 	{
-		int Time = ((*(DWORD*)(Buff + 8))-GetTickCount())/1000;
+		int Time = ((*(DWORD*)(Buff + 8)) - GetTickCount()) / 1000;
 		int Damage = *(DWORD*)(Buff + 12);
 		if ((GetTickCount() / 1000) % 2 == 0 && Object.GetCurHp() > 1)
 		{
 			if (Damage > Object.GetCurHp()) Damage = Object.GetCurHp() - 1;
-				Object.DecreaseHp(Damage);
-			if (Object.GetType() == 1 && (*(int (__thiscall **)(int))(*(DWORD*)Player + 64))(Player)) *(DWORD*)(Player + 472) = GetTickCount() + 20000;
+			Object.DecreaseHp(Damage);
+			if (Object.GetType() == 1 && (*(int(__thiscall **)(int))(*(DWORD*)Player + 64))(Player)) *(DWORD*)(Player + 472) = GetTickCount() + 20000;
 		}
 	}
 
 	if (*(DWORD*)(Buff + 4) == 411 && Object.IsOnline())
 	{
-		int Time = ((*(DWORD*)(Buff + 8))-GetTickCount())/1000;
+		int Time = ((*(DWORD*)(Buff + 8)) - GetTickCount()) / 1000;
 		int Damage = *(DWORD*)(Buff + 12);
 		if (Time == 2)
 		{
@@ -27,31 +27,46 @@ int __fastcall CBuffCBuffPrtyExIsExpired(int Buff, void *edx, int Player)
 
 	if (*(DWORD*)(Buff + 4) == 415 && Object.IsOnline())
 	{
-		int Time = ((*(DWORD*)(Buff + 8))-GetTickCount())/1000;
+		int Time = ((*(DWORD*)(Buff + 8)) - GetTickCount()) / 1000;
 		int Damage = *(DWORD*)(Buff + 12);
 		if (Time == 2) Object.AddDef(Damage);
 	}
 
 	if (*(DWORD*)(Buff + 4) == 416 && Object.IsOnline())
 	{
-		int Time = ((*(DWORD*)(Buff + 8))-GetTickCount())/1000;
+		int Time = ((*(DWORD*)(Buff + 8)) - GetTickCount()) / 1000;
 		int Damage = *(DWORD*)(Buff + 12);
 		if (Time == 2) Object.AddOTP(Damage);
 	}
 
-	return CBuff::CBuffPrtyExIsExpired(Buff,Player);
+	return CBuff::CBuffPrtyExIsExpired(Buff, Player);
 }
 
 int __fastcall CBuffPrtyExFreeBuff(int Buff, void *edx, int Player)
 {
 	IChar IPlayer((void*)Player);
-	
+
 	if (IPlayer.IsOnline())
 	{
-		if (*(DWORD*)(Buff + 4) == 118 && *(DWORD*)(Buff + 28) == 2 && *(DWORD*)(Buff + 12) == -50)
-			return (*(int (__cdecl **)(DWORD, DWORD, DWORD, DWORD))(*(DWORD*)Player + 96))(Player, 32, 0, -50);
+		if (*(DWORD*)(Buff + 4) == 118 && *(DWORD*)(Buff + 28) == 2 && *(DWORD*)(Buff + 12))
+		{
+			if (!IPlayer.IsBuff(BuffNames::IceStone))
+			{
+				IPlayer.Buff(BuffNames::IceStone, 86400, 1);
+			}
+			else{
+				IPlayer.UpdateBuff(BuffNames::IceStone, 86400, IPlayer.GetBuffValue(BuffNames::IceStone) + 1);
+			}
 
-		return CBuffPrtyEx::FreeBuff(Buff,Player);
+			if (IPlayer.GetBuffValue(BuffNames::IceStone) >= iceStoneMax)
+			{
+				IPlayer.UpdateBuff(BuffNames::IceStone, 86400, iceStoneMax - iceStoneDebuff);
+				return (*(int(__cdecl **)(DWORD, DWORD, DWORD, DWORD))(*(DWORD*)Player + 96))(Player, 32, 0, (iceStoneDebuff * iceStoneValue));
+			}
+
+		}
+
+		return CBuffPrtyEx::FreeBuff(Buff, Player);
 	}
 
 	return 0;
@@ -61,13 +76,13 @@ int __cdecl CreateBuff(int BuffID, __int32 Time, int Stat, int Object)
 {
 	if (BuffID == 103)
 		return 0;
-	
+
 	if (myc)
 		return 0;
 
 	/*if (BuffID == 5 && CGuild::IsWarringPeriod())
 		return 0;*/
-	
+
 	if (BuffID == 9 && Time == 900 && Stat == 3 && *(DWORD*)(Object + 4) == 10)
 		Stat = 3 * *(DWORD*)(Object + 8);
 
@@ -133,7 +148,7 @@ int __fastcall sFindBuff(int Player, void *edx, int Buff)
 static int callback(void *NotUsed, int argc, char **argv, char **azColName)
 {
 	int i;
-	for (i = 0; i<argc; i++)
+	for (i = 0; i < argc; i++)
 	{
 		cout << azColName[i] << " = " << (argv[i] ? argv[i] : "NULL") << "\n";
 	}
@@ -143,51 +158,51 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName)
 /*
 void* __fastcall releaseBuff(void* Buff, void *edx, char Argument)
 {
-	int BuffID = (*(DWORD *)((int)Buff + 4));
-	int ID = getIDFromBuff((int)Buff);
+int BuffID = (*(DWORD *)((int)Buff + 4));
+int ID = getIDFromBuff((int)Buff);
 
-	if (ID)
-		removeBuff(ID, BuffID);
+if (ID)
+removeBuff(ID, BuffID);
 
-	return CBuff::Release(Buff, Argument);
+return CBuff::Release(Buff, Argument);
 }
 
 void __fastcall SetBuff(int Player, void *edx, int Buff, int Time)
 {
-	int v7; // [sp+4h] [bp-10h]@1
-	DWORD *v8; // [sp+10h] [bp-4h]@1
+int v7; // [sp+4h] [bp-10h]@1
+DWORD *v8; // [sp+10h] [bp-4h]@1
 
-	v7 = Player;
-	v8 = (DWORD *)CreateBuff(Buff, Time, 1, 0);
-	if (v8)
-	{
-		if ((*(int(__thiscall **)(DWORD *, int))*v8)(v8, v7))
-		{
-			//makeBuff((int)v8, *(DWORD *)(v7 + 28));
-			insertBuff(*(DWORD *)(v7 + 28), Buff, (int)v8);
+v7 = Player;
+v8 = (DWORD *)CreateBuff(Buff, Time, 1, 0);
+if (v8)
+{
+if ((*(int(__thiscall **)(DWORD *, int))*v8)(v8, v7))
+{
+//makeBuff((int)v8, *(DWORD *)(v7 + 28));
+insertBuff(*(DWORD *)(v7 + 28), Buff, (int)v8);
 
-			CIOCriticalSection::Enter((struct _RTL_CRITICAL_SECTION *)(v7 + 364));
-			v8[5] = *(DWORD *)(v7 + 360);
-			*(DWORD *)(v7 + 360) = (int)v8;
-			CIOCriticalSection::Leave((void*)((char *)v7 + 364));
-			
-		}
-		else if (v8)
-		{
-			releaseBuff(v8, 0, 1);
-		}
-	}
+CIOCriticalSection::Enter((struct _RTL_CRITICAL_SECTION *)(v7 + 364));
+v8[5] = *(DWORD *)(v7 + 360);
+*(DWORD *)(v7 + 360) = (int)v8;
+CIOCriticalSection::Leave((void*)((char *)v7 + 364));
+
+}
+else if (v8)
+{
+releaseBuff(v8, 0, 1);
+}
+}
 }
 
 
 int __fastcall FindBuff(int Player, void *edx, int Buff)
 {
-	int i; // [sp+4h] [bp-4h]@1
+int i; // [sp+4h] [bp-4h]@1
 
-	for (i = *(DWORD *)(Player + 360); i && *(DWORD *)(i + 4) != Buff; i = *(DWORD *)(i + 20))
-		;
+for (i = *(DWORD *)(Player + 360); i && *(DWORD *)(i + 4) != Buff; i = *(DWORD *)(i + 20))
+;
 
-	return i;
+return i;
 }
 */
 int __fastcall AddBuff(int a1, void *edx, void *a5)
@@ -236,9 +251,9 @@ int __fastcall AddBuff(int a1, void *edx, void *a5)
 /*
 void* __fastcall releaseBuff(void* Buff, void *edx, char Argument)
 {
-	removeBuff((int)Buff);
+removeBuff((int)Buff);
 
-	return CBuff::Release(Buff, Argument);
+return CBuff::Release(Buff, Argument);
 }
 */
 void __fastcall SetBuff(int Player, void *edx, int Buff, int Time)

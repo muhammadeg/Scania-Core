@@ -148,6 +148,23 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 				return 0;
 		}
 
+		// pve weapons
+		if (CheckDamage && IPlayer.GetType() == 0 && ITarget.GetType() == 0 && (CChar::IsGState((int)ITarget.Offset, 256) || CChar::IsGState((int)IPlayer.Offset, 256)))
+		{
+
+			for (std::map<int, PVEWeaponsS>::const_iterator it = PVEWeapon.begin(); it != PVEWeapon.end(); ++it) {
+				const PVEWeaponsS& weapon = it->second;
+				int PVEWep = CPlayer::FindItem(IPlayer.GetOffset(), weapon.index, 1);
+
+				if (PVEWep && CItem::IsState(PVEWep, 1) && isPlayerInPVP(IPlayer.GetOffset())){
+					IPlayer.SystemMessage("You are not allowed to attack players using a PVE Weapon.", TEXTCOLOR_RED);
+					return 0;
+				}
+
+
+			}
+		}
+
 		if (CheckDamage && IPlayer.GetMap() != LawlessMap && IPlayer.GetType() == 0 && ITarget.GetType() == 0 && AssassinParty)
 		{
 			if (IPlayer.IsParty() && ITarget.IsParty() && (IPlayer.GetPartyID() == ITarget.GetPartyID()) && CChar::IsGState((int)IPlayer.Offset, 256))
@@ -157,6 +174,7 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 			}
 
 		}
+
 		if (CheckDamage && IPlayer.GetMap() != LawlessMap && IPlayer.GetType() == 0 && ITarget.GetType() == 0 && AssassinLimit)
 		{
 			if ((IPlayer.GetLevel() >= ITarget.GetLevel() + AssassinLimit) && CChar::IsGState((int)IPlayer.Offset, 256))

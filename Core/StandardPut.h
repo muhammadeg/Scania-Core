@@ -68,6 +68,9 @@ void __fastcall StandardPutOff(void *Item, void *edx, int Player)
 	int BF1 = *(DWORD *)(Player + 512);
 	int BF2 = *(DWORD *)(Player + 1120);
 
+
+	IPlayer.CancelBuff(BuffNames::StandardOn);
+
 	if (IPlayer.IsOnline() && Removing.Exists() && isItemRiding(Removing.CheckIndex())) {
 
 		CPlayer::Write((void*)Player, 0xFE, "ddd", 200, Removing.GetIID(), 0);
@@ -155,6 +158,12 @@ void __fastcall StandardPutOn(int Item, void *edx, int Player)
 	int BF = *(DWORD *)(Player + 1116);
 	int BF1 = *(DWORD *)(Player + 512);
 	int BF2 = *(DWORD *)(Player + 1120);
+
+	if (IPlayer.IsBuff(BuffNames::StandardOn)){
+		IPlayer.SystemMessage("An item is already equipped.", TEXTCOLOR_RED);
+		return;
+	}
+	IPlayer.Buff(BuffNames::StandardOn, 604800, 1);
 
 	CItemStandard::PutOn(Item, Player);
 

@@ -3,6 +3,28 @@ void insertOfflineReward(int PID, int Index, int Amount, int Class, int Prefix, 
 	CDBSocket::Write(115, "dddddddddddddds", PID, Index, Amount, Class, Prefix, Info, Attack, Magic, TOA, Upgrade, Defense, Evasion, Endurance, ItemStat, Message);
 }
 
+
+void SendDiscordMessage(const std::string& webhookURL, const std::string& message) {
+	CURL* curl;
+	CURLcode res;
+
+	curl = curl_easy_init();
+	if (curl) {
+		curl_easy_setopt(curl, CURLOPT_URL, webhookURL.c_str());
+		curl_easy_setopt(curl, CURLOPT_POST, 1);
+
+		std::string jsonMessage = "{ \"content\": \"" + message + "\" }";
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonMessage.c_str());
+
+		res = curl_easy_perform(curl);
+		if (res != CURLE_OK) {
+			CConsole::Red("Failed to send message to Discord: %s\n", curl_easy_strerror(res));
+		}
+
+		curl_easy_cleanup(curl);
+	}
+}
+
 bool CheckRangeProtection(int Player, signed int SkillID, int Target, int pPacket, int pPos)
 {
 	IChar IPlayer((void*)Player);
@@ -125,6 +147,7 @@ void UpdateAutoMission(void* Player, void* Monster) {
 						if (nextMission != 0) {
 							IPlayer.SaveBuff(BuffNames::MissionBuff, 86400, 0, 0, 0);
 							IPlayer.StartQuest(nextMission, 0, 0, 0);
+							CQuest::Start(nextMission << 16 | 1, (int)IPlayer.GetOffset());
 							if (PeaceEvil)
 							IPlayer.AddHousePoints(2);
 							IPlayer.SaveBuff(BuffNames::CurrentMissionBuff + nextMission, 86400, nextMission, 0, 0);
