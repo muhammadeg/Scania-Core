@@ -167,8 +167,8 @@ signed int __fastcall DefenseChangePrefix(void *Item, void* edx, int Player, int
 			IPlayer.SystemMessage("Your new qigong spirit of insanity has successfully been applied.", TEXTCOLOR_DARKGREEN);
 			return 1;
 		}
-		int BofItem = 0;
-		int BofItemG1 = IPlayer.ItemPointerLock(BofItem);
+		//int BofItem = 0;
+		//int BofItemG1 = IPlayer.ItemPointerLock(BofItem);
 
 
 		if (NewPrefix == BofConfigRead)

@@ -42,6 +42,14 @@ int __fastcall CIOSocketCreate(int CServerThisPointer, void *edx, int Socket, in
 
 	return CIOSocket::Create(CServerThisPointer, Socket, Infos);
 }
+void crashDebug(int Type) {
+	std::string Dato = "./Debugger/CrashCheck/GET_" + Time::GetDay() + "_" + Time::GetMonth() + "_" + Time::GetYear() + "_" + Time::GetHour() + "." + Time::GetMinute() + ".txt";
+	std::fstream DGLOG;
+	DGLOG.open(Dato, std::fstream::in | std::fstream::out | std::fstream::app);
+	DGLOG << Time::GetTime() << " " << Type << std::endl;
+	DGLOG.close();
+}
+
 
 void __fastcall CIOSocketClose(int Socket, void* edx) {
 	SocketPacket.erase(Socket);
@@ -186,6 +194,7 @@ int __fastcall Process(void *Socket, void *edx, char *Data)
 			DGLOG.open(Dato, std::fstream::in | std::fstream::out | std::fstream::app);
 			DGLOG << Time::GetTime() << " [Name]: '" << PCheck << "' [PC Name]: '" + (std::string)pcname << "' [IP]: '" << IP << "' [Packet]: " << Type << std::endl;
 			DGLOG.close();
+			return 0;
 		}
 
 		if (PacketProtection && Value != uptimestart) {

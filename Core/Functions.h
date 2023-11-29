@@ -146,8 +146,12 @@ namespace PlayerProperty
 	static int const RPx = 1868;
 	static int const HDx = 1872;
 	static int const SVTx = 1876;
+	static int const CurrentBReward = 1880;
+	static int const MaxBReward = 1884;
+	static int const CurrentPBReward = 1888;
+	static int const BattlepassLv = 1892;
 
-	static int const MaxSize = 1880;
+	static int const MaxSize = 1896;
 }
 
 namespace _Window {

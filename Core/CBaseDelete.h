@@ -100,6 +100,102 @@ void ShowNPCList() {
 	ProcessNPCList(true);
 }
 
+void PBattlepassCheck(void* Player, void* QuestOffset){
+	IQuest Quest(QuestOffset);
+
+	IChar IPlayer((void*)Player);
+
+	if (IPlayer.IsOnline() && Quest.GetIndex() == BattlepassQuest)
+	{
+		int battlepassToReward = IPlayer.GetProperty(PlayerProperty::CurrentPBReward);
+		int battlepassMaxReward = IPlayer.GetProperty(PlayerProperty::MaxBReward);
+		int Item = CPlayer::FindItem((void*)Player, BattlepassIndex, 1);
+
+		if (Item){
+			if (battlepassToReward >= battlepassMaxReward)
+			{
+		//		IPlayer.SystemMessage("You have already claimed previous premium rewards.", TEXTCOLOR_RED);
+				return;
+			}
+
+			for (int level = 1; level <= IPlayer.GetProperty(PlayerProperty::BattlepassLv); level++)
+			{
+				std::vector<ConfigLevelReward> pbattleReward = PremiumPass.find(level)->second;
+
+				for (int i = 0; i < (int)pbattleReward.size(); i++)
+				{
+					ConfigLevelReward premiumReward = pbattleReward[i];
+					if (premiumReward.Class == IPlayer.GetClass() || premiumReward.Class == 5)
+					{
+						if (battlepassToReward < battlepassMaxReward && battlepassToReward < premiumReward.ID)
+						{
+							for (int j = 0; j < premiumReward.Indexes.size(); j++) {
+								int Index = String2Int(premiumReward.Indexes[j]);
+								int Amount = String2Int(premiumReward.Amounts[j]);
+								if (Index && Amount)
+									IPlayer.GiveReward(Index, premiumReward.Prefix, Amount, (premiumReward.Prefix == 256) ? 0 : -128, 0, 0, 0, 0, 0, 0, 0, premiumReward.Msg.c_str());
+							}
+
+							CDBSocket::Write(122, "dd", IPlayer.GetPID(), 6);
+						}
+					}
+				}
+			}
+		}
+		return;
+	}
+
+
+}
+
+void BattlepassCheck(void* Player, void* QuestOffset){
+	IQuest Quest(QuestOffset);
+
+	IChar IPlayer((void*)Player);
+
+	if (IPlayer.IsOnline() && Quest.GetIndex() == BattlepassQuest)
+	{
+		int battlepassToReward = IPlayer.GetProperty(PlayerProperty::CurrentBReward);
+		int battlepassMaxReward = IPlayer.GetProperty(PlayerProperty::MaxBReward);
+		int Item = CPlayer::FindItem((void*)Player, BattlepassIndex, 1);
+
+		if (battlepassToReward >= battlepassMaxReward)
+		{
+			IPlayer.SystemMessage("You have already claimed previous rewards.", TEXTCOLOR_RED);
+			return;
+		}
+
+		for (int level = 1; level <= IPlayer.GetProperty(PlayerProperty::BattlepassLv); level++)
+		{
+			std::vector<ConfigLevelReward> battleReward = BattlepassReward.find(level)->second;
+
+			for (int i = 0; i < (int)battleReward.size(); i++)
+			{
+				ConfigLevelReward reward = battleReward[i];
+				if (reward.Class == IPlayer.GetClass() || reward.Class == 5)
+				{
+					if (battlepassToReward < battlepassMaxReward && battlepassToReward < reward.ID)
+					{
+
+						for (int j = 0; j < reward.Indexes.size(); j++) {
+							int Index = String2Int(reward.Indexes[j]);
+							int Amount = String2Int(reward.Amounts[j]);
+							if (Index && Amount)
+								IPlayer.GiveReward(Index, reward.Prefix, Amount, (reward.Prefix == 256) ? 0 : -128, 0, 0, 0, 0, 0, 0, 0, reward.Msg.c_str());
+						}
+
+						CDBSocket::Write(122, "dd", IPlayer.GetPID(), 4);
+					}
+				}
+			}
+		}
+
+		return;
+	}
+
+
+}
+
 void UpdateAutoMission(void* Player, void* Monster) {
 	IChar IPlayer(Player);
 	IChar ITarget(Monster);

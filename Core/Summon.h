@@ -1607,11 +1607,11 @@ int __fastcall SummonTick(void *Monster, void *edx)
 			return CMonsterMaguniMaster::Tick(Monster);
 		}
 
-		if (!BossEXP::Active && IMonster.GetMap() == BossEXPMap)
-		{
-			IMonster.MobDelete();
-			return CMonsterMaguniMaster::Tick(Monster);
-		}
+		//if (!BossEXP::Active && IMonster.GetMap() == BossEXPMap)
+		//{
+		//	IMonster.MobDelete();
+		//	return CMonsterMaguniMaster::Tick(Monster);
+		//}
 
 		if (*(DWORD *)((int)Monster + 144) == 54023 && !IMonster.IsMobMoving()) {
 			IMonster.MobDelete();

@@ -427,7 +427,7 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 
 		return Item.GetAmount();
 	}
-
+	// check crash
 	if (IPlayer.IsOnline() && ItemQuest.count(Item.CheckIndex())) {
 		CIOCriticalSection::Leave((void*)((char *)PlayerOffset + 1020));
 
@@ -1141,7 +1141,7 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 
 		EmokCertConf eCert = EmokCerts.find(Item.CheckIndex())->second;
 		if (eCert.EXP && (BRemain || EmokTimeLeft)) {
-			IPlayer.SystemMessage("You already have an emok timer running out. Please use this certificate once its ended.", TEXTCOLOR_RED);
+			IPlayer.SystemMessage("You already have an area timer running out. Please use this certificate once its ended.", TEXTCOLOR_RED);
 			return Item.GetAmount();
 		}
 

@@ -58,7 +58,7 @@ HMENU CreateMainWindowMenu(HMENU hBaseMenu) {
 
 void DrawMainMenu(std::string MenuName) {
 	auto hMenuPopup = CreateMainWindowMenu(CreateMenu());
-	if(hMenuPopup){
+	if (hMenuPopup){
 		AppendMenu(GetMenu(*(HWND*)(0x4E2134)), MF_POPUP, (UINT_PTR)hMenuPopup, MenuName.c_str());
 		DrawMenuBar(*(HWND*)(0x4E2134));
 	}
@@ -168,45 +168,29 @@ LRESULT CALLBACK Proc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
 		}
 
 		case KXMENU_KickPlayer: {
-									std::string playerName;
-									bool playerFound = false;
+									char playerName[BUFSIZ];
 									Console();
 									cout << "Enter Player Name to kick: ";
 									cin >> playerName;
+
 									if (cin.fail()) {
 										cin.clear();
 										cin.ignore();
 									}
 									else {
-										CIOCriticalSection::Enter((void*)0x004e2078);
-										CIOCriticalSection::Enter((void*)0x004e2098);
-										CLink::MoveTo((void*)0x004e200c, (int)0x004e2004);
-										CIOCriticalSection::Leave((void*)0x004e2098);
-										for (DWORD a = *(DWORD*)0x004E2004; a != 0x004E2004; a = *(DWORD*)a)
-										{
-											if ((void*)(a - 428))
-											{
-												IChar IPlayer((void*)(a - 428));
-												if (IPlayer.IsOnline() && IPlayer.GetName() == playerName){
-													IPlayer.Kick();
-													CConsole::Blue("Player %s was kicked", playerName.c_str());
-													playerFound = true;
-												}
-												else {
-													CConsole::Red("Player is not online.");
-													playerFound = true;
-												}
+										const char* PlayerName = playerName;
+										TargetFind myTarget(PlayerName);
+										int player = (int)myTarget.getTarget();
+										IChar Target((void*)player);
 
-											}
+										if (Target.IsOnline()) {
+											Target.Kick();
+											CConsole::Blue("Player %s has been kicked.", playerName);
 										}
-										CIOCriticalSection::Leave((void*)0x004e2078);
-
+										else {
+											CConsole::Red("Player is not online or does not exist.");
+										}
 									}
-									if (!playerFound)
-										CConsole::Red("Player name is incorrect");
-
-									if (playerName.empty())
-										CConsole::Red("Failed to kick Player");
 
 									FreeConsole();
 									break;

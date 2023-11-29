@@ -1,6 +1,6 @@
 void ExecuteMonsterSkill(IChar IPlayer, IChar Object, MSkill mSkill) {
 	if (IPlayer.IsValid() && Object.IsValid() && Object.GetType() == 0) {
-		int DMG = CTools::Rate(mSkill.DamageMin, mSkill.DamageMax); 
+		int DMG = CTools::Rate(mSkill.DamageMin, mSkill.DamageMax);
 		int n = DMG;
 		int digits = 0;
 		while (n /= 10)
@@ -20,7 +20,7 @@ void ExecuteMonsterSkill(IChar IPlayer, IChar Object, MSkill mSkill) {
 
 			Check = (*(int(__thiscall**)(LONG, void*, unsigned int, int*, int*, int*, DWORD))(*(DWORD*)Object.GetOffset() + 72))((int)Object.GetOffset(), IPlayer.GetOffset(), DMG, &NormalDamage, &DamageArgument, &EBDamage, 0);
 			GetType = Check | 2 * DamageArgument | 4 * TypeKind;
-			if(!mSkill.EffectType)
+			if (!mSkill.EffectType)
 				Object.AddFxToTarget(mSkill.Effect, 0, 0, 0);
 
 			CChar::WriteInSight(IPlayer.GetOffset(), 62, "ddddbd", IPlayer.GetID(), Object.GetID(), NormalDamage, EBDamage, GetType, 0);
@@ -127,7 +127,8 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 						if (!AntiKSTime || KSTime >= GetTickCount()) {
 							IPlayer.SystemMessage("[Anti ks] Our server doesn't tolerate ksing.", TEXTCOLOR_RED);
 							return 0;
-						}else if(AntiKSTime)
+						}
+						else if (AntiKSTime)
 							ITarget.UpdateBuff(BuffNames::AntiKS, BuffNames::BuffTime, GetTickCount() + (AntiKSTime * 1000));
 					}
 				}
@@ -148,19 +149,24 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 				return 0;
 		}
 
-		// pve weapons
-		if (CheckDamage && IPlayer.GetType() == 0 && ITarget.GetType() == 0 && (CChar::IsGState((int)ITarget.Offset, 256) || CChar::IsGState((int)IPlayer.Offset, 256)))
+		if (CheckDamage && IPlayer.GetType() == 0 && ITarget.GetType() == 0 && IPlayer.IsBuff(25))
+			IPlayer.CancelBuff(25);
+
+
+		if (CheckDamage && IPlayer.GetType() == 0 && ITarget.GetType() == 0)
 		{
 
 			for (std::map<int, PVEWeaponsS>::const_iterator it = PVEWeapon.begin(); it != PVEWeapon.end(); ++it) {
 				const PVEWeaponsS& weapon = it->second;
 				int PVEWep = CPlayer::FindItem(IPlayer.GetOffset(), weapon.index, 1);
 
-				if (PVEWep && CItem::IsState(PVEWep, 1) && isPlayerInPVP(IPlayer.GetOffset())){
+				if (CheckDamage && IPlayer.GetType() == 0 && ITarget.GetType() == 0 && PVEWep && CItem::IsState(PVEWep, 1))
+				{
+
 					IPlayer.SystemMessage("You are not allowed to attack players using a PVE Weapon.", TEXTCOLOR_RED);
 					return 0;
-				}
 
+				}
 
 			}
 		}
@@ -179,7 +185,7 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 		{
 			if ((IPlayer.GetLevel() >= ITarget.GetLevel() + AssassinLimit) && CChar::IsGState((int)IPlayer.Offset, 256))
 			{
-				IPlayer.SystemMessage("You are not allowed to assasinate a player who is " + Int2String(AssassinLimit) +" levels lower than you.", TEXTCOLOR_RED);
+				IPlayer.SystemMessage("You are not allowed to assasinate a player who is " + Int2String(AssassinLimit) + " levels lower than you.", TEXTCOLOR_RED);
 				return 0;
 			}
 
@@ -515,7 +521,7 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 					if (CheckDamage <= 0)
 						CheckDamage = nDmg;
 
-					if(CheckDamage)
+					if (CheckDamage)
 						CheckDamage += nDmg;
 				}
 			}
@@ -818,7 +824,7 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 					IPlayer.Buff(BuffNames::OrnamentDmg, bNecklace.Duration, bNecklace.Dmg);
 					IPlayer.Buff(BuffNames::CritChance, bNecklace.Duration, bNecklace.CritChance);
 					IPlayer.Buff(BuffNames::NecklaceCD, bNecklace.Cooldown + bNecklace.Duration, 0);
-					IPlayer.AddFxToBone(bNecklace.Effect,0);
+					IPlayer.AddFxToBone(bNecklace.Effect, 0);
 				}
 			}
 		}

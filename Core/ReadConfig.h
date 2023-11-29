@@ -9,11 +9,12 @@ int BanditsDeathCount = 0;
 char BFName[50], LMSName[50], DKName[50], PLName[50], TBName[50], SVName[50], DTName[50], CTFName[50], LotteryName[50], LottoName[50], F10Name[50], MautName[50], HuntingSysName[50], WCName[50];
 char BanditsName[50];
 int CurGroup=1, WorldCupTime=195;
+int BattlepassActive = 0, BattlepassQuest = 0, BattlepassIndex = 0;
 std::string ConfigCheckDB3 = "Hell", ConfigCheckDB4 = "Hell";
 char key1 = '255', key2 = '255', key3 = '255', key4 = '255', key5 = '255', key6 = '255', key7 = '255';
 int ConfigMix = 0, ConfigImp = 0, ConfigDBCheck = 0;
 int EggExpTime = 0, EggExpKill = 0, ConfigMaxDamage = 0, ConfigMaxMagAtk = 0, ConfigMaxPhyAtk = 0;
-int EmokQuestIndex = 0, EmokX = 0, EmokY = 0, EmokMap = 0, EmokCert = 0;
+int EmokQuestIndex = 0, EmokX = 0, EmokY = 0, EmokMap = 0, EmokCert = 0, EmokTime = 0;
 int MysteryResetItem = 0, MysteryQuest = 0, MysteryEnable = 0;
 int MD5Check = 0, HellCooldown=0, testcmd=0,tmcd=0;
 int Shouts = 0;
@@ -531,6 +532,10 @@ void ReadConfig(bool command)
 
 	FatalDamagePVE = GetPrivateProfileIntA("FatalDamage", "PVERate", 100, "./Configs/FatalDamage.txt");
 	FatalDamagePVP = GetPrivateProfileIntA("FatalDamage", "PVPRate", 100, "./Configs/FatalDamage.txt");
+
+	BattlepassActive = GetPrivateProfileIntA("Battlepass", "Active", 0, "./Configs/Battlepass.txt");
+	BattlepassQuest = GetPrivateProfileIntA("Battlepass", "Quest", 0, "./Configs/Battlepass.txt");
+	BattlepassIndex = GetPrivateProfileIntA("Battlepass", "PremiumToken", 0, "./Configs/Battlepass.txt");
 
 	JailMap = GetPrivateProfileIntA("Map", "Index", 7, "./Configs/Jail.txt");
 	GoldenCoinA = GetPrivateProfileIntA("GoldenCoin", "Amount", 1, "./Configs/Protection.txt");
@@ -1510,6 +1515,8 @@ void ReadConfig(bool command)
 	EmokY = GetPrivateProfileIntA("Teleport", "Y", 1, "./Configs/Emok.txt");
 	EmokMap = GetPrivateProfileIntA("Map", "Index", 1, "./Configs/Emok.txt");
 	EmokQuestIndex = GetPrivateProfileIntA("Quest", "Index", 1, "./Configs/Emok.txt");
+	EmokTime = GetPrivateProfileIntA("Map", "Time", 1800, "./Configs/Emok.txt");
+
 	EmokLvl = GetPrivateProfileIntA("Quest", "Level", 50, "./Configs/Emok.txt");
 	ConfigMaxDamage = GetPrivateProfileIntA("Protection", "MaxDamage", 100000, "./Configs/Protection.txt");
 	ConfigMaxMagAtk = GetPrivateProfileIntA("Protection", "MaxMagAtk", 10000, "./Configs/Protection.txt");
@@ -4084,6 +4091,28 @@ void ReadConfig(bool command)
 			fclose(filemorewa);
 		}
 	}
+
+
+	if (!command || (command && modifiedFiles.count("./Skills/Mage.txt"))) {
+		FILE *filemageh = fopen("./Skills/Mage.txt", "r");
+		if (filemageh != NULL)
+		{
+			MapSD.clear();
+			char line[BUFSIZ];
+			while (fgets(line, sizeof line, filemageh) != NULL)
+			{
+				int mapX = 0, mapY = 0, AOE = 0;
+				if (sscanf(line, "(SoulDestruction (file %d_%d)(Disable %d))", &mapX, &mapY, &AOE) == 3)
+				{
+					MapSD[(mapX * 1000) + (mapY)].SDAOE = AOE;
+				}
+
+			}
+			fclose(filemageh);
+		}
+	}
+
+
 	if (!command || (command && modifiedFiles.count("./Configs/Area.txt"))) {
 		FILE *filekd = fopen("./Configs/Area.txt", "r");
 		if (filekd != NULL)
@@ -4397,10 +4426,11 @@ void ReadConfig(bool command)
 		{
 			Reborns.clear();
 			RebornsPenalty.clear();
+			RebornsMaps.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, fileo) != NULL)
 			{
-				int ID = 0, NamePad = 0, MinLvl = 0, ResetLevel = 0, RewardID = 0, Penalty = 0;
+				int ID = 0, NamePad = 0, MinLvl = 0, ResetLevel = 0, RewardID = 0, Penalty = 0, QuestIndex = 0, QuestFlag = 0;
 				char tag[10];
 				if (sscanf(line, "(Reborn (Num %d)(NameTag '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(NamePad %d)(MinLvl %d)(ResetLvl %d)(RewardID %d))", &ID, &tag, &NamePad, &MinLvl, &ResetLevel, &RewardID) == 6)
 				{
@@ -4419,6 +4449,17 @@ void ReadConfig(bool command)
 					rb.rbPenalty = Penalty;
 					RebornsPenalty[ID] = rb;
 				}
+
+				if (sscanf(line, "(RebornMap (Num %d)(Quest %d %d))", &ID, &QuestIndex, &QuestFlag) == 3)
+				{
+					RbQuest rb = RbQuest();
+					rb.rbQuest = QuestIndex;
+					rb.rbQFlag = QuestFlag;
+					rb.rbIndex = ID;
+
+					RebornsMaps[(QuestIndex * 1000) + QuestFlag] = rb;
+				}
+
 			}
 			fclose(fileo);
 		}
@@ -5195,6 +5236,59 @@ void ReadConfig(bool command)
 		}
 	}
 
+	if (!command || (command && modifiedFiles.count("./Configs/Battlepass.txt"))) {
+		FILE *Battlepass = fopen("./Configs/Battlepass.txt", "r");
+		if (Battlepass != NULL)
+		{
+			BattlepassReward.clear();
+			char line[BUFSIZ];
+			while (fgets(line, sizeof line, Battlepass) != NULL)
+			{
+				int Class = 0, Level = 0, Prefix = 0, ID = 0; char rewardnotice[BUFSIZ];
+				char indexes[BUFSIZ], amounts[BUFSIZ];
+
+
+				if (sscanf(line, "(normal (ID %d)(level %d)(class %d)(indexes %[0-9/,])(amounts %[0-9/,])(prefix %d)(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &ID, &Level, &Class, &indexes, &amounts, &Prefix, &rewardnotice) == 7)
+				{
+					ConfigLevelReward battleReward = ConfigLevelReward();
+
+					std::string bpIndexes = std::string((const char*)indexes);
+					std::string bpAmounts = std::string((const char*)amounts);
+
+					battleReward.Class = Class;
+					battleReward.Indexes = explode(",", bpIndexes);
+					battleReward.Prefix = Prefix;
+					battleReward.Amounts = explode(",", bpAmounts);
+					battleReward.Msg = rewardnotice;
+					battleReward.ID = ID;
+
+					if (battleReward.Indexes.size() == battleReward.Amounts.size())
+					BattlepassReward[Level].push_back(battleReward);
+
+				}
+
+				if (sscanf(line, "(premium (ID %d)(level %d)(class %d)(indexes %[0-9/,])(amounts %[0-9/,])(prefix %d)(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &ID, &Level, &Class, &indexes, &amounts, &Prefix, &rewardnotice) == 7)
+				{
+					ConfigLevelReward premiumReward = ConfigLevelReward();
+
+					std::string bpPIndexes = std::string((const char*)indexes);
+					std::string bpPAmounts = std::string((const char*)amounts);
+
+					premiumReward.Class = Class;
+					premiumReward.Indexes = explode(",", bpPIndexes);
+					premiumReward.Prefix = Prefix;
+					premiumReward.Amounts = explode(",", bpPAmounts);
+					premiumReward.Msg = rewardnotice;
+					premiumReward.ID = ID;
+
+					if (premiumReward.Indexes.size() == premiumReward.Amounts.size())
+					PremiumPass[Level].push_back(premiumReward);
+				}
+			}
+			fclose(Battlepass);
+		}
+	}
+
 	if (!command || (command && modifiedFiles.count("./Configs/DailyLogin.txt"))) {
 		FILE *filedLogin = fopen("./Configs/DailyLogin.txt", "r");
 		if (filedLogin != NULL)
@@ -5948,8 +6042,11 @@ void CleanLoadConfig() {
 	SkillBook.clear();
 	PVEWeapon.clear();
 	RebornsPenalty.clear();
-
-
+	BattlepassReward.clear();
+	PremiumPass.clear();
+	MapSD.clear();
+	BossEXPMsgs.clear();
+	RebornsMaps.clear();
 
 	ReadConfig(false);
 }

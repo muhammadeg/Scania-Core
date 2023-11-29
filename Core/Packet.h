@@ -6466,7 +6466,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			}
 
 			if (chatDebug == 1) {
-				std::string Datoe = "./Debugger/Chat/CHAT_" + Time::GetDay() + "_" + Time::GetMonth() + "_" + Time::GetYear() + "_" + Time::GetHour() + "." + Time::GetMinute() + ".txt";
+				std::string Datoe = "./Debugger/Chat/CHAT_" + Time::GetDay() + "_" + Time::GetMonth() + "_" + Time::GetYear() + "_" + Time::GetHour() + ".txt";
 				std::fstream CHLOG;
 				CHLOG.open(Datoe, std::fstream::in | std::fstream::out | std::fstream::app);
 				CHLOG << Time::GetTime() << " " << IPlayer.GetName() << ": " << chat << std::endl;

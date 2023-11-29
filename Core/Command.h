@@ -2544,7 +2544,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 				if (FindItem){
 					int amount = DeletedItem.GetAmount();
 					CPlayer::RemoveItem(Online.GetOffset(), 9, deleteitemindex, amount);
-					CDBSocket::Write(67, "d", deleteitemindex);
+					CDBSocket::Write(123, "d", deleteitemindex);
 				}
 			}
 		}

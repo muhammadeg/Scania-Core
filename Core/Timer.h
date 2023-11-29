@@ -197,6 +197,7 @@ void startBF(bool EvilVsGood) {
 			Battlefield::BlueScore = 0;
 			Battlefield::RegisterAmount = 0;
 			RewardLimit.clear();
+			BFRewardLimit.clear();
 			Battlefield::GoodVsEvil = EvilVsGood;
 			Battlefield::Active = true;
 			IChar M1((void*)Summon(0, BFMap, EvilVsGood ? BlueStoneXG : BlueStoneX, EvilVsGood ? BlueStoneYG : BlueStoneY, 445, 1, 0, 0, 0, 0));
@@ -340,6 +341,7 @@ void startGVG() {
 
 			ScenarioGuild.clear();
 			RewardLimit.clear();
+			DKRewardLimit.clear();
 			Scenario::RegisterAmount = 0;
 			Scenario::Active = true;
 			Summon(0, ScenarioMap, 286786, 351034, 360, 1, 0, 0, 0, 0);

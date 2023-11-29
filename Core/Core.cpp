@@ -50,7 +50,7 @@ CHAR WindowName[100]; // idb
 HINSTANCE hInstance; // idb
 HWND hWnd; // idb
 
-FARPROC p[806] = {0};
+FARPROC p[806] = { 0 };
 #pragma warning(disable: 4018)
 #pragma warning(disable: 4129)
 #pragma warning (disable : 4244)
@@ -65,12 +65,12 @@ void Console()
 	int hCrtIn, hCrtOut;
 	FILE *conIn, *conOut;
 	AllocConsole();
-	hCrtIn = _open_osfhandle ((intptr_t) GetStdHandle(STD_INPUT_HANDLE), _O_TEXT);
-	hCrtOut = _open_osfhandle ((intptr_t) GetStdHandle(STD_OUTPUT_HANDLE), _O_TEXT);
-	conIn = _fdopen( hCrtIn, "r" );
-	conOut = _fdopen( hCrtOut, "w" );
+	hCrtIn = _open_osfhandle((intptr_t)GetStdHandle(STD_INPUT_HANDLE), _O_TEXT);
+	hCrtOut = _open_osfhandle((intptr_t)GetStdHandle(STD_OUTPUT_HANDLE), _O_TEXT);
+	conIn = _fdopen(hCrtIn, "r");
+	conOut = _fdopen(hCrtOut, "w");
 	*stdin = *conIn;
-	*stdout = *conOut; 
+	*stdout = *conOut;
 	HWND hwnd = ::GetConsoleWindow();
 	if (hwnd != NULL)
 	{
@@ -86,7 +86,7 @@ std::string encryptDecrypt(std::string toEncrypt)
 
 	for (int i = 0; i < toEncrypt.size(); i++)
 		output[i] = toEncrypt[i] ^ key;
-	
+
 	return output;
 }
 
@@ -113,7 +113,7 @@ std::string random_string(size_t length)
 			"0123456789"
 			"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 			"abcdefghijklmnopqrstuvwxyz";
-		const size_t max_index = (sizeof(charset) - 1);
+		const size_t max_index = (sizeof(charset)-1);
 		return charset[rand() % max_index];
 	};
 	std::string str(length, 0);
@@ -130,38 +130,38 @@ struct TeleCoordinates {
 /*
 // Function to create the Tele_Scrolls vector with predefined coordinates
 std::vector<TeleCoordinates> CreateTeleScrolls() {
-	std::vector<TeleCoordinates> Tele_Scrolls;
+std::vector<TeleCoordinates> Tele_Scrolls;
 
-	// Define the coordinates and comments in a readable way
-	struct CoordInfo {
-		uint32_t x;
-		uint32_t y;
-		uint32_t z;
-		uint32_t comment;
-	};
+// Define the coordinates and comments in a readable way
+struct CoordInfo {
+uint32_t x;
+uint32_t y;
+uint32_t z;
+uint32_t comment;
+};
 
-	CoordInfo coordInfo[] = {
-		{ 0, 257798, 259386, 16080 },  // 0 Naro
-		{ 0, 265022, 262538, 16190 },  // 1 Cargo
-		{ 0, 266040, 284976, 22650 },  // 2 Mine
-		{ 0, 255825, 288802, 27050 },  // 3 Pub
-		{ 0, 267618, 242946, 19630 },  // 4 Fort
-		{ 0, 232954, 294672, 45300 },  // 5 Cop
-		{ 0, 123456, 123456, 12346 },  // 6 Custom coordinates
-		// Add new coordinates here
-	};
+CoordInfo coordInfo[] = {
+{ 0, 257798, 259386, 16080 },  // 0 Naro
+{ 0, 265022, 262538, 16190 },  // 1 Cargo
+{ 0, 266040, 284976, 22650 },  // 2 Mine
+{ 0, 255825, 288802, 27050 },  // 3 Pub
+{ 0, 267618, 242946, 19630 },  // 4 Fort
+{ 0, 232954, 294672, 45300 },  // 5 Cop
+{ 0, 123456, 123456, 12346 },  // 6 Custom coordinates
+// Add new coordinates here
+};
 
-	// Populate the Tele_Scrolls vector
-	for (int i = 0; i < sizeof(coordInfo) / sizeof(coordInfo[0]); ++i) {
-		TeleCoordinates coord;
-		coord.x = coordInfo[i].x;
-		coord.y = coordInfo[i].y;
-		coord.z = coordInfo[i].z;
-		coord.comment = coordInfo[i].comment;
-		Tele_Scrolls.push_back(coord);
-	}
+// Populate the Tele_Scrolls vector
+for (int i = 0; i < sizeof(coordInfo) / sizeof(coordInfo[0]); ++i) {
+TeleCoordinates coord;
+coord.x = coordInfo[i].x;
+coord.y = coordInfo[i].y;
+coord.z = coordInfo[i].z;
+coord.comment = coordInfo[i].comment;
+Tele_Scrolls.push_back(coord);
+}
 
-	return Tele_Scrolls;
+return Tele_Scrolls;
 }
 */
 //Teleport Scrolls
@@ -239,23 +239,23 @@ struct ShoutData {
 };
 enum TextColor
 {
-	TEXTCOLOR_GENERAL   = RGB( 255, 255, 255 ),
-	TEXTCOLOR_INFOMSG   = RGB(  70, 227, 232 ),
-	TEXTCOLOR_SHUTDOWN  = RGB( 240, 116,  15 ),
-	TEXTCOLOR_ORANGE    = RGB( 255, 128,  64 ),
-	TEXTCOLOR_BLUE      = RGB(   0, 128, 255 ),
-	TEXTCOLOR_BLUELIGHT = RGB(   0, 255, 255 ),
-	TEXTCOLOR_YELLOW    = RGB( 255, 255, 128 ),
-	TEXTCOLOR_RED       = RGB( 255,   0,   0 ),
-	TEXTCOLOR_PARTY     = RGB( 210,  64,   0 ),
-	TEXTCOLOR_GUILD     = RGB(  10, 255, 229 ),
-	TEXTCOLOR_ALLIANCE  = RGB( 128, 128, 192 ),
-	TEXTCOLOR_GREEN     = RGB(   0, 255,   0 ),
-	TEXTCOLOR_DARKGREEN = RGB(   0, 170,   0 ),
-	TEXTCOLOR_FAILED    = RGB( 250, 210,   0 ),
-	TEXTCOLOR_CLASSMATE = RGB(   0, 128,   0 ),
-	TEXTCOLOR_PUPIL     = RGB( 255, 128,  64 ),
-	TEXTCOLOR_PINK      = RGB( 255, 155, 255 ),
+	TEXTCOLOR_GENERAL = RGB(255, 255, 255),
+	TEXTCOLOR_INFOMSG = RGB(70, 227, 232),
+	TEXTCOLOR_SHUTDOWN = RGB(240, 116, 15),
+	TEXTCOLOR_ORANGE = RGB(255, 128, 64),
+	TEXTCOLOR_BLUE = RGB(0, 128, 255),
+	TEXTCOLOR_BLUELIGHT = RGB(0, 255, 255),
+	TEXTCOLOR_YELLOW = RGB(255, 255, 128),
+	TEXTCOLOR_RED = RGB(255, 0, 0),
+	TEXTCOLOR_PARTY = RGB(210, 64, 0),
+	TEXTCOLOR_GUILD = RGB(10, 255, 229),
+	TEXTCOLOR_ALLIANCE = RGB(128, 128, 192),
+	TEXTCOLOR_GREEN = RGB(0, 255, 0),
+	TEXTCOLOR_DARKGREEN = RGB(0, 170, 0),
+	TEXTCOLOR_FAILED = RGB(250, 210, 0),
+	TEXTCOLOR_CLASSMATE = RGB(0, 128, 0),
+	TEXTCOLOR_PUPIL = RGB(255, 128, 64),
+	TEXTCOLOR_PINK = RGB(255, 155, 255),
 	TEXTCOLOR_Undefined = RGB(152, 155, 189),
 	TEXTCOLOR_UndefinedI = RGB(150, 10, 25),
 	TEXTCOLOR_DARK_MAGENTA = RGB(139, 0, 139),
@@ -309,16 +309,16 @@ enum TextColor
 
 enum NoticeColor
 {
-	NOTICECOLOR_BLUE		= 0,
-	NOTICECOLOR_RED			= 1,
-	NOTICECOLOR_ORANGE		= 2,
-	NOTICECOLOR_REDCENTER	= 3,
-	NOTICECOLOR_WHITE		= 4,
-	NOTICECOLOR_REDLONG		= 5,
-	NOTICECOLOR_BLUECENTER	= 6,
-	NOTICECOLOR_YELLOW		= 7,
-	NOTICECOLOR_PINK		= 8,
-	NOTICECOLOR_ORANGELONG	= 9,
+	NOTICECOLOR_BLUE = 0,
+	NOTICECOLOR_RED = 1,
+	NOTICECOLOR_ORANGE = 2,
+	NOTICECOLOR_REDCENTER = 3,
+	NOTICECOLOR_WHITE = 4,
+	NOTICECOLOR_REDLONG = 5,
+	NOTICECOLOR_BLUECENTER = 6,
+	NOTICECOLOR_YELLOW = 7,
+	NOTICECOLOR_PINK = 8,
+	NOTICECOLOR_ORANGELONG = 9,
 };
 
 namespace BuffNames {
@@ -641,17 +641,17 @@ std::string GetHexString(char *bt)
 		n = (int)b;
 		n1 = n & 15;
 		n2 = (n >> 4) & 15;
-		
+
 		if (n2 > 9)
 			s += Int2String((char)(n2 - 10 + (int)'A'));
 		else
 			s += Int2String(n2);
-		
+
 		if (n1 > 9)
 			s += Int2String((char)(n1 - 10 + (int)'A'));
 		else
 			s += Int2String(n1);
-		
+
 		if ((i + 1) != strlen(bt) && (i + 1) % 4 == 0) s += "-";
 	}
 
@@ -660,8 +660,8 @@ std::string GetHexString(char *bt)
 int catchInt(std::string s) {
 
 	int value = 0;
-	for(int i=0;i<s.size();i++){
-		if(isdigit(s[i]))
+	for (int i = 0; i < s.size(); i++){
+		if (isdigit(s[i]))
 			value += s[i];
 	}
 	return value;
@@ -1122,6 +1122,8 @@ struct ConfigMining
 
 struct ConfigLevelReward
 {
+	std::vector<std::string> Indexes;
+	std::vector<std::string> Amounts;
 	int Class;
 	int Index;
 	int Prefix;
@@ -1134,6 +1136,7 @@ struct ConfigLevelReward
 	int Defense;
 	int Evasion;
 	int Endurance;
+	int ID;
 	std::string Msg;
 };
 
@@ -1274,10 +1277,11 @@ struct Area
 	int type;
 };
 
-struct ShoutsMaps
+struct AreaSD
 {
-	int item;
+	int SDAOE;
 };
+
 struct AreaMax
 {
 	int maxlevel;
@@ -1575,14 +1579,14 @@ struct Fight
 	int CoordY;
 	double Round;
 	Fight(){
-		P1Position=0;
-		Player1=0;
-		P2Position=0;
-		Player2=0;
-		CoordX=0;
-		CoordY=0;
+		P1Position = 0;
+		Player1 = 0;
+		P2Position = 0;
+		Player2 = 0;
+		CoordX = 0;
+		CoordY = 0;
 	}
-	Fight(int NewPlayer1,int NewPlayer2,int X,int Y,int Position,int Position2){
+	Fight(int NewPlayer1, int NewPlayer2, int X, int Y, int Position, int Position2){
 		Player1 = NewPlayer1;
 		P1Position = Position;
 		Player2 = NewPlayer2;
@@ -2047,7 +2051,7 @@ struct SendCreate {
 
 struct eventMap {
 	std::vector<std::string> monsters;
-	std::vector<std::string> amounts; 
+	std::vector<std::string> amounts;
 	std::vector<std::string> Reward;
 	std::string Name;
 	int Duration;
@@ -2101,7 +2105,7 @@ struct GuildBuff
 	int SBKey;
 };
 
-struct GuildBuffQuest 
+struct GuildBuffQuest
 {
 	std::string Name;
 	int Flag;
@@ -2340,6 +2344,13 @@ struct RbPenalty
 	int rbIndex;
 	int rbPenalty;
 };
+
+struct RbQuest
+{
+	int rbIndex;
+	int rbQuest;
+	int rbQFlag;
+};
 struct RentQuest
 {
 	int ReqItem;
@@ -2358,24 +2369,24 @@ struct ItemExchange
 static int ShamanBuffs[] = { 401, 403, 407, 409, 413 };
 unsigned __int64 _ExpTable[312]; // Definition of the global variable
 Poll pollAsk;
-time_t uptimestart; 
+time_t uptimestart;
 int GuildWinnerCW = 0, AllyWinnerCW = 0, WarEndTime = 0;
 int CryptKey = 0;
 std::string ConfigCheckDB1, ConfigCheckDB2;
 int firstDig = 0;
 int BofConfigRead = 0, dgConfigRead = 0, insanityRead = 0, qigongRead = 0, ImpConfigRead = 0, ScaniaLicense = 0, NailKill = 0;
-time_t notices,timeReloading;
+time_t notices, timeReloading;
 volatile LONG OnlinePlayers = 0;
 volatile LONG PlayerLevelNotice = 0;
 volatile LONG MonsterReloaded = 0;
 volatile LONG auctionItemsNum = 0;
-int HuntingID = 0, CWGID = 0 ;
+int HuntingID = 0, CWGID = 0;
 int NPCID = 0;
 std::string WCWinner = "None";
 std::string HuntingName = "", CWGuildName = "";
 int myc = 0;
 int DNPCEDailyLimit = 0, DNPCECollectedTotalItem = 0, DNPCELeftTime = 0, test = 0;
-int NPCEDailyLimit = 0, NPCECollectedTotalItem = 0, NPCELeftTime = 0; char ItemShopPacket[9000] = {0};
+int NPCEDailyLimit = 0, NPCECollectedTotalItem = 0, NPCELeftTime = 0; char ItemShopPacket[9000] = { 0 };
 //char AuctionPacket[9000] = { 0 };
 int AuctionAmount = 0, AuctionSize = 0;
 char FakePlayerPacket[14];
@@ -2439,6 +2450,7 @@ std::unordered_map<char, int> npcMap;
 std::map<int, ItemExchange> ItemExchanges;
 std::map<int, Reborn> Reborns;
 std::map<int, RbPenalty> RebornsPenalty;
+std::map<int, RbQuest> RebornsMaps;
 
 std::map<int, int> FatalDmg;
 std::map<int, MSkill> MSkills;
@@ -2462,7 +2474,7 @@ std::map<int, F10EXP> MautEXPs;
 std::map<int, F10EXP> BossEXPs;
 std::map<int, BossEXPMsg> BossEXPMsgs;
 ConcurrentMap<int, SendCreate> SendCreatePlayer;
-RegistrationMap<int,int> SummonQuestRegistration;
+RegistrationMap<int, int> SummonQuestRegistration;
 RegistrationMap<int, int> EventQuests;
 SystemRegistration<int> Lottery;
 SystemRegistration<int> XLottery;
@@ -2513,13 +2525,13 @@ std::map<int, int> ItemReward;
 std::map<int, std::string> QuestWebsite;
 std::map<std::string, std::string> Tracker;
 std::map<int, int> NewItemType;
-std::map<int,Winners> FinalsWinners;
+std::map<int, Winners> FinalsWinners;
 std::map<int, std::vector<Items>> Boxes;
 std::map<int, std::vector<Items>> StarterItems;
 std::map<int, StarterClass> Starters;
 std::map<int, InitSwap> InitPetSwap;
 std::map<int, std::vector<int>> QuestRentItem;
-ConcurrentMap<int,PlayerFight> CupRegistration;
+ConcurrentMap<int, PlayerFight> CupRegistration;
 ConcurrentMap<int, Vote> PlayerVote;
 ConcurrentMap<uint32_t, int> VoteList;
 std::map<int, std::vector<RectLevel>> RectArea;
@@ -2536,17 +2548,20 @@ std::map<int, ItemMss> MSS;
 std::map<int, int> PacketSpamConf;
 ConcurrentMap<int, int> EmblemDropped;
 ConcurrentMap<int, int> PacketSpam;
-ConcurrentMap<int,PacketCheck> PacketDelay;
-std::map<int,WCGroups> CupOfKal;
-std::map<int,Fights> FirstFight;
-std::map<int,Fights> SecondFight;
+ConcurrentMap<int, PacketCheck> PacketDelay;
+std::map<int, WCGroups> CupOfKal;
+std::map<int, Fights> FirstFight;
+std::map<int, Fights> SecondFight;
 std::map<int, Fights> ThirdFight;
 std::map<int, std::vector<BetTrade>> BetItems;
 ConcurrentSet<std::string> RewardLimit;
+ConcurrentSet<std::string> BFRewardLimit;
+ConcurrentSet<std::string> DKRewardLimit;
+
 ConcurrentMap<uint32_t, int> MiningLimit;
 ConcurrentMap<uint32_t, int> FishingLimit;
 ConcurrentMap<uint32_t, int> ShopLimit;
-std::map<int,std::vector<ChanceItem>> FishingList;
+std::map<int, std::vector<ChanceItem>> FishingList;
 std::vector<ChanceItem> F10Items;
 std::vector<ChanceItem> MautItem;
 std::vector<ChanceItem> BossExpItem;
@@ -2559,7 +2574,7 @@ std::map<int, Poll> Polls;
 std::map<int, Poll> PollTimer;
 ConcurrentMap<std::string, std::set<int>> PollVotes;
 ConcurrentMap<int, int> PollVoteAmount;
-std::map<int,SingleConfigBuffer> SingleBufferCheck;
+std::map<int, SingleConfigBuffer> SingleBufferCheck;
 std::set<int> SinDisable;
 std::map<int, std::set<int>> DisableSkill;
 std::vector<int> MD5FileChecker;
@@ -2595,11 +2610,11 @@ std::set<int> TimedMaps;
 ConcurrentMap<long, QuestTime> PlayerTimedQuest;
 ConcurrentMap<long int, AuctionItem> AuctionItems;
 std::vector<AuctionItem> AuctionVec;
-std::map<int,Area> MapLvl;
-std::map<int, ShoutsMaps> ShoutMap;
+std::map<int, Area> MapLvl;
+std::map<int, AreaSD> MapSD;
 
 std::set<int> PacketBlock;
-std::map<int,int> MD5Checks;
+std::map<int, int> MD5Checks;
 std::vector<MD5Type> MD5File;
 std::map<int, QuestLevel> QuestLevels;
 std::map<int, MD5Type> MD5MapsKCM;
@@ -2611,8 +2626,8 @@ ConcurrentMap<int, int> SocketPacket;
 ConcurrentMap<int, PacketEncryption> SocketNewInfos;
 ConcurrentSet<uint32_t> BlockList;
 std::set<int> SkillsPVP;
-std::map<int,int> WCDamage;
-std::map<int,WCRew> WCRewards;
+std::map<int, int> WCDamage;
+std::map<int, WCRew> WCRewards;
 std::map<int, AreaMax> MapMax;
 std::set<int> UnGap;
 std::set<int> UnAggro;
@@ -2631,41 +2646,44 @@ std::map<int, Restriction> HWIDRestrictions;
 std::map<int, HaninRate> HaninLow;
 std::map<int, HaninRate> HaninMiddle;
 std::map<int, HaninRate> HaninHigh;
-std::map<int,CheckCalculations> PVPConfigCalculations;
+std::map<int, CheckCalculations> PVPConfigCalculations;
 std::map<int, SkillRangeConfig> CheckRangeConfig;
 std::set<int> ItemDisable;
 std::set<int> AuctionItemDisable;
-ConcurrentMap<int,int> PlayerOffset;
-std::map<__int16,ConfigItemShop> ItemShopCheck;
+ConcurrentMap<int, int> PlayerOffset;
+std::map<__int16, ConfigItemShop> ItemShopCheck;
 //std::map<__int64,ConfigPlayerQuest> PlayerQuest;
 std::map<int, ConfigDailyQuest> DailyQuest;
 std::map<int, std::vector<MonsterDailyQuest>> MonsterQuests;
 std::map<int, std::vector<ConfigLevelReward>> LevelReward;
-ConcurrentMap<int,ConfigMining> CheckMining;
+std::map<int, std::vector<ConfigLevelReward>> BattlepassReward;
+std::map<int, std::vector<ConfigLevelReward>> PremiumPass;
+
+ConcurrentMap<int, ConfigMining> CheckMining;
 std::map<int, int> GetItemStat;
 ConcurrentSet<int> ItemStatDisable;
 ConcurrentSet<int> ItemTimerDisable;
-std::map<int,ConfigBuffer> BufferCheck;
-std::map<int,ConfigRentArmor> RentArmor;
+std::map<int, ConfigBuffer> BufferCheck;
+std::map<int, ConfigRentArmor> RentArmor;
 std::map<int, ConfigRentWeapon> RentWeapon;
-std::map<int,CheckSkillBook> SkillBook;
+std::map<int, CheckSkillBook> SkillBook;
 std::map<int, CheckSkillBook> SkillDowngrade;
-std::map<int,CheckConfigCooldown> CheckCooldownConfig;
-std::map<int,CheckConfigEggCooldown> CheckEggCooldownConfig;
-std::map<int,CheckCalculations> ConfigCalculations;
-std::map<int,PimpConfig> CheckPimp;
+std::map<int, CheckConfigCooldown> CheckCooldownConfig;
+std::map<int, CheckConfigEggCooldown> CheckEggCooldownConfig;
+std::map<int, CheckCalculations> ConfigCalculations;
+std::map<int, PimpConfig> CheckPimp;
 std::map<int, std::vector<CheckSummonTimer>> SummonTimer;
 std::map<std::string, std::vector<RGBNotice>> RGBAutoNotice;
 std::map<std::string, int> CustomNotices;
 std::map<std::string, int> AutoNoticesRGB;
 
 ConcurrentMap<int, int> PetLifeCheck;
-ConcurrentMap<std::string,std::string> Read2ndPwd;
+ConcurrentMap<std::string, std::string> Read2ndPwd;
 std::set<int> UnBlob;
 std::map<int, std::set<int>> StoreItems;
 std::set<int> MixConfigPrefix;
 std::map<int, int> MixConfigInfo;
-std::map<int,std::string> MixConfigMsg;
+std::map<int, std::string> MixConfigMsg;
 SystemRegistration<int> BattlefieldRegistration;
 ConcurrentMap<int, std::string> SufferingValleyRegistration;
 SystemRegistration<int> SVGuild1;
@@ -2680,16 +2698,16 @@ std::vector<int> RShopAmounts;
 std::map<int, double> LevelGap;
 std::map<int, TrainingLvl> TrainingEXP;
 std::map<int, ChanceItem> TrainingDrops;
-std::map<int,int> HonorShop;
+std::map<int, int> HonorShop;
 std::map<int, int> HonorIndex;
 std::map<int, std::set<int>> SystemBlacklist;
 SystemRegistration<int> F10Registration;
 SystemRegistration<int> MautRegistration;
 SystemRegistration<int> BanditsRegisteration;
 SystemRegistration<int> BossEXPRegistration;
-std::map<int,int> WeaponReplace;
+std::map<int, int> WeaponReplace;
 SystemRegistration<int> CaptureRegistration;
-std::map<int,int> WeaponReplaceIndex;
+std::map<int, int> WeaponReplaceIndex;
 std::unordered_map<int, std::string> WeaponReplaceMsg;
 
 //std::vector<int> HighestDamage;
@@ -2698,7 +2716,7 @@ std::set<int> DisablePrefix;
 std::map<int, int> ArmorPimpConfig;
 std::map<int, int> PVEDamagePimp;
 std::map<int, int> PVPDamagePimp;
-std::map<int,std::string> ItemLockCheck;
+std::map<int, std::string> ItemLockCheck;
 std::map<int, ConfigPetTime> PetTime;
 std::map<int, int> SoulPocketEffect;
 std::map<int, SuitStat> SuitStats;
@@ -2708,7 +2726,7 @@ std::map<int, TaskQ> TaskQuests;
 
 ConcurrentSet<int> PlayerBlockCheck;
 std::vector<int> ProtectLeaderList;
-ConcurrentMap<int,std::string> ProtectLeaderName;
+ConcurrentMap<int, std::string> ProtectLeaderName;
 std::set<int> ProtectBlackList;
 std::set<int> DestructingBlackList;
 std::set<int> SVBlackList;
@@ -2911,322 +2929,324 @@ SystemRegistration<int> LastManRegistration;
 #include "ItemFixes.h"
 #include "Menu.h"
 
+
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
 	{
-			InitializeADVAPI32(); 
-			ConfigCheckDB1 = "kal_auth";
-			ConfigCheckDB2 = "kal_db";
-			ReadConfig(false);
-			thisServerName = ServerName;
-			ItemFixes();
-			ExpMultiplier();
-			SwitchTable();
-			Loader();
-			SetSkillPointer();
-			uptimestart = time(0);
-			firstDig = (int)uptimestart % 10;
-			CryptKey = sha256((Int2String(uptimestart))) % 9000;
-			timeReloading = time(0);
-			ConfigDBCheck = 1;
-			SetLearnUpgradeLimit();
-			DetourTransactionBegin();
-			DetourAttach(&(PVOID&)CIOServer::Start, Start);
-			DetourAttach(&(PVOID&)_Window::Proc, Proc);
-			if (ConfigDBCheck)
-			{
-				//DetourAttach(&(PVOID&)CIOCriticalSection::Enter, CIOCriticalSectionEnter);
-				//DetourAttach(&(PVOID&)CIOSocket::Enter, CIOSocketEnter);
-				DetourAttach(&(PVOID&)CIOObject::_Release, ObjectRelease);
-				DetourAttach(&(PVOID&)CIOBuffer::Release, CIOBufferRelease);
-				DetourAttach(&(PVOID&)CIOObject::_AddRef, ObjectRef);
-				DetourAttach(&(PVOID&)CIOSocket::Create, CIOSocketCreate);
-				DetourAttach(&(PVOID&)CIOSocket::CIOSocket__Close, CIOSocketClose);
-				DetourAttach(&(PVOID&)CIOSocket::GraceFulClose, CIOSocketGracefulClose);
-				DetourAttach(&(PVOID&)CPlayer::_IntoInven, IntoInventory);
-				DetourAttach(&(PVOID&)CPlayer::_OutOfInven, OutOfInventory);
-				DetourAttach(&(PVOID&)CPlayer::RemoveItem, PlayerRemoveItem);
-				DetourAttach(&(PVOID&)CChar::RefreshBuff, ObjectTick);
-				DetourAttach(&(PVOID&)CNPCDoor::Tick, NPCTick);
-				DetourAttach(&(PVOID&)CBuff::CreateBuff, CreateBuff);
-				DetourAttach(&(PVOID&)CChar::CancelAllBuff2, CancelAllBuffs);
-				DetourAttach(&(PVOID&)CDBSocket::Process, Process);
-				DetourAttach(&(PVOID&)CSkill::BlessingOfHealth, BlessingOfHealth);
-				DetourAttach(&(PVOID&)CSkill::BlessingOfStrength, BlessingOfStrength);
-				DetourAttach(&(PVOID&)CSkill::BlessingOfAgility, BlessingOfAgility);
-				DetourAttach(&(PVOID&)CSkill::BlessingOfIntelligence, BlessingOfIntelligence);
-				DetourAttach(&(PVOID&)CSkill::BlessingOfCriticalHit, BlessingOfCriticalHit);
-				DetourAttach(&(PVOID&)CSkill::RefiningWeapon, RefiningWeapon);
-				DetourAttach(&(PVOID&)CSkill::DefenseImprovement, DefenseImprovement);
-				DetourAttach(&(PVOID&)CSkill::SpeedUp, SpeedUp);
-				DetourAttach(&(PVOID&)CSkill::CheckBuff, CheckBuff);
-				DetourAttach(&(PVOID&)CChar::PerfectCure, PerfectCureFix);
-				DetourAttach(&(PVOID&)CPlayer::EnforceItem, EnforceItem);
-				DetourAttach(&(PVOID&)CPlayer::OnTeleport, MyOnTeleport);
-				DetourAttach(&(PVOID&)CPlayer::Imperial, Imperial);
-				DetourAttach(&(PVOID&)CItemTransform::ApplySpec, TransformApplySpec);
-				DetourAttach(&(PVOID&)CItemTransform::FreeSpec, TransformFreeSpec);
-				DetourAttach(&(PVOID&)CItemMoney::Drop, MoneyDrop);
-				DetourAttach(&(PVOID&)CItem::Drop, ItemDrop);
-				DetourAttach(&(PVOID&)Undefined::StoneOfChance, StoneOfChance);
-				DetourAttach(&(PVOID&)CPlayer::InitStat, SOB);
-				DetourAttach(&(PVOID&)CPlayer::EndPvP, EndPvP);
-				DetourAttach(&(PVOID&)CPlayer::SaveAllProperty, SaveAllProperty);
-				DetourAttach(&(PVOID&)CPlayer::SendMail, SendMail);
-				DetourAttach(&(PVOID&)CPlayer::ChatCommand, ChatCommand);
-				DetourAttach(&(PVOID&)CDBSocket::RealProcess, CDBProcess);
-				DetourAttach(&(PVOID&)CCalendar::OnTimer, OnTimer);
-				DetourAttach(&(PVOID&)CPlayer::Tick, Tick);
-				DetourAttach(&(PVOID&)CPlayer::CPlayer, InitPlayer);
-				DetourAttach(&(PVOID&)CPlayer::OnLoadPlayer, OnLoadPlayer);
-				DetourAttach(&(PVOID&)CPlayer::Process, Packet);
-				DetourAttach(&(PVOID&)CPlayer::LevelUp, LevelUp);
-				DetourAttach(&(PVOID&)CSkill::Occupation, Occupation);
-				DetourAttach(&(PVOID&)CSkill::LearnSkillCheck, LearnSkillCheck);
-				DetourAttach(&(PVOID&)CSkill::SkillOnLoad, SkillOnLoad);
-				DetourAttach(&(PVOID&)CPlayer::LevelUpUnknown, AutoLearn);
-				DetourAttach(&(PVOID&)CPlayer::CancelTrade, CancelTrade);
-				DetourAttach(&(PVOID&)CPlayer::TradeAgreed, TradeAgreed);
-				DetourAttach(&(PVOID&)CPlayer::ShowOffItem, ShowOffItem);
-				DetourAttach(&(PVOID&)CPlayer::CanAttack, CanAttack);
-				DetourAttach(&(PVOID&)CChar::CheckHit, CheckHit);
-				DetourAttach(&(PVOID&)CItemTransform::UpdateExp, UpdateExp);
-				DetourAttach(&(PVOID&)CChar::GetFinalDamage, GetFinalDamage);
-				DetourAttach(&(PVOID&)CPlayer::GetPalsyDamage, GetPalsyDamage);
-				DetourAttach(&(PVOID&)CChar::GetFatalDamage, GetFatalDamage);
-				DetourAttach(&(PVOID&)CQuest::Run, Quest);
-				DetourAttach(&(PVOID&)CItemGeneral::Use, ItemUse);
-				DetourAttach(&(PVOID&)CSkill::ExecuteTransformSkill, ExecuteTransformSkill);
-				DetourAttach(&(PVOID&)CSkill::ExecuteSkill, ExecuteSkill);
-//				DetourAttach(&(PVOID&)CSkill::ProtectSkill, ProtectSkill);
-				DetourAttach(&(PVOID&)CPlayer::DropItemONPKDie, DropItemONPKDie);
-				DetourAttach(&(PVOID&)CItemDefense::ApplySpec, DefenseApplySpec);
-				DetourAttach(&(PVOID&)CItemDefense::PutOff, DefensePutOff);
-				DetourAttach(&(PVOID&)CItemWeapon::ApplySpec, WeaponApplySpec);
-				DetourAttach(&(PVOID&)CItemWeapon::PutOff, WeaponPutOff);
-				DetourAttach(&(PVOID&)CItemWeapon::PutOn, WeaponPutOn);
-				DetourAttach(&(PVOID&)CItemStandard::Broken, StandardBroken);
-				DetourAttach(&(PVOID&)CItemStandard::ApplySpec, StandardApplySpec);
-				DetourAttach(&(PVOID&)CItemStandard::PutOn, StandardPutOn);
-				DetourAttach(&(PVOID&)CItemStandard::PutOff, StandardPutOff);
-				DetourAttach(&(PVOID&)CItemDefense::ChangePrefix, DefenseChangePrefix);
-				DetourAttach(&(PVOID&)CItemWeapon::ChangePrefix, WeaponChangePrefix);
-				DetourAttach(&(PVOID&)CItemWeapon::CharmingCheat, WeaponCharmingCheat);
-				DetourAttach(&(PVOID&)CItemWeapon::Charming, WeaponCharming);
-				DetourAttach(&(PVOID&)CItemWeapon::UpgradeLevel, WeaponUpgradeLevel);
-				DetourAttach(&(PVOID&)CItemWeapon::UpgradeDestroy, WeaponUpgradeDestroy);
-				DetourAttach(&(PVOID&)CPlayer::RevivalItem, RevivalItem);
-				DetourAttach(&(PVOID&)CPlayer::RevivalSkill, RevivalSkill);
-				DetourAttach(&(PVOID&)CMonsterGuildWar::Damage, GuildWarDamage);
-				DetourAttach(&(PVOID&)CPlayer::CutdownExp, CutdownExp);
-				DetourAttach(&(PVOID&)CSkill::Calls, Calls);
-				DetourAttach(&(PVOID&)CConsole::Black, Black);
-				DetourAttach(&(PVOID&)CConsole::Blue, Blue);
-				DetourAttach(&(PVOID&)CConsole::Red, Red);
-				DetourAttach(&(PVOID&)CItemDefense::PutOn, ArmorPutOn);
-				DetourAttach(&(PVOID&)CPlayer::MAILProcess, MAILProcess);
-				DetourAttach(&(PVOID&)CPlayer::Transform, Transform);
-				DetourAttach(&(PVOID&)CSkill::Calculations, Calculations);
-				DetourAttach(&(PVOID&)CPlayer::Attack, NormalHit);
-				DetourAttach(&(PVOID&)CPlayer::PKKill, PKKill);
-				DetourAttach(&(PVOID&)CMonsterMaguniMaster::Tick, SummonTick);
-				DetourAttach(&(PVOID&)CInitMonster::DropItem, InitMonsterDrop);
-				DetourAttach(&(PVOID&)CSkill::LifeAbsorption, LifeAbsorption);
-				DetourAttach(&(PVOID&)CSkill::MagicTick, MagicTick);
-				DetourAttach(&(PVOID&)CItem::NewItem, NewItem);
-				DetourAttach(&(PVOID&)CItem::SubState, SubState);
-				DetourAttach(&(PVOID&)CItemOrnament::PutOn, OrnamentPutOn);
-				DetourAttach(&(PVOID&)CItemOrnament::ApplySpec, OrnamentApplySpec);
-				DetourAttach(&(PVOID&)CItemOrnament::PutOff, OrnamentPutOff);
-				DetourAttach(&(PVOID&)CMonsterMaguniMaster::AI, SummonAI);
-				DetourAttach(&(PVOID&)CMonsterMaguniMaster::Die, SummonDie);
-				DetourAttach(&(PVOID&)CItemWeapon::StorageIn, CItemWeaponStorageIn);
-				DetourAttach(&(PVOID&)CItemDefense::StorageIn, CItemDefenseStorageIn);
-				DetourAttach(&(PVOID&)CBase::Delete, CBaseDelete);
-				DetourAttach(&(PVOID&)CNPCSiegeGun::Reply, SiegeGunReply);
-				DetourAttach(&(PVOID&)CMonsterMagic::Create, CMonsterMagicCreate);
-				DetourAttach(&(PVOID&)CPlayer::CheckBlock, CheckBlock);
-				DetourAttach(&(PVOID&)CItem::CreateItem, MyCreateItem);
-				DetourAttach(&(PVOID&)CItemGeneral::StorageIn, CItemGeneralStorageIn);
-				DetourAttach(&(PVOID&)CMonsterReal::Tick, MonsterTick);
-				DetourAttach(&(PVOID&)CMonsterReal::AddHostility, MonsterAddHostility);
-				DetourAttach(&(PVOID&)CMonsterReal::ScanSight, MonsterScanSight);
-				DetourAttach(&(PVOID&)CObjectDB::Open, CObjectDBOpen);
-				DetourAttach(&(PVOID&)CItemOrnament::ChangePrefix, OrnamentChangePrefix);
-				DetourAttach(&(PVOID&)CItem::OnTimer, ItemOnTimer);
-				DetourAttach(&(PVOID&)CPlayer::GameStart, MyGameStart);
-				DetourAttach(&(PVOID&)CNPC::SendCreate, NPCSendCreate);
-				DetourAttach(&(PVOID&)CPlayer::SendCreate, MySendCreate);
-				DetourAttach(&(PVOID&)CCastle::WarBegin, WarBegin);
-				DetourAttach(&(PVOID&)CGuild::GetWarEndTime, GetWarEndTime);
-				DetourAttach(&(PVOID&)CCastle::WarEnd, WarEnd);
-				DetourAttach(&(PVOID&)CItemOrnament::StorageIn, CItemOrnamentStorageIn);
-				DetourAttach(&(PVOID&)CBuffPrtyEx::FreeBuff, CBuffPrtyExFreeBuff);
-				DetourAttach(&(PVOID&)CItemOrnament::SetWearState, OrnamentSetWearState);
-				DetourAttach(&(PVOID&)CItemDefense::SetWearState, DefenseSetWearState);
-				DetourAttach(&(PVOID&)CPlayer::UpdateProperty, MyUpdateProperty);
-				DetourAttach(&(PVOID&)CMonsterReal::AllotExp, MonsterAllotEXP);
-				DetourAttach(&(PVOID&)CParty::AllotExp, PartyEXP);
-				DetourAttach(&(PVOID&)CParty::Join, PartyJoin);
-				DetourAttach(&(PVOID&)CParty::Leave, PartyLeave);
-				DetourAttach(&(PVOID&)CParty::Exile, PartyExile);
-				DetourAttach(&(PVOID&)CBuff::CBuffPrtyExIsExpired, CBuffCBuffPrtyExIsExpired);
-			}
-			DetourTransactionCommit();
-			break;
-		}
+
+							   InitializeADVAPI32();
+							   ConfigCheckDB1 = "kal_auth";
+							   ConfigCheckDB2 = "kal_db";
+							   ReadConfig(false);
+							   thisServerName = ServerName;
+							   ItemFixes();
+							   ExpMultiplier();
+							   SwitchTable();
+							   Loader();
+							   SetSkillPointer();
+							   uptimestart = time(0);
+							   firstDig = (int)uptimestart % 10;
+							   CryptKey = sha256((Int2String(uptimestart))) % 9000;
+							   timeReloading = time(0);
+							   ConfigDBCheck = 1;
+							   SetLearnUpgradeLimit();
+							   DetourTransactionBegin();
+							   DetourAttach(&(PVOID&)CIOServer::Start, Start);
+							   DetourAttach(&(PVOID&)_Window::Proc, Proc);
+							   if (ConfigDBCheck)
+							   {
+								   //DetourAttach(&(PVOID&)CIOCriticalSection::Enter, CIOCriticalSectionEnter);
+								   //DetourAttach(&(PVOID&)CIOSocket::Enter, CIOSocketEnter);
+								   DetourAttach(&(PVOID&)CIOObject::_Release, ObjectRelease);
+								   DetourAttach(&(PVOID&)CIOBuffer::Release, CIOBufferRelease);
+								   DetourAttach(&(PVOID&)CIOObject::_AddRef, ObjectRef);
+								   DetourAttach(&(PVOID&)CIOSocket::Create, CIOSocketCreate);
+								   DetourAttach(&(PVOID&)CIOSocket::CIOSocket__Close, CIOSocketClose);
+								   DetourAttach(&(PVOID&)CIOSocket::GraceFulClose, CIOSocketGracefulClose);
+								   DetourAttach(&(PVOID&)CPlayer::_IntoInven, IntoInventory);
+								   DetourAttach(&(PVOID&)CPlayer::_OutOfInven, OutOfInventory);
+								   DetourAttach(&(PVOID&)CPlayer::RemoveItem, PlayerRemoveItem);
+								   DetourAttach(&(PVOID&)CChar::RefreshBuff, ObjectTick);
+								   DetourAttach(&(PVOID&)CNPCDoor::Tick, NPCTick);
+								   DetourAttach(&(PVOID&)CBuff::CreateBuff, CreateBuff);
+								   DetourAttach(&(PVOID&)CChar::CancelAllBuff2, CancelAllBuffs);
+								   DetourAttach(&(PVOID&)CDBSocket::Process, Process);
+								   DetourAttach(&(PVOID&)CSkill::BlessingOfHealth, BlessingOfHealth);
+								   DetourAttach(&(PVOID&)CSkill::BlessingOfStrength, BlessingOfStrength);
+								   DetourAttach(&(PVOID&)CSkill::BlessingOfAgility, BlessingOfAgility);
+								   DetourAttach(&(PVOID&)CSkill::BlessingOfIntelligence, BlessingOfIntelligence);
+								   DetourAttach(&(PVOID&)CSkill::BlessingOfCriticalHit, BlessingOfCriticalHit);
+								   DetourAttach(&(PVOID&)CSkill::RefiningWeapon, RefiningWeapon);
+								   DetourAttach(&(PVOID&)CSkill::DefenseImprovement, DefenseImprovement);
+								   DetourAttach(&(PVOID&)CSkill::SpeedUp, SpeedUp);
+								   DetourAttach(&(PVOID&)CSkill::CheckBuff, CheckBuff);
+								   DetourAttach(&(PVOID&)CChar::PerfectCure, PerfectCureFix);
+								   DetourAttach(&(PVOID&)CPlayer::EnforceItem, EnforceItem);
+								   DetourAttach(&(PVOID&)CPlayer::OnTeleport, MyOnTeleport);
+								   DetourAttach(&(PVOID&)CPlayer::Imperial, Imperial);
+								   DetourAttach(&(PVOID&)CItemTransform::ApplySpec, TransformApplySpec);
+								   DetourAttach(&(PVOID&)CItemTransform::FreeSpec, TransformFreeSpec);
+								   DetourAttach(&(PVOID&)CItemMoney::Drop, MoneyDrop);
+								   DetourAttach(&(PVOID&)CItem::Drop, ItemDrop);
+								   DetourAttach(&(PVOID&)Undefined::StoneOfChance, StoneOfChance);
+								   DetourAttach(&(PVOID&)CPlayer::InitStat, SOB);
+								   DetourAttach(&(PVOID&)CPlayer::EndPvP, EndPvP);
+								   DetourAttach(&(PVOID&)CPlayer::SaveAllProperty, SaveAllProperty);
+								   DetourAttach(&(PVOID&)CPlayer::SendMail, SendMail);
+								   DetourAttach(&(PVOID&)CPlayer::ChatCommand, ChatCommand);
+								   DetourAttach(&(PVOID&)CDBSocket::RealProcess, CDBProcess);
+								   DetourAttach(&(PVOID&)CCalendar::OnTimer, OnTimer);
+								   DetourAttach(&(PVOID&)CPlayer::Tick, Tick);
+								   DetourAttach(&(PVOID&)CPlayer::CPlayer, InitPlayer);
+								   DetourAttach(&(PVOID&)CPlayer::OnLoadPlayer, OnLoadPlayer);
+								   DetourAttach(&(PVOID&)CPlayer::Process, Packet);
+								   DetourAttach(&(PVOID&)CPlayer::LevelUp, LevelUp);
+								   DetourAttach(&(PVOID&)CSkill::Occupation, Occupation);
+								   DetourAttach(&(PVOID&)CSkill::LearnSkillCheck, LearnSkillCheck);
+								   DetourAttach(&(PVOID&)CSkill::SkillOnLoad, SkillOnLoad);
+								   DetourAttach(&(PVOID&)CPlayer::LevelUpUnknown, AutoLearn);
+								   DetourAttach(&(PVOID&)CPlayer::CancelTrade, CancelTrade);
+								   DetourAttach(&(PVOID&)CPlayer::TradeAgreed, TradeAgreed);
+								   DetourAttach(&(PVOID&)CPlayer::ShowOffItem, ShowOffItem);
+								   DetourAttach(&(PVOID&)CPlayer::CanAttack, CanAttack);
+								   DetourAttach(&(PVOID&)CChar::CheckHit, CheckHit);
+								   DetourAttach(&(PVOID&)CItemTransform::UpdateExp, UpdateExp);
+								   DetourAttach(&(PVOID&)CChar::GetFinalDamage, GetFinalDamage);
+								   DetourAttach(&(PVOID&)CPlayer::GetPalsyDamage, GetPalsyDamage);
+								   DetourAttach(&(PVOID&)CChar::GetFatalDamage, GetFatalDamage);
+								   DetourAttach(&(PVOID&)CQuest::Run, Quest);
+								   DetourAttach(&(PVOID&)CItemGeneral::Use, ItemUse);
+								   DetourAttach(&(PVOID&)CSkill::ExecuteTransformSkill, ExecuteTransformSkill);
+								   DetourAttach(&(PVOID&)CSkill::ExecuteSkill, ExecuteSkill);
+								   //				DetourAttach(&(PVOID&)CSkill::ProtectSkill, ProtectSkill);
+								   DetourAttach(&(PVOID&)CPlayer::DropItemONPKDie, DropItemONPKDie);
+								   DetourAttach(&(PVOID&)CItemDefense::ApplySpec, DefenseApplySpec);
+								   DetourAttach(&(PVOID&)CItemDefense::PutOff, DefensePutOff);
+								   DetourAttach(&(PVOID&)CItemWeapon::ApplySpec, WeaponApplySpec);
+								   DetourAttach(&(PVOID&)CItemWeapon::PutOff, WeaponPutOff);
+								   DetourAttach(&(PVOID&)CItemWeapon::PutOn, WeaponPutOn);
+								   DetourAttach(&(PVOID&)CItemStandard::Broken, StandardBroken);
+								   DetourAttach(&(PVOID&)CItemStandard::ApplySpec, StandardApplySpec);
+								   DetourAttach(&(PVOID&)CItemStandard::PutOn, StandardPutOn);
+								   DetourAttach(&(PVOID&)CItemStandard::PutOff, StandardPutOff);
+								   DetourAttach(&(PVOID&)CItemDefense::ChangePrefix, DefenseChangePrefix);
+								   DetourAttach(&(PVOID&)CItemWeapon::ChangePrefix, WeaponChangePrefix);
+								   DetourAttach(&(PVOID&)CItemWeapon::CharmingCheat, WeaponCharmingCheat);
+								   DetourAttach(&(PVOID&)CItemWeapon::Charming, WeaponCharming);
+								   DetourAttach(&(PVOID&)CItemWeapon::UpgradeLevel, WeaponUpgradeLevel);
+								   DetourAttach(&(PVOID&)CItemWeapon::UpgradeDestroy, WeaponUpgradeDestroy);
+								   DetourAttach(&(PVOID&)CPlayer::RevivalItem, RevivalItem);
+								   DetourAttach(&(PVOID&)CPlayer::RevivalSkill, RevivalSkill);
+								   DetourAttach(&(PVOID&)CMonsterGuildWar::Damage, GuildWarDamage);
+								   DetourAttach(&(PVOID&)CPlayer::CutdownExp, CutdownExp);
+								   DetourAttach(&(PVOID&)CSkill::Calls, Calls);
+								   DetourAttach(&(PVOID&)CConsole::Black, Black);
+								   DetourAttach(&(PVOID&)CConsole::Blue, Blue);
+								   DetourAttach(&(PVOID&)CConsole::Red, Red);
+								   DetourAttach(&(PVOID&)CItemDefense::PutOn, ArmorPutOn);
+								   DetourAttach(&(PVOID&)CPlayer::MAILProcess, MAILProcess);
+								   DetourAttach(&(PVOID&)CPlayer::Transform, Transform);
+								   DetourAttach(&(PVOID&)CSkill::Calculations, Calculations);
+								   DetourAttach(&(PVOID&)CPlayer::Attack, NormalHit);
+								   DetourAttach(&(PVOID&)CPlayer::PKKill, PKKill);
+								   DetourAttach(&(PVOID&)CMonsterMaguniMaster::Tick, SummonTick);
+								   DetourAttach(&(PVOID&)CInitMonster::DropItem, InitMonsterDrop);
+								   DetourAttach(&(PVOID&)CSkill::LifeAbsorption, LifeAbsorption);
+								   DetourAttach(&(PVOID&)CSkill::MagicTick, MagicTick);
+								   DetourAttach(&(PVOID&)CItem::NewItem, NewItem);
+								   DetourAttach(&(PVOID&)CItem::SubState, SubState);
+								   DetourAttach(&(PVOID&)CItemOrnament::PutOn, OrnamentPutOn);
+								   DetourAttach(&(PVOID&)CItemOrnament::ApplySpec, OrnamentApplySpec);
+								   DetourAttach(&(PVOID&)CItemOrnament::PutOff, OrnamentPutOff);
+								   DetourAttach(&(PVOID&)CMonsterMaguniMaster::AI, SummonAI);
+								   DetourAttach(&(PVOID&)CMonsterMaguniMaster::Die, SummonDie);
+								   DetourAttach(&(PVOID&)CItemWeapon::StorageIn, CItemWeaponStorageIn);
+								   DetourAttach(&(PVOID&)CItemDefense::StorageIn, CItemDefenseStorageIn);
+								   DetourAttach(&(PVOID&)CBase::Delete, CBaseDelete);
+								   DetourAttach(&(PVOID&)CNPCSiegeGun::Reply, SiegeGunReply);
+								   DetourAttach(&(PVOID&)CMonsterMagic::Create, CMonsterMagicCreate);
+								   DetourAttach(&(PVOID&)CPlayer::CheckBlock, CheckBlock);
+								   DetourAttach(&(PVOID&)CItem::CreateItem, MyCreateItem);
+								   DetourAttach(&(PVOID&)CItemGeneral::StorageIn, CItemGeneralStorageIn);
+								   DetourAttach(&(PVOID&)CMonsterReal::Tick, MonsterTick);
+								   DetourAttach(&(PVOID&)CMonsterReal::AddHostility, MonsterAddHostility);
+								   DetourAttach(&(PVOID&)CMonsterReal::ScanSight, MonsterScanSight);
+								   DetourAttach(&(PVOID&)CObjectDB::Open, CObjectDBOpen);
+								   DetourAttach(&(PVOID&)CItemOrnament::ChangePrefix, OrnamentChangePrefix);
+								   DetourAttach(&(PVOID&)CItem::OnTimer, ItemOnTimer);
+								   DetourAttach(&(PVOID&)CPlayer::GameStart, MyGameStart);
+								   DetourAttach(&(PVOID&)CNPC::SendCreate, NPCSendCreate);
+								   DetourAttach(&(PVOID&)CPlayer::SendCreate, MySendCreate);
+								   DetourAttach(&(PVOID&)CCastle::WarBegin, WarBegin);
+								   DetourAttach(&(PVOID&)CGuild::GetWarEndTime, GetWarEndTime);
+								   DetourAttach(&(PVOID&)CCastle::WarEnd, WarEnd);
+								   DetourAttach(&(PVOID&)CItemOrnament::StorageIn, CItemOrnamentStorageIn);
+								   DetourAttach(&(PVOID&)CBuffPrtyEx::FreeBuff, CBuffPrtyExFreeBuff);
+								   DetourAttach(&(PVOID&)CItemOrnament::SetWearState, OrnamentSetWearState);
+								   DetourAttach(&(PVOID&)CItemDefense::SetWearState, DefenseSetWearState);
+								   DetourAttach(&(PVOID&)CPlayer::UpdateProperty, MyUpdateProperty);
+								   DetourAttach(&(PVOID&)CMonsterReal::AllotExp, MonsterAllotEXP);
+								   DetourAttach(&(PVOID&)CParty::AllotExp, PartyEXP);
+								   DetourAttach(&(PVOID&)CParty::Join, PartyJoin);
+								   DetourAttach(&(PVOID&)CParty::Leave, PartyLeave);
+								   DetourAttach(&(PVOID&)CParty::Exile, PartyExile);
+								   DetourAttach(&(PVOID&)CBuff::CBuffPrtyExIsExpired, CBuffCBuffPrtyExIsExpired);
+							   }
+							   DetourTransactionCommit();
+							   break;
+	}
 	case DLL_PROCESS_DETACH:
-		{
-			FinalizeADVAPI32();
-			ItemFixes();
-			ExpMultiplier();
-			SwitchTable();
-			Loader();
-			SetSkillPointer();
-			SetLearnUpgradeLimit();
-			DetourTransactionBegin();
-			DetourDetach(&(PVOID&)CIOServer::Start, Start);
-			DetourDetach(&(PVOID&)_Window::Proc, Proc);
-			DetourDetach(&(PVOID&)CIOObject::_Release, ObjectRelease);
-			DetourDetach(&(PVOID&)CIOBuffer::Release, CIOBufferRelease);
-			DetourDetach(&(PVOID&)CIOObject::_AddRef, ObjectRef);
-			DetourDetach(&(PVOID&)CIOSocket::Create, CIOSocketCreate);
-			DetourDetach(&(PVOID&)CIOSocket::CIOSocket__Close, CIOSocketClose);
-			DetourDetach(&(PVOID&)CIOSocket::GraceFulClose, CIOSocketGracefulClose);
-			DetourDetach(&(PVOID&)CPlayer::_IntoInven, IntoInventory);
-			DetourDetach(&(PVOID&)CPlayer::_OutOfInven, OutOfInventory);
-			DetourDetach(&(PVOID&)CPlayer::RemoveItem, PlayerRemoveItem);
-			DetourDetach(&(PVOID&)CChar::RefreshBuff, ObjectTick);
-			DetourDetach(&(PVOID&)CNPCDoor::Tick, NPCTick);
-			DetourDetach(&(PVOID&)CBuff::CreateBuff, CreateBuff);
-			DetourDetach(&(PVOID&)CChar::FindBuff, FindBuff);
-			DetourDetach(&(PVOID&)CChar::CancelAllBuff2, CancelAllBuffs);
-			DetourDetach(&(PVOID&)CDBSocket::Process, Process);
-			DetourDetach(&(PVOID&)CSkill::BlessingOfHealth, BlessingOfHealth);
-			DetourDetach(&(PVOID&)CSkill::BlessingOfStrength, BlessingOfStrength);
-			DetourDetach(&(PVOID&)CSkill::BlessingOfAgility, BlessingOfAgility);
-			DetourDetach(&(PVOID&)CSkill::BlessingOfIntelligence, BlessingOfIntelligence);
-			DetourDetach(&(PVOID&)CSkill::BlessingOfCriticalHit, BlessingOfCriticalHit);
-			DetourDetach(&(PVOID&)CSkill::RefiningWeapon, RefiningWeapon);
-			DetourDetach(&(PVOID&)CSkill::DefenseImprovement, DefenseImprovement);
-			DetourDetach(&(PVOID&)CSkill::SpeedUp, SpeedUp);
-			DetourDetach(&(PVOID&)CSkill::CheckBuff, CheckBuff);
-			DetourDetach(&(PVOID&)CChar::PerfectCure, PerfectCureFix);
-			DetourDetach(&(PVOID&)CPlayer::EnforceItem, EnforceItem);
-			DetourDetach(&(PVOID&)CPlayer::OnTeleport, MyOnTeleport);
-			DetourDetach(&(PVOID&)CPlayer::Imperial, Imperial);
-			DetourDetach(&(PVOID&)CItemTransform::ApplySpec, TransformApplySpec);
-			DetourDetach(&(PVOID&)CItemTransform::FreeSpec, TransformFreeSpec);
-			DetourDetach(&(PVOID&)CItem::Drop, ItemDrop);
-			DetourDetach(&(PVOID&)CItemMoney::Drop, MoneyDrop);
-			DetourDetach(&(PVOID&)Undefined::StoneOfChance, StoneOfChance);
-			DetourDetach(&(PVOID&)CPlayer::InitStat, SOB);
-			DetourDetach(&(PVOID&)CPlayer::EndPvP, EndPvP);
-			DetourDetach(&(PVOID&)CPlayer::SaveAllProperty, SaveAllProperty);
-			DetourDetach(&(PVOID&)CPlayer::SendMail, SendMail);
-			DetourDetach(&(PVOID&)CPlayer::ChatCommand, ChatCommand);
-			DetourDetach(&(PVOID&)CDBSocket::RealProcess, CDBProcess);
-			DetourDetach(&(PVOID&)CCalendar::OnTimer, OnTimer);
-			DetourDetach(&(PVOID&)CPlayer::Tick, Tick);
-			DetourDetach(&(PVOID&)CPlayer::CPlayer, InitPlayer);
-			DetourDetach(&(PVOID&)CPlayer::OnLoadPlayer, OnLoadPlayer);
-			DetourDetach(&(PVOID&)CPlayer::Process, Packet);
-			DetourDetach(&(PVOID&)CPlayer::LevelUp, LevelUp);
-			DetourDetach(&(PVOID&)CSkill::Occupation, Occupation);
-			DetourDetach(&(PVOID&)CSkill::LearnSkillCheck, LearnSkillCheck);
-			DetourDetach(&(PVOID&)CSkill::SkillOnLoad, SkillOnLoad);
-			DetourDetach(&(PVOID&)CPlayer::LevelUpUnknown, AutoLearn);
-			DetourDetach(&(PVOID&)CPlayer::CancelTrade, CancelTrade);
-			DetourDetach(&(PVOID&)CPlayer::TradeAgreed, TradeAgreed);
-			DetourDetach(&(PVOID&)CPlayer::ShowOffItem, ShowOffItem);
-			DetourDetach(&(PVOID&)CPlayer::CanAttack, CanAttack);
-			DetourDetach(&(PVOID&)CChar::CheckHit, CheckHit);
-			DetourDetach(&(PVOID&)CMonsterReal::ScanSight, MonsterScanSight);
-			DetourDetach(&(PVOID&)CItemTransform::UpdateExp, UpdateExp);
-			DetourDetach(&(PVOID&)CChar::GetFinalDamage, GetFinalDamage);
-			DetourDetach(&(PVOID&)CPlayer::GetPalsyDamage, GetPalsyDamage);
-			DetourDetach(&(PVOID&)CChar::GetFatalDamage, GetFatalDamage);
-			DetourDetach(&(PVOID&)CQuest::Run, Quest);
-			DetourDetach(&(PVOID&)CNPCSiegeGun::Reply, SiegeGunReply);
-			DetourDetach(&(PVOID&)CItemGeneral::Use, ItemUse);
-			DetourDetach(&(PVOID&)CSkill::ExecuteTransformSkill, ExecuteTransformSkill);
-			DetourDetach(&(PVOID&)CSkill::ExecuteSkill, ExecuteSkill);
-//			DetourDetach(&(PVOID&)CSkill::ProtectSkill, ProtectSkill);
-			DetourDetach(&(PVOID&)CPlayer::DropItemONPKDie, DropItemONPKDie);
-			DetourDetach(&(PVOID&)CItemDefense::ApplySpec, DefenseApplySpec);
-			DetourDetach(&(PVOID&)CItemDefense::PutOff, DefensePutOff);
-			DetourDetach(&(PVOID&)CItemWeapon::ApplySpec, WeaponApplySpec);
-			DetourDetach(&(PVOID&)CItemWeapon::PutOff, WeaponPutOff);
-			DetourDetach(&(PVOID&)CItemWeapon::PutOn, WeaponPutOn);
-			DetourDetach(&(PVOID&)CItemStandard::Broken, StandardBroken);
-			DetourDetach(&(PVOID&)CItemStandard::ApplySpec, StandardApplySpec);
-			DetourDetach(&(PVOID&)CItemStandard::PutOn, StandardPutOn);
-			DetourDetach(&(PVOID&)CItemStandard::PutOff, StandardPutOff);
-			DetourDetach(&(PVOID&)CItemDefense::ChangePrefix, DefenseChangePrefix);
-			DetourDetach(&(PVOID&)CItemWeapon::ChangePrefix, WeaponChangePrefix);
-			DetourDetach(&(PVOID&)CItemWeapon::CharmingCheat, WeaponCharmingCheat);
-			DetourDetach(&(PVOID&)CItemWeapon::Charming, WeaponCharming);
-			DetourDetach(&(PVOID&)CItemWeapon::UpgradeLevel, WeaponUpgradeLevel);
-			DetourDetach(&(PVOID&)CItemWeapon::UpgradeDestroy, WeaponUpgradeDestroy);
-			DetourDetach(&(PVOID&)CPlayer::RevivalItem, RevivalItem);
-			DetourDetach(&(PVOID&)CPlayer::RevivalSkill, RevivalSkill);
-			DetourDetach(&(PVOID&)CMonsterGuildWar::Damage, GuildWarDamage);
-			DetourDetach(&(PVOID&)CPlayer::CutdownExp, CutdownExp);
-			DetourDetach(&(PVOID&)CSkill::Calls, Calls);
-			DetourDetach(&(PVOID&)CConsole::Black, Black);
-			DetourDetach(&(PVOID&)CConsole::Blue, Blue);
-			DetourDetach(&(PVOID&)CConsole::Red, Red);
-			DetourDetach(&(PVOID&)CItemDefense::PutOn, ArmorPutOn);
-			DetourDetach(&(PVOID&)CPlayer::MAILProcess, MAILProcess);
-			DetourDetach(&(PVOID&)CPlayer::Transform, Transform);
-			DetourDetach(&(PVOID&)CSkill::Calculations, Calculations);
-			DetourDetach(&(PVOID&)CPlayer::Attack, NormalHit);
-			DetourDetach(&(PVOID&)CPlayer::PKKill, PKKill);
-			DetourDetach(&(PVOID&)CMonsterMaguniMaster::Tick, SummonTick);
-			DetourDetach(&(PVOID&)CInitMonster::DropItem, InitMonsterDrop);
-			DetourDetach(&(PVOID&)CSkill::LifeAbsorption, LifeAbsorption);
-			DetourDetach(&(PVOID&)CSkill::MagicTick, MagicTick);
-			DetourDetach(&(PVOID&)CItem::NewItem, NewItem);
-			DetourDetach(&(PVOID&)CItem::SubState, SubState);
-			DetourDetach(&(PVOID&)CItemOrnament::PutOn, OrnamentPutOn);
-			DetourDetach(&(PVOID&)CItemOrnament::ApplySpec, OrnamentApplySpec);
-			DetourDetach(&(PVOID&)CItemOrnament::PutOff, OrnamentPutOff);
-			DetourDetach(&(PVOID&)CMonsterMaguniMaster::AI, SummonAI);
-			DetourDetach(&(PVOID&)CMonsterMaguniMaster::Die, SummonDie);
-			DetourDetach(&(PVOID&)CItemWeapon::StorageIn, CItemWeaponStorageIn);
-			DetourDetach(&(PVOID&)CItemDefense::StorageIn, CItemDefenseStorageIn);
-			DetourDetach(&(PVOID&)CBase::Delete, CBaseDelete);
-			DetourDetach(&(PVOID&)CMonsterMagic::Create, CMonsterMagicCreate);
-			DetourDetach(&(PVOID&)CPlayer::CheckBlock, CheckBlock);
-			DetourDetach(&(PVOID&)CItemGeneral::StorageIn, CItemGeneralStorageIn);
-			DetourDetach(&(PVOID&)CMonsterReal::Tick, MonsterTick);
-			DetourDetach(&(PVOID&)CMonsterReal::AddHostility, MonsterAddHostility);
-			DetourDetach(&(PVOID&)CItemOrnament::ChangePrefix, OrnamentChangePrefix);
-			DetourDetach(&(PVOID&)CItem::OnTimer, ItemOnTimer);
-			DetourDetach(&(PVOID&)CPlayer::GameStart, MyGameStart);
-			DetourDetach(&(PVOID&)CNPC::SendCreate, NPCSendCreate);
-			DetourDetach(&(PVOID&)CPlayer::SendCreate, MySendCreate);
-			DetourDetach(&(PVOID&)CCastle::WarBegin, WarBegin);
-			DetourDetach(&(PVOID&)CGuild::GetWarEndTime, GetWarEndTime);
-			DetourDetach(&(PVOID&)CCastle::WarEnd, WarEnd);
-			DetourDetach(&(PVOID&)CItemOrnament::StorageIn, CItemOrnamentStorageIn);
-			DetourDetach(&(PVOID&)CBuffPrtyEx::FreeBuff, CBuffPrtyExFreeBuff);
-			DetourDetach(&(PVOID&)CItemOrnament::SetWearState, OrnamentSetWearState);
-			DetourDetach(&(PVOID&)CItemDefense::SetWearState, DefenseSetWearState);
-			DetourDetach(&(PVOID&)CPlayer::UpdateProperty, MyUpdateProperty);
-			DetourDetach(&(PVOID&)CMonsterReal::AllotExp, MonsterAllotEXP);
-			DetourDetach(&(PVOID&)CParty::AllotExp, PartyEXP);
-			DetourDetach(&(PVOID&)CParty::Join, PartyJoin);
-			DetourDetach(&(PVOID&)CParty::Leave, PartyLeave);
-			DetourDetach(&(PVOID&)CParty::Exile, PartyExile);
-			DetourDetach(&(PVOID&)CBuff::CBuffPrtyExIsExpired, CBuffCBuffPrtyExIsExpired);
-			DetourDetach(&(PVOID&)CObjectDB::Open, CObjectDBOpen);
-			DetourTransactionCommit();
-			break;
-		}
+	{
+							   FinalizeADVAPI32();
+							   ItemFixes();
+							   ExpMultiplier();
+							   SwitchTable();
+							   Loader();
+							   SetSkillPointer();
+							   SetLearnUpgradeLimit();
+							   DetourTransactionBegin();
+							   DetourDetach(&(PVOID&)CIOServer::Start, Start);
+							   DetourDetach(&(PVOID&)_Window::Proc, Proc);
+							   DetourDetach(&(PVOID&)CIOObject::_Release, ObjectRelease);
+							   DetourDetach(&(PVOID&)CIOBuffer::Release, CIOBufferRelease);
+							   DetourDetach(&(PVOID&)CIOObject::_AddRef, ObjectRef);
+							   DetourDetach(&(PVOID&)CIOSocket::Create, CIOSocketCreate);
+							   DetourDetach(&(PVOID&)CIOSocket::CIOSocket__Close, CIOSocketClose);
+							   DetourDetach(&(PVOID&)CIOSocket::GraceFulClose, CIOSocketGracefulClose);
+							   DetourDetach(&(PVOID&)CPlayer::_IntoInven, IntoInventory);
+							   DetourDetach(&(PVOID&)CPlayer::_OutOfInven, OutOfInventory);
+							   DetourDetach(&(PVOID&)CPlayer::RemoveItem, PlayerRemoveItem);
+							   DetourDetach(&(PVOID&)CChar::RefreshBuff, ObjectTick);
+							   DetourDetach(&(PVOID&)CNPCDoor::Tick, NPCTick);
+							   DetourDetach(&(PVOID&)CBuff::CreateBuff, CreateBuff);
+							   DetourDetach(&(PVOID&)CChar::FindBuff, FindBuff);
+							   DetourDetach(&(PVOID&)CChar::CancelAllBuff2, CancelAllBuffs);
+							   DetourDetach(&(PVOID&)CDBSocket::Process, Process);
+							   DetourDetach(&(PVOID&)CSkill::BlessingOfHealth, BlessingOfHealth);
+							   DetourDetach(&(PVOID&)CSkill::BlessingOfStrength, BlessingOfStrength);
+							   DetourDetach(&(PVOID&)CSkill::BlessingOfAgility, BlessingOfAgility);
+							   DetourDetach(&(PVOID&)CSkill::BlessingOfIntelligence, BlessingOfIntelligence);
+							   DetourDetach(&(PVOID&)CSkill::BlessingOfCriticalHit, BlessingOfCriticalHit);
+							   DetourDetach(&(PVOID&)CSkill::RefiningWeapon, RefiningWeapon);
+							   DetourDetach(&(PVOID&)CSkill::DefenseImprovement, DefenseImprovement);
+							   DetourDetach(&(PVOID&)CSkill::SpeedUp, SpeedUp);
+							   DetourDetach(&(PVOID&)CSkill::CheckBuff, CheckBuff);
+							   DetourDetach(&(PVOID&)CChar::PerfectCure, PerfectCureFix);
+							   DetourDetach(&(PVOID&)CPlayer::EnforceItem, EnforceItem);
+							   DetourDetach(&(PVOID&)CPlayer::OnTeleport, MyOnTeleport);
+							   DetourDetach(&(PVOID&)CPlayer::Imperial, Imperial);
+							   DetourDetach(&(PVOID&)CItemTransform::ApplySpec, TransformApplySpec);
+							   DetourDetach(&(PVOID&)CItemTransform::FreeSpec, TransformFreeSpec);
+							   DetourDetach(&(PVOID&)CItem::Drop, ItemDrop);
+							   DetourDetach(&(PVOID&)CItemMoney::Drop, MoneyDrop);
+							   DetourDetach(&(PVOID&)Undefined::StoneOfChance, StoneOfChance);
+							   DetourDetach(&(PVOID&)CPlayer::InitStat, SOB);
+							   DetourDetach(&(PVOID&)CPlayer::EndPvP, EndPvP);
+							   DetourDetach(&(PVOID&)CPlayer::SaveAllProperty, SaveAllProperty);
+							   DetourDetach(&(PVOID&)CPlayer::SendMail, SendMail);
+							   DetourDetach(&(PVOID&)CPlayer::ChatCommand, ChatCommand);
+							   DetourDetach(&(PVOID&)CDBSocket::RealProcess, CDBProcess);
+							   DetourDetach(&(PVOID&)CCalendar::OnTimer, OnTimer);
+							   DetourDetach(&(PVOID&)CPlayer::Tick, Tick);
+							   DetourDetach(&(PVOID&)CPlayer::CPlayer, InitPlayer);
+							   DetourDetach(&(PVOID&)CPlayer::OnLoadPlayer, OnLoadPlayer);
+							   DetourDetach(&(PVOID&)CPlayer::Process, Packet);
+							   DetourDetach(&(PVOID&)CPlayer::LevelUp, LevelUp);
+							   DetourDetach(&(PVOID&)CSkill::Occupation, Occupation);
+							   DetourDetach(&(PVOID&)CSkill::LearnSkillCheck, LearnSkillCheck);
+							   DetourDetach(&(PVOID&)CSkill::SkillOnLoad, SkillOnLoad);
+							   DetourDetach(&(PVOID&)CPlayer::LevelUpUnknown, AutoLearn);
+							   DetourDetach(&(PVOID&)CPlayer::CancelTrade, CancelTrade);
+							   DetourDetach(&(PVOID&)CPlayer::TradeAgreed, TradeAgreed);
+							   DetourDetach(&(PVOID&)CPlayer::ShowOffItem, ShowOffItem);
+							   DetourDetach(&(PVOID&)CPlayer::CanAttack, CanAttack);
+							   DetourDetach(&(PVOID&)CChar::CheckHit, CheckHit);
+							   DetourDetach(&(PVOID&)CMonsterReal::ScanSight, MonsterScanSight);
+							   DetourDetach(&(PVOID&)CItemTransform::UpdateExp, UpdateExp);
+							   DetourDetach(&(PVOID&)CChar::GetFinalDamage, GetFinalDamage);
+							   DetourDetach(&(PVOID&)CPlayer::GetPalsyDamage, GetPalsyDamage);
+							   DetourDetach(&(PVOID&)CChar::GetFatalDamage, GetFatalDamage);
+							   DetourDetach(&(PVOID&)CQuest::Run, Quest);
+							   DetourDetach(&(PVOID&)CNPCSiegeGun::Reply, SiegeGunReply);
+							   DetourDetach(&(PVOID&)CItemGeneral::Use, ItemUse);
+							   DetourDetach(&(PVOID&)CSkill::ExecuteTransformSkill, ExecuteTransformSkill);
+							   DetourDetach(&(PVOID&)CSkill::ExecuteSkill, ExecuteSkill);
+							   //			DetourDetach(&(PVOID&)CSkill::ProtectSkill, ProtectSkill);
+							   DetourDetach(&(PVOID&)CPlayer::DropItemONPKDie, DropItemONPKDie);
+							   DetourDetach(&(PVOID&)CItemDefense::ApplySpec, DefenseApplySpec);
+							   DetourDetach(&(PVOID&)CItemDefense::PutOff, DefensePutOff);
+							   DetourDetach(&(PVOID&)CItemWeapon::ApplySpec, WeaponApplySpec);
+							   DetourDetach(&(PVOID&)CItemWeapon::PutOff, WeaponPutOff);
+							   DetourDetach(&(PVOID&)CItemWeapon::PutOn, WeaponPutOn);
+							   DetourDetach(&(PVOID&)CItemStandard::Broken, StandardBroken);
+							   DetourDetach(&(PVOID&)CItemStandard::ApplySpec, StandardApplySpec);
+							   DetourDetach(&(PVOID&)CItemStandard::PutOn, StandardPutOn);
+							   DetourDetach(&(PVOID&)CItemStandard::PutOff, StandardPutOff);
+							   DetourDetach(&(PVOID&)CItemDefense::ChangePrefix, DefenseChangePrefix);
+							   DetourDetach(&(PVOID&)CItemWeapon::ChangePrefix, WeaponChangePrefix);
+							   DetourDetach(&(PVOID&)CItemWeapon::CharmingCheat, WeaponCharmingCheat);
+							   DetourDetach(&(PVOID&)CItemWeapon::Charming, WeaponCharming);
+							   DetourDetach(&(PVOID&)CItemWeapon::UpgradeLevel, WeaponUpgradeLevel);
+							   DetourDetach(&(PVOID&)CItemWeapon::UpgradeDestroy, WeaponUpgradeDestroy);
+							   DetourDetach(&(PVOID&)CPlayer::RevivalItem, RevivalItem);
+							   DetourDetach(&(PVOID&)CPlayer::RevivalSkill, RevivalSkill);
+							   DetourDetach(&(PVOID&)CMonsterGuildWar::Damage, GuildWarDamage);
+							   DetourDetach(&(PVOID&)CPlayer::CutdownExp, CutdownExp);
+							   DetourDetach(&(PVOID&)CSkill::Calls, Calls);
+							   DetourDetach(&(PVOID&)CConsole::Black, Black);
+							   DetourDetach(&(PVOID&)CConsole::Blue, Blue);
+							   DetourDetach(&(PVOID&)CConsole::Red, Red);
+							   DetourDetach(&(PVOID&)CItemDefense::PutOn, ArmorPutOn);
+							   DetourDetach(&(PVOID&)CPlayer::MAILProcess, MAILProcess);
+							   DetourDetach(&(PVOID&)CPlayer::Transform, Transform);
+							   DetourDetach(&(PVOID&)CSkill::Calculations, Calculations);
+							   DetourDetach(&(PVOID&)CPlayer::Attack, NormalHit);
+							   DetourDetach(&(PVOID&)CPlayer::PKKill, PKKill);
+							   DetourDetach(&(PVOID&)CMonsterMaguniMaster::Tick, SummonTick);
+							   DetourDetach(&(PVOID&)CInitMonster::DropItem, InitMonsterDrop);
+							   DetourDetach(&(PVOID&)CSkill::LifeAbsorption, LifeAbsorption);
+							   DetourDetach(&(PVOID&)CSkill::MagicTick, MagicTick);
+							   DetourDetach(&(PVOID&)CItem::NewItem, NewItem);
+							   DetourDetach(&(PVOID&)CItem::SubState, SubState);
+							   DetourDetach(&(PVOID&)CItemOrnament::PutOn, OrnamentPutOn);
+							   DetourDetach(&(PVOID&)CItemOrnament::ApplySpec, OrnamentApplySpec);
+							   DetourDetach(&(PVOID&)CItemOrnament::PutOff, OrnamentPutOff);
+							   DetourDetach(&(PVOID&)CMonsterMaguniMaster::AI, SummonAI);
+							   DetourDetach(&(PVOID&)CMonsterMaguniMaster::Die, SummonDie);
+							   DetourDetach(&(PVOID&)CItemWeapon::StorageIn, CItemWeaponStorageIn);
+							   DetourDetach(&(PVOID&)CItemDefense::StorageIn, CItemDefenseStorageIn);
+							   DetourDetach(&(PVOID&)CBase::Delete, CBaseDelete);
+							   DetourDetach(&(PVOID&)CMonsterMagic::Create, CMonsterMagicCreate);
+							   DetourDetach(&(PVOID&)CPlayer::CheckBlock, CheckBlock);
+							   DetourDetach(&(PVOID&)CItemGeneral::StorageIn, CItemGeneralStorageIn);
+							   DetourDetach(&(PVOID&)CMonsterReal::Tick, MonsterTick);
+							   DetourDetach(&(PVOID&)CMonsterReal::AddHostility, MonsterAddHostility);
+							   DetourDetach(&(PVOID&)CItemOrnament::ChangePrefix, OrnamentChangePrefix);
+							   DetourDetach(&(PVOID&)CItem::OnTimer, ItemOnTimer);
+							   DetourDetach(&(PVOID&)CPlayer::GameStart, MyGameStart);
+							   DetourDetach(&(PVOID&)CNPC::SendCreate, NPCSendCreate);
+							   DetourDetach(&(PVOID&)CPlayer::SendCreate, MySendCreate);
+							   DetourDetach(&(PVOID&)CCastle::WarBegin, WarBegin);
+							   DetourDetach(&(PVOID&)CGuild::GetWarEndTime, GetWarEndTime);
+							   DetourDetach(&(PVOID&)CCastle::WarEnd, WarEnd);
+							   DetourDetach(&(PVOID&)CItemOrnament::StorageIn, CItemOrnamentStorageIn);
+							   DetourDetach(&(PVOID&)CBuffPrtyEx::FreeBuff, CBuffPrtyExFreeBuff);
+							   DetourDetach(&(PVOID&)CItemOrnament::SetWearState, OrnamentSetWearState);
+							   DetourDetach(&(PVOID&)CItemDefense::SetWearState, DefenseSetWearState);
+							   DetourDetach(&(PVOID&)CPlayer::UpdateProperty, MyUpdateProperty);
+							   DetourDetach(&(PVOID&)CMonsterReal::AllotExp, MonsterAllotEXP);
+							   DetourDetach(&(PVOID&)CParty::AllotExp, PartyEXP);
+							   DetourDetach(&(PVOID&)CParty::Join, PartyJoin);
+							   DetourDetach(&(PVOID&)CParty::Leave, PartyLeave);
+							   DetourDetach(&(PVOID&)CParty::Exile, PartyExile);
+							   DetourDetach(&(PVOID&)CBuff::CBuffPrtyExIsExpired, CBuffCBuffPrtyExIsExpired);
+							   DetourDetach(&(PVOID&)CObjectDB::Open, CObjectDBOpen);
+							   DetourTransactionCommit();
+							   break;
+	}
 	}
 	return TRUE;
 }

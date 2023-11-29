@@ -617,6 +617,27 @@ int __cdecl CDBProcess(char *Data)
 		return 0;
 	}
 
+	if ((unsigned char)Data[2] == 74)
+	{
+		int PID = 0;
+		int Battlepasslvl = 0, BattlepassEXP = 0, CurrentB = 0, MaxB = 0, CurrentPB = 0;
+		CPacket::xRead((char*)(void*)(Data + 3), "dddddd", &PID, &Battlepasslvl, &BattlepassEXP, &CurrentB, &MaxB, &CurrentPB);
+
+			TargetFind myTarget(0, 1, PID);
+			int Player = (int)myTarget.getTarget();
+			IChar IPlayer((void*)Player);
+			if (IPlayer.IsOnline()){
+				IPlayer.SetProperty(PlayerProperty::CurrentBReward, CurrentB);
+				IPlayer.SetProperty(PlayerProperty::MaxBReward, MaxB);
+				IPlayer.SetProperty(PlayerProperty::CurrentPBReward, CurrentPB);
+				IPlayer.SetProperty(PlayerProperty::BattlepassLv, Battlepasslvl);
+
+				CPlayer::Write((void*)Player, 0xFE, "ddddd", 254, Battlepasslvl, BattlepassEXP, CurrentB, CurrentPB);
+			}
+//		IPlayer.SystemMessage("Executed " + Int2String(Battlepasslvl) + " " + Int2String(BattlepassEXP) + " " + Int2String(CurrentB) + " " + Int2String(MaxB) + " " + Int2String(CurrentPB), TEXTCOLOR_GREEN);
+		return 0;
+	}
+
 	if ((unsigned char)Data[2] == 70)
 	{
 		int PID = 0, RebornID = 0;

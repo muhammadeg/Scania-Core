@@ -20,6 +20,31 @@ int __fastcall LevelUp(void *Player, void *edx)
 			IPlayer.AddStatPoint(Stats);
 	}
 
+	if (IPlayer.IsOnline() && BattlepassActive && !IPlayer.GetProperty(PlayerProperty::Reborn)){
+		CDBSocket::Write(122, "ddd", IPlayer.GetPID(), 3, IPlayer.GetLevel());
+
+		std::vector<ConfigLevelReward> battleReward = BattlepassReward.find(IPlayer.GetLevel())->second;
+		for (int i = 0; i < (int)battleReward.size(); i++)
+		{
+			ConfigLevelReward reward = battleReward[i];
+			CDBSocket::Write(122, "dd", IPlayer.GetPID(), 5);
+
+		}
+	}
+
+	if (IPlayer.IsOnline() && IPlayer.GetProperty(PlayerProperty::Reborn) != 0 && IPlayer.GetProperty(PlayerProperty::Reborn) <= 2){
+		CDBSocket::Write(122, "ddd", IPlayer.GetPID(), 3, IPlayer.GetProperty(PlayerProperty::BattlepassLv) + 1);
+
+		std::vector<ConfigLevelReward> battleReward = BattlepassReward.find(IPlayer.GetProperty(PlayerProperty::BattlepassLv))->second;
+		for (int i = 0; i < (int)battleReward.size(); i++)
+		{
+			ConfigLevelReward reward = battleReward[i];
+			CDBSocket::Write(122, "dd", IPlayer.GetPID(), 5);
+
+		}
+	}
+		
+
 	if (IPlayer.IsOnline() && MLMRewards.count(IPlayer.GetLevel())) {
 		CIOCriticalSection::Enter((struct _RTL_CRITICAL_SECTION *)((int)IPlayer.GetOffset() + 1308));
 		int MLMActive = CPlayer::_MLMFind((int)IPlayer.GetOffset(), 2, 0);

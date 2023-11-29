@@ -3291,13 +3291,7 @@ void __fastcall ModsSendItemInfo(void *player, void *_edx, char* Inventory)
 	CIOBuffer::Free(Inv);
 }
 
-void crashDebug(int Type) {
-	std::string Dato = "./Debugger/CrashCheck/GET_" + Time::GetDay() + "_" + Time::GetMonth() + "_" + Time::GetYear() + "_" + Time::GetHour() + "." + Time::GetMinute() + ".txt";
-	std::fstream DGLOG;
-	DGLOG.open(Dato, std::fstream::in | std::fstream::out | std::fstream::app);
-	DGLOG << Time::GetTime() << " " << Type << std::endl;
-	DGLOG.close();
-}
+
 
 void __fastcall ModsSendUpdateItemInfo(void *player, void *_edx, char* Item)
 {
@@ -4222,7 +4216,7 @@ void __fastcall ModsSendUpdateItemInfo(void *player, void *_edx, char* Item)
 			}
 
 			if (TimedItems.count(index) && TimedItems.find(index)->second.Wearable != 1) {
-				if (IPlayer.GetBuffValue(BuffNames::TimedCheck) != index) {
+				if (IPlayer.IsOnline() && IPlayer.GetBuffValue(BuffNames::TimedCheck) != index) {
 					int GetPetTime = TimedItems.find(index)->second.Time;
 					if (GetPetTime > 0) {
 						if (!PetLifeCheck.count(iid)) {

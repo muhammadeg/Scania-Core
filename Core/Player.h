@@ -507,13 +507,21 @@ void __fastcall MyGameStart(void *Player, void *edx)
 			CDBSocket::Write(116, "d", IPlayer.GetPID());
 			CDBSocket::Write(68, "d", IPlayer.GetPID());
 
+
 			if(RebornActive)
 				CDBSocket::Write(120, "d", IPlayer.GetPID());
 
-			IPlayer.CancelBuff(104);
+			// Assassin while logging
+		//	IPlayer.CancelBuff(104);
 
-			if(IPlayer.GetLevel() == 1)
+			if (IPlayer.GetLevel() == 1){
 				CDBSocket::Write(110, "d", IPlayer.GetPID());
+				if (BattlepassActive)
+					CDBSocket::Write(122, "dd", IPlayer.GetPID(), 2);
+			}
+
+			if (BattlepassActive)
+				CDBSocket::Write(122, "dd", IPlayer.GetPID(), 0);
 
 			if (DuelNames.count(IPlayer.GetPID())) {
 				std::string NameNew = (std::string)IPlayer.GetName();
@@ -1540,6 +1548,10 @@ int __fastcall Tick(void *Player, void *edx)
 		if (HonorP == 10 && IPlayer.ScaniaTimer(HonorTimer)){
 			IPlayer.AddFxToTarget(Honor10, 1, 0, 0);
 		}
+
+		if (IPlayer.IsOnline() && BattlepassActive)
+		CDBSocket::Write(122, "dd", IPlayer.GetPID(), 0);
+
 		//F10 BuffSystem
 		if (IPlayer.IsOnline() && IPlayer.IsBuff(BuffNames::F10Buff) && !IPlayer.IsBuff(BuffNames::F10BuffCancel)){
 			IPlayer.AddStr(F10Str);
@@ -2492,7 +2504,7 @@ int __fastcall Tick(void *Player, void *edx)
 				IPlayer.Teleport(BossEXPMap, BossEXPPX + CTools::Rate(-BossEXPRange, BossEXPRange), BossEXPPY + CTools::Rate(-BossEXPRange, BossEXPRange));
 				Buff(IPlayer, playerBuffs, BuffNames::BossEXP, TimeLeft + 60, 0);
 				std::string SysName(BossEXPName);
-				std::string Msg = "You have entered the Spirit world of " + SysName+", he will appear soon!";
+				std::string Msg = "You have entered the Spirit " + SysName+", he will appear soon!";
 				CPlayer::Write(Player, 0xFF, "ds", 234, Msg.c_str());
 				IPlayer.ScreenTime(TimeLeft);
 			}
@@ -2501,8 +2513,8 @@ int __fastcall Tick(void *Player, void *edx)
 		if (BossEXP::Active && IPlayer.GetMap() != BossEXPMap && playerBuffs.count(BuffNames::BossEXP))
 			IPlayer.Teleport(BossEXPMap, BossEXPPX + CTools::Rate(-BossEXPRange, BossEXPRange), BossEXPPY + CTools::Rate(-BossEXPRange, BossEXPRange));
 
-		if (BossEXP::Active && IPlayer.GetMap() == BossEXPMap && !playerBuffs.count(BuffNames::BossEXP))
-			IPlayer.PortToVillage();
+	//	if (BossEXP::Active && IPlayer.GetMap() == BossEXPMap && !playerBuffs.count(BuffNames::BossEXP))
+	//		IPlayer.PortToVillage();
 
 		if (!BossEXP::Active && playerBuffs.count(BuffNames::BossEXP)) {
 			IPlayer.CloseScreenTime();
@@ -3470,7 +3482,9 @@ int __fastcall Tick(void *Player, void *edx)
 			int Overlay = 0;
 			if (Scenario::RedScore > Scenario::BlueScore)
 			{
+				if (!isDKRewarded(IPlayer))
 				IPlayer.systemReward(WinnerDK);
+				DKrewardLimit(IPlayer);
 				IPlayer.SetHonor(0, 0, 0, 0, 1, 0, 0, 0, 0, 0);
 
 				if (Scenario::RedTeamTowerCount == 8)
@@ -3481,7 +3495,9 @@ int __fastcall Tick(void *Player, void *edx)
 
 			if (Scenario::BlueScore > Scenario::RedScore)
 			{
+				if (!isDKRewarded(IPlayer))
 				IPlayer.systemReward(LoserDK);
+				DKrewardLimit(IPlayer);
 
 				if (Scenario::BlueTeamTowerCount == 8)
 					Overlay = 14;
@@ -3491,7 +3507,9 @@ int __fastcall Tick(void *Player, void *edx)
 
 			if (Scenario::RedScore == Scenario::BlueScore)
 			{
+				if (!isDKRewarded(IPlayer))
 				IPlayer.systemReward(DrawDK);
+				DKrewardLimit(IPlayer);
 				Overlay = 4;
 			}
 
@@ -3512,7 +3530,9 @@ int __fastcall Tick(void *Player, void *edx)
 			int Overlay = 0;
 			if (Scenario::BlueScore > Scenario::RedScore)
 			{
+				if (!isDKRewarded(IPlayer))
 				IPlayer.systemReward(WinnerDK);
+				DKrewardLimit(IPlayer);
 				IPlayer.SetHonor(0, 0, 0, 0, 1, 0, 0, 0, 0, 0);
 
 				if (Scenario::BlueTeamTowerCount == 8)
@@ -3523,7 +3543,9 @@ int __fastcall Tick(void *Player, void *edx)
 
 			if (Scenario::RedScore > Scenario::BlueScore)
 			{
+				if (!isDKRewarded(IPlayer))
 				IPlayer.systemReward(LoserDK);
+				DKrewardLimit(IPlayer);
 				if (Scenario::BlueTeamTowerCount == 8)
 					Overlay = 25;
 				else
@@ -3532,7 +3554,9 @@ int __fastcall Tick(void *Player, void *edx)
 
 			if (Scenario::RedScore == Scenario::BlueScore)
 			{
+				if (!isDKRewarded(IPlayer))
 				IPlayer.systemReward(DrawDK);
+				DKrewardLimit(IPlayer);
 				Overlay = 4;
 			}
 
@@ -3553,20 +3577,26 @@ int __fastcall Tick(void *Player, void *edx)
 			int Overlay = 0;
 			if (Battlefield::RedScore > Battlefield::BlueScore)
 			{
+				if (!isBFRewarded(IPlayer))
 				IPlayer.systemReward(Battlefield::GoodVsEvil ? EVGoodReward : WinnerBF);
+				BFrewardLimit(IPlayer);
 				Overlay = 53;
 				Buff(IPlayer, playerBuffs, 119, 43200, 0);
 			}
 
 			if (Battlefield::BlueScore > Battlefield::RedScore)
 			{
+				if (!isBFRewarded(IPlayer))
 				IPlayer.systemReward(Battlefield::GoodVsEvil ? EVGoodLoser : LoserBF);
+				BFrewardLimit(IPlayer);
 				Overlay = 52;
 			}
 
 			if (Battlefield::RedScore == Battlefield::BlueScore)
 			{
+				if (!isBFRewarded(IPlayer))
 				IPlayer.systemReward(Battlefield::GoodVsEvil ? EVGoodDraw : DrawBF);
+				BFrewardLimit(IPlayer);
 				Overlay = 4;
 			}
 
@@ -3589,20 +3619,26 @@ int __fastcall Tick(void *Player, void *edx)
 			int Overlay = 0;
 			if (Battlefield::BlueScore > Battlefield::RedScore)
 			{
+				if (!isBFRewarded(IPlayer))
 				IPlayer.systemReward(Battlefield::GoodVsEvil ? EVGoodReward : WinnerBF);
+				BFrewardLimit(IPlayer);
 				Overlay = 52;
 				Buff(IPlayer, playerBuffs, 119, 43200, 0);
 			}
 
 			if (Battlefield::RedScore > Battlefield::BlueScore)
 			{
+				if (!isBFRewarded(IPlayer))
 				IPlayer.systemReward(Battlefield::GoodVsEvil ? EVGoodLoser : LoserBF);
+				BFrewardLimit(IPlayer);
 				Overlay = 53;
 			}
 
 			if (Battlefield::RedScore == Battlefield::BlueScore)
 			{
+				if (!isBFRewarded(IPlayer))
 				IPlayer.systemReward(Battlefield::GoodVsEvil ? EVGoodDraw : DrawBF);
+				BFrewardLimit(IPlayer);
 				Overlay = 4;
 			}
 

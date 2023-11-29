@@ -1583,7 +1583,7 @@ int __fastcall MovingScrollFix(int Player, void* edx, int Map, int XY,int Arg1, 
 	}
 
 	if (Map == EmokMap && IPlayer.IsOnline() && IPlayer.GetMap() != EmokMap) {
-		IPlayer.SystemMessage("Please use the Emok NPC to port to Emok.", TEXTCOLOR_RED);
+		IPlayer.SystemMessage("Please use the Area NPC to port to Area.", TEXTCOLOR_RED);
 		if (CItem::FindInitItem(511))
 			CItem::InsertItem(Player, 27, 511, 0, 1, -1);
 		else if(CItem::FindInitItem(512))
