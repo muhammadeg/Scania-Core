@@ -925,7 +925,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 				return;
 			}
 
-			IPlayer.Teleport(25, 267874, 243166);
+			IPlayer.Teleport(25, 267582, 242839);
 			return;
 		}
 
@@ -2009,6 +2009,9 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 		if (SinEvent::Active && IPlayer.GetMapX() == SEMapX && IPlayer.GetMapY() == SEMapY)
 			return;
 
+		if (SinEvent::Active && IPlayer.GetMapX() == SEMapX2 && IPlayer.GetMapY() == SEMapY2)
+			return;
+
 		if (IPlayer.IsBuff(349))
 			IPlayer.DisableRiding();
 	}
@@ -2025,6 +2028,9 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 			return;
 
 		if (SinEvent::Active && IPlayer.GetMapX() == SEMapX && IPlayer.GetMapY() == SEMapY)
+			return;
+
+		if (SinEvent::Active && IPlayer.GetMapX() == SEMapX2 && IPlayer.GetMapY() == SEMapY2)
 			return;
 
 		if (IPlayer.GetMap() == TBMap || IPlayer.GetMap() == SVMap)

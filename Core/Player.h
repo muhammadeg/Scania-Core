@@ -1516,6 +1516,18 @@ int __fastcall Tick(void *Player, void *edx)
 				}
 			}
 		}
+		for (std::map<int, PVEWeaponsS>::const_iterator it = EquipEffects.begin(); it != EquipEffects.end(); ++it) {
+			const PVEWeaponsS& equipment = it->second;
+			if (IPlayer.IsOnline()){
+				int EquipItem = CPlayer::FindItem(IPlayer.GetOffset(), equipment.index, 1);
+
+				if (IPlayer.ScaniaTimer(equipment.effectTime)){
+					if (IPlayer.GetType() == 0 && CItem::IsState(CPlayer::FindItem(Player, equipment.index, 1), 1)){
+						IPlayer.AddFxToTarget(equipment.Effect, 1, 0, 0);
+					}
+				}
+			}
+		}
 		// Honor Rank Buff Effect
 		int HonorP = IPlayer.GetHonorTag();
 		if (HonorP == 1 && IPlayer.ScaniaTimer(HonorTimer)){
@@ -3358,7 +3370,23 @@ int __fastcall Tick(void *Player, void *edx)
 			}
 		}
 
-		if (SinEvent::Active && MapX == SEMapX && MapY == SEMapY) {
+		if (!SinEvent::Active)
+		{
+			for (std::map<int, PVEWeaponsS>::const_iterator it = SinEventWeapon.begin(); it != SinEventWeapon.end(); ++it) {
+				const PVEWeaponsS& weapon = it->second;
+				int Weapon = CPlayer::FindItem(IPlayer.GetOffset(), weapon.index, 1);
+				if (Weapon){
+					if (CItem::IsState(Weapon, 1))
+					CItemWeapon::PutOff((void*)Weapon, (int)IPlayer.GetOffset());
+					IPlayer.RemoveItem(Weapon);
+					if (IPlayer.IsBuff(BuffNames::WeaponWear))
+					IPlayer.CancelBuff(BuffNames::WeaponWear);
+
+				}
+			}
+		}
+
+		if (SinEvent::Active && ((MapX == SEMapX && MapY == SEMapY) || (MapX == SEMapX2 && MapY == SEMapY2))) {
 			int timeleft = SinEvent::Time - (int)time(0);
 
 			if(!playerBuffs.count(104))
@@ -3366,6 +3394,40 @@ int __fastcall Tick(void *Player, void *edx)
 
 			if (CChar::IsGState((int)IPlayer.GetOffset(), 2))
 				IPlayer.Rb(SEImmunityTime);
+			
+			for (std::map<int, PVEWeaponsS>::const_iterator it = SinEventWeapon.begin(); it != SinEventWeapon.end(); ++it) {
+				const PVEWeaponsS& weapon = it->second;
+				if (weapon.Class == IPlayer.GetClass()){
+					int Weapon = CPlayer::FindItem(IPlayer.GetOffset(), weapon.index, 1);
+					if (!Weapon)
+					{
+						for (int index = 0; index < 100000; index++)
+						{
+							int FoundItem = CPlayer::FindItem(IPlayer.GetOffset(), index, 1);
+
+							IItem IItem((void*)FoundItem);
+
+							if (IItem.Exists() && IItem.IsWeapon() && CItem::IsState(FoundItem, 1)){
+								CItemWeapon::PutOff((void*)FoundItem, (int)IPlayer.GetOffset());
+								if (IPlayer.IsBuff(BuffNames::WeaponWear))
+								IPlayer.CancelBuff(BuffNames::WeaponWear);
+								break;
+							}
+						}
+						int Created = CItem::CreateItem(weapon.index, 256, 1, -1);
+						if (Created){
+							*(DWORD*)(Created + 48) = 128;
+
+							int CreatedValid = CPlayer::InsertItem(IPlayer.GetOffset(), 7, Created);
+							if (CreatedValid == 1){
+								CItemWeapon::PutOn(CPlayer::FindItem(IPlayer.GetOffset(), weapon.index, 1), (int)IPlayer.GetOffset());
+							}
+							else
+								CBase::Delete((void*)CreatedValid);
+						}
+					}
+				}
+			}
 
 			IPlayer.Scenario3_3Score(timeleft, GetValue(playerBuffs,BuffNames::SinEventPlayers) / SEPtsPerPlayer, GetValue(playerBuffs, BuffNames::SinEventMobs) / SEPtsPerMob);
 		}
@@ -3400,8 +3462,10 @@ int __fastcall Tick(void *Player, void *edx)
 		{
 			LastManStand::Active = false;
 			LastManStand::RegisterAmount = 0;
-			std::string msg = (std::string)IPlayer.GetName() + " won the " + std::string(LMSName);
-			CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+			LastManStand::WinnerName = (std::string)IPlayer.GetName();
+			LastManStand::Notice = 1;
+			//std::string msg = (std::string)IPlayer.GetName() + " won the " + std::string(LMSName);
+			//CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
 			IPlayer.RemoveSetRed();
 			IPlayer.RemoveSetBlue();
 			IPlayer.PortToVillage();

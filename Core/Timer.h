@@ -289,7 +289,7 @@ void startSinEvent(int Time) {
 			if ((void*)(a - 428))
 			{
 				IChar IPlayer((void*)(a - 428));
-				if (IPlayer.IsOnline() && IPlayer.GetMapX() == SEMapX && IPlayer.GetMapY() == SEMapY) {
+				if (IPlayer.IsOnline() && ((IPlayer.GetMapX() == SEMapX && IPlayer.GetMapY() == SEMapY) || (IPlayer.GetMapX() == SEMapX2 && IPlayer.GetMapY() == SEMapY2))) {
 					int Pts = IPlayer.GetBuffValue(BuffNames::SinEventMobs) + IPlayer.GetBuffValue(BuffNames::SinEventPlayers);
 					if (Pts > CurPts) {
 						PlayerWinner = IPlayer.GetPID();
@@ -1442,6 +1442,13 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 
 		if (LastManStand::Time > 0)
 			LastManStand::Time--;
+
+		if (LastManStand::Notice == 1)
+		{
+			std::string msg = (std::string)LastManStand::WinnerName + " won the " + std::string(LMSName);
+			CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+			LastManStand::Notice = 0;
+		}
 
 		if (NPCELeftTime && NPCELeftTime <= (int)time(0))
 		{

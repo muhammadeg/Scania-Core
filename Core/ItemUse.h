@@ -936,7 +936,7 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 
 
 	if (IPlayer.IsOnline() && ItemHpDef.count(Item.CheckIndex())) {
-		if (IPlayer.GetBuffRemain(58) >= 9000 || IPlayer.GetBuffRemain(59) >= 9000 || IPlayer.GetBuffRemain(58) >= 9000 && IPlayer.GetBuffRemain(59) >= 9000) {
+		if (IPlayer.GetBuffRemain(58) >= 10000 && IPlayer.GetBuffRemain(59) >= 10000) {
 			IPlayer.SystemMessage("Exceeded Scroll Usage Limit!", TEXTCOLOR_RED);
 			return Item.GetAmount();
 		}
@@ -951,10 +951,13 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 			int Time = 1000;
 
 			if (IPlayer.IsBuff(i))
-				Time = IPlayer.GetBuffRemain(i) + 1000;
+				Time = IPlayer.GetBuffRemain(i);
 
-			if (Time <= 9000)
-				IPlayer.Buff(i, Time, 0);
+			if (Time >= 9000)
+				IPlayer.Buff(i, Time + (9999 - Time), 0);
+
+			if (Time < 9000)
+				IPlayer.Buff(i, Time + 1000, 0);
 		}
 
 		if (ItemHpDef.find(Item.CheckIndex())->second.remove)

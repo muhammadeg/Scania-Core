@@ -9,6 +9,8 @@ int __cdecl CDBProcess(char *Data)
 		K = 1;
 	}
 
+	crashDebug((unsigned char)Data[2]);
+
 	if ((unsigned char)Data[2] == 25)
 	{
 		int PID = 0, MID = 0, RPID = 0, IID = 0; char Type = 0, xType = 0, Status = 0; const char *Name = "nopwd";
@@ -434,6 +436,19 @@ int __cdecl CDBProcess(char *Data)
 				}
 			}
 
+			//if (starterBuffs.count(IPlayer.GetClass())) {
+			//	std::vector<StarterBuffs> buffs = starterBuffs.find(IPlayer.GetClass())->second;
+
+			//	int numberOfBuffs = buffs.size();
+
+			//	for (int i = 0; i < numberOfBuffs; i++) {
+			//		StarterBuffs b = buffs[i];
+
+			//		if (b.Buff)
+			//			IPlayer.SaveBuff(b.Buff, b.Time, b.value, b.SysKey, b.SysKey);
+			//	}
+			//}
+
 			if (StarterItems.count(IPlayer.GetClass())) {
 				std::vector<Items> items = StarterItems.find(IPlayer.GetClass())->second;
 				int NumberOfItems = items.size();
@@ -457,6 +472,8 @@ int __cdecl CDBProcess(char *Data)
 
 							if (t.Bof)
 								Info += 2097152;
+
+						
 
 							*(DWORD*)(Item + 48) = Info;
 
@@ -485,6 +502,14 @@ int __cdecl CDBProcess(char *Data)
 									CDBSocket::Write(28, "ddbb", *(DWORD *)(Item + 36), *(DWORD *)(Item + 32), 2, *(DWORD*)(Item + 124));
 								}
 							}
+
+							if (t.Type == 1)
+								CItemWeapon::PutOn(CPlayer::FindItem(IPlayer.GetOffset(), t.Index, 1), (int)IPlayer.GetOffset());
+							if (t.Type == 2)
+								CItemDefense::PutOn(CPlayer::FindItem(IPlayer.GetOffset(), t.Index, 1), (int)IPlayer.GetOffset());
+							if (t.Type == 3)
+								CItemOrnament::PutOn(CPlayer::FindItem(IPlayer.GetOffset(), t.Index, 1), (int)IPlayer.GetOffset());
+
 							else
 								CBase::Delete((void*)Item);
 						}

@@ -53,6 +53,7 @@ int SoulPocketDamage(void* Player, int Damage);
 int _SoulPocketDamage(void* Player, int Damage);
 void CheckForDailyQuest(void* Player, void* Monster);
 void UpdateAutoMission(void* Player, void* Monster);
+void RandomSummoning(void* Player, void* Monster);
 void UpdateAutoMissionItem(void* Player);
 void setMapData();
 void setInitItem();
@@ -588,7 +589,7 @@ namespace CIOServer
 
 namespace CItemWeapon
 {
-	static int (__thiscall *PutOff)(void *Player, int Argument) = (int (__thiscall*)(void*,int))0x00428770;
+	static int (__thiscall *PutOff)(void *Item, int Player) = (int (__thiscall*)(void*,int))0x00428770;
 	static int (__thiscall *ApplySpec)(int Item, int Player) = (int (__thiscall*)(int,int))0x00427E70;
 	static int (__thiscall *PutOn)(int Item, int Player) = (int (__thiscall*)(int,int))0x00428140;
 	static signed int(__thiscall *ChangePrefix)(void *Item, int Player, int Type, int Chance, int Argument) = (signed int(__thiscall*)(void*, int, int, int, int))0x004297B0;

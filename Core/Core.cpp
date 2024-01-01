@@ -979,6 +979,8 @@ namespace LastManStand
 	bool Active = false;
 	int RegisterAmount = 0;
 	int Time = 0;
+	int Notice;
+	std::string WinnerName;
 }
 
 namespace Hunting
@@ -1310,10 +1312,19 @@ struct Items
 	int Magic;
 	int Toa;
 	int Upgrade;
+	int Type;
 	int Mix;
 	int ItemStat;
 };
 
+struct StarterBuffs
+{
+	int Class;
+	int Buff;
+	int value;
+	int Time;
+	int SysKey;
+};
 struct StarterClass
 {
 	int CoordX;
@@ -1510,6 +1521,15 @@ int round(double value) {
 	return static_cast<int>(value + 0.5);
 }
 
+struct CMonstersRSummon
+{
+	int mobindex;
+	int rewardid;
+	int randomindex;
+	int randomamount;
+	int pickchance;
+
+};
 struct CMonstersRewards
 {
 	int mobindex;
@@ -2222,6 +2242,9 @@ struct ItemLimitConf
 struct PVEWeaponsS
 {
 	int index;
+	int Class;
+	std::string Effect;
+	int effectTime;
 };
 
 struct NecklaceBuff
@@ -2528,6 +2551,8 @@ std::map<int, int> NewItemType;
 std::map<int, Winners> FinalsWinners;
 std::map<int, std::vector<Items>> Boxes;
 std::map<int, std::vector<Items>> StarterItems;
+std::map<int, std::vector<StarterBuffs>> starterBuffs;
+
 std::map<int, StarterClass> Starters;
 std::map<int, InitSwap> InitPetSwap;
 std::map<int, std::vector<int>> QuestRentItem;
@@ -2601,6 +2626,7 @@ std::map<int, CQuestsNotice> cQuestsNotice;
 std::map<int, pRewards> F10EXPRewards;
 
 std::map<int, CMonstersRewards> MonstersRewards;
+std::map<int, CMonstersRSummon> MonstersRSummon;
 
 std::set<int> QuestDisable;
 std::set<int> QBattleEnable;
@@ -2638,6 +2664,8 @@ std::set<int> ChannelMaps;
 std::set<int> UnReload;
 std::set<int> AntiKs;
 std::map<int, PVEWeaponsS> PVEWeapon;
+std::map<int, PVEWeaponsS> SinEventWeapon;
+std::map<int, PVEWeaponsS> EquipEffects;
 
 std::set<std::string> Filter;
 std::map<int, Restriction> Restrictions;

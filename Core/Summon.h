@@ -247,7 +247,7 @@ int __fastcall SummonDie(int Monster, void *edx, int TankerID, int Arg1, int Arg
 
 	IChar IMonster((void*)Monster);
 
-	if (SinEvent::Active && IMonster.GetMapX() == SEMapX && IMonster.GetMapY() == SEMapY) {
+	if (SinEvent::Active && ((IMonster.GetMapX() == SEMapX && IMonster.GetMapY() == SEMapY) || (IMonster.GetMapX() == SEMapX2 && IMonster.GetMapY() == SEMapY2))) {
 		IChar IPlayer((void*)TankerID);
 		IPlayer.UpdateBuff(BuffNames::SinEventMobs, BuffNames::BuffTime, IPlayer.GetBuffValue(BuffNames::SinEventMobs) + SEPtsPerMob);
 	}
@@ -1607,11 +1607,11 @@ int __fastcall SummonTick(void *Monster, void *edx)
 			return CMonsterMaguniMaster::Tick(Monster);
 		}
 
-		//if (!BossEXP::Active && IMonster.GetMap() == BossEXPMap)
-		//{
-		//	IMonster.MobDelete();
-		//	return CMonsterMaguniMaster::Tick(Monster);
-		//}
+		if (!BossEXP::Active && IMonster.GetMap() == BossEXPMap)
+		{
+			IMonster.MobDelete();
+			return CMonsterMaguniMaster::Tick(Monster);
+		}
 
 		if (*(DWORD *)((int)Monster + 144) == 54023 && !IMonster.IsMobMoving()) {
 			IMonster.MobDelete();

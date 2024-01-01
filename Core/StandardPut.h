@@ -14,6 +14,9 @@ int __fastcall StandardBroken(void* Item, void* edx, int Player, int Argument) {
 	if (isItemRiding(IItem.CheckIndex()) || UnBreak.count(IItem.CheckIndex()))
 		return 0;
 
+	IChar IPlayer((void*)Player);
+	IPlayer.CancelBuff(BuffNames::StandardOn);
+
 	return CItemStandard::Broken(Item, Player, Argument);
 }
 
@@ -163,6 +166,7 @@ void __fastcall StandardPutOn(int Item, void *edx, int Player)
 		IPlayer.SystemMessage("An item is already equipped.", TEXTCOLOR_RED);
 		return;
 	}
+
 	IPlayer.Buff(BuffNames::StandardOn, 604800, 1);
 
 	CItemStandard::PutOn(Item, Player);

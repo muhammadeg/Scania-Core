@@ -196,7 +196,7 @@ void __fastcall PKKill(void *Player, void *edx, int Playerr)
 			SufferingValley::RedScore += SVPtPlayer;
 	}
 
-	if (SinEvent::Active && Killer.GetMapX() == SEMapX && Killer.GetMapY() == SEMapY) {
+	if (SinEvent::Active && ((Killer.GetMapX() == SEMapX && Killer.GetMapY() == SEMapY) || (Killer.GetMapX() == SEMapX2 && Killer.GetMapY() == SEMapY2))) {
 		std::string msg = (std::string)Killed.GetName() + " has been killed by " + (std::string)Killer.GetName() + ".";
 		CChar::WriteInSight(Killer.GetOffset(), 0xFE, "dds", 178, RGB(255, 255, CTools::Rate(100, 255)), msg.c_str());
 		Killer.UpdateBuff(BuffNames::SinEventPlayers, BuffNames::BuffTime, Killer.GetBuffValue(BuffNames::SinEventPlayers) + SEPtsPerPlayer);

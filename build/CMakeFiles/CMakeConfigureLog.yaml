@@ -1,0 +1,294 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeDetermineSystem.cmake:233 (message)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      The system is: Windows - 10.0.19045 - AMD64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      Microsoft (R) Build Engine version 12.0.21005.1
+      [Microsoft .NET Framework, version 4.0.30319.42000]
+      Copyright (C) Microsoft Corporation. All rights reserved.
+      
+      Build started 12/22/2023 9:45:55 AM.
+      Project "C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\3.28.1\\CompilerIdC\\CompilerIdC.vcxproj" on node 1 (default targets).
+      PrepareForBuild:
+        Creating directory "Debug\\".
+        Creating directory "Debug\\CompilerIdC.tlog\\".
+      InitializeBuildStatus:
+        Creating "Debug\\CompilerIdC.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+      ClCompile:
+        C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\bin\\CL.exe /c /nologo /W0 /WX- /Od /Oy- /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\\\" /Fd"Debug\\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CMakeCCompilerId.c
+        CMakeCCompilerId.c
+      Link:
+        C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\bin\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdC.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdC.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdC.lib" /MACHINE:X86 /SAFESEH Debug\\CMakeCCompilerId.obj
+        CompilerIdC.vcxproj -> C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\3.28.1\\CompilerIdC\\.\\CompilerIdC.exe
+      PostBuildEvent:
+        for %%i in (cl.exe) do @echo CMAKE_C_COMPILER=%%~$PATH:i
+        :VCEnd
+        CMAKE_C_COMPILER=C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\bin\\cl.exe
+      FinalizeBuildStatus:
+        Deleting file "Debug\\CompilerIdC.tlog\\unsuccessfulbuild".
+        Touching "Debug\\CompilerIdC.tlog\\CompilerIdC.lastbuildstate".
+      Done Building Project "C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\3.28.1\\CompilerIdC\\CompilerIdC.vcxproj" (default targets).
+      
+      Build succeeded.
+          0 Warning(s)
+          0 Error(s)
+      
+      Time Elapsed 00:00:01.18
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.exe"
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.vcxproj"
+      
+      The C compiler identification is MSVC, found in:
+        C:/Pvpers Kal/Core/build/CMakeFiles/3.28.1/CompilerIdC/CompilerIdC.exe
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      Microsoft (R) Build Engine version 12.0.21005.1
+      [Microsoft .NET Framework, version 4.0.30319.42000]
+      Copyright (C) Microsoft Corporation. All rights reserved.
+      
+      Build started 12/22/2023 9:45:56 AM.
+      Project "C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\3.28.1\\CompilerIdCXX\\CompilerIdCXX.vcxproj" on node 1 (default targets).
+      PrepareForBuild:
+        Creating directory "Debug\\".
+        Creating directory "Debug\\CompilerIdCXX.tlog\\".
+      InitializeBuildStatus:
+        Creating "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+      ClCompile:
+        C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\bin\\CL.exe /c /nologo /W0 /WX- /Od /Oy- /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\\\" /Fd"Debug\\vc120.pdb" /Gd /TP /analyze- /errorReport:queue CMakeCXXCompilerId.cpp
+        CMakeCXXCompilerId.cpp
+      Link:
+        C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\bin\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X86 /SAFESEH Debug\\CMakeCXXCompilerId.obj
+        CompilerIdCXX.vcxproj -> C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\3.28.1\\CompilerIdCXX\\.\\CompilerIdCXX.exe
+      PostBuildEvent:
+        for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
+        :VCEnd
+        CMAKE_CXX_COMPILER=C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\bin\\cl.exe
+      FinalizeBuildStatus:
+        Deleting file "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild".
+        Touching "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.lastbuildstate".
+      Done Building Project "C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\3.28.1\\CompilerIdCXX\\CompilerIdCXX.vcxproj" (default targets).
+      
+      Build succeeded.
+          0 Warning(s)
+          0 Error(s)
+      
+      Time Elapsed 00:00:01.15
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
+      
+      The CXX compiler identification is MSVC, found in:
+        C:/Pvpers Kal/Core/build/CMakeFiles/3.28.1/CompilerIdCXX/CompilerIdCXX.exe
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "C:/Pvpers Kal/Core/build/CMakeFiles/CMakeScratch/TryCompile-0sv4j1"
+      binary: "C:/Pvpers Kal/Core/build/CMakeFiles/CMakeScratch/TryCompile-0sv4j1"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
+      CMAKE_C_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:X86"
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Pvpers Kal/Core/build/CMakeFiles/CMakeScratch/TryCompile-0sv4j1'
+        
+        Run Build Command(s): "C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" cmTC_ab377.vcxproj /p:Configuration=Debug /p:Platform=Win32 /p:VisualStudioVersion=12.0 /v:n
+        Microsoft (R) Build Engine version 12.0.21005.1
+        [Microsoft .NET Framework, version 4.0.30319.42000]
+        Copyright (C) Microsoft Corporation. All rights reserved.
+        
+        Build started 12/22/2023 9:45:58 AM.
+        Project "C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\CMakeScratch\\TryCompile-0sv4j1\\cmTC_ab377.vcxproj" on node 1 (default targets).
+        PrepareForBuild:
+          Creating directory "cmTC_ab377.dir\\Debug\\".
+          Creating directory "C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\CMakeScratch\\TryCompile-0sv4j1\\Debug\\".
+          Creating directory "cmTC_ab377.dir\\Debug\\cmTC_ab377.tlog\\".
+        InitializeBuildStatus:
+          Creating "cmTC_ab377.dir\\Debug\\cmTC_ab377.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+        ClCompile:
+          C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\bin\\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTC_ab377.dir\\Debug\\\\" /Fd"cmTC_ab377.dir\\Debug\\vc120.pdb" /Gd /TC /analyze- /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-3.28\\Modules\\CMakeCCompilerABI.c"
+          Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          
+          cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTC_ab377.dir\\Debug\\\\" /Fd"cmTC_ab377.dir\\Debug\\vc120.pdb" /Gd /TC /analyze- /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-3.28\\Modules\\CMakeCCompilerABI.c"
+          
+          CMakeCCompilerABI.c
+        Link:
+          C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\bin\\link.exe /ERRORREPORT:QUEUE /OUT:"C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\CMakeScratch\\TryCompile-0sv4j1\\Debug\\cmTC_ab377.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Pvpers Kal/Core/build/CMakeFiles/CMakeScratch/TryCompile-0sv4j1/Debug/cmTC_ab377.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Pvpers Kal/Core/build/CMakeFiles/CMakeScratch/TryCompile-0sv4j1/Debug/cmTC_ab377.lib" /MACHINE:X86 /SAFESEH  /machine:X86 cmTC_ab377.dir\\Debug\\CMakeCCompilerABI.obj
+          cmTC_ab377.vcxproj -> C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\CMakeScratch\\TryCompile-0sv4j1\\Debug\\cmTC_ab377.exe
+        FinalizeBuildStatus:
+          Deleting file "cmTC_ab377.dir\\Debug\\cmTC_ab377.tlog\\unsuccessfulbuild".
+          Touching "cmTC_ab377.dir\\Debug\\cmTC_ab377.tlog\\cmTC_ab377.lastbuildstate".
+        Done Building Project "C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\CMakeScratch\\TryCompile-0sv4j1\\cmTC_ab377.vcxproj" (default targets).
+        
+        Build succeeded.
+            0 Warning(s)
+            0 Error(s)
+        
+        Time Elapsed 00:00:01.15
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "C:/Pvpers Kal/Core/build/CMakeFiles/CMakeScratch/TryCompile-nwtqhd"
+      binary: "C:/Pvpers Kal/Core/build/CMakeFiles/CMakeScratch/TryCompile-nwtqhd"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /W3 /GR /EHsc"
+      CMAKE_CXX_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:X86"
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Pvpers Kal/Core/build/CMakeFiles/CMakeScratch/TryCompile-nwtqhd'
+        
+        Run Build Command(s): "C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" cmTC_88544.vcxproj /p:Configuration=Debug /p:Platform=Win32 /p:VisualStudioVersion=12.0 /v:n
+        Microsoft (R) Build Engine version 12.0.21005.1
+        [Microsoft .NET Framework, version 4.0.30319.42000]
+        Copyright (C) Microsoft Corporation. All rights reserved.
+        
+        Build started 12/22/2023 9:45:59 AM.
+        Project "C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nwtqhd\\cmTC_88544.vcxproj" on node 1 (default targets).
+        PrepareForBuild:
+          Creating directory "cmTC_88544.dir\\Debug\\".
+          Creating directory "C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nwtqhd\\Debug\\".
+          Creating directory "cmTC_88544.dir\\Debug\\cmTC_88544.tlog\\".
+        InitializeBuildStatus:
+          Creating "cmTC_88544.dir\\Debug\\cmTC_88544.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+        ClCompile:
+          C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\bin\\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTC_88544.dir\\Debug\\\\" /Fd"cmTC_88544.dir\\Debug\\vc120.pdb" /Gd /TP /analyze- /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-3.28\\Modules\\CMakeCXXCompilerABI.cpp"
+          Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          
+          cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTC_88544.dir\\Debug\\\\" /Fd"cmTC_88544.dir\\Debug\\vc120.pdb" /Gd /TP /analyze- /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-3.28\\Modules\\CMakeCXXCompilerABI.cpp"
+          
+          CMakeCXXCompilerABI.cpp
+        Link:
+          C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\bin\\link.exe /ERRORREPORT:QUEUE /OUT:"C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nwtqhd\\Debug\\cmTC_88544.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Pvpers Kal/Core/build/CMakeFiles/CMakeScratch/TryCompile-nwtqhd/Debug/cmTC_88544.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Pvpers Kal/Core/build/CMakeFiles/CMakeScratch/TryCompile-nwtqhd/Debug/cmTC_88544.lib" /MACHINE:X86 /SAFESEH  /machine:X86 cmTC_88544.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_88544.vcxproj -> C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nwtqhd\\Debug\\cmTC_88544.exe
+        FinalizeBuildStatus:
+          Deleting file "cmTC_88544.dir\\Debug\\cmTC_88544.tlog\\unsuccessfulbuild".
+          Touching "cmTC_88544.dir\\Debug\\cmTC_88544.tlog\\cmTC_88544.lastbuildstate".
+        Done Building Project "C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nwtqhd\\cmTC_88544.vcxproj" (default targets).
+        
+        Build succeeded.
+            0 Warning(s)
+            0 Error(s)
+        
+        Time Elapsed 00:00:01.17
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/Internal/FeatureTesting.cmake:34 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/Compiler/MSVC-CXX.cmake:77 (_record_compiler_features)"
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeDetermineCompileFeatures.cmake:70 (cmake_record_cxx_compile_features)"
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeTestCXXCompiler.cmake:70 (CMAKE_DETERMINE_COMPILE_FEATURES)"
+      - "CMakeLists.txt:3 (project)"
+    checks:
+      - "Detecting CXX compile features"
+    directories:
+      source: "C:/Pvpers Kal/Core/build/CMakeFiles/CMakeScratch/TryCompile-s6v7sl"
+      binary: "C:/Pvpers Kal/Core/build/CMakeFiles/CMakeScratch/TryCompile-s6v7sl"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /W3 /GR /EHsc"
+      CMAKE_CXX_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:X86"
+    buildResult:
+      variable: "CMAKE_CXX_FEATURE_TEST"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Pvpers Kal/Core/build/CMakeFiles/CMakeScratch/TryCompile-s6v7sl'
+        
+        Run Build Command(s): "C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" cmTC_e5024.vcxproj /p:Configuration=Debug /p:Platform=Win32 /p:VisualStudioVersion=12.0 /v:n
+        Microsoft (R) Build Engine version 12.0.21005.1
+        [Microsoft .NET Framework, version 4.0.30319.42000]
+        Copyright (C) Microsoft Corporation. All rights reserved.
+        
+        Build started 12/22/2023 9:46:00 AM.
+        Project "C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\CMakeScratch\\TryCompile-s6v7sl\\cmTC_e5024.vcxproj" on node 1 (default targets).
+        PrepareForBuild:
+          Creating directory "cmTC_e5024.dir\\Debug\\".
+          Creating directory "C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\CMakeScratch\\TryCompile-s6v7sl\\Debug\\".
+          Creating directory "cmTC_e5024.dir\\Debug\\cmTC_e5024.tlog\\".
+        InitializeBuildStatus:
+          Creating "cmTC_e5024.dir\\Debug\\cmTC_e5024.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+        ClCompile:
+          C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\bin\\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTC_e5024.dir\\Debug\\\\" /Fd"cmTC_e5024.dir\\Debug\\vc120.pdb" /Gd /TP /analyze- /errorReport:queue "C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\CMakeScratch\\TryCompile-s6v7sl\\feature_tests.cxx"
+          Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          
+          cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTC_e5024.dir\\Debug\\\\" /Fd"cmTC_e5024.dir\\Debug\\vc120.pdb" /Gd /TP /analyze- /errorReport:queue "C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\CMakeScratch\\TryCompile-s6v7sl\\feature_tests.cxx"
+          
+          feature_tests.cxx
+        Link:
+          C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\bin\\link.exe /ERRORREPORT:QUEUE /OUT:"C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\CMakeScratch\\TryCompile-s6v7sl\\Debug\\cmTC_e5024.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Pvpers Kal/Core/build/CMakeFiles/CMakeScratch/TryCompile-s6v7sl/Debug/cmTC_e5024.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Pvpers Kal/Core/build/CMakeFiles/CMakeScratch/TryCompile-s6v7sl/Debug/cmTC_e5024.lib" /MACHINE:X86 /SAFESEH  /machine:X86 cmTC_e5024.dir\\Debug\\feature_tests.obj
+          cmTC_e5024.vcxproj -> C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\CMakeScratch\\TryCompile-s6v7sl\\Debug\\cmTC_e5024.exe
+        FinalizeBuildStatus:
+          Deleting file "cmTC_e5024.dir\\Debug\\cmTC_e5024.tlog\\unsuccessfulbuild".
+          Touching "cmTC_e5024.dir\\Debug\\cmTC_e5024.tlog\\cmTC_e5024.lastbuildstate".
+        Done Building Project "C:\\Pvpers Kal\\Core\\build\\CMakeFiles\\CMakeScratch\\TryCompile-s6v7sl\\cmTC_e5024.vcxproj" (default targets).
+        
+        Build succeeded.
+            0 Warning(s)
+            0 Error(s)
+        
+        Time Elapsed 00:00:01.18
+        
+      exitCode: 0
+...

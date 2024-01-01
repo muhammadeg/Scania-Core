@@ -300,7 +300,7 @@ int SlytherinDieX = 0, SlytherinDieY = 0, SlytherinDieZ = 0, GryffindorDieX = 0,
 int DQuestGap = 0;
 int ManaCostActive = 0;
 int TransmigrationLimit = 0;
-int SEMapX = 0, SEMapY = 0, SERewardWinner = 0, SERewardLoser = 0, SEPtsPerMob = 0, SEPtsPerPlayer = 0, SEMinimumPoints = 0, SEDefaultTime = 0, SESpawnCycle = 0, SEImmunityTime = 0;
+int SEMapX = 0, SEMapY = 0, SEMapX2 = 0, SEMapY2 = 0, SERewardWinner = 0, SERewardLoser = 0, SEPtsPerMob = 0, SEPtsPerPlayer = 0, SEMinimumPoints = 0, SEDefaultTime = 0, SESpawnCycle = 0, SEImmunityTime = 0;
 int BoundAllow = 0;
 int ScrollEM = 0;
 int RebornQuest = 0, RebornActive = 0, RebornGZ = 0;
@@ -396,6 +396,8 @@ void ReadConfig(bool command)
 
 	SEMapX = GetPrivateProfileIntA("Map", "X", 0, "./Systems/SinEvent.txt");
 	SEMapY = GetPrivateProfileIntA("Map", "Y", 0, "./Systems/SinEvent.txt");
+	SEMapX2 = GetPrivateProfileIntA("Map", "X2", 0, "./Systems/SinEvent.txt");
+	SEMapY2 = GetPrivateProfileIntA("Map", "Y2", 0, "./Systems/SinEvent.txt");
 	SERewardLoser = GetPrivateProfileIntA("Reward", "ParticipantRewardID", 0, "./Systems/SinEvent.txt");
 	SERewardWinner = GetPrivateProfileIntA("Reward", "WinnerRewardID", 0, "./Systems/SinEvent.txt");
 	SEMinimumPoints = GetPrivateProfileIntA("Limit", "MinimumPoints", 0, "./Systems/SinEvent.txt");
@@ -2447,7 +2449,7 @@ void ReadConfig(bool command)
 			{
 				int index = 0;
 
-				if (sscanf(line, "(disable (index %d))", &index) == 1)
+				if (sscanf(line, "(enable (index %d))", &index) == 1)
 				{
 					AntiKs.insert(index);
 				}
@@ -2456,6 +2458,31 @@ void ReadConfig(bool command)
 		}
 	}
 
+
+	if (!command || (command && modifiedFiles.count("./Configs/ItemEffects.txt"))) {
+		FILE *Effectsfile = fopen("./Configs/ItemEffects.txt", "r");
+		if (Effectsfile != NULL)
+		{
+			EquipEffects.clear();
+			char line[BUFSIZ];
+			while (fgets(line, sizeof line, Effectsfile) != NULL)
+			{
+				int index = 0, efTime = 0;
+				char EffectName[BUFSIZ];
+
+				if (sscanf(line, "(ItemEffect (Index %d) (Effect '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (Time %d))", &index, &EffectName, &efTime) == 3){
+					PVEWeaponsS Equipment = PVEWeaponsS();
+
+					Equipment.index = index;
+					Equipment.Effect = EffectName;
+					Equipment.effectTime = efTime;
+
+					EquipEffects[index] = Equipment;
+				}
+			}
+			fclose(Effectsfile);
+		}
+	}
 
 	if (!command || (command && modifiedFiles.count("./Configs/PVEWeapon.txt"))) {
 		FILE *PVEFile = fopen("./Configs/PVEWeapon.txt", "r");
@@ -2479,12 +2506,14 @@ void ReadConfig(bool command)
 		if (StarterFile != NULL)
 		{
 			StarterItems.clear();
+			starterBuffs.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, StarterFile) != NULL)
 			{
-				int Class = 0, Info = 0, RewardIndex = 0, Amount = 0, Bof = 0, Dss = 0, Def = 0, Eva = 0, Prefix = 0, Atk = 0, Magic = 0, TOA = 0, UPG = 0, Mix = 0;
+				int Class = 0, Info = 0, RewardIndex = 0, Amount = 0, Bof = 0, Dss = 0, Def = 0, Eva = 0, Prefix = 0, Atk = 0, Magic = 0, TOA = 0, UPG = 0, Mix = 0, Type = 0;
+				int BClass = 0, buffIndex = 0, SysKey = 0, buffValue, buffTime;
 
-				if (sscanf(line, "(starterItem (class %d)(index %d)(amount %d)(info %d)(prefix %d)(defense %d)(evasion %d)(attack %d)(magic %d)(toa %d)(upgrade %d)(mix %d)(bof %d)(dss %d))", &Class, &RewardIndex, &Amount, &Info, &Prefix, &Def, &Eva, &Atk, &Magic, &TOA, &UPG, &Mix, &Bof, &Dss) == 14)
+				if (sscanf(line, "(starterItem (class %d)(index %d)(amount %d)(info %d)(prefix %d)(defense %d)(evasion %d)(attack %d)(magic %d)(toa %d)(upgrade %d)(mix %d)(bof %d)(dss %d)(type %d))", &Class, &RewardIndex, &Amount, &Info, &Prefix, &Def, &Eva, &Atk, &Magic, &TOA, &UPG, &Mix, &Bof, &Dss, &Type) == 15)
 				{
 					Items t = Items();
 					t.Index = RewardIndex;
@@ -2500,8 +2529,21 @@ void ReadConfig(bool command)
 					t.Mix = Mix;
 					t.Toa = TOA;
 					t.Upgrade = UPG;
+					t.Type = Type;
 
 					StarterItems[Class].push_back(t);
+				}
+				else	if (sscanf(line, "(starterBuff (class %d)(index %d)(time %d)(value %d)(syskey %d))", &BClass, &buffIndex, &buffTime, &buffValue, &SysKey) == 5)
+				{
+					StarterBuffs b = StarterBuffs();
+					b.Class = BClass;
+					b.Buff = buffIndex;
+					b.SysKey = SysKey;
+					b.Time = buffTime;
+					b.value = buffValue;
+
+
+					starterBuffs[BClass].push_back(b);
 				}
 				else {
 					int Map = 0, X = 0, Y = 0, HTML = 0;
@@ -3059,10 +3101,12 @@ void ReadConfig(bool command)
 		if (filetx != NULL)
 		{
 			SinSpawners.clear();
+			SinEventWeapon.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filetx) != NULL)
 			{
 				int index = 0, amount = 0, X = 0, Y = 0;
+				int itemIndex = 0, Class = 0;
 				if (sscanf(line, "(Spawn (Index %d)(Amount %d)(X %d)(Y %d))", &index, &amount, &X, &Y) == 4) {
 					SinSpawner spawner = SinSpawner();
 					spawner.Index = index;
@@ -3070,6 +3114,11 @@ void ReadConfig(bool command)
 					spawner.X = X;
 					spawner.Y = Y;
 					SinSpawners.push_back(spawner);
+				}
+
+				if (sscanf(line, "(Weapon (Index %d)(Class %d))", &itemIndex, &Class) == 2) {
+					SinEventWeapon[itemIndex].index = itemIndex;
+					SinEventWeapon[itemIndex].Class = Class;
 				}
 			}
 			fclose(filetx);
@@ -4053,11 +4102,12 @@ void ReadConfig(bool command)
 		{
 			MonstersItem.clear();
 			MonstersRewards.clear();
+			MonstersRSummon.clear();
 
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filemorewa) != NULL)
 			{
-				int monsterindex = 0, reward = 0, randomitem = 0, randomchance = 0, itemamount = 0, playerchance = 0;
+				int monsterindex = 0, reward = 0, randomitem = 0, randomchance = 0, itemamount = 0, playerchance = 0, randommonster = 0, randomamount = 0;
 				int chance = 0;
 				bool found = false;
 
@@ -4084,6 +4134,17 @@ void ReadConfig(bool command)
 					MonstersRewards[monsterindex].pickchance = playerchance;
 
 
+				}
+
+				if (sscanf(line, "(MonsterSummon (Index %d)(RewardID %d)(SummonIndex %d)(Amount %d)(SummonChance %d))", &monsterindex, &reward, &randommonster, &randomamount, &randomchance) == 5)
+				{
+					CMonstersRSummon Random = CMonstersRSummon();
+					Random.rewardid = reward;
+					Random.randomindex = randommonster;
+					Random.randomamount = randomamount;
+					Random.pickchance = randomchance;
+
+					MonstersRSummon[monsterindex] = Random;
 				}
 
 			}
@@ -6041,12 +6102,19 @@ void CleanLoadConfig() {
 	SkillDowngrade.clear();
 	SkillBook.clear();
 	PVEWeapon.clear();
+	EquipEffects.clear();
 	RebornsPenalty.clear();
 	BattlepassReward.clear();
 	PremiumPass.clear();
 	MapSD.clear();
 	BossEXPMsgs.clear();
 	RebornsMaps.clear();
+	SinEventWeapon.clear();
+	StarterItems.clear();
+	starterBuffs.clear();
+	MonstersRewards.clear();
+	MonstersItem.clear();
+	MonstersRSummon.clear();
 
 	ReadConfig(false);
 }

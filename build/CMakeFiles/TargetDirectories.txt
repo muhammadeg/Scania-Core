@@ -1,0 +1,3 @@
+C:/Pvpers Kal/Core/build/CMakeFiles/MyDLL.dir
+C:/Pvpers Kal/Core/build/CMakeFiles/ALL_BUILD.dir
+C:/Pvpers Kal/Core/build/CMakeFiles/ZERO_CHECK.dir

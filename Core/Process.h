@@ -913,7 +913,117 @@ int __fastcall Process(void *Socket, void *edx, char *Data)
 			return 1;
 		}
 	}
+	if (Data[2] == 4)
+	{
+		unsigned __int8 x = 0, y = 0, z = 0, a = 0, b = 0, c = 0, d = 0, e = 0; const char *ID;
+		CPacket::Read((char*)((void*)(Data + 3)), (char*)(Data + *(WORD*)Data), "sbbbbbbbb", &ID, 15, &x, &y, &z, &a, &b, &c, &d, &e);
+		int PID = String2Int(ID);
 
+		TargetFind myTarget(0, 1, PID);
+		int Player = (int)myTarget.getTarget();
+		IChar IPlayer((void*)Player);
+		if (IPlayer.IsOnline()) {
+			if (Starters.count(IPlayer.GetClass())) {
+				StarterClass starter = Starters.find(IPlayer.GetClass())->second;
+				if (starter.CoordX && starter.CoordY)
+					IPlayer.Teleport(starter.Map, starter.CoordX, starter.CoordY);
+
+				if (starter.EXP)
+					(*(int(__cdecl **)(int, signed int, signed int, unsigned __int64, unsigned __int64))(*(DWORD *)IPlayer.GetOffset() + 88))((int)IPlayer.GetOffset(), 25, 1, (unsigned __int64)starter.EXP, HIDWORD(starter.EXP));
+
+				if (starter.HTML)
+					IPlayer.OpenHTML(starter.HTML);
+
+				if (!starter.Msg.empty()) {
+					size_t sizeOf = starter.Msg.find("$name");
+					if (sizeOf != std::string::npos)
+						starter.Msg.replace(sizeOf, sizeof("$name") - 1, IPlayer.GetName());
+					CPlayer::WriteAll(0xFF, "dsd", 247, starter.Msg.c_str(), 1);
+				}
+			}
+
+			//if (starterBuffs.count(IPlayer.GetClass())) {
+			//	std::vector<StarterBuffs> buffs = starterBuffs.find(IPlayer.GetClass())->second;
+
+			//	int numberOfBuffs = buffs.size();
+
+			//	for (int i = 0; i < numberOfBuffs; i++) {
+			//		StarterBuffs b = buffs[i];
+
+			//		if (b.Buff)
+			//			IPlayer.SaveBuff(b.Buff, b.Time, b.value, b.SysKey, b.SysKey);
+			//	}
+			//}
+
+			if (StarterItems.count(IPlayer.GetClass())) {
+				std::vector<Items> items = StarterItems.find(IPlayer.GetClass())->second;
+				int NumberOfItems = items.size();
+
+				if (CPlayer::GetInvenSize((int)IPlayer.GetOffset()) < IPlayer.MaxInventorySize() - NumberOfItems) {
+					for (int i = 0; i < NumberOfItems; i++) {
+						Items t = items[i];
+
+						int Item = CItem::CreateItem(t.Index, t.Prefix, t.Amount, -1);
+
+						if (Item) {
+							IItem xItem((void*)Item);
+
+							int Info = t.Info;
+
+							if (t.Dss)
+								*(DWORD*)(Item + 84) = t.Dss;
+
+							if (t.Mix)
+								Info += t.Mix;
+
+							if (t.Bof)
+								Info += 2097152;
+
+
+
+							*(DWORD*)(Item + 48) = Info;
+
+							if (xItem.HighMemory()) {
+								if (t.Def)
+									*(DWORD*)(Item + 108) = t.Def;
+								if (t.Eva)
+									*(DWORD*)(Item + 116) = t.Eva;
+
+								if (t.Attack)
+									*(DWORD*)(Item + 100) = t.Attack;
+								if (t.Magic)
+									*(DWORD*)(Item + 104) = t.Magic;
+								if (t.Toa)
+									*(DWORD*)(Item + 112) = t.Toa;
+								if (t.Upgrade)
+									*(DWORD*)(Item + 124) = t.Upgrade;
+							}
+
+							if (CPlayer::InsertItem(IPlayer.GetOffset(), 7, Item) == 1)
+							{
+								if (xItem.HighMemory() && (t.Attack || t.Magic)) {
+									CDBSocket::Write(17, "ddbbb", *(DWORD *)(Item + 36), *(DWORD *)(Item + 32), 27, *(DWORD*)(Item + 100), 0);
+									CDBSocket::Write(17, "ddbbb", *(DWORD *)(Item + 36), *(DWORD *)(Item + 32), 28, *(DWORD*)(Item + 104), 0);
+									CDBSocket::Write(17, "ddbbb", *(DWORD *)(Item + 36), *(DWORD *)(Item + 32), 9, *(DWORD*)(Item + 112), 0);
+									CDBSocket::Write(28, "ddbb", *(DWORD *)(Item + 36), *(DWORD *)(Item + 32), 2, *(DWORD*)(Item + 124));
+								}
+							}
+
+							if (t.Type == 1)
+								CItemWeapon::PutOn(CPlayer::FindItem(IPlayer.GetOffset(), t.Index, 1), (int)IPlayer.GetOffset());
+							if (t.Type == 2)
+								CItemDefense::PutOn(CPlayer::FindItem(IPlayer.GetOffset(), t.Index, 1), (int)IPlayer.GetOffset());
+							if (t.Type == 3)
+								CItemOrnament::PutOn(CPlayer::FindItem(IPlayer.GetOffset(), t.Index, 1), (int)IPlayer.GetOffset());
+
+							else
+								CBase::Delete((void*)Item);
+						}
+					}
+				}
+			}
+		}
+	}
 	if (ThiefDisabled)
 	{
 		if (Data[2] == 4)

@@ -100,6 +100,29 @@ void ShowNPCList() {
 	ProcessNPCList(true);
 }
 
+void RandomSummoning(void* Player, void* Monster) {
+	IChar IMonster(Monster);
+	IChar IPlayer((void*)Player);
+
+	// Monsters Random Summon
+	if (MonstersRSummon.count(IMonster.GetMobIndex())) {
+		int RewardID = MonstersRSummon.find(IMonster.GetMobIndex())->second.rewardid;
+		int PlayerChance = MonstersRSummon.find(IMonster.GetMobIndex())->second.pickchance;
+		int RandomMonster = MonstersRSummon.find(IMonster.GetMobIndex())->second.randomindex;
+		int RandomAmount = MonstersRSummon.find(IMonster.GetMobIndex())->second.randomamount;
+		int Rate = CTools::Rate(1, 1000);
+
+		if (PlayerChance >= Rate)
+		{
+			for (int i = 0; i < RandomAmount; i++){
+				Summon((int)IPlayer.GetOffset(), IPlayer.GetMap(), IPlayer.GetX(), IPlayer.GetY(), RandomMonster, 1, 0, 0, 1800000, 0);
+			}
+			IPlayer.Announcement("[Santa Clause] You have summoned a Mini-Goofy", 4);
+		}
+
+	}
+}
+
 void PBattlepassCheck(void* Player, void* QuestOffset){
 	IQuest Quest(QuestOffset);
 

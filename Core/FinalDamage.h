@@ -110,7 +110,7 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 		if (strlen(AntiKsCheck) && ((std::string)AntiKsCheck == "true" || (std::string)AntiKsCheck == "True"))
 		{
 			if (ITarget.GetType() == 1 && IPlayer.GetType() == 0) {
-				if (!AntiKs.count(ITarget.GetMobIndex()) && ITarget.GetMobTanker()) {
+				if (AntiKs.count(ITarget.GetMobIndex()) && ITarget.GetMobTanker()) {
 					IChar Tanker((void*)ITarget.GetMobTanker());
 					int KSTime = 0;
 

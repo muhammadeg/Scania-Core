@@ -42,6 +42,8 @@ int __fastcall CancelAllBuffs(void* Monster, void* edx) {
 
 		UpdateAutoMission((void*)IMonster.GetMobTanker(), Monster);
 
+		RandomSummoning((void*)IMonster.GetMobTanker(), Monster);
+
 		if (RMonstersBuff.count(IMonster.GetMobIndex())){
 
 			int Grade = RMonstersBuff.find(IMonster.GetMobIndex())->second.buffgrade;
