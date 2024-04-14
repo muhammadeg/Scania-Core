@@ -17,7 +17,7 @@ void insertPet(IChar Player, IItem Item) {
 	{
 		int Type = 0;
 		int IIDType = 0;
-		
+
 		if (isNormalPet(Item.CheckIndex())) {
 			Type = BuffNames::PetOwner;
 			IIDType = BuffNames::PetIID;
@@ -34,7 +34,7 @@ void insertPet(IChar Player, IItem Item) {
 		}
 
 		if (Type && IIDType) {
-		
+
 			int Picks = PetTime.count(Item.CheckIndex()) ? PetTime.find(Item.CheckIndex())->second.Pick : 0;
 			if (Picks == 1) {
 
@@ -128,7 +128,7 @@ int __fastcall OrnamentPutOff(void *Itemx, void *edx, int Playerx)
 			Player.CancelBuff(BuffNames::Necklace);
 		}
 
-		if(isNecklace2(Item.CheckIndex()))
+		if (isNecklace2(Item.CheckIndex()))
 			Player.CancelBuff(3705);
 
 		if (Item.CheckIndex() >= 3381 && Item.CheckIndex() <= 3383 && (Player.GetBuffValue(BuffNames::Essence1) || Player.GetBuffValue(BuffNames::Essence2) || Player.GetBuffValue(BuffNames::Essence3) || Player.GetBuffValue(BuffNames::Essence4) || Player.GetBuffValue(BuffNames::Essence5)))
@@ -374,15 +374,15 @@ int __fastcall OrnamentPutOff(void *Itemx, void *edx, int Playerx)
 				IIDType = BuffNames::PetIID;
 			}
 			else
-				if (Item.GetIID() == Player.GetBuffValue(BuffNames::PetIID2)) {
-					Type = BuffNames::PetOwner2;
-					IIDType = BuffNames::PetIID2;
-				}
-				else
-					if (Item.GetIID() == Player.GetBuffValue(BuffNames::PetIID3)) {
-						Type = BuffNames::PetOwner3;
-						IIDType = BuffNames::PetIID3;
-					}
+			if (Item.GetIID() == Player.GetBuffValue(BuffNames::PetIID2)) {
+				Type = BuffNames::PetOwner2;
+				IIDType = BuffNames::PetIID2;
+			}
+			else
+			if (Item.GetIID() == Player.GetBuffValue(BuffNames::PetIID3)) {
+				Type = BuffNames::PetOwner3;
+				IIDType = BuffNames::PetIID3;
+			}
 			if (Type && IIDType) {
 				int Index = Player.GetBuffValue(Type);
 				int Monster = Player.GetMobPet();
@@ -434,6 +434,7 @@ int __fastcall OrnamentPutOff(void *Itemx, void *edx, int Playerx)
 	return Check;
 
 }
+
 int __fastcall ItemOnTimer(int Item, void *edx, int Argument)
 {
 	IItem IItem((void*)Item);
@@ -493,8 +494,8 @@ int __cdecl NewItem(int Value)
 	if (isItemSuit(Index))
 		*(DWORD *)(Value + 72) = 6;
 	else
-		if (isItemCostumeEffect(Index))
-			*(DWORD *)(Value + 72) = 5;
+	if (isItemCostumeEffect(Index))
+		*(DWORD *)(Value + 72) = 5;
 
 	else if (*(DWORD *)(Value + 68) == -1)
 	{
@@ -503,7 +504,7 @@ int __cdecl NewItem(int Value)
 			*(DWORD *)(Value + 72) = 22;
 		}
 
-		else if(isOrnamentCheck(Index)){
+		else if (isOrnamentCheck(Index)){
 			void *Check = 0, *GetPointer = 0;
 
 			Check = (void*)Undefined::GetMonsterValue(0x5Cu);
@@ -527,7 +528,7 @@ int __cdecl NewItem(int Value)
 				if (isPet(Index))
 				{
 					*(DWORD*)(*(DWORD*)((int)GetPointer + 40) + 72) = -100;
-					if(PetBound)
+					if (PetBound)
 						*(DWORD*)((int)GetPointer + 48) = 128;
 					return (int)GetPointer;
 				}
@@ -634,7 +635,7 @@ int __cdecl MyCreateItem(int Index, int Prefix, int Amount, int Argument)
 					Prefix -= 256;
 				}
 
-				(*(void (__thiscall **)(void *, int, int, int))(*(DWORD*)Item + 76))((void*)Item, Prefix, Amount, Argument);
+				(*(void(__thiscall **)(void *, int, int, int))(*(DWORD*)Item + 76))((void*)Item, Prefix, Amount, Argument);
 			}
 		}
 		result = Item;
@@ -649,7 +650,7 @@ int __fastcall InsertItem(void *Player, void *edx, int Argument, int Itemx)
 	if (!Item.Exists())
 		return 0;
 
-	return CPlayer::_InsertItem(Player,Argument,Itemx);
+	return CPlayer::_InsertItem(Player, Argument, Itemx);
 }
 
 int __fastcall OrnamentPutOn(int Itemx, void *edx, int Playerx)
@@ -844,7 +845,7 @@ int __fastcall OrnamentApplySpec(void *Itemx, void *edx, int Playerx)
 
 		if (BeltBuffs.count(Item.CheckIndex()))
 			Player.Buff(BuffNames::Belt, BuffNames::BuffTime, Item.CheckIndex());
-		
+
 		if (NecklaceBuffs.count(Item.CheckIndex()))
 			Player.Buff(BuffNames::Necklace, BuffNames::BuffTime, Item.CheckIndex());
 
@@ -978,7 +979,7 @@ int __fastcall OrnamentApplySpec(void *Itemx, void *edx, int Playerx)
 			itemStat.Enter();
 			int Stats = GetItemStat.count(Item.GetIID()) ? GetItemStat.find(Item.GetIID())->second : 0;
 			itemStat.Leave();
-			
+
 			if (Stats > 0) {
 				int GetTaegeukPrefix = Stats / 1000;
 
@@ -1120,14 +1121,15 @@ signed int __fastcall OrnamentChangePrefix(void *Item, void* _edx, int Player, i
 	if (CurrentPrefix == NewPrefix)
 	{
 		CPlayer::Write(IPlayer.GetOffset(), 67, "b", 54);
-	} else {
-		if (WeaponReplace.count((IItem.CheckIndex()+100000)*NewPrefix) && WeaponReplaceIndex.count((IItem.CheckIndex()+100000)*NewPrefix))
+	}
+	else {
+		if (WeaponReplace.count((IItem.CheckIndex() + 100000)*NewPrefix) && WeaponReplaceIndex.count((IItem.CheckIndex() + 100000)*NewPrefix))
 		{
 			std::string msg = (std::string)IPlayer.GetName();
 
-			if (WeaponReplace.find((IItem.CheckIndex()+100000)*NewPrefix)->second && WeaponReplace.find((IItem.CheckIndex()+100000)*NewPrefix)->second == NewPrefix)
+			if (WeaponReplace.find((IItem.CheckIndex() + 100000)*NewPrefix)->second && WeaponReplace.find((IItem.CheckIndex() + 100000)*NewPrefix)->second == NewPrefix)
 			{
-				if (WeaponReplaceIndex.find((IItem.CheckIndex()+100000)*NewPrefix)->second)
+				if (WeaponReplaceIndex.find((IItem.CheckIndex() + 100000)*NewPrefix)->second)
 				{
 					if (CBase::IsDeleted((int)Item))
 						return 0;
@@ -1135,7 +1137,7 @@ signed int __fastcall OrnamentChangePrefix(void *Item, void* _edx, int Player, i
 					if (IPlayer.IsBuff(328))
 						return 0;
 					else
-						IPlayer.Buff(328,3,0);
+						IPlayer.Buff(328, 3, 0);
 
 					int ReplacePrefix = 0, ReplaceItem = 0, ReplaceInfo = 0;
 
@@ -1146,18 +1148,18 @@ signed int __fastcall OrnamentChangePrefix(void *Item, void* _edx, int Player, i
 						ReplaceInfo = *(DWORD *)((int)Item + 48);
 
 					int ItemNewIndex = IItem.CheckIndex();
-					int DeleteCheck = (*(int (__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)Item + 120))((int)Item,IPlayer.GetOffset(),9,-1);
+					int DeleteCheck = (*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)Item + 120))((int)Item, IPlayer.GetOffset(), 9, -1);
 
 					if (!DeleteCheck)
 					{
-						ReplaceItem = CItem::CreateItem(WeaponReplaceIndex.find((ItemNewIndex+100000)*NewPrefix)->second, ReplacePrefix, 1, -1);
+						ReplaceItem = CItem::CreateItem(WeaponReplaceIndex.find((ItemNewIndex + 100000)*NewPrefix)->second, ReplacePrefix, 1, -1);
 
 						if (ReplaceItem)
 						{
 							CIOObject::AddRef(ReplaceItem);
 							*(DWORD *)(ReplaceItem + 48) = ReplaceInfo;
 
-							if ( CPlayer::_InsertItem(IPlayer.GetOffset(), 27, ReplaceItem) != 1 )
+							if (CPlayer::_InsertItem(IPlayer.GetOffset(), 27, ReplaceItem) != 1)
 							{
 								CConsole::Red("Real time ornament insert item Null error [PID (%d)] ", IPlayer.GetPID());
 								CBase::Delete((void *)ReplaceItem);
@@ -1166,16 +1168,29 @@ signed int __fastcall OrnamentChangePrefix(void *Item, void* _edx, int Player, i
 							}
 
 							CIOObject::Release((void *)ReplaceItem);
-							CDBSocket::Write(21, "dddbb",*(DWORD *)(ReplaceItem + 36),*(DWORD *)(ReplaceItem + 32),*(DWORD *)(ReplaceItem + 48),8,7);
+							CDBSocket::Write(21, "dddbb", *(DWORD *)(ReplaceItem + 36), *(DWORD *)(ReplaceItem + 32), *(DWORD *)(ReplaceItem + 48), 8, 7);
 							CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddddd", 242, 0, 0, 128, 255);
-							std::string& successMsg = WeaponReplaceMsg.find((ItemNewIndex + 100000)*NewPrefix)->second;
-							if (WeaponReplaceMsg.count((ItemNewIndex + 100000)*NewPrefix) && !successMsg.empty()){
-								msg = msg + " " + successMsg;
-								CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), NOTICECOLOR_BLUE);
+							if (WeaponReplaceMsg.count((ItemNewIndex + 100000)*NewPrefix)){
+								std::string& successMsg = WeaponReplaceMsg.find((ItemNewIndex + 100000)*NewPrefix)->second;
+								if (!successMsg.empty() && IPlayer.IsValid()){
+
+									msg = msg + " " + successMsg;
+									int textColor = NOTICECOLOR_BLUE; // Default color
+									int messageType = 2; // Default messageType
+									RewardMessage reward;
+									reward.message = msg;
+									reward.textColor = textColor;
+									reward.messageType = messageType;
+
+									PlayerRewardNotice.push_back(reward);
+									ToNoticeWebhook(msg.c_str());
+
+								}
 							}
 
 						}
-					} else {
+					}
+					else {
 						return 0;
 					}
 
@@ -1190,13 +1205,51 @@ signed int __fastcall OrnamentChangePrefix(void *Item, void* _edx, int Player, i
 			return 0;
 		}
 
+		//if (TimeTalisman.count(NewPrefix))
+		//{
+		//	ConfigTimeTalisman t = TimeTalisman.find(NewPrefix)->second;
+
+		//	int TotalItems = t.items.size();
+		//	bool itemFound = false;
+		//	for (int i = 0; i < TotalItems; i++)
+		//	{
+		//		int Index = String2Int(t.items[i]);
+		//		if (IItem.CheckIndex() == Index)
+		//		{
+		//			if (!PetLifeCheck.count(IItem.GetIID()))
+		//			{
+		//				IPlayer.BoxMsg("Item has no time to extend.");
+		//				return 0;
+		//			}
+
+		//			int ExtendTime = t.time;
+		//			int RemainingTime = PetLifeCheck.findValue(IItem.GetIID()) - (int)time(0);
+		//			int TotalTime = ExtendTime + RemainingTime;
+		//			PetLifeCheck.replaceInsert(IItem.GetIID(), (int)time(0) + TotalTime);
+
+		//			CDBSocket::Write(89, "ddd", IPlayer.GetPID(), (int)time(0) + TotalTime, IItem.GetIID());
+		//			CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddd", 230, IItem.GetIID(), TotalTime);
+		//			*(DWORD*)((int)Item + 68) = GetTickCount() + (2000 * TotalTime);
+		//			*(DWORD*)((int)Item + 72) = 0;
+		//			itemFound = true;
+		//			IPlayer.SystemMessage("Time has successfully extended.", TEXTCOLOR_GREEN);
+
+		//			return 1;
+		//		}
+		//	}
+		//	if (!itemFound)
+		//	{
+		//		IPlayer.BoxMsg("Talisman can not be used on this item.");
+		//		return 0;
+		//	}
+		//}
 		AddPrefix = CItem::FindPrefix(NewPrefix);
 
-		if ( !AddPrefix )
+		if (!AddPrefix)
 			return 0;
 
 		*(DWORD *)((int)IItem.GetOffset() + 44) = AddPrefix;
-		CDBSocket::Write(19,"ddbb",IItem.GetIID(),IPlayer.GetID(),NewPrefix);
+		CDBSocket::Write(19, "ddbb", IItem.GetIID(), IPlayer.GetID(), NewPrefix);
 		CItem::SendItemInfo(IItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
 	}
 
@@ -1222,7 +1275,7 @@ int __fastcall OrnamentSetWearState(int Item, void *edx, int Player)
 			CPlayer::AddWState((int)IPlayer.GetOffset(), IItem.GetType());
 			(*(void(__thiscall **)(int, int))(*(DWORD *)Item + 104))(Item, (int)IPlayer.GetOffset());
 			int old = IPlayer.GetBuffValue(3879);
-			IPlayer.UpdateBuff(3879, 1296000, old+1);
+			IPlayer.UpdateBuff(3879, 1296000, old + 1);
 			return 0;
 		}
 	}
@@ -1277,7 +1330,7 @@ int __fastcall OrnamentSetWearState(int Item, void *edx, int Player)
 				CDBSocket::Write(5, "d", *(DWORD *)(Item + 36));
 			}
 
-			if(wore){
+			if (wore){
 				CPlayer::AddWState((int)IPlayer.GetOffset(), IItem.GetType());
 				(*(void(__thiscall **)(int, int))(*(DWORD *)Item + 104))(Item, (int)IPlayer.GetOffset());
 			}
@@ -1286,5 +1339,5 @@ int __fastcall OrnamentSetWearState(int Item, void *edx, int Player)
 		}
 	}
 
-	return CItemOrnament::SetWearState(Item,Player);
+	return CItemOrnament::SetWearState(Item, Player);
 }

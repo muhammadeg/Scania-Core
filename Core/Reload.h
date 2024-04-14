@@ -19,7 +19,7 @@ void LoadConfig(std::string configName) {
 		CConsole::Blue("%s has been reloaded.", configName.c_str());
 
 	else
-		CConsole::Blue("%s reloading has failed.", configName.c_str());
+		CConsole::Red("%s reloading has failed.", configName.c_str());
 	delete[] p_qPtr;
 }
 
@@ -43,37 +43,31 @@ void QuestsReload() {
 
 
 void removeMobs(std::vector<mobReload> &UnReloaded) {
-	try {
-		auto monsterCount = g_MonsterCount;
-		do {
-			TargetFind target(1, 0, index);
-			IChar IMonster(target.getTarget());
+	auto monsterCount = g_MonsterCount;
+	do {
+		TargetFind target(1, 0, index);
+		IChar IMonster(target.getTarget());
 
-			if (IMonster.IsOnline()) {
-				if (UnReload.count(IMonster.GetMobIndex())) {
-					mobReload reloadMob = mobReload();
-					reloadMob.Index = IMonster.GetMobIndex();
-					reloadMob.X = IMonster.GetX();
-					reloadMob.Y = IMonster.GetY();
-					reloadMob.Map = IMonster.GetMap();
-					reloadMob.leftSpawn = MonsterDisappear.count((int)IMonster.GetOffset()) ? MonsterDisappear.findValue((int)IMonster.GetOffset()) - GetTickCount() : 0;
+		if (IMonster.IsOnline()) {
+			if (UnReload.count(IMonster.GetMobIndex())) {
+				mobReload reloadMob = mobReload();
+				reloadMob.Index = IMonster.GetMobIndex();
+				reloadMob.X = IMonster.GetX();
+				reloadMob.Y = IMonster.GetY();
+				reloadMob.Map = IMonster.GetMap();
+				reloadMob.leftSpawn = MonsterDisappear.count((int)IMonster.GetOffset()) ? MonsterDisappear.findValue((int)IMonster.GetOffset()) - GetTickCount() : 0;
 
-					UnReloaded.push_back(reloadMob);
-				}
-
-				if (IMonster.GetDef() != 54123) {
-					IMonster.MobDelete();
-					*(DWORD *)((int)IMonster.GetOffset() + 16) = -6;
-				}
+				UnReloaded.push_back(reloadMob);
 			}
-			monsterCount = g_MonsterCount;
-			index++;
-		} while (monsterCount > InterlockedExchangeAdd(&summonPets, 0));
-	}
-	catch (const std::exception&){
-		CConsole::Red("Monsters reloading has failed.");
-		return;
-	}
+
+			if (IMonster.GetDef() != 54123) {
+				IMonster.MobDelete();
+				*(DWORD *)((int)IMonster.GetOffset() + 16) = -6;
+			}
+		}
+		monsterCount = g_MonsterCount;
+		index++;
+	} while (monsterCount > InterlockedExchangeAdd(&summonPets, 0));
 }
 
 void ClearGenMonster() {
@@ -154,13 +148,11 @@ void InitNPCReload() {
 	auto npccurindex = 1;
 	do {
 		int NPC = CNPC::FindNPC((char)npccurindex);
-		IChar INPC((void*)NPC);
 		if (NPC) {
 			CBase::Delete((void*)NPC);
 			*(DWORD *)(NPC + 16) = -6;
 			CIOObject::Release((void*)NPC);
 			CPlayer::WriteAll(57, "d", *(DWORD *)(NPC + 28));
-
 		}
 		npcCount = g_NPCCount;
 		npccurindex++;
@@ -192,8 +184,7 @@ void InitNPCReload() {
 	LoadConfig("Config\\InitNPC.txt");
 	CNPC::Start();
 	GetNPCList();
-	ShowNPCList();
-
+	isReloadingNPC = 1;
 }
 
 

@@ -26,6 +26,8 @@ int __fastcall CancelAllBuffs(void* Monster, void* edx) {
 		if (MonsterQuests.count(IMonster.GetMobIndex()))
 			CheckForDailyQuest((void*)IMonster.GetMobTanker(), Monster);
 
+		UpdateAutoMission((void*)IMonster.GetMobTanker(), (void*)Monster);
+		UpdateDailyDuty((void*)IMonster.GetMobTanker(), (void*)Monster);
 
 		if (MQuest.count(IMonster.GetMobIndex())) {
 			int SpawnedMobQuest = IMonster.GetBuffValue(BuffNames::SpawnedMobQuest);
@@ -36,41 +38,9 @@ int __fastcall CancelAllBuffs(void* Monster, void* edx) {
 			}
 		}
 
-		if(SummonTrack.count(IMonster.GetMobIndex()))
+		if (SummonTrack.count(IMonster.GetMobIndex()))
 			CDBSocket::Write(111, "dd", IMonster.GetMobIndex(), -1);
 
-
-		UpdateAutoMission((void*)IMonster.GetMobTanker(), Monster);
-
-		RandomSummoning((void*)IMonster.GetMobTanker(), Monster);
-
-		if (RMonstersBuff.count(IMonster.GetMobIndex())){
-
-			int Grade = RMonstersBuff.find(IMonster.GetMobIndex())->second.buffgrade;
-
-			if (Grade){
-				int buffOptions[] = { 46, 47, 48, 49, 50, 36 };
-				int numOptions = sizeof(buffOptions) / sizeof(buffOptions[0]);
-				int randomIndex = rand() % numOptions;
-				int selectedBuff = buffOptions[randomIndex];
-				IPlayer.Buff(selectedBuff, 1800, 8 * Grade + 3);
-
-			}
-		}
-
-		if (MonstersBuff.count(IMonster.GetMobIndex()))
-		{
-			double Buff = MonstersBuff.find(IMonster.GetMobIndex())->second.buffid;
-
-			int Grade = MonstersBuff.find(IMonster.GetMobIndex())->second.buffgrade;
-			double Refine = MonstersBuff.find(IMonster.GetMobIndex())->second.buffgrade;
-			if (Grade == 3) Grade = 2.75;
-			if (Refine == 3) Refine = 5.5;
-
-			if (Buff == 36) IPlayer.Buff(Buff, 1800, 8 * Refine + 3);
-			else IPlayer.Buff(Buff, 1800, 8 * Grade + 3);
-
-		}
 		if (SufferingValley::Active && IMonster.GetMap() == SVMap) {
 			IChar IPlayer((void*)IMonster.GetMobTanker());
 			bool IsBlue = SVParticipantsBlue.count(IPlayer.GetPID());
@@ -82,7 +52,7 @@ int __fastcall CancelAllBuffs(void* Monster, void* edx) {
 				SufferingValley::RedScore += SVPtMob;
 		}
 	}
-	
+
 	return CChar::CancelAllBuff2(Monster);
 }
 //endnew
@@ -92,7 +62,7 @@ void* __fastcall ReleaseBuff(void* Buff, void* edx, char Argument) {
 	CConsole::Red("%d", IBuff.GetBuffID());
 
 	void* check = CBuff::Release(Buff, Argument);
-	
+
 	return check;
 }
 
@@ -137,7 +107,7 @@ bool isSpecialBuff(int index) {
 int __fastcall hasSpecialBuff(int a5, void* edx, int BuffID) {
 	if (BuffList.count(a5)) {
 		ConcurrentMap<long int, int> mapper = BuffList.find(a5)->second;
-		if(mapper.count(BuffID))
+		if (mapper.count(BuffID))
 			return 1;
 	}
 	return 0;
@@ -332,12 +302,12 @@ void __fastcall _UpdateBuffStat(int a5, void* edx, int BuffID, int Time, int Val
 	}
 }
 
-void __fastcall UpdateBuffStat(int a5, void* edx, int BuffID, int Time, int Value,int tries)
+void __fastcall UpdateBuffStat(int a5, void* edx, int BuffID, int Time, int Value, int tries)
 {
 	int v6; // [sp+0h] [bp-Ch]@1
 	int v7 = 0; // [sp+4h] [bp-8h]@1
 
-	v6 = a5; 
+	v6 = a5;
 	if (!CBase::IsDeleted(v6)) {
 		CriticalLock  lock((struct _RTL_CRITICAL_SECTION *)(v6 + 364));
 		v7 = CChar::FindBuff(v6, BuffID);

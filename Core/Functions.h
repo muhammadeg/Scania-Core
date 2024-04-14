@@ -7,6 +7,10 @@ struct PlayerBuffs
 	int Remain;
 }; 
 
+struct PlayerRewardNotices
+{
+	std::string message;
+};
 
 int GetLevelDiff();
 bool isPlayerInPVP(void* Player);
@@ -14,7 +18,6 @@ void PortToStart(void* Player);
 int GetTBMap();
 std::string getUptime();
 std::string getSysUpTime();
-
 void __fastcall ContinueArrowExplosion(void* Player);
 std::string Int2String(int value);
 std::string getServerName();
@@ -22,6 +25,7 @@ std::string ReplaceInvalidCharacters(std::string value);
 
 int EventConfig(std::string day);
 int isPeaceEvilMode();
+void HonorPromotion(int PID);
 int HonorMessageSys(void* Player, int Type);
 int HonorMessageSysA(void* Player, int Type);
 bool isPKIgnoredItem(int Index);
@@ -53,7 +57,9 @@ int SoulPocketDamage(void* Player, int Damage);
 int _SoulPocketDamage(void* Player, int Damage);
 void CheckForDailyQuest(void* Player, void* Monster);
 void UpdateAutoMission(void* Player, void* Monster);
-void RandomSummoning(void* Player, void* Monster);
+void UpdateDailyDuty(void* Player, void* Monster);
+void SummonIdentify(int Index, int X, int Y, int Time);
+void SummonPartys();
 void UpdateAutoMissionItem(void* Player);
 void setMapData();
 void setInitItem();
@@ -209,8 +215,6 @@ namespace CSkill
 	static int (__thiscall *BlessingOfAgility) (int SkillPointer, int Player, int Target, int Argument) = (int (__thiscall*) (int, int, int,int))0x00489E60;
 	static int (__thiscall *BlessingOfStrength) (int SkillPointer, int Player, int Target, int Argument) = (int (__thiscall*) (int, int, int,int))0x00489D90;
 	static int (__thiscall *BlessingOfIntelligence) (int SkillPointer, int Player, int Target, int Argument) = (int (__thiscall*) (int, int, int,int))0x00489EE0;
-	static void(__thiscall *LongRangeProtectSkill) (void *SkillID, int IPlayer, int Argument, int Value) = (void(__thiscall*)(void*, int, int, int))0x00487EF0;
-
 	static int (__thiscall *ExecuteSkill) (void *SkillPointer, signed int SkillID, int Argument, int Value) = (int (__thiscall*)(void*,signed int,int,int))0x0047FBB0;
 	static void (__thiscall *RefiningWeapon) (void* pSkill, void* pPlayer, char* pPacket, char* pPos) = (void (__thiscall*) (void*, void*, char*, char*))0x00488820;
 	static void (__thiscall *DefenseImprovement) (void* pSkill, void* pPlayer, char* pPacket, char* pPos) = (void (__thiscall*) (void*, void*, char*, char*))0x004889F0;
@@ -347,19 +351,6 @@ namespace CItemDefense
 	static signed int (__thiscall *ChangePrefix)(void *Item, int Player, int ID, int Chance, int a5) = (signed int (__thiscall*)(void*,int,int,int,int))0x0042B710;
 }
 
-namespace CMonsterReal
-{
-	static int (__thiscall *Move)(int Monster) = (int (__thiscall*)(int))0x0043DBC0;
-	static signed int (__thiscall *GetChasePt)(int Monster, int Argument, int Value) = (signed int (__thiscall*)(int,int,int))0x0043E470;
-	static int (__thiscall *AI) (void *Monster) = (int (__thiscall*) (void*))0x0043D060;
-	static int (__thiscall *ScanSight) (int Object) = (int (__thiscall*)(int))0x0043E8C0;
-	static int (__thiscall *Attack) (int Monster) = (int (__thiscall*)(int))0x0043D510;
-	static void (__thiscall *Tick) (void* Monster) = (void (__thiscall*)(void*))0x0043D140;
-	static int (__thiscall *AddHostility) (void *Monster, int Player, int mainHost, signed int additionalHost) = (int (__thiscall*)(void*,int, int, signed int))0x0043D210;
-	static int (__thiscall *Die) (int mob, int buffIndex, int a3, int a4, int tankerID) = (int (__thiscall*) (int, int, int, int, int))0x00442360;
-	static int (__thiscall *AllotExp) (int mob, int a2, int tankerID, int* a4) = (int (__thiscall*) (int, int, int, int*))0x0043ECC0;
-	static void *(__thiscall *SendCreate)(void *Monster, int Player, int Argument) = (void *(__thiscall*)(void*, int, int))0x0043AAC0;
-}
 
 namespace CInitMonster
 {
@@ -373,6 +364,8 @@ namespace CInitMonster
 namespace CItemGeneral
 {
 	static signed int (__thiscall *StorageIn)(int Item, int Player, int Amount) = (signed int (__thiscall*)(int,int,int))0x0042D180;
+	static signed int(__thiscall *StorageOut)(int Item, int Player, int Amount, int Index, DWORD *storeNum) = (signed int(__thiscall*)(int, int, int, int, DWORD *))0x0042D460;
+
 	static int (__thiscall *Use)(void *Item, int Player) = (int (__thiscall*)(void*,int))0x0042CFB0;
 }
 
@@ -396,6 +389,7 @@ namespace CItemStandard
 
 namespace CItem
 {
+
 	static LONG (__cdecl *NewIID)() = (LONG (__cdecl*)())0x004273B0;
 	static char* (__cdecl *PutByte)(char*, char) = (char* (__cdecl*)(char*, char))0x004189A0;
 	static char* (__cdecl *PutWord)(char*, short) = (char* (__cdecl*)(char*, short))0x0042F960;
@@ -568,6 +562,7 @@ namespace CParty
 	static int (__thiscall *GetSize) (void *Party) = (int (__thiscall*)(void*))0x00412ED0;
 	static int(__thiscall *Join) (int party, int inviter, int joiner) = (int(__thiscall*)(int, int, int))0x0044D9D0;
 	static void(__thiscall *Leave) (int party, int player) = (void(__thiscall*)(int, int))0x0044DB20;
+	static void(__thiscall *DistrbuteItem) (int party, int x) = (void(__thiscall*)(int, int))0x0044E9A0;
 	static void(__thiscall *Exile) (int party, int kicker, int player) = (void(__thiscall*)(int, int, int))0x0044DDC0;
 	static int (__cdecl *Accept) (int inviter, int joiner) = (int (__cdecl*)(int, int))0x0044D550;
 	static void* (__cdecl *CParty) (void *a, int a2) = (void* (__cdecl*)(void*, int))0x0044D3C0;
@@ -589,7 +584,7 @@ namespace CIOServer
 
 namespace CItemWeapon
 {
-	static int (__thiscall *PutOff)(void *Item, int Player) = (int (__thiscall*)(void*,int))0x00428770;
+	static int (__thiscall *PutOff)(void *Player, int Argument) = (int (__thiscall*)(void*,int))0x00428770;
 	static int (__thiscall *ApplySpec)(int Item, int Player) = (int (__thiscall*)(int,int))0x00427E70;
 	static int (__thiscall *PutOn)(int Item, int Player) = (int (__thiscall*)(int,int))0x00428140;
 	static signed int(__thiscall *ChangePrefix)(void *Item, int Player, int Type, int Chance, int Argument) = (signed int(__thiscall*)(void*, int, int, int, int))0x004297B0;
@@ -773,6 +768,20 @@ namespace CMonsterMaguniMaster
 	static int(__thiscall *Die)(int a, int b, int c, int d, int e) = (int(__thiscall*)(int, int, int, int, int))0x00444560;
 }
 
+namespace CMonsterReal
+{
+	static int(__thiscall *Die) (int mob, int buffIndex, int a3, int a4, int tankerID) = (int(__thiscall*) (int, int, int, int, int))0x00442360;
+
+	static int(__thiscall *Move)(int Monster) = (int(__thiscall*)(int))0x0043DBC0;
+	static signed int(__thiscall *GetChasePt)(int Monster, int Argument, int Value) = (signed int(__thiscall*)(int, int, int))0x0043E470;
+	static int(__thiscall *AI) (void *Monster) = (int(__thiscall*) (void*))0x0043D060;
+	static int(__thiscall *ScanSight) (int Object) = (int(__thiscall*)(int))0x0043E8C0;
+	static int(__thiscall *Attack) (int Monster) = (int(__thiscall*)(int))0x0043D510;
+	static void(__thiscall *Tick) (void* Monster) = (void(__thiscall*)(void*))0x0043D140;
+	static int(__thiscall *AddHostility) (void *Monster, int Player, int mainHost, signed int additionalHost) = (int(__thiscall*)(void*, int, int, signed int))0x0043D210;
+	static int(__thiscall *AllotExp) (int mob, int a2, int tankerID, int* a4) = (int(__thiscall*) (int, int, int, int*))0x0043ECC0;
+	static void *(__thiscall *SendCreate)(void *Monster, int Player, int Argument) = (void *(__thiscall*)(void*, int, int))0x0043AAC0;
+}
 
 namespace CMonsterMaguni
 {
@@ -787,7 +796,6 @@ namespace CNPCSiegeGun
 namespace CNPC
 {
 	static void(__thiscall *SendCreate)(int NPC, int Player, int Argument) = (void(__thiscall*)(int, int, int))0x004491B0;
-	static void(__thiscall *SendDelete)(int NPC, int Player, int Argument) = (void(__thiscall*)(int, int, int))0x00449180;
 	static int(__thiscall *Remove)(int Npc) = (int(__thiscall*)(int))0x00449400;
 
 	static int(__cdecl *FindNPC)(char Npc) = (int(__cdecl*)(char))0x00448FA0;

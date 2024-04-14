@@ -1,6 +1,7 @@
 #include "curl\curl.h"
 using namespace std;
 #pragma comment(lib, "curl/libcurl_a.lib")
+//#pragma comment(lib, "D:/lib/libcurl_a.lib")
 #pragma comment(lib, "iphlpapi.lib")
 #include "sha256.h"
 #include <stdint.h>
@@ -13,7 +14,6 @@ typedef std::basic_string<TCHAR> tstring;
 uint16_t ma1;
 uint16_t ma2;
 string data;
-
 std::string GetLicenseKey()
 {
 	char K1[256] = "";
@@ -70,7 +70,6 @@ string getData(string url){
 	}
 
 	return readBuffer;
-
 }
 // Function to delete a registry key and its subkeys recursively
 LONG DeleteRegistryKey(const HKEY hKeyRoot, const std::wstring& subkey) {

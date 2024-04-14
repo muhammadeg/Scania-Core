@@ -100,6 +100,7 @@ bool EventMapStart(int Quest) {
 		if (!questEvent.Name.empty()) {
 			std::string notice = questEvent.Name + " has started.";
 			CPlayer::WriteAll(0xFF, "ds", 234, notice.c_str());
+			ToNoticeWebhook(notice.c_str());
 		}
 		return true;
 	}
@@ -190,20 +191,25 @@ void startBF(bool EvilVsGood) {
 		{
 			Battlefield::BTeamLvl = 0;
 			Battlefield::RTeamLvl = 0;
-			std::string msg = EvilVsGood ? "The battle of Hogwarts has begun."  : (std::string(BFName) + " started.");
+			std::string msg = EvilVsGood ? "The battle of Hogwarts has begun." : (std::string(BFName) + " started.");
 			CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
 			Battlefield::Time = EvilVsGood ? GVETime : BFTime;
 			Battlefield::RedScore = 0;
 			Battlefield::BlueScore = 0;
 			Battlefield::RegisterAmount = 0;
 			RewardLimit.clear();
-			BFRewardLimit.clear();
 			Battlefield::GoodVsEvil = EvilVsGood;
 			Battlefield::Active = true;
-			IChar M1((void*)Summon(0, BFMap, EvilVsGood ? BlueStoneXG : BlueStoneX, EvilVsGood ? BlueStoneYG : BlueStoneY, 445, 1, 0, 0, 0, 0));
-			IChar m1((void*)Summon(0, BFMap, EvilVsGood ? RedStoneXG : RedStoneX, EvilVsGood ? RedStoneYG : RedStoneY, 448, 1, 0, 0, 0, 0));
-			Battlefield::BlueStoneID = M1.GetID();
-			Battlefield::RedStoneID = m1.GetID();
+			if ((BlueStoneX && BlueStoneY && RedStoneX && RedStoneY) || (BlueStoneYG && BlueStoneXG && RedStoneXG && RedStoneYG)){
+				IChar M1((void*)Summon(0, BFMap, EvilVsGood ? BlueStoneXG : BlueStoneX, EvilVsGood ? BlueStoneYG : BlueStoneY, 445, 1, 0, 0, 0, 0));
+				IChar m1((void*)Summon(0, BFMap, EvilVsGood ? RedStoneXG : RedStoneX, EvilVsGood ? RedStoneYG : RedStoneY, 448, 1, 0, 0, 0, 0));
+				Battlefield::BlueStoneID = M1.GetID();
+				Battlefield::RedStoneID = m1.GetID();
+			}
+		//	IChar Boss((void*)Summon(0, BFMap, EvilVsGood ? BFBossX : BFBossX, EvilVsGood ? BFBossY : BFBossY, BFBoss, 1, 0, 0, 0, 0));
+
+
+		//	Battlefield::BossID = Boss.GetID();
 
 			std::vector<int> Team;
 
@@ -225,14 +231,15 @@ void startBF(bool EvilVsGood) {
 			CIOCriticalSection::Leave((void*)0x004e2078);
 
 			BattlefieldRegistration.clear();
+			BattlefieldHWID.clear();
 
 			std::sort(Team.begin(), Team.end(), compareTeamByLevel);
 
 			if (EvilVsGood) {
 				for (int i = 0; i < Team.size(); i++) {
 					IChar IPlayer((void*)Team[i]);
-					
-					if(IPlayer.isSlytherin() || IPlayer.isRavenclaw())
+
+					if (IPlayer.isSlytherin() || IPlayer.isRavenclaw())
 						IPlayer.Buff(160, 3650, 0);
 					else
 						IPlayer.Buff(161, 3650, 0);
@@ -256,6 +263,7 @@ void startBF(bool EvilVsGood) {
 	}
 	else {
 		BattlefieldRegistration.clear();
+		BattlefieldHWID.clear();
 		Battlefield::Active = false;
 		Battlefield::Time = 0;
 		return;
@@ -264,17 +272,22 @@ void startBF(bool EvilVsGood) {
 
 void startSinEvent(int Time) {
 	if (!SinEvent::Active) {
-		CPlayer::WriteAll(0xFF, "dsd", 247, thisServerName + " Sin Event has started, move to the map right now to participate!", 2);
+		std::string msg = thisServerName + " Sin Event has started, move to the map right now to participate!";
+		CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+		ToNoticeWebhook(msg.c_str());
+
 		SinEvent::Active = true;
-		SinEvent::Time = (int)time(0) + Time; 
-		
+		SinEvent::Time = (int)time(0) + Time;
+
 		for (auto x = SinSpawners.begin(); x != SinSpawners.end(); x++) {
-			for (int i = 0; i<x->Amount; i++)
+			for (int i = 0; i < x->Amount; i++)
 				Summon(0, 0, x->X, x->Y, x->Index, 1, 0, 0, Time * 1000, 0);
 		}
 	}
 	else {
-		CPlayer::WriteAll(0xFF, "dsd", 247, thisServerName + " Sin Event has ended.", 2);
+		std::string msg = thisServerName + " Sin Event has ended.";
+		CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+		ToNoticeWebhook(msg.c_str());
 		SinEvent::Active = false;
 		SinEvent::Time = 0;
 		int PlayerWinner = 0;
@@ -289,7 +302,7 @@ void startSinEvent(int Time) {
 			if ((void*)(a - 428))
 			{
 				IChar IPlayer((void*)(a - 428));
-				if (IPlayer.IsOnline() && ((IPlayer.GetMapX() == SEMapX && IPlayer.GetMapY() == SEMapY) || (IPlayer.GetMapX() == SEMapX2 && IPlayer.GetMapY() == SEMapY2))) {
+				if (IPlayer.IsOnline() && IPlayer.GetMapX() == SEMapX && IPlayer.GetMapY() == SEMapY) {
 					int Pts = IPlayer.GetBuffValue(BuffNames::SinEventMobs) + IPlayer.GetBuffValue(BuffNames::SinEventPlayers);
 					if (Pts > CurPts) {
 						PlayerWinner = IPlayer.GetPID();
@@ -298,7 +311,7 @@ void startSinEvent(int Time) {
 
 					if (Pts >= SEMinimumPoints)
 						IPlayer.systemReward(SERewardLoser);
-					
+
 					IPlayer.CancelBuff(BuffNames::SinEventMobs);
 					IPlayer.CancelBuff(BuffNames::SinEventPlayers);
 					IPlayer.CloseScenario3_3Score();
@@ -313,9 +326,10 @@ void startSinEvent(int Time) {
 			int Player = (int)myTarget.getTarget();
 			IChar IPlayer((void*)Player);
 			if (IPlayer.IsOnline()) {
-				IPlayer.systemReward(SERewardWinner); 
+				IPlayer.systemReward(SERewardWinner);
 				std::string msg = (std::string)IPlayer.GetName() + " has won the Sin Event with " + Int2String(CurPts) + " points.";
 				CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+				ToNoticeWebhook(msg.c_str());
 			}
 		}
 	}
@@ -330,6 +344,7 @@ void startGVG() {
 		if (Scenario::Selection) {
 			std::string msg = "Destructing Key Points started between " + Scenario::FirstGuild + " guild and " + Scenario::SecondGuild + " guild.";
 			CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+			ToNoticeWebhook(msg.c_str());
 
 			Scenario::Time = ScenarioTime;
 			Scenario::RedScore = 0;
@@ -341,7 +356,6 @@ void startGVG() {
 
 			ScenarioGuild.clear();
 			RewardLimit.clear();
-			DKRewardLimit.clear();
 			Scenario::RegisterAmount = 0;
 			Scenario::Active = true;
 			Summon(0, ScenarioMap, 286786, 351034, 360, 1, 0, 0, 0, 0);
@@ -388,7 +402,7 @@ void GVGSelection() {
 		fin.close();
 		remove("./Database/Destructing.db");
 		rename("./Database/temps.txt", "./Database/Destructing.db");
-		
+
 		vector< DKInfo >::iterator it = ScenarioGuild.begin();
 		while (it != ScenarioGuild.end()) {
 
@@ -418,6 +432,7 @@ void GVGSelection() {
 
 			std::string msg = "Destructing Key Points will start between " + Scenario::FirstGuild + " guild and " + Scenario::SecondGuild + " guild.";
 			CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+			ToNoticeWebhook(msg.c_str());
 			Scenario::Selection = true;
 		}
 		else {
@@ -481,6 +496,7 @@ void ProtectSelection() {
 
 			std::string msg = "Protecting Leader will start between " + Protect32::FirstGuild + " guild and " + Protect32::SecondGuild + " guild.";
 			CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+			ToNoticeWebhook(msg.c_str());
 			Protect32::Selection = true;
 		}
 		else {
@@ -503,6 +519,8 @@ void startProtect() {
 		msg = msg + Protect32::SecondGuild;
 		msg = msg + " guild.";
 		CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+		ToNoticeWebhook(msg.c_str());
+
 		Protect32::Prayer = 0;
 		Protect32::RedScore = 0;
 		Protect32::BlueScore = 0;
@@ -546,12 +564,12 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 {
 	int TimerNow = 0;
 	int TickCount = 0;
-	
+
 	do{
 		TickCount = GetTickCount() + 1000;
 
 		CCalendar::OnTimer(Value, Argument);
-		
+
 		time_t v3 = time(0);
 		struct tm *TimeNow = localtime(&v3);
 
@@ -583,6 +601,8 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 					std::string summonmsg = x->Msg;
 					if (strlen(summonmsg.c_str())) {
 						CPlayer::WriteAll(0xFF, "dsd", 247, summonmsg.c_str(), 2);
+						ToNoticeWebhook(summonmsg.c_str());
+
 						CPlayer::WriteAll(15, "s", summonmsg.c_str());
 					}
 
@@ -594,7 +614,10 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 
 		if (!CaptureFlag::Active && isSystemTime("ProtectTheFlag")) {
 			if (CaptureRegistration.size() > 1) {
-				CPlayer::WriteAll(0xFF, "dsd", 247, thisServerName + " Capture the flag has been started.", 2);
+				std::string msg = thisServerName + " Capture the flag has been started.";
+				CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+				ToNoticeWebhook(msg.c_str());
+
 				CaptureFlag::Time = CaptureDuration;
 				CaptureFlag::RedScore = 0;
 				CaptureFlag::BlueScore = 0;
@@ -622,7 +645,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 
 		if (!TriangularBattle::CDActive && !TriangularBattle::Active && isSystemTime("TriangularBattle"))
 			StartTriangularBattle();
-	
+
 		if (!Battlefield::Active && isSystemTime("Battlefield"))
 			startBF(false);
 
@@ -951,11 +974,46 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 			Summon(0, EmokMap, 331444, 265375, 384, 1, 0, 0, 3600000, 0);
 			Summon(0, EmokMap, 330222, 264165, 384, 1, 0, 0, 3600000, 0);
 			Summon(0, EmokMap, 329511, 264894, 384, 1, 0, 0, 3600000, 0);
-			CPlayer::WriteAll(0xFF, "dsd", 247, "Nail of Dragons have been appeared.", 2);
+			std::string msg = "Nail of Dragons have been appeared.";
+			CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+			ToNoticeWebhook(msg.c_str());
 		}
 
 		if (!SinEvent::Active && isSystemTime("SinEvent"))
 			startSinEvent(SEDefaultTime);
+
+		if (!PlayerRewardNotice.empty() && NoticesEnabled) {
+			for (auto it = PlayerRewardNotice.begin(); it != PlayerRewardNotice.end(); ++it) {
+				const std::string& msg = it->message;
+				int textColor = it->textColor;
+				int messageType = it->messageType;
+
+				if (!msg.empty()) {
+					// Normal Notice
+					if (messageType == 1)
+						CPlayer::WriteAll(0xFE, "dds", 178, textColor, msg.c_str());
+					else if (messageType == 2)
+						CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), textColor);
+
+				}
+			}
+			PlayerRewardNotice.clear();
+		}
+
+		if (isReloadingNPC){
+			InitNPCReload();
+			DeleteNPCList();
+			ShowNPCList();
+			isReloadingNPC = 0;
+		}
+			
+		if (Battlefield::Active && !Battlefield::slayerName.empty())
+		{
+			std::string msg = "Player " + Battlefield::slayerName + " has slayed Shadow Boss";
+//			CPlayer::WriteInMap(BFMap, 0xFF, "dsd", 247, msg.c_str(), 2);
+			CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+			Battlefield::slayerName.clear();
+		}
 
 		if (SinEvent::Active) {
 			int TimeLeft = SinEvent::Time - (int)time(0);
@@ -966,7 +1024,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 			{
 				if ((TimeLeft % SESpawnCycle) == 0) {
 					for (auto x = SinSpawners.begin(); x != SinSpawners.end(); x++) {
-						for(int i=0;i<x->Amount;i++)
+						for (int i = 0; i < x->Amount; i++)
 							Summon(0, 0, x->X, x->Y, x->Index, 1, 0, 0, TimeLeft * 1000, 0);
 					}
 					CPlayer::WriteAll(0xFF, "dsd", 247, "Sin Event monsters have re-appeared.", 2);
@@ -974,42 +1032,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 			}
 		}
 
-		if (!Bandits::Active && isSystemTime("Bandits"))
-		{
-			if (BanditsRegisteration.size() > 0)
-			{
-				Bandits::RegisterAmount = 0;
-				Bandits::Active = true;
-				Bandits::Time = (int)time(0) + BanditsTime;
-				CPlayer::WriteAll(0xFF, "dsd", 247, "Bandits System has started.", 2);
-			}
-			else {
-				CPlayer::WriteAll(0xFF, "dsd", 247, "Not enough players registered for Bandits System.", 2);
 
-			}
-		}
-
-		if (Bandits::Active && isEndSystemTime("Bandits"))
-		{
-				Bandits::RegisterAmount = 0;
-				Bandits::Active = false;
-				Bandits::Time = 0;
-				BanditsRegisteration.clear();
-				CPlayer::WriteAll(0xFF, "dsd", 247, "Bandits System has ended.", 2);
-		}
-
-		if (Bandits::Active)
-		{
-			DWORD Check = Bandits::Time - (int)time(0);
-
-			if (Check < 2){
-				Bandits::RegisterAmount = 0;
-				Bandits::Active = false;
-				Bandits::Time = 0;
-				BanditsRegisteration.clear();
-				CPlayer::WriteAll(0xFF, "dsd", 247, "Bandits System has ended.", 2);
-			}
-		}
 
 		if (isSystemTime("HouseRewards")){
 			AddHouseReward(HouseRewardTime);
@@ -1028,7 +1051,9 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 				F10::RegisterAmount = 0;
 				F10::Ilyer = 0;
 				F10::Active = true;
-				CPlayer::WriteAll(0xFF, "dsd", 247, "Ilyer Company System started.", 2);
+				std::string msg = "Ilyer Company System started.";
+				CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+				ToNoticeWebhook(msg.c_str());
 				Summon(0, 21, 117339, 36841, 702, 1, 0, 3700000, 3700000, 0);
 			}
 		}
@@ -1042,10 +1067,13 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 				Maut::KillCount = 0;
 				Maut::RegisterAmount = 0;
 				Maut::Active = true;
-				CPlayer::WriteAll(0xFF, "dsd", 247, "Mautareta System started.", 2);
+				std::string msg = "Mautareta System started.";
+				CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+				ToNoticeWebhook(msg.c_str());
+
 			}
 		}
-			
+
 		if (Maut::Active) {
 			DWORD Check = Maut::Timer - (int)time(0);
 
@@ -1116,7 +1144,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 						Summon(0, BossEXPMap, msgCheck.X, msgCheck.Y, msgCheck.Index, 1, 0, 0, 0, 0);
 				}
 
-				if(!msgCheck.message.empty())
+				if (!msgCheck.message.empty())
 					CPlayer::WriteInMap(BossEXPMap, 0xFF, "dsd", 247, msgCheck.message.c_str(), 1);
 			}
 		}
@@ -1130,31 +1158,51 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 		if (SufferingValley::Active)
 			SVOnTimer();
 
+		if (BFBossTime && Battlefield::Active == true && Battlefield::Time && Battlefield::Time % BFBossTime == 0)
+		{
+			TargetFind myTarget(1, 0, Battlefield::BossID);
+			void *Boss1 = myTarget.getTarget();
+
+			IChar Boss(Boss1);
+
+			if (!Boss.IsValid())
+			{
+				IChar InvalidBoss((void*)Summon(0, BFMap, Battlefield::GoodVsEvil ? BFBossX : BFBossX, Battlefield::GoodVsEvil ? BFBossY : BFBossY, BFBoss, 1, 0, 0, 0, 0));
+				Battlefield::BossID = InvalidBoss.GetID();
+			}
+			std::string msg = std::string(BFName) + " Boss have been re-spawned.";
+			CPlayer::WriteInMap(BFMap, 0xFF, "dsd", 247, msg.c_str(), 2);
+
+		}
+
 		if (Battlefield::Active == true && (Battlefield::Time == 1500 || Battlefield::Time == 1200 || Battlefield::Time == 1000 || Battlefield::Time == 600 || Battlefield::Time == 300))
 		{
-			TargetFind myTarget(1, 0, Battlefield::RedStoneID);
-			void *MonsterRed = myTarget.getTarget();
-
-			TargetFind myTarget2(1, 0, Battlefield::BlueStoneID);
-			void *MonsterBlue = myTarget2.getTarget();
-
-			IChar M1(MonsterBlue);
-			IChar m1(MonsterRed);
-
-			if (!M1.IsValid())
+			if ((RedStoneX && RedStoneY && BlueStoneX && BlueStoneY) || (RedStoneXG && RedStoneYG && BlueStoneXG && BlueStoneYG))
 			{
-				IChar N1((void*)Summon(0, BFMap, Battlefield::GoodVsEvil ? BlueStoneXG : BlueStoneX, Battlefield::GoodVsEvil ? BlueStoneYG : BlueStoneY, 445, 1, 0, 0, 0, 0));
-				Battlefield::BlueStoneID = N1.GetID();
-			}
+				TargetFind myTarget(1, 0, Battlefield::RedStoneID);
+				void *MonsterRed = myTarget.getTarget();
 
-			if (!m1.IsValid())
-			{
-				IChar n1((void*)Summon(0, BFMap, Battlefield::GoodVsEvil ? RedStoneXG : RedStoneX, Battlefield::GoodVsEvil ? RedStoneYG : RedStoneY, 448, 1, 0, 0, 0, 0));
-				Battlefield::BlueStoneID = n1.GetID();
-			}
+				TargetFind myTarget2(1, 0, Battlefield::BlueStoneID);
+				void *MonsterBlue = myTarget2.getTarget();
 
-			std::string msg = std::string(BFName) + " team stones have been re-spawned.";
-			CPlayer::WriteInMap(BFMap, 0xFF, "dsd", 247, msg.c_str(), 2);
+				IChar M1(MonsterBlue);
+				IChar m1(MonsterRed);
+
+				if (!M1.IsValid())
+				{
+					IChar N1((void*)Summon(0, BFMap, Battlefield::GoodVsEvil ? BlueStoneXG : BlueStoneX, Battlefield::GoodVsEvil ? BlueStoneYG : BlueStoneY, 445, 1, 0, 0, 0, 0));
+					Battlefield::BlueStoneID = N1.GetID();
+				}
+
+				if (!m1.IsValid())
+				{
+					IChar n1((void*)Summon(0, BFMap, Battlefield::GoodVsEvil ? RedStoneXG : RedStoneX, Battlefield::GoodVsEvil ? RedStoneYG : RedStoneY, 448, 1, 0, 0, 0, 0));
+					Battlefield::BlueStoneID = n1.GetID();
+				}
+			//	battlefield stones
+				std::string msg = std::string(BFName) + " team stones have been re-spawned.";
+				CPlayer::WriteInMap(BFMap, 0xFF, "dsd", 247, msg.c_str(), 2);
+			}
 		}
 
 		if (!Scenario::Active && !Scenario::Selection && isSystemTime("DKSelection"))
@@ -1312,6 +1360,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 				Hunting::Active = true;
 				std::string msg = "Hunting System started for " + GetGuildName + " guild.";
 				CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+				ToNoticeWebhook(msg.c_str());
 				int Mob = Summon(0, HGMapI, HGXC, HGYC, HGMobI, 1, 0, 0, 3600000, 0);
 				Hunting::Time = HTime;
 				Hunting::Monster = (void*)Mob;
@@ -1366,12 +1415,16 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 				}
 			}
 
+
 			if (Protect32::Active == true && Protect32::RedWin >= 2)
 			{
 				Protect32::Winner = Protect32::GuildSecond;
 				std::string msg = Protect32::SecondGuild + " won the Protecting Leader.";
 				CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
-				CPlayer::WriteAll(0xFF, "dsd", 247, Protect32::SecondGuild + " is now the next hunting Guild of " + (std::string)ServerName + " !", 2);
+				ToNoticeWebhook(msg.c_str());
+				msg = Protect32::SecondGuild + " is now the next hunting Guild of " + (std::string)ServerName + " !";
+				CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+				ToNoticeWebhook(msg.c_str());
 				HuntingAddAll(Protect32::GuildSecond, Protect32::SecondGuild);
 				InsertWinnerProtecting(Protect32::GuildSecond, Protect32::SecondGuild);
 				Protect32::Active = false;
@@ -1385,8 +1438,10 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 				Protect32::Winner = Protect32::GuildFirst;
 				std::string msg = Protect32::FirstGuild + " won the Protecting Leader.";
 				CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
-				CPlayer::WriteAll(0xFF, "dsd", 247, Protect32::FirstGuild + " is now the next hunting Guild of " + thisServerName + "!", 2);
-
+				ToNoticeWebhook(msg.c_str());
+				msg = Protect32::FirstGuild + " is now the next hunting Guild of " + thisServerName + "!";
+				CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+				ToNoticeWebhook(msg.c_str());
 				HuntingAddAll(Protect32::GuildFirst, Protect32::FirstGuild);
 				InsertWinnerProtecting(Protect32::GuildFirst, Protect32::FirstGuild);
 				Protect32::Active = false;
@@ -1402,8 +1457,10 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 					Protect32::Winner = Protect32::GuildFirst;
 					std::string msg = Protect32::FirstGuild + " won the Protecting Leader.";
 					CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
-					CPlayer::WriteAll(0xFF, "dsd", 247, Protect32::FirstGuild + " is now the next hunting Guild of " + thisServerName + "!", 2);
-
+					ToNoticeWebhook(msg.c_str());
+					msg = Protect32::FirstGuild + " is now the next hunting Guild of " + thisServerName + "!";
+					CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+					ToNoticeWebhook(msg.c_str());
 					HuntingAddAll(Protect32::GuildFirst, Protect32::FirstGuild);
 					InsertWinnerProtecting(Protect32::GuildFirst, Protect32::FirstGuild);
 					Protect32::Active = false;
@@ -1417,7 +1474,11 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 					Protect32::Winner = Protect32::GuildSecond;
 					std::string msg = Protect32::SecondGuild + " won the Protecting Leader.";
 					CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
-					CPlayer::WriteAll(0xFF, "dsd", 247, Protect32::SecondGuild + " is now the next hunting Guild of " + thisServerName + "!", 2);
+					ToNoticeWebhook(msg.c_str());
+					msg = Protect32::SecondGuild + " is now the next hunting Guild of " + thisServerName + "!";
+					CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+					ToNoticeWebhook(msg.c_str());
+
 					HuntingAddAll(Protect32::GuildSecond, Protect32::SecondGuild);
 					InsertWinnerProtecting(Protect32::GuildSecond, Protect32::SecondGuild);
 
@@ -1432,6 +1493,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 					Protect32::Winner = 0;
 					std::string msg = "Protecting Leader between " + Protect32::FirstGuild + " guild and " + Protect32::SecondGuild + " guild ended in a draw.";
 					CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+					ToNoticeWebhook(msg.c_str());
 					Protect32::Active = false;
 					Protect32::Selection = false;
 					Protect32::GuildSecond = 0;
@@ -1447,12 +1509,26 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 		{
 			std::string msg = (std::string)LastManStand::WinnerName + " won the " + std::string(LMSName);
 			CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+			ToNoticeWebhook(msg.c_str());
+
 			LastManStand::Notice = 0;
+			LastManStand::WinnerName.clear();
+		}
+
+		if (Hunting::End)
+		{
+			std::string msg = "Hunting System ended.";
+			CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+			ToNoticeWebhook(msg.c_str());
+			Hunting::End = 0;
 		}
 
 		if (NPCELeftTime && NPCELeftTime <= (int)time(0))
 		{
-			CPlayer::WriteAll(0xFF, "ds", 234, "[" + thisServerName + " Event] Event duration has been over!");
+			std::string msg = "[" + thisServerName + " Event] Event duration has been over!";
+			CPlayer::WriteAll(0xFF, "ds", 234, msg.c_str());
+			ToNoticeWebhook(msg.c_str());
+
 			NPCELeftTime = 0;
 			CPlayer::SnowEvent(4);
 			Snow = 4;
@@ -1486,7 +1562,8 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 							}
 						}
 
-						CPlayer::Write(IPlayer.GetOffset(), 0xFF, "dsd", 247, "Resetable Daily Quests have been reseted", 2);
+						std::string msg = "Resetable Daily Quests have been reseted";
+						CPlayer::Write(IPlayer.GetOffset(), 0xFF, "dsd", 247, msg.c_str(), 2);
 
 						if (DailyLogin)
 							CDBSocket::Write(100, "dddddddss", 1, IPlayer.GetUID(), (int)IPlayer.GetOffset(), String2Int(Time::GetMonth()), String2Int(Time::GetDay()), DailyLoginLimit, IPCheck, IPlayer.GetIP().c_str(), IPlayer.GetHWID().c_str());
@@ -1515,6 +1592,8 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 			CIOCriticalSection::Leave((void*)0x004e2078);
 
 			NPCEDailyLimit = 0;
+			std::string msg = "Resetable Daily Quests have been reseted";
+			ToNoticeWebhook(msg.c_str());
 
 			for (std::map<int, MSummonedConfig>::iterator iter = SummonedQuest.begin(); iter != SummonedQuest.end(); ++iter)
 			{
@@ -1560,6 +1639,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 					std::string notice = x->Msg;
 					if (!notice.empty()) {
 						CPlayer::WriteAll(0xFF, "dsd", 247, notice.c_str(), 2);
+						ToNoticeWebhook(notice.c_str());
 						CPlayer::WriteAll(15, "s", notice.c_str());
 					}
 				}
@@ -1611,12 +1691,12 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 					if (minutes != 0 && (minutes % AutoNotices[l].minutes) == 0 && seconds == ceil(showAt))
 					{
 						if (AutoNotices[l].msg.size() > 0)
-						CPlayer::WriteAll(0xFE, "dds", 178, AutoNotices[l].color, AutoNotices[l].msg.c_str());
+							CPlayer::WriteAll(0xFE, "dds", 178, AutoNotices[l].color, AutoNotices[l].msg.c_str());
 					}
 				}
 			}
 
-			if (minutes != 0 && (minutes % 30) == 0 && seconds == 0)
+			if (hours != 0 && (hours % 3) == 0 && minutes == 0 && seconds == 0)
 			{
 				CPlayer::WriteAll(15, "s", "This Server is Sponsored by KalTechSolutions - All rights reserved.");
 			}
@@ -1627,7 +1707,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 			int Quest = 0;
 
 			std::vector<std::string> arra = getExplode("{", "}", line);
-			for (int i = 0; i<arra.size(); i++) {
+			for (int i = 0; i < arra.size(); i++) {
 				if (sscanf(arra[i].c_str(), "%d", &Quest) == 1) {
 					if (EventMapRegister(Quest))
 						break;
@@ -1639,7 +1719,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 			std::string line = EventMapsTimer.count(TimeDayIndex) ? EventMapsTimer.find(TimeDayIndex)->second : EventMapsTimer.find(TimeIndex)->second;
 			int Quest = 0;
 			std::vector<std::string> arra = getExplode("{", "}", line);
-			for (int i = 0; i<arra.size(); i++) {
+			for (int i = 0; i < arra.size(); i++) {
 				if (sscanf(arra[i].c_str(), "%d", &Quest) == 1) {
 					if (EventMapStart(Quest))
 						break;
@@ -1656,30 +1736,41 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 		}
 
 		if (!DamageEvent::Active && isSystemTime("Damage")) {
-			CPlayer::WriteAll(0xFF, "ds", 234, thisServerName + " Damage Event has started.");
+			std::string msg = thisServerName + " Damage Event has started.";
+			CPlayer::WriteAll(0xFF, "ds", 234, msg.c_str());
+			ToNoticeWebhook(msg.c_str());
+
 			DamageEvent::Active = true;
 		}
 		if (DamageEvent::Active && isEndSystemTime("Damage")) {
-			CPlayer::WriteAll(0xFF, "ds", 234, thisServerName + " Damage Event has ended.");
+			std::string msg = thisServerName + " Damage Event has ended.";
+			CPlayer::WriteAll(0xFF, "ds", 234, msg.c_str());
+			ToNoticeWebhook(msg.c_str());
 			DamageEvent::Active = false;
 		}
 
 		if (!EggEvent::Active && isSystemTime("EGG")) {
-			CPlayer::WriteAll(0xFF, "ds", 234, thisServerName + " Egg Event has started.");
+			std::string msg = thisServerName + " Egg Event has started.";
+			CPlayer::WriteAll(0xFF, "ds", 234, msg.c_str());
+			ToNoticeWebhook(msg.c_str());
+
 			EggEvent::Active = true;
 		}
 
 		if (!PollTimer.empty() && !TimeNow->tm_sec) {
-			int Index = ((TimeNow->tm_mon+1) * 1000000) + (TimeNow->tm_mday * 10000) + (TimeNow->tm_hour * 100) + TimeNow->tm_min;
+			int Index = ((TimeNow->tm_mon + 1) * 1000000) + (TimeNow->tm_mday * 10000) + (TimeNow->tm_hour * 100) + TimeNow->tm_min;
 			if (PollTimer.count(Index)) {
 				Poll poll = PollTimer.find(Index)->second;
 				if (Index == poll.Start) {
 					std::string question = "New Poll : " + poll.Question + " is now available.";
 					CPlayer::WriteAll(0xFF, "ds", 234, question.c_str());
+					ToNoticeWebhook(question.c_str());
+
 				}
 				else {
 					std::string question = "Poll : " + poll.Question + " has now ended.";
 					CPlayer::WriteAll(0xFF, "ds", 234, question.c_str());
+					ToNoticeWebhook(question.c_str());
 
 					std::string Datko = "./Database/PollResult" + Int2String(poll.Quest) + ".db";
 					std::fstream DGkLOG;
@@ -1730,32 +1821,49 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 		}
 
 		if (EggEvent::Active && isEndSystemTime("EGG")) {
-			CPlayer::WriteAll(0xFF, "ds", 234, thisServerName + " Egg Event has ended.");
+			std::string msg = thisServerName + " Egg Event has ended.";
+			CPlayer::WriteAll(0xFF, "ds", 234, msg.c_str());
+			ToNoticeWebhook(msg.c_str());
+
 			EggEvent::Active = false;
 		}
 
 		if (!Immortal::Active && isSystemTime("Immortal")) {
-			CPlayer::WriteAll(0xFF, "ds", 234, thisServerName + " Immortal Event has started.");
+			std::string msg = thisServerName + " Immortal Event has started.";
+			CPlayer::WriteAll(0xFF, "ds", 234, msg.c_str());
+			ToNoticeWebhook(msg.c_str());
+
 			Immortal::Active = true;
 		}
 
 		if (Immortal::Active && isEndSystemTime("Immortal")) {
-			CPlayer::WriteAll(0xFF, "ds", 234, thisServerName + " Immortal Event has ended.");
+			std::string msg = thisServerName + " Immortal Event has ended.";
+			CPlayer::WriteAll(0xFF, "ds", 234, msg.c_str());
+			ToNoticeWebhook(msg.c_str());
+
 			Immortal::Active = false;
 		}
 
 		if (isSystemTime("EXP")) {
-			CPlayer::WriteAll(0xFF, "ds", 234, thisServerName + " EXP Event has started.");
+			std::string msg = thisServerName + " EXP Event has started.";
+			CPlayer::WriteAll(0xFF, "ds", 234, msg.c_str());
+			ToNoticeWebhook(msg.c_str());
+
 			CPlayer::SetEventCode(0, 1);
 		}
 
 		if (isEndSystemTime("EXP")) {
-			CPlayer::WriteAll(0xFF, "ds", 234, thisServerName + " EXP Event has ended.");
+			std::string msg = thisServerName + " EXP Event has ended.";
+			CPlayer::WriteAll(0xFF, "ds", 234, msg.c_str());
+			ToNoticeWebhook(msg.c_str());
+
 			CPlayer::SetEventCode(0, 0);
 		}
 
 		if (TimeStr == "01:59:59" || TimeStr == "03:59:59" || TimeStr == "05:59:59" || TimeStr == "07:59:59" || TimeStr == "09:59:59" || TimeStr == "13:59:59" || TimeStr == "15:59:59" || TimeStr == "17:59:59" || TimeStr == "19:59:59" || TimeStr == "21:59:59" || TimeStr == "02:59:59" || TimeStr == "04:59:59" || TimeStr == "06:59:59" || TimeStr == "08:59:59" || TimeStr == "10:59:59" || TimeStr == "12:59:59" || TimeStr == "14:59:59" || TimeStr == "16:59:59" || TimeStr == "18:59:59" || TimeStr == "20:59:59" || TimeStr == "22:59:59" || TimeStr == "00:59:59") {
-			CPlayer::WriteAll(0xFF, "dsd", 247, "This Server Is Sponsored By KalTechSolutions.", NOTICECOLOR_WHITE);
+			std::string msg = "This Server Is Sponsored By KalTechSolutions.";
+			CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), NOTICECOLOR_WHITE);
+			ToNoticeWebhook(msg.c_str());
 		}
 
 		if (TimeNow->tm_wday == CWTCD && TimeNow->tm_hour < CWTCSH && (int)*(DWORD**)0x004E0964 != 1 && (int)*(DWORD**)0x004E0964 != 4)
@@ -1763,12 +1871,18 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 
 		if (TimeNow->tm_wday == CWTCD && TimeNow->tm_hour == (CWTCSH - 3) && !TimeNow->tm_min && !TimeNow->tm_sec && !CGuild::IsWarringPeriod()) {
 			*(DWORD**)0x004E0964 = (DWORD*)1;
-			CPlayer::WriteAll(0xFF, "dsd", 247, "Guilds can declare for castle war.", 2);
+			std::string msg = "Guilds can declare for castle war.";
+			CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+			ToNoticeWebhook(msg.c_str());
+
 		}
 
 		if (TimeStr == Int2String(CWTCSH - 1) + ":59:00" && TimeNow->tm_wday == CWTCD && !CGuild::IsWarringPeriod()) {
 			*(DWORD**)0x004E0964 = (DWORD*)0;
-			CPlayer::WriteAll(0xFF, "dsd", 247, "Declaring for castle war ended.", 2);
+			std::string msg = "Declaring for castle war ended.";
+			CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 2);
+			ToNoticeWebhook(msg.c_str());
+
 		}
 		/* Castle War Declare End */
 
@@ -1781,6 +1895,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 			*(DWORD**)0x004E0964 = (DWORD*)4;
 			WarBegin(SetCwTime);
 			CPlayer::WriteAll(0xFF, "dsd", 247, thisServerName + " Castle War has started.", 5);
+			ToNoticeWebhook(thisServerName + "Castle War has started.");
 		}
 
 		if (!HappyHour::Active && isSystemTime("HappyHour")) {
@@ -1811,14 +1926,18 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 			IChar IPlayer((void*)InterlockedExchangeAdd(&PlayerLevelNotice, 0));
 			if (IPlayer.IsOnline()) {
 				string congratsMsg = "Dear " + (std::string)IPlayer.GetName() + ", Congratulations on reaching level " + Int2String(IPlayer.GetLevel());
-				CPlayer::WriteAll(0xFF, "dsd", 247, congratsMsg.c_str(), NOTICECOLOR_WHITE);
+				CPlayer::WriteAll(0xFF, "dsd", 247, congratsMsg.c_str(), NOTICECOLOR_BLUE);
+				std::string url = LevelWebhook;
+				std::string avatar = Avatar;
+				std::string playerName = std::string(IPlayer.GetName());
+				SendWebhookMessage(url, congratsMsg.c_str(), avatar.c_str(), std::string(playerName));
 			}
 			InterlockedExchange(&PlayerLevelNotice, 0);
 		}
 
 		if (WarEndTime && WarEndTime <= (int)time(0)) {
 			WarEndTime = 0;
-			if(CWRLimit)
+			if (CWRLimit)
 				RewardLimit.clear();
 		}
 
@@ -1945,6 +2064,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 				RewardLimit.clear();
 				LastManStand::Active = true;
 				LastManStand::Time = 3;
+				Summon(0, LMSMap, LMSMobX, LMSMobY, LMSMobIndex, 1, 1, 0, 0, 0);
 			}
 		}
 
@@ -1962,20 +2082,20 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 
 		/*if (isSystemTime("Raid")) {
 			if (RaidSystem.size() > 0 && Raid::Active == false) {
-				CPlayer::WriteAll(0xFF, "dsd", 247, thisServerName + " Raid System has been started.", 2);
-				Raid::Time = 315;
-				Raid::Round = 0;
-				Raid::Active = true;
+			CPlayer::WriteAll(0xFF, "dsd", 247, thisServerName + " Raid System has been started.", 2);
+			Raid::Time = 315;
+			Raid::Round = 0;
+			Raid::Active = true;
 			}
-		}
+			}
 
-		if (Raid::Active == true && Raid::Time == 0) {
+			if (Raid::Active == true && Raid::Time == 0) {
 			CPlayer::WriteInMap(RaidMap, 0xFF, "dsd", 247, "As I said, You failed to beat me, train harder, we will see tomorrow!", 1);
 			CPlayer::WriteInMap(RaidMap, 0xFF, "ds", 236, "hell_time");
 			Raid::Round = 0;
 			Raid::Active = false;
-		}
-		*/
+			}
+			*/
 
 		if (Scenario::Active == true && Scenario::Time == 0)
 		{
@@ -2040,6 +2160,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 		if (Battlefield::Active == true && Battlefield::Time == 0)
 		{
 			BattlefieldRegistration.clear();
+			BattlefieldHWID.clear();
 			Battlefield::Active = false;
 			Battlefield::Time = 0;
 		}
@@ -2053,7 +2174,9 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 
 		if (DNPCELeftTime && DNPCELeftTime <= (int)time(0))
 		{
-			CPlayer::WriteAll(0xFF, "ds", 234, "[" + thisServerName + " Damage Event] Event duration has been over!");
+			std::string msg = "[" + thisServerName + " Damage Event] Event duration has been over!";
+			CPlayer::WriteAll(0xFF, "ds", 234, msg.c_str());
+			ToNoticeWebhook(msg.c_str());
 			DNPCELeftTime = 0;
 			DamageEvent::Active = false;
 		}

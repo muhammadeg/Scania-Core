@@ -59,104 +59,108 @@ void __fastcall MonsterTick(void *Monster, void *edx)
 {
 	IChar IMonster(Monster);
 
-	if (IMonster.IsValid() && IMonster.GetMobTanker() && (IMonster.GetMobIndex() == 437 || IMonster.GetMobIndex() == 485 || IMonster.GetMobIndex() == 486 || IMonster.GetMobIndex() == 487 || IMonster.GetMobIndex() == 488) && !IMonster.IsBuff(360))
-	{
-		IChar IPlayer((void*)IMonster.GetMobTanker());
-
-		if (IPlayer.IsValid() && IPlayer.GetMap() == IMonster.GetMap() && (int)CTools::Rate(1, 100) <= 7)
+	if (FOESkillsActive){
+		if (IMonster.IsValid() && IMonster.GetMobTanker() && (IMonster.GetMobIndex() == 437 || IMonster.GetMobIndex() == 485 || IMonster.GetMobIndex() == 486 || IMonster.GetMobIndex() == 487 || IMonster.GetMobIndex() == 488) && !IMonster.IsBuff(360))
 		{
-			IMonster.Buff(360,10,0);
-			CChar::WriteInSight(IMonster.Offset, 63, "bddbb", 87, IMonster.GetID(), IMonster.GetID(), 1, 1);
-			int *GetSetXY = new int[2];
-			GetSetXY[0] = IPlayer.GetX();
-			GetSetXY[1] = IPlayer.GetY();
-			int check = CMonsterMagic::Create(230,IMonster.GetMap(),(int)GetSetXY,1,(int)IMonster.GetOffset(),0,5000);
-			delete[] GetSetXY;
-		} else {
-			IMonster.Buff(360,2,0);
-		}
-	}
+			IChar IPlayer((void*)IMonster.GetMobTanker());
 
-	if (IMonster.IsValid() && IMonster.GetMobTanker() && (IMonster.GetMobIndex() == 439 || IMonster.GetMobIndex() == 489 || IMonster.GetMobIndex() == 490 || IMonster.GetMobIndex() == 491 || IMonster.GetMobIndex() == 492) && !IMonster.IsBuff(360))
-	{
-		IChar IPlayer((void*)IMonster.GetMobTanker());
-
-		if (IPlayer.IsValid() && IPlayer.GetMap() == IMonster.GetMap() && (int)CTools::Rate(1, 100) <= 7)
-		{
-			IMonster.Buff(360,10,0);
-			CChar::WriteInSight(IMonster.Offset, 63, "bddbb", 88, IMonster.GetID(), IMonster.GetID(), 1, 1);
-			int *GetSetXY = new int[2];
-			GetSetXY[0] = IPlayer.GetX();
-			GetSetXY[1] = IPlayer.GetY();
-			int check = CMonsterMagic::Create(229,IMonster.GetMap(),(int)GetSetXY,1,(int)IMonster.GetOffset(),0,5000);
-			delete[] GetSetXY;
-		} else {
-			IMonster.Buff(360,2,0);
-		}
-	}
-
-	if (IMonster.IsValid() && IMonster.GetMobTanker() && (IMonster.GetMobIndex() == 441 || IMonster.GetMobIndex() == 493 || IMonster.GetMobIndex() == 496 || IMonster.GetMobIndex() == 494 || IMonster.GetMobIndex() == 495) && !IMonster.IsBuff(360))
-	{
-		IChar IPlayer((void*)IMonster.GetMobTanker());
-
-		if (IPlayer.IsValid() && IPlayer.GetMap() == IMonster.GetMap() && (int)CTools::Rate(1, 100) <= 7)
-		{
-			IMonster.Buff(360,10,0);
-			CChar::WriteInSight(IMonster.Offset, 63, "bddbb", 89, IMonster.GetID(), IMonster.GetID(), 1, 1);
-			int *GetSetXY = new int[2];
-			GetSetXY[0] = IPlayer.GetX();
-			GetSetXY[1] = IPlayer.GetY();
-			int check = CMonsterMagic::Create(228,IMonster.GetMap(),(int)GetSetXY,1,(int)IMonster.GetOffset(),0,5000);
-			delete[] GetSetXY;
-		} else {
-			IMonster.Buff(360,2,0);
-		}
-	}
-
-	if (IMonster.IsValid() && IMonster.GetMobTanker() && (IMonster.GetMobIndex() == 443 || IMonster.GetMobIndex() == 497 || IMonster.GetMobIndex() == 498 || IMonster.GetMobIndex() == 499 || IMonster.GetMobIndex() == 500) && !IMonster.IsBuff(360))
-	{
-		IChar IPlayer((void*)IMonster.GetMobTanker());
-
-		if (IPlayer.IsValid() && IPlayer.GetMap() == IMonster.GetMap() && (int)CTools::Rate(1, 100) <= 90)
-		{
-			IMonster.Buff(360,3,0);
-			CChar::WriteInSight(IMonster.Offset, 63, "bddbb", 90, IMonster.GetID(), IMonster.GetID(), 1, 1);
-
-			int Around = IPlayer.GetObjectListAround(3);
-
-			while(Around)
+			if (IPlayer.IsValid() && IPlayer.GetMap() == IMonster.GetMap() && (int)CTools::Rate(1, 100) <= 7)
 			{
-				IChar Object((void*)CBaseList::Offset((void*)Around));
+				IMonster.Buff(360, 10, 0);
+				CChar::WriteInSight(IMonster.Offset, 63, "bddbb", 87, IMonster.GetID(), IMonster.GetID(), 1, 1);
+				int *GetSetXY = new int[2];
+				GetSetXY[0] = IPlayer.GetX();
+				GetSetXY[1] = IPlayer.GetY();
+				int check = CMonsterMagic::Create(230, IMonster.GetMap(), (int)GetSetXY, 1, (int)IMonster.GetOffset(), 0, 5000);
+				delete[] GetSetXY;
+			}
+			else {
+				IMonster.Buff(360, 2, 0);
+			}
+		}
 
-				if (Object.GetType() == 0)
-					IPlayer.OktayDamageStorm(Object,CTools::Rate(750,1000));
+		if (IMonster.IsValid() && IMonster.GetMobTanker() && (IMonster.GetMobIndex() == 439 || IMonster.GetMobIndex() == 489 || IMonster.GetMobIndex() == 490 || IMonster.GetMobIndex() == 491 || IMonster.GetMobIndex() == 492) && !IMonster.IsBuff(360))
+		{
+			IChar IPlayer((void*)IMonster.GetMobTanker());
 
-				Around = CBaseList::Pop((void*)Around);
+			if (IPlayer.IsValid() && IPlayer.GetMap() == IMonster.GetMap() && (int)CTools::Rate(1, 100) <= 7)
+			{
+				IMonster.Buff(360, 10, 0);
+				CChar::WriteInSight(IMonster.Offset, 63, "bddbb", 88, IMonster.GetID(), IMonster.GetID(), 1, 1);
+				int *GetSetXY = new int[2];
+				GetSetXY[0] = IPlayer.GetX();
+				GetSetXY[1] = IPlayer.GetY();
+				int check = CMonsterMagic::Create(229, IMonster.GetMap(), (int)GetSetXY, 1, (int)IMonster.GetOffset(), 0, 5000);
+				delete[] GetSetXY;
+			}
+			else {
+				IMonster.Buff(360, 2, 0);
+			}
+		}
+
+		if (IMonster.IsValid() && IMonster.GetMobTanker() && (IMonster.GetMobIndex() == 441 || IMonster.GetMobIndex() == 493 || IMonster.GetMobIndex() == 496 || IMonster.GetMobIndex() == 494 || IMonster.GetMobIndex() == 495) && !IMonster.IsBuff(360))
+		{
+			IChar IPlayer((void*)IMonster.GetMobTanker());
+
+			if (IPlayer.IsValid() && IPlayer.GetMap() == IMonster.GetMap() && (int)CTools::Rate(1, 100) <= 7)
+			{
+				IMonster.Buff(360, 10, 0);
+				CChar::WriteInSight(IMonster.Offset, 63, "bddbb", 89, IMonster.GetID(), IMonster.GetID(), 1, 1);
+				int *GetSetXY = new int[2];
+				GetSetXY[0] = IPlayer.GetX();
+				GetSetXY[1] = IPlayer.GetY();
+				int check = CMonsterMagic::Create(228, IMonster.GetMap(), (int)GetSetXY, 1, (int)IMonster.GetOffset(), 0, 5000);
+				delete[] GetSetXY;
+			}
+			else {
+				IMonster.Buff(360, 2, 0);
+			}
+		}
+
+		if (IMonster.IsValid() && IMonster.GetMobTanker() && (IMonster.GetMobIndex() == 443 || IMonster.GetMobIndex() == 497 || IMonster.GetMobIndex() == 498 || IMonster.GetMobIndex() == 499 || IMonster.GetMobIndex() == 500) && !IMonster.IsBuff(360))
+		{
+			IChar IPlayer((void*)IMonster.GetMobTanker());
+
+			if (IPlayer.IsValid() && IPlayer.GetMap() == IMonster.GetMap() && (int)CTools::Rate(1, 100) <= 10)
+			{
+				IMonster.Buff(360, 3, 0);
+				CChar::WriteInSight(IMonster.Offset, 63, "bddbb", 90, IMonster.GetID(), IMonster.GetID(), 1, 1);
+
+				int Around = IPlayer.GetObjectListAround(3);
+
+				while (Around)
+				{
+					IChar Object((void*)CBaseList::Offset((void*)Around));
+
+					if (Object.GetType() == 0)
+						IPlayer.OktayDamageStorm(Object, CTools::Rate(750, 1000));
+
+					Around = CBaseList::Pop((void*)Around);
+				}
+			}
+		}
+
+		if (IMonster.IsValid() && IMonster.GetMobTanker() && (IMonster.GetMobIndex() == 435 || IMonster.GetMobIndex() == 481 || IMonster.GetMobIndex() == 482 || IMonster.GetMobIndex() == 483 || IMonster.GetMobIndex() == 484) && !IMonster.IsBuff(360))
+		{
+			IChar IPlayer((void*)IMonster.GetMobTanker());
+
+			if (IPlayer.IsValid() && IPlayer.GetMap() == IMonster.GetMap() && (int)CTools::Rate(1, 100) <= 10)
+			{
+				IMonster.Buff(360, 3, 0);
+				CChar::WriteInSight(IMonster.Offset, 63, "bddbb", 86, IMonster.GetID(), IMonster.GetID(), 1, 1);
+				int Around = IPlayer.GetObjectListAround(3);
+
+				while (Around)
+				{
+					IChar Object((void*)CBaseList::Offset((void*)Around));
+
+					if (Object.GetType() == 0)
+						IPlayer.OktayDamageStorm(Object, CTools::Rate(750, 1000));
+
+					Around = CBaseList::Pop((void*)Around);
+				}
 			}
 		}
 	}
-
-	if (IMonster.IsValid() && IMonster.GetMobTanker() && (IMonster.GetMobIndex() == 435 || IMonster.GetMobIndex() == 481 || IMonster.GetMobIndex() == 482 || IMonster.GetMobIndex() == 483 || IMonster.GetMobIndex() == 484) && !IMonster.IsBuff(360))
-	{
-		IChar IPlayer((void*)IMonster.GetMobTanker());
-
-		if (IPlayer.IsValid() && IPlayer.GetMap() == IMonster.GetMap() && (int)CTools::Rate(1, 100) <= 10)
-		{
-			IMonster.Buff(360,3,0);
-			CChar::WriteInSight(IMonster.Offset, 63, "bddbb", 86, IMonster.GetID(), IMonster.GetID(), 1, 1);
-			int Around = IPlayer.GetObjectListAround(3);
-
-			while(Around)
-			{
-				IChar Object((void*)CBaseList::Offset((void*)Around));
-
-				if (Object.GetType() == 0)
-					IPlayer.OktayDamageStorm(Object,CTools::Rate(750,1000));
-
-				Around = CBaseList::Pop((void*)Around);
-			}
-		}
-	}
-
 	CMonsterReal::Tick(Monster);
 }

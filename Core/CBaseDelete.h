@@ -1,81 +1,6 @@
-int reloadingM = 0; 
+int reloadingM = 0;
 void insertOfflineReward(int PID, int Index, int Amount, int Class, int Prefix, int Info, int Attack, int Magic, int TOA, int Upgrade, int Defense, int Evasion, int Endurance, int ItemStat, const char* Message) {
 	CDBSocket::Write(115, "dddddddddddddds", PID, Index, Amount, Class, Prefix, Info, Attack, Magic, TOA, Upgrade, Defense, Evasion, Endurance, ItemStat, Message);
-}
-
-
-void SendDiscordMessage(const std::string& webhookURL, const std::string& message) {
-	CURL* curl;
-	CURLcode res;
-
-	curl = curl_easy_init();
-	if (curl) {
-		curl_easy_setopt(curl, CURLOPT_URL, webhookURL.c_str());
-		curl_easy_setopt(curl, CURLOPT_POST, 1);
-
-		std::string jsonMessage = "{ \"content\": \"" + message + "\" }";
-		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonMessage.c_str());
-
-		res = curl_easy_perform(curl);
-		if (res != CURLE_OK) {
-			CConsole::Red("Failed to send message to Discord: %s\n", curl_easy_strerror(res));
-		}
-
-		curl_easy_cleanup(curl);
-	}
-}
-
-bool CheckRangeProtection(int Player, signed int SkillID, int Target, int pPacket, int pPos)
-{
-	IChar IPlayer((void*)Player);
-	IChar ITarget((void*)Target);
-
-	int maxrange = 0;
-	if (CheckRangeConfig.count(SkillID + (IPlayer.GetClass() * 100)))
-		maxrange = CheckRangeConfig.find(SkillID + (IPlayer.GetClass() * 100))->second.maxRange;
-	else
-	{
-		if (IPlayer.GetClass() == 0)
-			maxrange = KRange;
-		else if (IPlayer.GetClass() == 1)
-			maxrange = MRange;
-		else if (IPlayer.GetClass() == 2)
-			maxrange = ARRange;
-		else if (IPlayer.GetClass() == 3)
-			maxrange = TRange;
-		else if (IPlayer.GetClass() == 4)
-			maxrange = SRange;
-	}
-
-	int Around = IPlayer.GetObjectListAround(maxrange);
-	bool isValidRange = false;
-
-	while (Around)
-	{
-		IChar Object((void*)CBaseList::Offset((void*)Around));
-
-		if (ITarget.GetOffset())
-		{
-			if (ITarget.GetOffset() == Object.GetOffset())
-			{
-				isValidRange = true;
-				break;
-			}
-		}
-		else {
-
-			if (Object.GetOffset() && IPlayer.GetOffset() != Object.GetOffset())
-			{
-				isValidRange = true;
-				break; // No need to check further
-			}
-		}
-
-		Around = CBaseList::Pop((void*)Around);
-	}
-
-	return isValidRange;
-
 }
 
 void ProcessNPCList(bool showNPC) {
@@ -98,233 +23,6 @@ void DeleteNPCList() {
 
 void ShowNPCList() {
 	ProcessNPCList(true);
-}
-
-void RandomSummoning(void* Player, void* Monster) {
-	IChar IMonster(Monster);
-	IChar IPlayer((void*)Player);
-
-	// Monsters Random Summon
-	if (MonstersRSummon.count(IMonster.GetMobIndex())) {
-		int RewardID = MonstersRSummon.find(IMonster.GetMobIndex())->second.rewardid;
-		int PlayerChance = MonstersRSummon.find(IMonster.GetMobIndex())->second.pickchance;
-		int RandomMonster = MonstersRSummon.find(IMonster.GetMobIndex())->second.randomindex;
-		int RandomAmount = MonstersRSummon.find(IMonster.GetMobIndex())->second.randomamount;
-		int Rate = CTools::Rate(1, 1000);
-
-		if (PlayerChance >= Rate)
-		{
-			for (int i = 0; i < RandomAmount; i++){
-				Summon((int)IPlayer.GetOffset(), IPlayer.GetMap(), IPlayer.GetX(), IPlayer.GetY(), RandomMonster, 1, 0, 0, 1800000, 0);
-			}
-			IPlayer.Announcement("[Santa Clause] You have summoned a Mini-Goofy", 4);
-		}
-
-	}
-}
-
-void PBattlepassCheck(void* Player, void* QuestOffset){
-	IQuest Quest(QuestOffset);
-
-	IChar IPlayer((void*)Player);
-
-	if (IPlayer.IsOnline() && Quest.GetIndex() == BattlepassQuest)
-	{
-		int battlepassToReward = IPlayer.GetProperty(PlayerProperty::CurrentPBReward);
-		int battlepassMaxReward = IPlayer.GetProperty(PlayerProperty::MaxBReward);
-		int Item = CPlayer::FindItem((void*)Player, BattlepassIndex, 1);
-
-		if (Item){
-			if (battlepassToReward >= battlepassMaxReward)
-			{
-		//		IPlayer.SystemMessage("You have already claimed previous premium rewards.", TEXTCOLOR_RED);
-				return;
-			}
-
-			for (int level = 1; level <= IPlayer.GetProperty(PlayerProperty::BattlepassLv); level++)
-			{
-				std::vector<ConfigLevelReward> pbattleReward = PremiumPass.find(level)->second;
-
-				for (int i = 0; i < (int)pbattleReward.size(); i++)
-				{
-					ConfigLevelReward premiumReward = pbattleReward[i];
-					if (premiumReward.Class == IPlayer.GetClass() || premiumReward.Class == 5)
-					{
-						if (battlepassToReward < battlepassMaxReward && battlepassToReward < premiumReward.ID)
-						{
-							for (int j = 0; j < premiumReward.Indexes.size(); j++) {
-								int Index = String2Int(premiumReward.Indexes[j]);
-								int Amount = String2Int(premiumReward.Amounts[j]);
-								if (Index && Amount)
-									IPlayer.GiveReward(Index, premiumReward.Prefix, Amount, (premiumReward.Prefix == 256) ? 0 : -128, 0, 0, 0, 0, 0, 0, 0, premiumReward.Msg.c_str());
-							}
-
-							CDBSocket::Write(122, "dd", IPlayer.GetPID(), 6);
-						}
-					}
-				}
-			}
-		}
-		return;
-	}
-
-
-}
-
-void BattlepassCheck(void* Player, void* QuestOffset){
-	IQuest Quest(QuestOffset);
-
-	IChar IPlayer((void*)Player);
-
-	if (IPlayer.IsOnline() && Quest.GetIndex() == BattlepassQuest)
-	{
-		int battlepassToReward = IPlayer.GetProperty(PlayerProperty::CurrentBReward);
-		int battlepassMaxReward = IPlayer.GetProperty(PlayerProperty::MaxBReward);
-		int Item = CPlayer::FindItem((void*)Player, BattlepassIndex, 1);
-
-		if (battlepassToReward >= battlepassMaxReward)
-		{
-			IPlayer.SystemMessage("You have already claimed previous rewards.", TEXTCOLOR_RED);
-			return;
-		}
-
-		for (int level = 1; level <= IPlayer.GetProperty(PlayerProperty::BattlepassLv); level++)
-		{
-			std::vector<ConfigLevelReward> battleReward = BattlepassReward.find(level)->second;
-
-			for (int i = 0; i < (int)battleReward.size(); i++)
-			{
-				ConfigLevelReward reward = battleReward[i];
-				if (reward.Class == IPlayer.GetClass() || reward.Class == 5)
-				{
-					if (battlepassToReward < battlepassMaxReward && battlepassToReward < reward.ID)
-					{
-
-						for (int j = 0; j < reward.Indexes.size(); j++) {
-							int Index = String2Int(reward.Indexes[j]);
-							int Amount = String2Int(reward.Amounts[j]);
-							if (Index && Amount)
-								IPlayer.GiveReward(Index, reward.Prefix, Amount, (reward.Prefix == 256) ? 0 : -128, 0, 0, 0, 0, 0, 0, 0, reward.Msg.c_str());
-						}
-
-						CDBSocket::Write(122, "dd", IPlayer.GetPID(), 4);
-					}
-				}
-			}
-		}
-
-		return;
-	}
-
-
-}
-
-void UpdateAutoMission(void* Player, void* Monster) {
-	IChar IPlayer(Player);
-	IChar ITarget(Monster);
-	if (IPlayer.IsValid() && ITarget.IsValid() && IPlayer.GetType() == 0 && ITarget.GetType() == 1) {
-		int MissionMonsterIndex = ITarget.GetMobIndex();
-
-		for (std::unordered_map<int, MissionInfo>::const_iterator it = MissionQuests.begin(); it != MissionQuests.end(); ++it) {
-			const MissionInfo& mission = it->second;
-			if (mission.Monster == MissionMonsterIndex) {
-				int currentMission = it->first;
-				int nextMission = mission.nextmission;
-				int questIndex = (currentMission << 16) + 1;
-				int missionMonsterAmount = mission.Amount;
-				int isNewCurrentMission = IPlayer.GetBuffValue(BuffNames::CurrentMissionBuff + currentMission);
-				int isPreviousMission = IPlayer.GetBuffValue(BuffNames::CurrentMissionBuff + (currentMission - 1));
-				int isNextMission = IPlayer.GetBuffValue(BuffNames::CurrentMissionBuff + (currentMission + 1));
-
-				bool isQuest = (CPlayer::CheckQuestFlag((int)IPlayer.GetOffset(), questIndex) == true);
-				int isQuestClear = CPlayer::CheckQuestClear((int)IPlayer.GetOffset(), static_cast<char>(currentMission));
-				// if player isnt quest and isnt next quest
-				if ((currentMission != 0 && !isQuest && !isNewCurrentMission))
-					continue;
-
-				// Check if the player has completed the previous mission and isn't in next mission
-				if ((currentMission != 0 && isPreviousMission && !isNewCurrentMission))
-					continue;
-
-				if ((currentMission != 0 && !isQuestClear && !isNextMission && IPlayer.GetBuffValue(BuffNames::MissionBuff) <= missionMonsterAmount)) {
-					int missionProgress = IPlayer.GetBuffValue(BuffNames::MissionBuff);
-
-					if (!IPlayer.IsBuff(BuffNames::MissionBuff)) {
-						IPlayer.SaveBuff(BuffNames::MissionBuff, 86400, 0, 0, 0);
-
-					}
-
-					missionProgress++;
-					IPlayer.SaveBuff(BuffNames::MissionBuff, 86400, missionProgress, 0, 0);
-					// Write the current mission progress to the client
-					CPlayer::Write(IPlayer.GetOffset(), 184, "ddd", questIndex, ITarget.GetMobIndex(), missionProgress);
-
-					if (missionProgress >= missionMonsterAmount) {
-						IPlayer.EndQuestMission(currentMission, 0, 0, 1);
-						IPlayer.systemReward(mission.rewardID);
-						missionProgress = 0;
-						if (nextMission != 0) {
-							IPlayer.SaveBuff(BuffNames::MissionBuff, 86400, 0, 0, 0);
-							IPlayer.StartQuest(nextMission, 0, 0, 0);
-							CQuest::Start(nextMission << 16 | 1, (int)IPlayer.GetOffset());
-							if (PeaceEvil)
-							IPlayer.AddHousePoints(2);
-							IPlayer.SaveBuff(BuffNames::CurrentMissionBuff + nextMission, 86400, nextMission, 0, 0);
-							IPlayer.SaveBuff(BuffNames::CurrentMissionBuff + currentMission, 86400, currentMission, 0, 0);
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-void UpdateAutoMissionItem(void* Player) {
-
-	IChar IPlayer(Player);
-	for (std::unordered_map<int, MissionInfo>::const_iterator it = MissionQuests.begin(); it != MissionQuests.end(); ++it) {
-		const MissionInfo& mission = it->second;
-	//	IItem IItem((void*)mission.Item);
-	//	int itemAmount = IItem.GetAmount();
-		int ItemFound = CPlayer::FindItem(IPlayer.GetOffset(), mission.Item, mission.itemAmount);
-		if (ItemFound) {
-			int currentMission = it->first;
-			int nextMission = mission.nextmission;
-			int questIndex = (currentMission << 16) + 1;
-			int isNewCurrentMission = IPlayer.GetBuffValue(BuffNames::CurrentMissionBuff + currentMission);
-			int isPreviousMission = IPlayer.GetBuffValue(BuffNames::CurrentMissionBuff + (currentMission - 1));
-			int isNextMission = IPlayer.GetBuffValue(BuffNames::CurrentMissionBuff + (currentMission + 1));
-
-			bool isQuest = (CPlayer::CheckQuestFlag((int)IPlayer.GetOffset(), questIndex) == true);
-			int isQuestClear = CPlayer::CheckQuestClear((int)IPlayer.GetOffset(), static_cast<char>(currentMission));
-			// if player isnt quest and isnt next quest
-			if ((currentMission != 0 && !isQuest && !isNewCurrentMission))
-				continue;
-
-			// Check if the player has completed the previous mission and isn't in next mission
-			if ((currentMission != 0 && isPreviousMission && !isNewCurrentMission))
-				continue;
-
-			if ((currentMission != 0 && !isQuestClear && !isNextMission && ItemFound)) {
-
-				if (ItemFound) {
-					IPlayer.EndQuestMission(currentMission, 0, 0, 1);
-					IPlayer.systemReward(mission.rewardID);
-					if (nextMission != 0) {
-						IPlayer.StartQuest(nextMission, 0, 0, 0);
-						if (PeaceEvil)
-							IPlayer.AddHousePoints(2);
-						IPlayer.SaveBuff(BuffNames::CurrentMissionBuff + nextMission, 86400, nextMission, 0, 0);
-						IPlayer.SaveBuff(BuffNames::CurrentMissionBuff + currentMission, 86400, currentMission, 0, 0);
-						IPlayer.RemoveItem(mission.Item, mission.itemAmount);
-						CPlayer::RemoveItem(IPlayer.GetOffset(), 9, mission.Item, mission.itemAmount);
-						if (mission.teleportX)
-						IPlayer.Teleport(mission.teleportMap, mission.teleportX, mission.teleportY);
-					}
-				}
-			}
-		}
-	}
 }
 
 
@@ -454,6 +152,7 @@ void updateDailyQuestKill(int MonsterIndex, IChar EAPlayer) {
 
 void AddHouseReward(int Time)
 {
+	// need update db packet
 	int TotalTime = Time;
 	int FutureTime = (int)time(0) + TotalTime;
 
@@ -491,6 +190,7 @@ void SpawnEventMap(eventMap questEvent, int spawnIndex, int Timeleft) {
 
 void __fastcall CBaseDelete(void *Object, void *edx)
 {
+
 	IChar Check(Object);
 	int Type = 2, IID = 0, index = 0, MobIndex = 0, Offset = 0, PID = 0, PIDItem = 0, Erase = (int)Object; std::string DeleteIP = "error";
 	int Def = 0;
@@ -558,7 +258,7 @@ void __fastcall CBaseDelete(void *Object, void *edx)
 			std::vector<MonsterDailyQuest> Quests = x->second;
 			int Index = x->first;
 
-			for (auto y = Quests.begin(); y != Quests.end();y++) {
+			for (auto y = Quests.begin(); y != Quests.end(); y++) {
 				if (y->MainIndex)
 					Index = y->MainIndex;
 				else
@@ -626,7 +326,7 @@ void __fastcall CBaseDelete(void *Object, void *edx)
 
 		if (PSActive) {
 			int Limit = Check.GetBuffValue(BuffNames::AssaPointsLimit);
-			if(Limit)
+			if (Limit)
 				CDBSocket::Write(95, "ddddddd", 1, Check.GetPID(), BuffNames::AssaPointsLimit, Limit, 0, 0, (int)time(0) + Check.GetBuffRemain(BuffNames::AssaPointsLimit));
 		}
 
@@ -668,7 +368,7 @@ void __fastcall CBaseDelete(void *Object, void *edx)
 	if (Type == 1 && Check.IsOnline())
 	{
 		MobIndex = Check.GetMobIndex();
-		
+
 		if (reloadingM) {
 			CChar::WriteInSight(Check.GetOffset(), 56, "db", Check.GetID(), 7);
 			CChar::WriteInSight(Check.GetOffset(), 61, "db", Check.GetID(), 9);
@@ -785,6 +485,7 @@ void __fastcall CBaseDelete(void *Object, void *edx)
 												Object.AddReward(String2Int(evMap.Reward[evMonster.CIndex]));
 											else
 												Object.AddReward(String2Int(evMap.Reward[0]));
+											if (InstanceLimit)
 											rewardLimit(Object);
 										}
 										CPlayer::Write(Object.GetOffset(), 0xFF, "dsd", 247, "Round Completed, Next Round Started...", 2);
@@ -792,9 +493,13 @@ void __fastcall CBaseDelete(void *Object, void *edx)
 
 									Around = CBaseList::Pop((void*)Around);
 								}
+								if (InstanceLimit)
 								RewardLimit.clear();
 							}
 							SpawnEventMap(evMap, evMonster.CIndex + 1, TimeLeft - GetTickCount());
+							RaidRoundCounter += 1;
+							RaidDoors::Round = RaidRoundCounter;
+							RaidDoors::Opened = false;
 						}
 						else {
 							int Lapse = evMap.Lapse;
@@ -812,6 +517,7 @@ void __fastcall CBaseDelete(void *Object, void *edx)
 										if (Quest) {
 											if (!evMap.Reward.empty() && !isRewarded(Object)) {
 												Object.AddReward(String2Int(evMap.Reward[evMap.Reward.size() - 1]));
+												if (InstanceLimit)
 												rewardLimit(Object);
 											}
 											Object.Buff(BuffNames::EventMapLapse, Lapse, 0);
@@ -826,6 +532,9 @@ void __fastcall CBaseDelete(void *Object, void *edx)
 
 								Around = CBaseList::Pop((void*)Around);
 							}
+							RaidRoundCounter = 0;
+							RaidDoors::Round = 0;
+							if (InstanceLimit)
 							RewardLimit.clear();
 							EventMapsOn.erase(evMonster.Quest);
 						}
@@ -850,7 +559,7 @@ void __fastcall CBaseDelete(void *Object, void *edx)
 		IItem xItem(Object);
 		IID = xItem.GetIID();
 	}
-	
+
 	CBase::Delete(Object);
 
 	if (Type == 0 && PID && Erase && CBase::IsDeleted(Erase))
@@ -863,13 +572,13 @@ void __fastcall CBaseDelete(void *Object, void *edx)
 		for (auto x = PacketSpamConf.begin(); x != PacketSpamConf.end(); x++)
 			PacketSpam.erase((PID * 1000) + x->first);
 
-		InterlockedDecrement(&OnlinePlayers); 
+		InterlockedDecrement(&OnlinePlayers);
 		SendCreatePlayer.erase(Erase);
 	}
 
 	if (Type == 1 && Erase && CBase::IsDeleted(Erase))
 	{
-		if(Def == 54123)
+		if (Def == 54123)
 			InterlockedDecrement(&summonPets);
 		MonsterDisappear.erase(Erase);
 
@@ -880,7 +589,7 @@ void __fastcall CBaseDelete(void *Object, void *edx)
 			Hunting::Guild = 0;
 			Hunting::Monster = 0;
 			Hunting::Time = 0;
-			CPlayer::WriteAll(0xFF, "dsd", 247, "Hunting System ended.", 2);
+			Hunting::End = 1;
 			if (CWGID) {
 				HuntingID = CWGID;
 				HuntingName = CWGuildName;
@@ -891,7 +600,7 @@ void __fastcall CBaseDelete(void *Object, void *edx)
 	if (Type == 3 && Erase && IID && CBase::IsDeleted(Erase))
 	{
 		itemLockLock.Enter();
-		ItemLockCheck.erase(IID); 
+		ItemLockCheck.erase(IID);
 		itemLockLock.Leave();
 		//petLifeLock.Enter();
 		if (!ItemTimerDisable.count(IID))
@@ -908,4 +617,5 @@ void __fastcall CBaseDelete(void *Object, void *edx)
 			ItemStatDisable.erase(IID);
 		//RemovedStats.erase(IID);
 	}
+
 }

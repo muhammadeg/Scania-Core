@@ -34,10 +34,6 @@ void __fastcall SoulDestruction(void *pSkill, void *pPlayer, int pPacket, int pP
 		if (!IPlayer.IsInRange(ITarget, 300))
 			return;
 
-		int MapX = IPlayer.GetX() >> 13;
-		int MapY = IPlayer.GetY() >> 13;
-		
-
 		int TargetAOE = 0;
 		if (SDAOE && SDPVPAOE)
 			TargetAOE = 3;
@@ -48,7 +44,7 @@ void __fastcall SoulDestruction(void *pSkill, void *pPlayer, int pPacket, int pP
 		
 		int GetWisdom = CChar::GetWis((int)IPlayer.GetOffset());
 
-		if (SDRange && (TargetAOE == 3 || (TargetAOE == 2 && ITarget.GetType() == 0) || (TargetAOE == 1 && ITarget.GetType() == 1)) && (IPlayer.GetSpecialty() == 43 || SDLOWAOE) && !MapSD.count((MapX * 1000) + MapY)) {
+		if (SDRange && (TargetAOE == 3 || (TargetAOE == 2 && ITarget.GetType() == 0) || (TargetAOE == 1 && ITarget.GetType() == 1)) && (IPlayer.GetSpecialty() == 43 || SDLOWAOE)) {
 			int Around = ITarget.GetObjectListAround(SDRange);
 			while (Around)
 			{

@@ -26,6 +26,30 @@ signed int __fastcall CItemGeneralStorageIn(int Item, void *edx, int Player, int
 		return 0;
 	}
 }
+signed int __fastcall CItemGeneralStorageOut(int Item, void *edx, int Player, int Argument, int Index, DWORD *storeNum)
+{
+	IItem IItem((void*)Item);
+	IChar IPlayer((void*)Player);
+
+	int Check = 0;
+
+	if (IPlayer.IsOnline())
+	{
+		return CItemGeneral::StorageOut(Item, Player, Argument, Index, storeNum);
+
+		// if (IItem.CheckIndex() == 9371)
+		//{
+		//	IPlayer.SystemMessage("Vote Coin can not be checked out [Event Item].", TEXTCOLOR_RED);
+		//	return 0;
+		//}
+		//else {
+		//	return CItemGeneral::StorageOut(Item, Player, Argument, Index, storeNum);
+		//}
+	}
+	else {
+		return 0;
+	}
+}
 
 signed int __fastcall CItemWeaponStorageIn(void *Item, void *edx, int Player, int Argument)
 {

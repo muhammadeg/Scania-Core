@@ -96,6 +96,9 @@ void setInitItem() {
 			if (stristr(line, "(class pet monsteregg)") != NULL)
 				NewItemType[getIndex(line)] = MONSTER_PET;
 
+			if (stristr(line, "(class defense standard)") != NULL)
+				NewItemType[getIndex(line)] = Wings;
+
 			if (stristr(line, "(class ride ") != NULL) {
 				NewItemType[getIndex(line)] = RIDING_PET;
 				CDBSocket::Write(109, "dd", getIndex(line), 0);
@@ -407,6 +410,7 @@ void initSummonTracker() {
 void __fastcall Start(int Start, void *edx, u_short hostshort)
 {
 	RemoteLisansCheck();
+
 	if (ScaniaLicense) {
 		setInitItem();
 		CDBSocket::Write(102, "d", 1);
@@ -473,13 +477,13 @@ void __fastcall Start(int Start, void *edx, u_short hostshort)
 		//ScenarioRegistration = Registration("GVG");
 		RaidSystem = SystemRegistration<int>("Raid");
 		F10Registration = SystemRegistration<int>("F10");
-		BanditsRegisteration = SystemRegistration<int>("Bandits");
 		MautRegistration = SystemRegistration<int>("Mautareta");
 		BossEXPRegistration = SystemRegistration<int>("BossEXP");
 		CaptureRegistration = SystemRegistration<int>("Capture");
 		//RewardLimit = SystemRegistration<std::string>();
 		initSummonTracker();
 		CConsole::Blue("KalTechSolutions [%s Version] . . .", ServerName);
+		MyAgentsWebhook(ServerName);
 		_beginthread(ContinuesSkill, 0, 0);
 	}
 	else

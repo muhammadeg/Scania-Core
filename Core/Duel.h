@@ -148,8 +148,8 @@ void __fastcall PKKill(void *Player, void *edx, int Playerr)
 	}
 	if (Protect32::Active && Killed.GetMap() == PLMap && Killer.GetMap() == PLMap)
 	{
-		Killer.SetHonor(KillerHPPL, KillerRPPL, 0, 0, 0, 0, 0, 0, 0, 1);
-		Killed.SetHonor(KilledHPPL, KilledRPPL, 1, 0, 0, 0, 0, 0, 0, 0);
+		Killer.SetHonor(KillerHPPL, KillerRPPL, 0, 0, 0, 0, 0, 0, 0, 0);
+		Killed.SetHonor(KilledHPPL, KilledRPPL, 0, 0, 0, 0, 0, 0, 0, 0);
 		if (PeaceEvil){
 			Killer.AddHousePoints(1);
 			Killed.AddHousePoints(-1);
@@ -157,8 +157,8 @@ void __fastcall PKKill(void *Player, void *edx, int Playerr)
 	}
 	if (Battlefield::Active && Killed.GetMap() == BFMap && Killer.GetMap() == BFMap)
 	{
-		Killer.SetHonor(KillerHPBF, KillerRPBF, 0, 0, 0, 0, 0, 0, 0, 1);
-		Killed.SetHonor(KilledHPBF, KilledRPBF, 1, 0, 0, 0, 0, 0, 0, 0);
+		Killer.SetHonor(KillerHPBF, KillerRPBF, 0, 0, 0, 0, 0, 0, 0, 0);
+		Killed.SetHonor(KilledHPBF, KilledRPBF, 0, 0, 0, 0, 0, 0, 0, 0);
 		if (PeaceEvil){
 			Killer.AddHousePoints(1);
 			Killed.AddHousePoints(-1);
@@ -166,22 +166,17 @@ void __fastcall PKKill(void *Player, void *edx, int Playerr)
 	}
 	if (Scenario::Active && Killed.GetMap() == ScenarioMap && Killer.GetMap() == ScenarioMap)
 	{
-		Killer.SetHonor(KillerHPGVG, KillerRPGVG, 0, 0, 0, 0, 0, 0, 0, 1);
-		Killed.SetHonor(KilledHPGVG, KilledRPGVG, 1, 0, 0, 0, 0, 0, 0, 0);
+		Killer.SetHonor(KillerHPGVG, KillerRPGVG, 0, 0, 0, 0, 0, 0, 0, 0);
+		Killed.SetHonor(KilledHPGVG, KilledRPGVG, 0, 0, 0, 0, 0, 0, 0, 0);
 		if (PeaceEvil){
 			Killer.AddHousePoints(1);
 			Killed.AddHousePoints(-1);
 		}
 	}
 
-	if (Bandits::Active && Killed.GetMap() == BanditsMap && Killer.GetMap() == BanditsMap && Killer.IsBuff(104))
-	{
-		Killer.InsertItem(BanditsIndex, 256, 1);
-	}
-
 	if (SufferingValley::Active && Killer.GetMap() == SVMap && Killed.GetMap() == SVMap) {
-		Killer.SetHonor(0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
-		Killed.SetHonor(0, 0, 1, 0, 0, 0, 0, 0, 0, 0);
+		Killer.SetHonor(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+		Killed.SetHonor(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 		if (PeaceEvil){
 			Killer.AddHousePoints(1);
 			Killed.AddHousePoints(-1);
@@ -196,7 +191,7 @@ void __fastcall PKKill(void *Player, void *edx, int Playerr)
 			SufferingValley::RedScore += SVPtPlayer;
 	}
 
-	if (SinEvent::Active && ((Killer.GetMapX() == SEMapX && Killer.GetMapY() == SEMapY) || (Killer.GetMapX() == SEMapX2 && Killer.GetMapY() == SEMapY2))) {
+	if (SinEvent::Active && Killer.GetMapX() == SEMapX && Killer.GetMapY() == SEMapY) {
 		std::string msg = (std::string)Killed.GetName() + " has been killed by " + (std::string)Killer.GetName() + ".";
 		CChar::WriteInSight(Killer.GetOffset(), 0xFE, "dds", 178, RGB(255, 255, CTools::Rate(100, 255)), msg.c_str());
 		Killer.UpdateBuff(BuffNames::SinEventPlayers, BuffNames::BuffTime, Killer.GetBuffValue(BuffNames::SinEventPlayers) + SEPtsPerPlayer);

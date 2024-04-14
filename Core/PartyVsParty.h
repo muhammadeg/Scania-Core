@@ -2,14 +2,15 @@ int portArena = 0;
 int PTRegisterSize = 0;
 
 int PartyArenas[][9] = {
-	{ 219480,219480,217083,219441,217316,214799,219551,217092,214732 },
-	{ 280824,280824,280811,283290,283278,283304,285656,285677,285651 }
+	{ 219480, 219480, 217083, 219441, 217316, 214799, 219551, 217092, 214732 },
+	{ 280824, 280824, 280811, 283290, 283278, 283304, 285656, 285677, 285651 }
 };
 
 int PartyPortBack[][9] = {
-	{ 219584,219584,217182,219495,217276,214775,219620,217177,214744 },
-	{ 281404,281404,281508,282725,282740,282724,285023,285014,286230 }
+	{ 219584, 219584, 217182, 219495, 217276, 214775, 219620, 217177, 214744 },
+	{ 281404, 281404, 281508, 282725, 282740, 282724, 285023, 285014, 286230 }
 };
+
 
 void RemoveParty(int PID) {
 	vector< PartyReg >::iterator it = PartyRegistrations.begin();
@@ -284,6 +285,7 @@ void managePartyRegistration(PartyReg reg) {
 			pBattle.Cooldown = GetTickCount() + 10000;
 			pBattle.PartySize = reg.PartySize;
 			CurPartys[reg.PVPArena] = pBattle;
+
 		}
 	}
 }
@@ -297,6 +299,7 @@ void PartyVsPartyOnTick() {
 	int Loser = 0;
 	int Type = 0;
 	int Reward = 0;
+	int PTTime = 0;
 
 	std::map<int, PartyBattle> CurPartysClone = CurPartys;
 
@@ -309,7 +312,14 @@ void PartyVsPartyOnTick() {
 			return;
 		}
 		if (x->second.PTID1 && x->second.PTID2) {
+			int TimeLeft = (x->second.Time - GetTickCount()) / 1000;
+
+			if (TimeLeft % PartyTime == 0)
+				SummonPartys();
+
 			if (x->second.Time && GetTickCount() > x->second.Time) {
+				x->second.Time = GetTickCount() + (PTTime * 1000);
+
 				if (x->second.BlueScore > x->second.RedScore)
 					PartyWon(x->second.PTID2, x->second.PTID1, x->first, x->second.Reward, x->second.PartySize);
 
@@ -348,6 +358,7 @@ void PartyVsPartyOnTick() {
 			{
 				if (y->PVPArena == Arena) {
 					PTSize = y->PartySize;
+
 					if (!PID)
 						PID = y->PID;
 					else if (!PID2) {
@@ -370,7 +381,9 @@ void PartyVsPartyOnTick() {
 		pBattle.FightAvailable = false;
 		pBattle.PTID1 = PID;
 		pBattle.PTID2 = PID2;
-		pBattle.Time = GetTickCount() + 300000;
+
+
+		pBattle.Time = GetTickCount() + (PartyRegistrations[Arena].ArenaTime * 1000);
 		pBattle.RedScore = 0;
 		pBattle.BlueScore = 0;
 		pBattle.Cooldown = 0;
@@ -378,7 +391,9 @@ void PartyVsPartyOnTick() {
 		SendPartyToArena(PID2, Arena, 1);
 		std::string notice = "The battle between " + GetPartyLeaderName(PID) + "'s Party and " + GetPartyLeaderName(PID2) + "'s Party has started.";
 		CPlayer::WriteAll(0xFF, "dsd", 247, notice.c_str(), 2);
+
 		CurPartys[Arena] = pBattle;
+		SummonPartys();
 	}
 	else {
 		if (PID && PID2) {

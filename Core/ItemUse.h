@@ -5,7 +5,7 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 
 	if (!Item.Exists() || !IPlayer.IsOnline())
 		return 0;
-	
+
 	int MapX = IPlayer.GetX() >> 13;
 	int MapY = IPlayer.GetY() >> 13;
 
@@ -20,7 +20,7 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 		int KeyIndex = (IPlayer.GetPID() * 1000) + Item.CheckIndex();
 
 		ItemLimitConf itemL = ItemLimitUsage.count(KeyIndex) ? ItemLimitUsage.findValue(KeyIndex) : ItemLimitConf();
-		
+
 		int TimeLeft = itemL.Time - (int)time(0);
 
 		int CalcLeftTime = TimeLeft > 0 ? TimeLeft : itemLimit.Time;
@@ -42,7 +42,7 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 		itemL.Usage++;
 		ItemLimitUsage.replaceInsert(KeyIndex, itemL);
 
-		IPlayer.SystemMessage("This item's usage is limited to "+ Int2String(itemLimit.Usage)+" usages, you have used it " + Int2String(itemL.Usage) + " times untill now.", TEXTCOLOR_YELLOW);
+		IPlayer.SystemMessage("This item's usage is limited to " + Int2String(itemLimit.Usage) + " usages, you have used it " + Int2String(itemL.Usage) + " times untill now.", TEXTCOLOR_YELLOW);
 
 		IPlayer.SystemMessage("Your limit for this item will reset in " + Int2String(Day) + " Days " + Int2String(Hour) + " Hours " + Int2String(Minute) + " Minutes " + Int2String(Second) + " Seconds.", TEXTCOLOR_GENERAL);
 
@@ -60,7 +60,7 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 			int Keya = 0;
 			if (sscanf(line.c_str(), "(itemLimit (Key %d)", &Keya) == 1) {
 				if (Keya == KeyIndex) {
-					temp << "(itemLimit (Key "+Int2String(KeyIndex) + ")(Usage "+Int2String(itemL.Usage)+")(Time "+Int2String(itemL.Time)+"))" << endl;
+					temp << "(itemLimit (Key " + Int2String(KeyIndex) + ")(Usage " + Int2String(itemL.Usage) + ")(Time " + Int2String(itemL.Time) + "))" << endl;
 					edited = true;
 				}
 				else
@@ -82,46 +82,6 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 		}
 	}
 
-	//Buffsystem
-	if (IPlayer.IsOnline() && BuffCheck.count(Item.CheckIndex()))
-	{
-		if (IPlayer.GetLevel() >= BuffCheck.find(Item.CheckIndex())->second.MinLevel&&IPlayer.GetLevel() <= BuffCheck.find(Item.CheckIndex())->second.MaxLevel&& BuffCheck.find(Item.CheckIndex())->second.Buff == Item.CheckIndex())
-		{
-			if (IPlayer.IsBuff(48) && IPlayer.IsBuff(50) && IPlayer.IsBuff(47) && IPlayer.IsBuff(49) && IPlayer.IsBuff(46) && IPlayer.IsBuff(36) && IPlayer.IsBuff(37) && ScrollTimeCheck)
-			{
-				if (ScrollTimeCheck <= 59)
-				{
-					std::string msg = "You Can use Buff Scroll After[" + Int2String(ScrollTimeCheck) + "] Seconds.";
-					IPlayer.SystemMessage(msg, TEXTCOLOR_RED);
-					return Item.GetAmount();
-				}
-				if (ScrollTimeCheck >= 60)
-				{
-					std::string msg = "You Can use Buff Scroll After [" + Int2String(ScrollTimeCheck / 60) + "] Minutes.";
-					IPlayer.SystemMessage(msg, TEXTCOLOR_GREEN);
-					return Item.GetAmount();
-				}
-				return Item.GetAmount();
-			}
-			ScrollTimeCheck = 1800;
-			IPlayer.Buff(48, 1800, BuffCheck.find(Item.CheckIndex())->second.AgiBuff);
-			IPlayer.Buff(50, 1800, BuffCheck.find(Item.CheckIndex())->second.CritBuff);
-			IPlayer.Buff(47, 1800, BuffCheck.find(Item.CheckIndex())->second.HthBuff);
-			IPlayer.Buff(49, 1800, BuffCheck.find(Item.CheckIndex())->second.IntBuff);
-			IPlayer.Buff(46, 1800, BuffCheck.find(Item.CheckIndex())->second.StrBuff);
-			IPlayer.Buff(36, 1800, BuffCheck.find(Item.CheckIndex())->second.RefBuff);
-			IPlayer.Buff(37, 1800, BuffCheck.find(Item.CheckIndex())->second.DefBuff);
-			IPlayer.Buff(12, 1800, BuffCheck.find(Item.CheckIndex())->second.SpeedBuff);
-			if (BuffCheck.find(Item.CheckIndex())->second.Delete)
-				(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), 9, -1);
-			return Item.GetAmount();
-		}
-		else{
-			IPlayer.SystemMessage(BuffCheck.find(Item.CheckIndex())->second.LimitMsg.c_str(), TEXTCOLOR_RED);
-			return Item.GetAmount();
-		}
-
-	}
 
 	//Calls
 	if (IPlayer.IsOnline() && BuffCheck.count(Item.CheckIndex()))
@@ -151,65 +111,109 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 		}
 	}
 
-
-	
-
-
-	int DBuffID = BuffDisableCheck.find(Item.CheckIndex())->second.BuffDisableID;
-	if (IPlayer.IsOnline() && BuffDisableCheck.count(Item.CheckIndex()) && IPlayer.IsBuff(DBuffID))
+	if (IPlayer.IsOnline() && BuffDisableCheck.count(Item.CheckIndex()))
 	{
-			IPlayer.SystemMessage("Alternative Buff is already in use.", TEXTCOLOR_RED);
-			return Item.GetAmount();
-		
+		BuffDisable buffdisable = BuffDisableCheck.find(Item.CheckIndex())->second;
+
+		for (int i = 0; i < buffdisable.BuffDisableID.size(); i++){
+			int disableID = String2Int(buffdisable.BuffDisableID[i]);
+			if (IPlayer.IsBuff(disableID)){
+				IPlayer.SystemMessage("Alternative Buff is already in use.", TEXTCOLOR_RED);
+				return Item.GetAmount();
+			}
+		}
+	}
+
+
+	if (IPlayer.IsOnline() && BuffRemoveCheck.count(Item.CheckIndex()))
+	{
+		BuffDisable buffRemove = BuffRemoveCheck.find(Item.CheckIndex())->second;
+
+		for (int i = 0; i < buffRemove.BuffDisableID.size(); i++){
+			int removeID = String2Int(buffRemove.BuffDisableID[i]);
+			if (IPlayer.IsBuff(removeID)){
+				IPlayer.RemoveSavedBuff(removeID);
+			}
+		}
+
 	}
 
 	if (IPlayer.IsOnline() && BuffMakerCheck.count(Item.CheckIndex()))
 	{
+		BuffMaker buffMaker = BuffMakerCheck.find(Item.CheckIndex())->second;
+
 		int MinPhyAttackGet = IPlayer.GetMinPhyAttack(), MinMagAttack = IPlayer.GetMinMagAttack();
 
-		if (!IPlayer.IsBuff(BuffMakerCheck.find(Item.CheckIndex())->second.BuffID))
+		if (!IPlayer.IsBuff(buffMaker.BuffID))
 		{
-			if (IPlayer.IsBuff(BuffMakerCheck.find(Item.CheckIndex())->second.altBuff))
+			int TotalAmounts = buffMaker.altBuff.size();
+			int buffAmounts = 0;
+
+			for (int i = 0; i < buffMaker.altBuff.size(); i++)
 			{
-				IPlayer.SystemMessage("Alterantive Buff is already in use.", TEXTCOLOR_RED);
+				int altBuffID = String2Int(buffMaker.altBuff[i]);
+				if (IPlayer.IsBuff(altBuffID))
+					buffAmounts++;
+			}
+
+			if (TotalAmounts == buffAmounts)
+			{
+				IPlayer.SystemMessage("All Buffs are already in use.", TEXTCOLOR_RED);
 				return Item.GetAmount();
 			}
-			if (IPlayer.GetLevel() >= BuffMakerCheck.find(Item.CheckIndex())->second.MinLevel&&IPlayer.GetLevel() <= BuffMakerCheck.find(Item.CheckIndex())->second.MaxLevel&& BuffMakerCheck.find(Item.CheckIndex())->second.Maker == Item.CheckIndex())
-			{
-				if (BuffMakerCheck.find(Item.CheckIndex())->second.BuffIcon == "true")
-					IPlayer.SetBuffIcon(BuffMakerCheck.find(Item.CheckIndex())->second.Time * 1000, 0, BuffMakerCheck.find(Item.CheckIndex())->second.Sys_name, BuffMakerCheck.find(Item.CheckIndex())->second.Sys_name);
-				IPlayer.AddMinAttack((MinPhyAttackGet * BuffMakerCheck.find(Item.CheckIndex())->second.MinAttack) / 100);
-				IPlayer.AddMaxAttack((MinMagAttack * BuffMakerCheck.find(Item.CheckIndex())->second.MaxAttack) / 100);
-				IPlayer.AddHp(BuffMakerCheck.find(Item.CheckIndex())->second.Hp);
-				IPlayer.AddStr(BuffMakerCheck.find(Item.CheckIndex())->second.Str);
-				IPlayer.AddInt(BuffMakerCheck.find(Item.CheckIndex())->second.Int);
-				IPlayer.AddWis(BuffMakerCheck.find(Item.CheckIndex())->second.Wis);
-				IPlayer.AddAgi(BuffMakerCheck.find(Item.CheckIndex())->second.Agi);
-				IPlayer.AddOTP(BuffMakerCheck.find(Item.CheckIndex())->second.OTP);
-				IPlayer.AddEva(BuffMakerCheck.find(Item.CheckIndex())->second.Eva);
-				IPlayer.AddDef(BuffMakerCheck.find(Item.CheckIndex())->second.Def);
-				IPlayer.AddLightning_Resistance(BuffMakerCheck.find(Item.CheckIndex())->second.Lightning_Resistance);
-				IPlayer.AddIce_Resistance(BuffMakerCheck.find(Item.CheckIndex())->second.Ice_Resistance);
-				IPlayer.AddFire_Resistance(BuffMakerCheck.find(Item.CheckIndex())->second.Fire_Resistance);
-				IPlayer.AddAbsorb(BuffMakerCheck.find(Item.CheckIndex())->second.Absorb);
-				IPlayer.IncreaseCritRate(BuffMakerCheck.find(Item.CheckIndex())->second.CritRate);
-				IPlayer.IncreaseCritDamage(BuffMakerCheck.find(Item.CheckIndex())->second.CritDamage);
-				IPlayer.IncreaseMaxMp(BuffMakerCheck.find(Item.CheckIndex())->second.MaxMp);
-				IPlayer.IncreaseMaxHp(BuffMakerCheck.find(Item.CheckIndex())->second.MaxHp);
-				IPlayer.IncreaseEBRate(BuffMakerCheck.find(Item.CheckIndex())->second.EBRate);
-				if (BuffMakerCheck.find(Item.CheckIndex())->second.save == "true")
-				IPlayer.SaveBuff(BuffMakerCheck.find(Item.CheckIndex())->second.BuffID, BuffMakerCheck.find(Item.CheckIndex())->second.Time);
-				else
-					IPlayer.Buff(BuffMakerCheck.find(Item.CheckIndex())->second.BuffID, BuffMakerCheck.find(Item.CheckIndex())->second.Time, 1);
-				IPlayer.Buff(BuffMakerCheck.find(Item.CheckIndex())->second.BuffID + 1000, BuffMakerCheck.find(Item.CheckIndex())->second.Time, 1);
 
-				if (BuffMakerCheck.find(Item.CheckIndex())->second.Delete)
+			for (int i = 0; i < buffMaker.altBuff.size(); i++)
+			{
+				int altBuffID = String2Int(buffMaker.altBuff[i]);
+				if (IPlayer.IsBuff(altBuffID))
+					IPlayer.RemoveSavedBuff(altBuffID);
+			}
+
+			if (IPlayer.GetLevel() >= buffMaker.MinLevel && IPlayer.GetLevel() <= buffMaker.MaxLevel && buffMaker.Maker == Item.CheckIndex())
+			{
+				if (buffMaker.BuffIcon == "true")
+					IPlayer.SetBuffIcon(buffMaker.Time * 1000, 0, 0, buffMaker.Sys_name);
+
+				if (buffMaker.MinAttack){
+					IPlayer.AddMinAttack((MinPhyAttackGet * buffMaker.MinAttack) / 100);
+					IPlayer.SaveBuff(BuffNames::BuffPhyAtk + (buffMaker.BuffID / 2), buffMaker.Time, ((MinPhyAttackGet * buffMaker.MinAttack) / 100), 0, 0);
+				}
+				if (buffMaker.MaxAttack){
+					IPlayer.AddMaxAttack((MinMagAttack * buffMaker.MaxAttack) / 100);
+					IPlayer.SaveBuff(BuffNames::BuffMagAtk + (buffMaker.BuffID / 2), buffMaker.Time, ((MinMagAttack * buffMaker.MaxAttack) / 100), 0, 0);
+				}
+				//	IPlayer.AddMaxAttack((MinMagAttack * buffMaker.MaxAttack) / 100);
+				IPlayer.AddHp(buffMaker.Hp);
+				IPlayer.AddStr(buffMaker.Str);
+				IPlayer.AddInt(buffMaker.Int);
+				IPlayer.AddWis(buffMaker.Wis);
+				IPlayer.AddAgi(buffMaker.Agi);
+				IPlayer.AddOTP(buffMaker.OTP);
+				IPlayer.AddEva(buffMaker.Eva);
+				IPlayer.AddDef(buffMaker.Def);
+				IPlayer.AddLightning_Resistance(buffMaker.Lightning_Resistance);
+				IPlayer.AddIce_Resistance(buffMaker.Ice_Resistance);
+				IPlayer.AddFire_Resistance(buffMaker.Fire_Resistance);
+				IPlayer.AddAbsorb(buffMaker.Absorb);
+				IPlayer.IncreaseCritRate(buffMaker.CritRate);
+				IPlayer.IncreaseCritDamage(buffMaker.CritDamage);
+				IPlayer.IncreaseMaxMp(buffMaker.MaxMp);
+				IPlayer.IncreaseMaxHp(buffMaker.MaxHp);
+				IPlayer.IncreaseEBRate(buffMaker.EBRate);
+
+				if (buffMaker.save == "true")
+					IPlayer.SaveBuff(buffMaker.BuffID, buffMaker.Time);
+				else
+					IPlayer.Buff(buffMaker.BuffID, buffMaker.Time, 1);
+				IPlayer.Buff(buffMaker.BuffID + 1000, buffMaker.Time, 1);
+
+				if (buffMaker.Delete)
 					(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), 9, -1);
 
 				return Item.GetAmount();
 			}
 			else{
-				IPlayer.SystemMessage(BuffMakerCheck.find(Item.CheckIndex())->second.LimitMsg.c_str(), TEXTCOLOR_RED);
+				IPlayer.SystemMessage(buffMaker.LimitMsg.c_str(), TEXTCOLOR_RED);
 				return Item.GetAmount();
 			}
 		}
@@ -249,13 +253,13 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 				rename("./Database/tempQ.txt", "./Database/TimedQuest.db");
 			}
 			int Repeat = IPlayer.GetBuffValue((BuffNames::DailyRepeatBegin + Quest) % BuffNames::DailyRepeatEnd);
-			if(Repeat > 0)
+			if (Repeat > 0)
 				IPlayer.UpdateBuff((BuffNames::DailyRepeatBegin + Quest) % BuffNames::DailyRepeatEnd, BuffNames::BuffTime, Repeat - 1);
 		}
 
 		IPlayer.SystemMessage("Your quest limits have been unlocked.", TEXTCOLOR_GREEN);
 
-		if(!iRepeat.Permanent)
+		if (!iRepeat.Permanent)
 			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
 		return Item.GetAmount();
 	}
@@ -275,7 +279,7 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 					return Item.GetAmount();
 				}
 
-				int Value = CTools::Rate(0, 12); 
+				int Value = CTools::Rate(0, 12);
 				int Add = HaninLow.count(Value) ? CTools::Rate(HaninLow.find(Value)->second.Min, HaninLow.find(Value)->second.Max) : 30;
 				CPlayer::Write(IPlayer.GetOffset(), 193, "ddd", IItem.GetIID(), Value, Add);
 				itemStat.Enter();
@@ -330,7 +334,7 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 				int Index = String2Int(rItems_[i]);
 				int Amount = String2Int(rAmounts_[i]);
 
-				if(Index && Amount && Index != Item.CheckIndex() && !CPlayer::_FindItem(PlayerOffset, Index, Amount)){
+				if (Index && Amount && Index != Item.CheckIndex() && !CPlayer::_FindItem(PlayerOffset, Index, Amount)){
 					IPlayer.SystemMessage("You dont have the required amount of items!", TEXTCOLOR_RED);
 					return Item.GetAmount();
 				}
@@ -381,7 +385,7 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 		SummonNPC npc = ItemNPCSummoned.find(Item.CheckIndex())->second;
 		NPCID--;
 
-		CChar::WriteInSight(IPlayer.GetOffset(),52, "dwbdddwId", NPCID, npc.NPC, npc.Model, IPlayer.GetX(), IPlayer.GetY(), IPlayer.GetZ(), 1, (unsigned __int64)0, 0);
+		CChar::WriteInSight(IPlayer.GetOffset(), 52, "dwbdddwId", NPCID, npc.NPC, npc.Model, IPlayer.GetX(), IPlayer.GetY(), IPlayer.GetZ(), 1, (unsigned __int64)0, 0);
 
 		npc.X = IPlayer.GetX();
 		npc.Y = IPlayer.GetY();
@@ -402,8 +406,18 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 		if (IPlayer.GetLevel() <= BufferCheck.find(Item.CheckIndex())->second.Limit)
 		{
 			double Buff = BufferCheck.find(Item.CheckIndex())->second.Grade;
-
+			int cd = BufferCheck.find(Item.CheckIndex())->second.cd;
 			double Refine = BufferCheck.find(Item.CheckIndex())->second.Grade;
+
+			if (IPlayer.IsBuff(1625))
+			{
+				IPlayer.SystemMessage("You need to wait " + Int2String(IPlayer.GetBuffRemain(1625)) + " seconds to re-use buff.", TEXTCOLOR_RED);
+				return Item.GetAmount();
+			}
+			if (cd)
+				IPlayer.Buff(1625, cd, 1);
+
+
 			if (Buff == 3) Buff = 2.75;
 			if (Refine == 3) Refine = 5.5;
 			IPlayer.Buff(48, 1800, 8 * Buff + 3);
@@ -427,7 +441,7 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 
 		return Item.GetAmount();
 	}
-	// check crash
+
 	if (IPlayer.IsOnline() && ItemQuest.count(Item.CheckIndex())) {
 		CIOCriticalSection::Leave((void*)((char *)PlayerOffset + 1020));
 
@@ -439,18 +453,18 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 	}
 	/*
 	if (IPlayer.IsOnline() && Item.CheckIndex() == 6725) {
-		//if(IPlayer.IsBuff(30)) IPlayer.CancelBuff(30);
-		if (IPlayer.IsBuff(BuffNames::expstone)) {
-			IPlayer.SystemMessage(thisServerName + " Stone of EXP is already in use!", TEXTCOLOR_YELLOW);
-			return Item.GetAmount();
-		}
-		IPlayer.Buff(BuffNames::expstone, BuffNames::BuffTime, 0);
-		IPlayer.SetBuffIcon(1296000 * 1000, 0, 8014, 8014);
-		(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
-
-		return Item.GetAmount();
+	//if(IPlayer.IsBuff(30)) IPlayer.CancelBuff(30);
+	if (IPlayer.IsBuff(BuffNames::expstone)) {
+	IPlayer.SystemMessage(thisServerName + " Stone of EXP is already in use!", TEXTCOLOR_YELLOW);
+	return Item.GetAmount();
 	}
-	*/	
+	IPlayer.Buff(BuffNames::expstone, BuffNames::BuffTime, 0);
+	IPlayer.SetBuffIcon(1296000 * 1000, 0, 8014, 8014);
+	(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+
+	return Item.GetAmount();
+	}
+	*/
 	if (IPlayer.IsOnline() && Item.CheckIndex() == 6726) {
 		//if(IPlayer.IsBuff(32)) IPlayer.CancelBuff(32);
 		if (IPlayer.IsBuff(BuffNames::fish)) {
@@ -485,20 +499,164 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 
 	if (IPlayer.IsOnline() && (Item.CheckIndex() >= 187 && Item.CheckIndex() <= 196) || Item.CheckIndex() == 484 || Item.CheckIndex() == 485 || (Item.CheckIndex() >= 2157 && Item.CheckIndex() <= 2160))
 	{
-		if ((IPlayer.IsBuff(160) || IPlayer.IsBuff(180) || IPlayer.IsBuff(179) || IPlayer.IsBuff(161)  || IPlayer.IsBuff(BuffNames::PTVsPTBlue) || IPlayer.IsBuff(BuffNames::PTVsPTRed) || IPlayer.IsBuff(162) || IPlayer.IsBuff(163) || IPlayer.IsBuff(170) || IPlayer.IsBuff(171) || IPlayer.IsBuff(373) || IPlayer.IsBuff(374) || IPlayer.IsBuff(902) || IPlayer.IsBuff(903) || IPlayer.IsBuff(BuffNames::LMS) || IPlayer.IsBuff(BuffNames::TriangularType) || IPlayer.GetMap() == SVMap))
+		if ((IPlayer.IsBuff(160) || IPlayer.IsBuff(180) || IPlayer.IsBuff(179) || IPlayer.IsBuff(161) || IPlayer.IsBuff(BuffNames::PTVsPTBlue) || IPlayer.IsBuff(BuffNames::PTVsPTRed) || IPlayer.IsBuff(162) || IPlayer.IsBuff(163) || IPlayer.IsBuff(170) || IPlayer.IsBuff(171) || IPlayer.IsBuff(373) || IPlayer.IsBuff(374) || IPlayer.IsBuff(902) || IPlayer.IsBuff(903) || IPlayer.IsBuff(BuffNames::LMS) || IPlayer.IsBuff(BuffNames::TriangularType) || IPlayer.GetMap() == SVMap))
 		{
 			IPlayer.SystemMessage("You can not teleport while in battle.", TEXTCOLOR_RED);
 			return Item.GetAmount();
 		}
 	}
 
+	if (IPlayer.IsOnline() && Item.CheckIndex() == ScrollOfInv){
+
+		if (IPlayer.GetBuffRemain(1950))
+		{
+			IPlayer.SystemMessage("You can use scroll in " + Int2String(IPlayer.GetBuffRemain(1950)) + " seconds.", TEXTCOLOR_RED);
+			return Item.GetAmount();
+		}
+		if (IPlayer.GetPID() != IPlayer.GetGID())
+		{
+			IPlayer.SystemMessage("Item can be used only by Guild Leader.", TEXTCOLOR_RED);
+			return Item.GetAmount();
+		}
+		else{
+			IPlayer.Buff(1950, 10, 1);
+			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+			return Item.GetAmount();
+		}
+	}
+
+	if (IPlayer.IsOnline() && Item.CheckIndex() == ScrollOfMovingPL){
+
+		int leaderx = 0, leadery = 0, leaderz = 0;
+		if (IPlayer.GetBuffRemain(1951))
+		{
+			int Day = (IPlayer.GetBuffRemain(1951) / 86400);
+			int Hour = ((IPlayer.GetBuffRemain(1951) / 3600) % 24);
+			int Minute = ((IPlayer.GetBuffRemain(1951) / 60) % 60);
+			int Second = (IPlayer.GetBuffRemain(1951) % 60);
+			IPlayer.SystemMessage("You can use scroll in " + Int2String(Minute) + " minutes " + Int2String(Second) + " seconds.", TEXTCOLOR_RED);
+			return Item.GetAmount();
+		}
+		if (IPlayer.GetPID() == IPlayer.GetGID())
+		{
+			IPlayer.SystemMessage("Item can not be used by Guild Leader.", TEXTCOLOR_RED);
+			return Item.GetAmount();
+		}
+		else{
+			CIOCriticalSection::Enter((void*)0x4e2078);
+			CIOCriticalSection::Enter((void*)0x4e2098);
+			CLink::MoveTo((void*)0x4e200c, (int)0x4e2004);
+			CIOCriticalSection::Leave((void*)0x4e2098);
+			for (DWORD i = *(DWORD*)0x4E2004; i != 0x4E2004; i = *(DWORD*)i)
+			{
+				IChar Online((void*)(i - 428));
+				if (Online.GetPID() == IPlayer.GetGID())
+				{
+					leaderx = Online.GetX();
+					leadery = Online.GetY();
+					leaderz = Online.GetZ();
+				}
+			}
+			CIOCriticalSection::Leave((void*)0x4e2078);
+
+			IPlayer.Teleport(leaderx, leadery, leaderz);
+			IPlayer.Buff(1951, 300, 1);
+			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+			return Item.GetAmount();
+		}
+	}
+
 	if (IPlayer.IsOnline() && ItemWebsite.count(Item.CheckIndex())) {
 		IPlayer.OpenWebsite(ItemWebsite.find(Item.CheckIndex())->second.URL);
-		if(ItemWebsite.find(Item.CheckIndex())->second.remove)
+		if (ItemWebsite.find(Item.CheckIndex())->second.remove)
 			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
 		return Item.GetAmount();
 	}
 
+	if (IPlayer.IsOnline() && SkillBook.count(Item.CheckIndex()))
+	{
+		CheckSkillBook Skillbook = SkillBook.find(Item.CheckIndex())->second;
+		if (IPlayer.GetClass() == Skillbook.Class)
+		{
+			int SkillPointer = IPlayer.GetSkillPointer(Skillbook.Action);
+			if (SkillPointer)
+			{
+				ISkill ISkill((void*)SkillPointer);
+				int newGrade = ISkill.GetGrade() + Skillbook.UpgradeAmount;
+
+				if (newGrade <= Skillbook.UpgradeMax)
+				{
+					(*(void(__thiscall **)(int, DWORD, int, signed int))(*(DWORD *)SkillPointer + 8))(SkillPointer, PlayerOffset, newGrade, Skillbook.UpgradeAmount);
+					*(DWORD *)(SkillPointer + 8) = newGrade;
+
+					CDBSocket::Write(22, "dbbw", IPlayer.GetPID(), Skillbook.Action, newGrade, IPlayer.GetSkillPoint());
+					CPlayer::Write(IPlayer.GetOffset(), 81, "bb", Skillbook.Action, newGrade);
+
+					(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+					IPlayer.SystemMessage("Skill successfully upgraded.", TEXTCOLOR_GREEN);
+					return Item.GetAmount();
+				}
+				else {
+					IPlayer.SystemMessage("You already have max grade of skill.", TEXTCOLOR_RED);
+					return Item.GetAmount();
+				}
+			}
+			else {
+				int OldSP = IPlayer.GetSkillPoint();
+				if ((Skillbook.Class == 1 && Skillbook.Action == 63))
+					LearnSkill(IPlayer, Skillbook.Action, true);
+				else if (OldSP) {
+					SkillLearnPacket(IPlayer, Skillbook.Action);
+					if (OldSP > IPlayer.GetSkillPoint())
+						IPlayer.AddSkillPoint(1);
+					else if (!(Skillbook.Action >= 85 && Skillbook.Action <= 87)) {
+						IPlayer.SystemMessage("You can not learn that skill.", TEXTCOLOR_RED);
+						return Item.GetAmount();
+					}
+				}
+				else {
+					IPlayer.SystemMessage("1 Skill point is needed to learn this skill.", TEXTCOLOR_RED);
+					return Item.GetAmount();
+				}
+
+				(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+				if (Skillbook.Action == 26){
+					SkillPointer = IPlayer.GetSkillPointer(Skillbook.Action);
+					if (SkillPointer)
+					{
+						ISkill ISkill((void*)SkillPointer);
+						int newGrade = ISkill.GetGrade() + Skillbook.UpgradeAmount - 1;
+
+						if (newGrade <= Skillbook.UpgradeMax)
+						{
+							(*(void(__thiscall **)(int, DWORD, int, signed int))(*(DWORD *)SkillPointer + 8))(SkillPointer, PlayerOffset, newGrade, Skillbook.UpgradeAmount);
+							*(DWORD *)(SkillPointer + 8) = newGrade;
+
+							CDBSocket::Write(22, "dbbw", IPlayer.GetPID(), Skillbook.Action, newGrade, IPlayer.GetSkillPoint());
+							CPlayer::Write(IPlayer.GetOffset(), 81, "bb", Skillbook.Action, newGrade);
+
+							(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+							IPlayer.SystemMessage("Skill successfully upgraded.", TEXTCOLOR_GREEN);
+							return Item.GetAmount();
+						}
+						else {
+							IPlayer.SystemMessage("You already have max grade of skill.", TEXTCOLOR_RED);
+							return Item.GetAmount();
+						}
+					}
+				}
+				IPlayer.SystemMessage("Skill successfully learned.", TEXTCOLOR_GREEN);
+				return Item.GetAmount();
+			}
+
+			IPlayer.SystemMessage("First you must to get skill to upgrade it.", TEXTCOLOR_RED);
+			return Item.GetAmount();
+		}
+		else {
+			IPlayer.SystemMessage("Skill book is not for your class.", TEXTCOLOR_RED);
+			return Item.GetAmount();
+		}
+	}
 
 	if (IPlayer.IsOnline() && SkillDowngrade.count(Item.CheckIndex()))
 	{
@@ -545,65 +703,6 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 		}
 	}
 
-	if (IPlayer.IsOnline() && SkillBook.count(Item.CheckIndex()))
-	{
-		CheckSkillBook Skillbook = SkillBook.find(Item.CheckIndex())->second;
-		if (IPlayer.GetClass() == Skillbook.Class)
-		{
-			int SkillPointer = IPlayer.GetSkillPointer(Skillbook.Action);
-			if (SkillPointer)
-			{
-				ISkill ISkill((void*)SkillPointer);
-				int newGrade = ISkill.GetGrade() + Skillbook.UpgradeAmount;
-
-				if (newGrade <= Skillbook.UpgradeMax)
-				{
-					(*(void(__thiscall **)(int, DWORD, int, signed int))(*(DWORD *)SkillPointer + 8))(SkillPointer, PlayerOffset, newGrade, Skillbook.UpgradeAmount);
-					*(DWORD *)(SkillPointer + 8) = newGrade;
-
-					CDBSocket::Write(22, "dbbw", IPlayer.GetPID(), Skillbook.Action, newGrade, IPlayer.GetSkillPoint());
-					CPlayer::Write(IPlayer.GetOffset(), 81, "bb", Skillbook.Action, newGrade);
-
-					(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
-					IPlayer.SystemMessage("Skill successfully upgraded.", TEXTCOLOR_GREEN);
-					return Item.GetAmount();
-				}
-				else {
-					IPlayer.SystemMessage("You already have max grade of skill.", TEXTCOLOR_RED);
-					return Item.GetAmount();
-				}
-			}
-			else {
-				int OldSP = IPlayer.GetSkillPoint();
-				if ((Skillbook.Class == 1 && Skillbook.Action == 63))
-					LearnSkill(IPlayer, Skillbook.Action, true);
-				else if (OldSP) {
-						SkillLearnPacket(IPlayer, Skillbook.Action);
-						if (OldSP > IPlayer.GetSkillPoint())
-							IPlayer.AddSkillPoint(1);
-						else if (!(Skillbook.Action >= 85 && Skillbook.Action <= 87)) {
-							IPlayer.SystemMessage("You can not learn that skill.", TEXTCOLOR_RED);
-							return Item.GetAmount();
-						}
-					}
-					else {
-						IPlayer.SystemMessage("1 Skill point is needed to learn this skill.", TEXTCOLOR_RED);
-						return Item.GetAmount();
-					}
-
-					(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
-					IPlayer.SystemMessage("Skill successfully learned.", TEXTCOLOR_GREEN);
-					return Item.GetAmount();
-			}
-
-			IPlayer.SystemMessage("First you must to get skill to upgrade it.", TEXTCOLOR_RED);
-			return Item.GetAmount();
-		}
-		else {
-			IPlayer.SystemMessage("Skill book is not for your class.", TEXTCOLOR_RED);
-			return Item.GetAmount();
-		}
-	}
 
 	if (IPlayer.IsOnline() && Item.CheckIndex() == 482)
 	{
@@ -655,28 +754,6 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 		if (LearnBlessingSonOfSky(IPlayer, (DWORD*)((int)IPlayer.GetOffset() + 624), true))
 			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
 		return Item.GetAmount();
-	}
-
-	//Egg Stone of EXP 1 Day
-	if (IPlayer.IsOnline() && Item.CheckIndex() == 2001)
-	{
-		if (!IPlayer.IsBuff(119))
-		{
-			IPlayer.Buff(119, 86400, 0);
-			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
-			return Item.GetAmount();
-		}
-	}
-
-	//Egg Stone of EXP 15 Day
-	if (IPlayer.IsOnline() && Item.CheckIndex() == 20010)
-	{
-		if (!IPlayer.IsBuff(119))
-		{
-			IPlayer.Buff(119, 1296000, 0);
-			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
-			return Item.GetAmount();
-		}
 	}
 
 
@@ -773,34 +850,34 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 				CPlayer::Write(IPlayer.GetOffset(), 181, "dwd", IPlayer.GetID(), 501, Remain);
 			}
 			else
-				if (IPlayer.IsBuff(BuffNames::Extension3)) {
-					int Remain2 = IPlayer.GetBuffValue(BuffNames::Extension3) - (int)time(0);
+			if (IPlayer.IsBuff(BuffNames::Extension3)) {
+				int Remain2 = IPlayer.GetBuffValue(BuffNames::Extension3) - (int)time(0);
 
-					IPlayer.CancelBuff(BuffNames::Extension3);
-					IPlayer.CancelBuff(BuffNames::Extension2);
-					IPlayer.CancelBuff(BuffNames::Extension1);
+				IPlayer.CancelBuff(BuffNames::Extension3);
+				IPlayer.CancelBuff(BuffNames::Extension2);
+				IPlayer.CancelBuff(BuffNames::Extension1);
 
-					IPlayer.SaveBuff(BuffNames::Extension2, Remain2, Remain2 + (int)time(0), 0, 0);
-					IPlayer.SaveBuff(BuffNames::Extension3, IETime, IETime + (int)time(0), 0, 0);
-					CPlayer::Write(IPlayer.GetOffset(), 204, "d", 72);
-					CPlayer::Write(IPlayer.GetOffset(), 181, "dwd", IPlayer.GetID(), 499, IETime);
-					CPlayer::Write(IPlayer.GetOffset(), 181, "dwd", IPlayer.GetID(), 500, Remain2);
-				}
-				else {
-					IPlayer.CancelBuff(BuffNames::Extension3);
-					IPlayer.CancelBuff(BuffNames::Extension2);
-					IPlayer.CancelBuff(BuffNames::Extension1);
+				IPlayer.SaveBuff(BuffNames::Extension2, Remain2, Remain2 + (int)time(0), 0, 0);
+				IPlayer.SaveBuff(BuffNames::Extension3, IETime, IETime + (int)time(0), 0, 0);
+				CPlayer::Write(IPlayer.GetOffset(), 204, "d", 72);
+				CPlayer::Write(IPlayer.GetOffset(), 181, "dwd", IPlayer.GetID(), 499, IETime);
+				CPlayer::Write(IPlayer.GetOffset(), 181, "dwd", IPlayer.GetID(), 500, Remain2);
+			}
+			else {
+				IPlayer.CancelBuff(BuffNames::Extension3);
+				IPlayer.CancelBuff(BuffNames::Extension2);
+				IPlayer.CancelBuff(BuffNames::Extension1);
 
-					IPlayer.SaveBuff(BuffNames::Extension3, IETime, IETime + (int)time(0), 0, 0);
-					CPlayer::Write(IPlayer.GetOffset(), 204, "d", 36);
-					CPlayer::Write(IPlayer.GetOffset(), 181, "dwd", IPlayer.GetID(), 499, IETime);
-				}
-				IPlayer.BoxMsg("You have successfully Expanded your inventory by 36 more slots for " + Int2String(ItemExpansion.find(Item.CheckIndex())->second.Time) +" days.");
-				(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+				IPlayer.SaveBuff(BuffNames::Extension3, IETime, IETime + (int)time(0), 0, 0);
+				CPlayer::Write(IPlayer.GetOffset(), 204, "d", 36);
+				CPlayer::Write(IPlayer.GetOffset(), 181, "dwd", IPlayer.GetID(), 499, IETime);
+			}
+			IPlayer.BoxMsg("You have successfully Expanded your inventory by 36 more slots for " + Int2String(ItemExpansion.find(Item.CheckIndex())->second.Time) + " days.");
+			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
 		}
 		else
-			IPlayer.BoxMsg("You have already expanded your inventory to the max you could!"); 
-		
+			IPlayer.BoxMsg("You have already expanded your inventory to the max you could!");
+
 		return Item.GetAmount();
 	}
 
@@ -809,7 +886,7 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 		if (IPlayer.IsBuff(12))
 			IPlayer.CancelBuff(12);
 	}
-		
+
 
 	if (IPlayer.IsOnline() && ItemBuffSrv.count(Item.CheckIndex())){
 		double Buff = 3;
@@ -817,6 +894,8 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 		double Refine = 3;
 		if (Buff == 3) Buff = 2.75;
 		if (Refine == 3) Refine = 5.5;
+
+		std::string playerName = IPlayer.GetName();
 
 		CIOCriticalSection::Enter((void*)0x4e2078);
 		CIOCriticalSection::Enter((void*)0x4e2098);
@@ -836,11 +915,11 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 				int AddBuff = CBuff::CreateBuff(37, 1800, 30 * Buff + 5, 20 * Buff + 5);
 				(*(int(__thiscall **)(int, int))(*(DWORD *)(int)Online.GetOffset() + 180))((int)Online.GetOffset(), AddBuff);
 				Online.Buff(12, 1800, 60);
+				CPlayer::Write(Online.GetOffset(), 0xFF, "dsd", 247, playerName + " has blessed the whole server, GG!", NOTICECOLOR_ORANGELONG);
 			}
 		}
-		std::string playerName = IPlayer.GetName();
 		CIOCriticalSection::Leave((void*)0x4e2078);
-		CPlayer::WriteAll(0xFF, "dsd", 247, playerName + " has blessed the whole server, GG!", NOTICECOLOR_ORANGELONG);
+
 		(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), 9, -1);
 		return Item.GetAmount();
 	}
@@ -868,6 +947,10 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 		int MagAtk = IPlayer.IsBuff(BuffNames::MystMag);
 		int Def = IPlayer.IsBuff(BuffNames::MystDef);
 
+		if (!OTP && !EVA && !HP && !PhyAtk && !MagAtk && !Def){
+			IPlayer.SystemMessage("You do not have Mystery Passive to reset.", TEXTCOLOR_RED);
+			return Item.GetAmount();
+		}
 
 		if (OTP){
 			IPlayer.RemoveSavedBuff(BuffNames::MystOTP);
@@ -934,38 +1017,6 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 	}
 
 
-
-	if (IPlayer.IsOnline() && ItemHpDef.count(Item.CheckIndex())) {
-		if (IPlayer.GetBuffRemain(58) >= 10000 && IPlayer.GetBuffRemain(59) >= 10000) {
-			IPlayer.SystemMessage("Exceeded Scroll Usage Limit!", TEXTCOLOR_RED);
-			return Item.GetAmount();
-		}
-
-		int Level = ItemHpDef.find(Item.CheckIndex())->second.level;
-		if (IPlayer.GetLevel() < Level){
-			IPlayer.SystemMessage("You must be atleast " + Int2String(Level) + " to use this item.", TEXTCOLOR_RED);
-			return Item.GetAmount();
-		}
-
-		for (int i = 58; i < 60; i++) {
-			int Time = 1000;
-
-			if (IPlayer.IsBuff(i))
-				Time = IPlayer.GetBuffRemain(i);
-
-			if (Time >= 9000)
-				IPlayer.Buff(i, Time + (9999 - Time), 0);
-
-			if (Time < 9000)
-				IPlayer.Buff(i, Time + 1000, 0);
-		}
-
-		if (ItemHpDef.find(Item.CheckIndex())->second.remove)
-			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
-
-		return Item.GetAmount();
-	}
-
 	if (IPlayer.IsOnline() && ItemScrolls.count(Item.CheckIndex())){
 		if ((IPlayer.IsBuff(58) && IPlayer.IsBuff(51) && IPlayer.IsBuff(54) && IPlayer.IsBuff(55) && IPlayer.IsBuff(56) && IPlayer.IsBuff(57)) || (IPlayer.IsBuff(60) && IPlayer.IsBuff(61) && IPlayer.IsBuff(62) && IPlayer.IsBuff(63))) {
 			IPlayer.SystemMessage("Scrolls/Potions already in use. Please wait untill its time is over!", TEXTCOLOR_RED);
@@ -998,16 +1049,11 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 
 	if (IPlayer.IsOnline() && ItemTasty.count(Item.CheckIndex()))
 	{
-		if (IPlayer.GetLevel() >= TastyLvl) {
+		int Level = ItemTasty.find(Item.CheckIndex())->second.level;
+
+		if (IPlayer.GetLevel() >= Level) {
 			if (IPlayer.IsBuff(272) && IPlayer.IsBuff(262) && IPlayer.IsBuff(264) && IPlayer.IsBuff(266) && IPlayer.IsBuff(268) && IPlayer.IsBuff(270)) {
 				IPlayer.SystemMessage("All buffs already in use.", TEXTCOLOR_RED);
-				return Item.GetAmount();
-			}
-
-
-			int Level = ItemTasty.find(Item.CheckIndex())->second.level;
-			if (IPlayer.GetLevel() < Level){
-				IPlayer.SystemMessage("You must be atleast " + Int2String(Level) + " to use this item.", TEXTCOLOR_RED);
 				return Item.GetAmount();
 			}
 
@@ -1055,88 +1101,119 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 				(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
 		}
 		else
-			IPlayer.SystemMessage("You must be level " + Int2String(TastyLvl) + " to use this item.", TEXTCOLOR_RED);
+			IPlayer.SystemMessage("You must be level " + Int2String(Level) + " to use this item.", TEXTCOLOR_RED);
 
 		return Item.GetAmount();
 	}
 
 
-	if (IPlayer.IsOnline() && Item.CheckIndex() == 2366)
-	{
+
+	if (IPlayer.IsOnline() && ItemHpDef.count(Item.CheckIndex())) {
+		if (IPlayer.GetBuffRemain(58) >= 9500 || IPlayer.GetBuffRemain(59) >= 9500 || IPlayer.GetBuffRemain(58) >= 9500 && IPlayer.GetBuffRemain(59) >= 9500) {
+			IPlayer.SystemMessage("Exceeded Scroll Usage Limit!", TEXTCOLOR_RED);
+			return Item.GetAmount();
+		}
+
+		int Level = ItemHpDef.find(Item.CheckIndex())->second.level;
+		if (IPlayer.GetLevel() < Level){
+			IPlayer.SystemMessage("You must be atleast " + Int2String(Level) + " to use this item.", TEXTCOLOR_RED);
+			return Item.GetAmount();
+		}
+
+		for (int i = 58; i < 60; i++) {
+			int Time = 500;
+
+			if (IPlayer.IsBuff(i))
+				Time = IPlayer.GetBuffRemain(i) + 500;
+
+			if (Time <= 9500)
+				IPlayer.Buff(i, Time, 0);
+		}
+
+		if (ItemHpDef.find(Item.CheckIndex())->second.remove)
+			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+
+		return Item.GetAmount();
+	}
+
+
+	/*
+		if (IPlayer.IsOnline() && Item.CheckIndex() == 2366)
+		{
 		if (!IPlayer.IsBuff(272)) {
-			IPlayer.Buff(272, 1800, 0);
-			IPlayer.Buff(261, 1810, 0);
-			IPlayer.SetBuffIcon(1800000, 0, 3645, 430);
-			IPlayer.IncreaseMaxHp(1450);
-			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+		IPlayer.Buff(272, 1800, 0);
+		IPlayer.Buff(261, 1810, 0);
+		IPlayer.SetBuffIcon(1800000, 0, 3645, 430);
+		IPlayer.IncreaseMaxHp(1450);
+		(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
 		}
 		return Item.GetAmount();
-	}
+		}
 
-	if (IPlayer.IsOnline() && Item.CheckIndex() == 2367)
-	{
+		if (IPlayer.IsOnline() && Item.CheckIndex() == 2367)
+		{
 		if (!IPlayer.IsBuff(262)) {
-			IPlayer.Buff(262, 1800, 0);
-			IPlayer.Buff(263, 1810, 0);
-			IPlayer.SetBuffIcon(1800000, 0, 3646, 431);
-			IPlayer.IncreaseMaxMp(900);
-			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+		IPlayer.Buff(262, 1800, 0);
+		IPlayer.Buff(263, 1810, 0);
+		IPlayer.SetBuffIcon(1800000, 0, 3646, 431);
+		IPlayer.IncreaseMaxMp(900);
+		(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
 		}
 		return Item.GetAmount();
-	}
+		}
 
-	if (IPlayer.IsOnline() && Item.CheckIndex() == 2076)
-	{
+		if (IPlayer.IsOnline() && Item.CheckIndex() == 2076)
+		{
 		if (!IPlayer.IsBuff(264)) {
-			IPlayer.Buff(264, 3600, 0);
-			IPlayer.Buff(265, 3610, 0);
-			IPlayer.SetBuffIcon(3600000, 0, 3601, 415);
-			IPlayer.IncreaseMaxHp(500);
-			IPlayer.IncreaseMaxMp(500);
-			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+		IPlayer.Buff(264, 3600, 0);
+		IPlayer.Buff(265, 3610, 0);
+		IPlayer.SetBuffIcon(3600000, 0, 3601, 415);
+		IPlayer.IncreaseMaxHp(500);
+		IPlayer.IncreaseMaxMp(500);
+		(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
 		}
 		return Item.GetAmount();
-	}
+		}
 
-	if (IPlayer.IsOnline() && Item.CheckIndex() == 2079)
-	{
+		if (IPlayer.IsOnline() && Item.CheckIndex() == 2079)
+		{
 		if (!IPlayer.IsBuff(266)) {
-			IPlayer.Buff(266, 3600, 0);
-			IPlayer.Buff(267, 3610, 0);
-			IPlayer.SetBuffIcon(3600000, 0, 3604, 418);
-			IPlayer.AddMaxAttack(75);
-			IPlayer.AddMinAttack(50);
-			IPlayer.AddEva(10);
-			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+		IPlayer.Buff(266, 3600, 0);
+		IPlayer.Buff(267, 3610, 0);
+		IPlayer.SetBuffIcon(3600000, 0, 3604, 418);
+		IPlayer.AddMaxAttack(75);
+		IPlayer.AddMinAttack(50);
+		IPlayer.AddEva(10);
+		(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
 		}
 		return Item.GetAmount();
-	}
+		}
 
-	if (IPlayer.IsOnline() && Item.CheckIndex() == 2078)
-	{
+		if (IPlayer.IsOnline() && Item.CheckIndex() == 2078)
+		{
 		if (!IPlayer.IsBuff(268)) {
-			IPlayer.Buff(268, 3600, 0);
-			IPlayer.Buff(269, 3610, 0);
-			IPlayer.SetBuffIcon(3600000, 0, 3603, 417);
-			IPlayer.AddMaxAttack(100);
-			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+		IPlayer.Buff(268, 3600, 0);
+		IPlayer.Buff(269, 3610, 0);
+		IPlayer.SetBuffIcon(3600000, 0, 3603, 417);
+		IPlayer.AddMaxAttack(100);
+		(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
 		}
 		return Item.GetAmount();
-	}
+		}
 
-	if (IPlayer.IsOnline() && Item.CheckIndex() == 2077)
-	{
+		if (IPlayer.IsOnline() && Item.CheckIndex() == 2077)
+		{
 		if (!IPlayer.IsBuff(270)) {
-			IPlayer.Buff(270, 3600, 0);
-			IPlayer.Buff(271, 3610, 0);
-			IPlayer.SetBuffIcon(3600000, 0, 3602, 416);
-			IPlayer.AddMinAttack(75);
-			IPlayer.AddOTP(10);
-			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+		IPlayer.Buff(270, 3600, 0);
+		IPlayer.Buff(271, 3610, 0);
+		IPlayer.SetBuffIcon(3600000, 0, 3602, 416);
+		IPlayer.AddMinAttack(75);
+		IPlayer.AddOTP(10);
+		(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
 		}
 		return Item.GetAmount();
-	}
-
+		}
+		*/
 	if (IPlayer.IsOnline() && EmokCerts.count(Item.CheckIndex()))
 	{
 		int BRemain = IPlayer.GetBuffRemain(156);
@@ -1144,13 +1221,13 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 
 		EmokCertConf eCert = EmokCerts.find(Item.CheckIndex())->second;
 		if (eCert.EXP && (BRemain || EmokTimeLeft)) {
-			IPlayer.SystemMessage("You already have an area timer running out. Please use this certificate once its ended.", TEXTCOLOR_RED);
+			IPlayer.SystemMessage("You already have an emok timer running out. Please use this certificate once its ended.", TEXTCOLOR_RED);
 			return Item.GetAmount();
 		}
 
 		int Time = BRemain + eCert.Time;
 
-		if(!BRemain)
+		if (!BRemain)
 			Time += EmokTimeLeft;
 
 		IPlayer.Buff(156, Time, eCert.EXP);
@@ -1316,6 +1393,56 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 		return Item.GetAmount();
 	}
 
+	if (IPlayer.IsOnline() && TimeTalisman.count(Item.CheckIndex()))
+	{
+		ConfigTimeTalisman t = TimeTalisman.find(Item.CheckIndex())->second;
+
+		bool itemFound = false;
+
+		if (IPlayer.GetBuffValue(BuffNames::PetOwner3)) {
+
+			int PetItem = IPlayer.GetBuffValue(BuffNames::PetIID3);
+
+			if (!PetLifeCheck.count(PetItem))
+			{
+				IPlayer.BoxMsg("Pet has no time to extend.");
+				return Item.GetAmount();
+			}
+
+			if (PetItem) {
+				int ItemP = IPlayer.ItemPointerLock(PetItem);
+
+				if (ItemP)
+				{
+					IItem Itemx((void*)ItemP);
+
+					if (CItem::IsState(ItemP, 1)){
+						int ExtendTime = t.time;
+						int RemainingTime = PetLifeCheck.findValue(Itemx.GetIID()) - (int)time(0);
+						int TotalTime = ExtendTime + RemainingTime;
+						PetLifeCheck.replaceInsert(Itemx.GetIID(), (int)time(0) + TotalTime);
+
+						CDBSocket::Write(89, "ddd", IPlayer.GetPID(), (int)time(0) + TotalTime, Itemx.GetIID());
+						CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddd", 230, Itemx.GetIID(), TotalTime);
+						*(DWORD*)((int)Itemx.GetOffset() + 68) = GetTickCount() + (2000 * TotalTime);
+						*(DWORD*)((int)Itemx.GetOffset() + 72) = 0;
+						itemFound = true;
+						IPlayer.SystemMessage("Time has successfully extended.", TEXTCOLOR_GREEN);
+					}
+				}
+			}
+		}
+
+		if (!itemFound)
+		{
+			IPlayer.BoxMsg("Please equip Limited Pet before using extension.");
+			return Item.GetAmount();
+		}
+
+		(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+		return Item.GetAmount();
+	}
+
 	if (IPlayer.IsOnline() && BuffedItems.count(Item.CheckIndex())) {
 		std::vector<Buffs> BuffVec = BuffedItems.find(Item.CheckIndex())->second.BuffList;
 		bool used = false;
@@ -1329,7 +1456,7 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 			}
 		}
 
-		if(used)
+		if (used)
 			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
 		else
 			IPlayer.SystemMessage("Item already used.", TEXTCOLOR_RED);
@@ -1345,15 +1472,16 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 
 	if (IPlayer.IsOnline() && Boxes.count(Item.CheckIndex())) {
 
-		std::vector<Items> items = Boxes.find(Item.CheckIndex())->second;
-		int NumberOfItems = items.size();
+		SBoxes t = Boxes.find(Item.CheckIndex())->second;
+		int NumberOfItems = t.Amounts.size();
 
 		if (CPlayer::GetInvenSize((int)IPlayer.GetOffset()) < IPlayer.MaxInventorySize() - NumberOfItems) {
 
 			for (int i = 0; i < NumberOfItems; i++) {
-				Items t = items[i];
+				int Index = String2Int(t.Rewards[i]);
+				int Amount = String2Int(t.Amounts[i]);
 
-				int Item = CItem::CreateItem(t.Index, t.Prefix, t.Amount, -1);
+				int Item = CItem::CreateItem(Index, t.Prefix, Amount, -1);
 
 				if (Item) {
 					IItem xItemAdd((void*)Item);

@@ -1,5 +1,6 @@
 signed int __fastcall DefenseChangePrefix(void *Item, void* edx, int Player, int ID, int Chance, int Argument)
 {
+
 	IChar IPlayer((void*)Player);
 	IItem IItem(Item);
 
@@ -167,9 +168,46 @@ signed int __fastcall DefenseChangePrefix(void *Item, void* edx, int Player, int
 			IPlayer.SystemMessage("Your new qigong spirit of insanity has successfully been applied.", TEXTCOLOR_DARKGREEN);
 			return 1;
 		}
-		//int BofItem = 0;
-		//int BofItemG1 = IPlayer.ItemPointerLock(BofItem);
 
+		//if (TimeTalisman.count(NewPrefix))
+		//{
+		//	ConfigTimeTalisman t = TimeTalisman.find(NewPrefix)->second;
+
+		//	int TotalItems = t.items.size();
+		//	bool itemFound = false;
+		//	for (int i = 0; i < TotalItems; i++)
+		//	{
+		//		int Index = String2Int(t.items[i]);
+		//		if (IItem.CheckIndex() == Index)
+		//		{
+		//			if (!PetLifeCheck.count(IItem.GetIID()))
+		//			{
+		//				IPlayer.BoxMsg("Item has no time to extend.");
+		//				return 0;
+		//			}
+
+		//			int ExtendTime = t.time;
+		//			int RemainingTime = PetLifeCheck.findValue(IItem.GetIID()) - (int)time(0);
+		//			int TotalTime = ExtendTime + RemainingTime;
+
+		//			PetLifeCheck.replaceInsert(IItem.GetIID(), (int)time(0) + TotalTime);
+
+		//			CDBSocket::Write(89, "ddd", IPlayer.GetPID(), (int)time(0) + TotalTime, IItem.GetIID());
+		//			CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddd", 230, IItem.GetIID(), TotalTime);
+		//			*(DWORD*)((int)Item + 68) = GetTickCount() + (2000 * TotalTime);
+		//			*(DWORD*)((int)Item + 72) = 0;
+		//			itemFound = true;
+		//			IPlayer.SystemMessage("Time has successfully extended.", TEXTCOLOR_GREEN);
+
+		//			return 1;
+		//		}
+		//	}
+		//	if (!itemFound)
+		//	{
+		//		IPlayer.BoxMsg("Talisman can not be used on this item.");
+		//		return 0;
+		//	}
+		//}
 
 		if (NewPrefix == BofConfigRead)
 		{
@@ -189,13 +227,164 @@ signed int __fastcall DefenseChangePrefix(void *Item, void* edx, int Player, int
 				CDBSocket::Write(21, "dddbb", IItem.GetIID(), IPlayer.GetID(), 2097152 + CurrentInfo, 8, 7);
 				CItem::SendItemInfo(IItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
 				IPlayer.BoxMsg("Equipping the Bead of Fire has succeeded.");
+				std::string msg = (std::string)IPlayer.GetName();
+				msg = msg + " has enchanted with Bead of Fire";
+				int textColor = NOTICECOLOR_WHITE; // Default color
+				int messageType = 2; // Default messageType
+
+				RewardMessage reward;
+				reward.message = msg;
+				reward.textColor = textColor;
+				reward.messageType = messageType;
+
+				PlayerRewardNotice.push_back(reward);
+				ToNoticeWebhook(msg.c_str());
 				return 1;
 			}
 		}
 
+		int armorClass = IItem.GetClass();
+		int isHelmet = (IItem.GetType() == 2);
+		int isArmor = (IItem.GetType() == 3);
+		int isBoots = (IItem.GetType() == 6);
+		int isGloves = (IItem.GetType() == 5);
+		int isShorts = (IItem.GetType() == 4);
+
+
+	//	int grade = HighGradeBof.find(NewPrefix)->second;
+		int prefix = HighGradeBof.find(NewPrefix)->first;
+
+		if (HighGradeBof.count(NewPrefix) || NewPrefix == Bof2ConfigRead)
+		{
+
+			//if (CItem::GetLevel((int)IItem.GetOffset()) == 52 && grade == 50)
+			//	grade = 52;
+
+			//if (CItem::GetLevel((int)IItem.GetOffset()) != grade)
+			//{
+			//	IPlayer.BoxMsg("Bead of Fire can not be equipped on this armor.");
+			//	return 0;
+			//}
+			if (CurrentInfo & 2097152)
+			{
+				IPlayer.BoxMsg("Bead of Fire is already equipped.");
+				return 0;
+			}
+			else if (CItem::GetLevel((int)IItem.GetOffset()) < 46 || CItem::GetLevel((int)IItem.GetOffset()) > 100)
+			{
+				IPlayer.BoxMsg("Bead of Fire can not be equipped on this armor.");
+				return 0;
+			}
+			else {
+				int grade = CItem::GetLevel((int)IItem.GetOffset());
+				CDBSocket::Write(21, "dddbb", IItem.GetIID(), IPlayer.GetID(), IItem.GetInfo(), 0, 0);
+				IItem.SetInfo(2097152 + CurrentInfo);
+				CDBSocket::Write(21, "dddbb", IItem.GetIID(), IPlayer.GetID(), 2097152 + CurrentInfo, 8, 7);
+				CItem::SendItemInfo(IItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
+				IPlayer.BoxMsg("Equipping the Bead of Fire has succeeded.");
+				std::string msg = (std::string)IPlayer.GetName();
+				if (CItem::GetLevel((int)IItem.GetOffset()) == 52)
+				{
+						msg = msg + " has enchanted Iron Shield with Gong with Bead of Fire";
+				}
+				else if (isBoots){
+					if (armorClass == 0)
+						msg = msg + " has enchanted " + GetKnightBootsName(grade) + " with Bead of Fire";
+					else if (armorClass == 1)
+						msg = msg + " has enchanted " + GetMageShoesName(grade) + " with Bead of Fire";
+					else if (armorClass == 2)
+						msg = msg + " has enchanted " + GetArcherBootsName(grade) + " with Bead of Fire";
+					else
+						msg = msg + " has enchanted " + GetThiefBootsName(grade) + " with Bead of Fire";
+				}
+				else if (isArmor) {
+					// Handle Armor messages for all classes and grades similarly
+					std::string armorName = "Unknown Armor";
+					if (armorClass == 0) {  // Knight
+						armorName = GetKnightArmorName(grade);
+					}
+					else if (armorClass == 1) {  // Mage
+						armorName = GetMageArmorName(grade);
+					}
+					else if (armorClass == 2) {  // Archer
+						armorName = GetArcherArmorName(grade);
+					}
+					else   // Thief
+						armorName = GetThiefSuitName(grade);
+
+					msg = msg + " has enchanted " + armorName + " with Bead of Fire";
+				}
+				else if (isHelmet) {
+					// Handle Helmet messages for all classes and grades similarly
+					std::string helmetName = "Unknown Helmet";
+					if (armorClass == 0) {  // Knight
+						helmetName = GetKnightHelmetName(grade);
+					}
+					else if (armorClass == 1) {  // Mage
+						helmetName = GetMageHairDecorationName(grade);
+					}
+					else if (armorClass == 2) {  // Archer
+						helmetName = GetArcherHelmetName(grade);
+					}
+					else   // Thief
+						helmetName = GetThiefHoodName(grade);
+					msg = msg + " has enchanted " + helmetName + " with Bead of Fire";
+				}
+				else if (isGloves) {
+					// Handle Gloves messages for all classes and grades similarly
+					std::string glovesName = "Unknown Gloves";
+					if (armorClass == 0) {  // Knight
+						glovesName = GetKnightGlovesName(grade);
+					}
+					else if (armorClass == 1) {  // Mage
+						glovesName = GetMageGlovesName(grade);
+					}
+					else if (armorClass == 2) {  // Archer
+						glovesName = GetArcherGlovesName(grade);
+					}
+					else if (armorClass == 3) {  // Thief
+						glovesName = GetThiefGlovesName(grade);
+					}
+					msg = msg + " has enchanted " + glovesName + " with Bead of Fire";
+				}
+				else if (isShorts) {
+					// Handle Shorts messages for all classes and grades similarly
+					std::string shortsName = "Unknown Shorts";
+					if (armorClass == 0) {  // Knight
+						shortsName = GetKnightShortsName(grade);
+					}
+					else if (armorClass == 1) {  // Mage
+						shortsName = GetMageShortsName(grade);
+					}
+					else if (armorClass == 2) {  // Archer
+						shortsName = GetArcherShortsName(grade);
+					}
+					else if (armorClass == 3) {  // Thief
+						shortsName = GetThiefShortsName(grade);
+					}
+					msg = msg + " has enchanted " + shortsName + " with Bead of Fire";
+				}
+
+				if (!msg.empty() && IPlayer.IsValid()) {
+					int textColor = NOTICECOLOR_WHITE; // Default color
+					int messageType = 2; // Default messageType
+
+					RewardMessage reward;
+					reward.message = msg;
+					reward.textColor = textColor;
+					reward.messageType = messageType;
+
+					PlayerRewardNotice.push_back(reward);
+					ToNoticeWebhook(msg.c_str());
+				}
+				return 1;
+			}
+		}
 
 		if (WeaponReplace.count((IItem.CheckIndex() + 100000)*NewPrefix) && WeaponReplaceIndex.count((IItem.CheckIndex() + 100000)*NewPrefix))
 		{
+			std::string msg = (std::string)IPlayer.GetName();
+
 			if (WeaponReplace.find((IItem.CheckIndex() + 100000)*NewPrefix)->second == NewPrefix)
 			{
 				if (CBase::IsDeleted((int)Item))
@@ -274,6 +463,27 @@ signed int __fastcall DefenseChangePrefix(void *Item, void* edx, int Player, int
 
 						CItem::SendItemInfo((void*)ReplaceItem, (int)IPlayer.GetOffset(), 92);
 						CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddddd", 242, 0, 0, 128, 255);
+						std::string& successMsg = WeaponReplaceMsg.find((ItemNewIndex + 100000)*NewPrefix)->second;
+						if (WeaponReplaceMsg.count((ItemNewIndex + 100000)*NewPrefix) && !successMsg.empty()){
+							//CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), NOTICECOLOR_PINK);
+							msg = msg + " " + successMsg;
+							if (!msg.empty() && IPlayer.IsValid()) {
+								int textColor = NOTICECOLOR_PINK; // Default color
+								int messageType = 2; // Default messageType
+								RewardMessage reward;
+								reward.message = msg;
+								reward.textColor = textColor;
+								reward.messageType = messageType;
+
+								PlayerRewardNotice.push_back(reward);
+
+								std::string avatar = Avatar;
+								std::string playerName = std::string(IPlayer.GetName());
+								std::string url = NoticeWebHook;
+								SendWebhookMessage(url, msg.c_str(), avatar.c_str(), std::string(playerName));
+								ToNoticeWebhook(msg.c_str());
+							}
+						}
 					}
 				}
 				else {

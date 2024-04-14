@@ -2,14 +2,13 @@ int K = 0;
 
 int __cdecl CDBProcess(char *Data)
 {
+
 	if ((unsigned char)Data[2] == 18 && !K) {
 		GetNPCList();
 		setMapData();
 
 		K = 1;
 	}
-
-	crashDebug((unsigned char)Data[2]);
 
 	if ((unsigned char)Data[2] == 25)
 	{
@@ -32,9 +31,9 @@ int __cdecl CDBProcess(char *Data)
 	}
 	if ((unsigned char)Data[2] == 50)
 	{
-		int PID = 0, HP = 0, HK = 0, HD = 0, DKPT = 0, DKPW = 0, PLT = 0, PLW = 0, SVT = 0, SVW = 0, RP = 0;Interface<ITools> Tools;
+		int PID = 0, HP = 0, HK = 0, HD = 0, DKPT = 0, DKPW = 0, PLT = 0, PLW = 0, SVT = 0, SVW = 0, RP = 0; Interface<ITools> Tools;
 		//Tools->ParseData((char*)(void*)(Data + 3), "ddddddddddd", &PID, &HP, &HK, &HD, &DKPT, &DKPW, &PLT, &PLW, &SVT, &SVW, &RP);
-			CPacket::xRead((char*)(void*)(Data + 3), "ddddddddddd", &PID, &HP, &HK, &HD, &DKPT, &DKPW, &PLT, &PLW, &SVT, &SVW, &RP);
+		CPacket::xRead((char*)(void*)(Data + 3), "ddddddddddd", &PID, &HP, &HK, &HD, &DKPT, &DKPW, &PLT, &PLW, &SVT, &SVW, &RP);
 		if (PID)
 		{
 			TargetFind myTarget(0, 1, PID);
@@ -51,11 +50,11 @@ int __cdecl CDBProcess(char *Data)
 				IPlayer.SetProperty(PlayerProperty::SVTx, SVT);
 				IPlayer.SetProperty(PlayerProperty::SVWx, SVW);
 				IPlayer.SetProperty(PlayerProperty::RPx, RP);
-				if(!IPlayer.isPortalMode())
+				if (!IPlayer.isPortalMode())
 					IPlayer.ShowHonor(HP, HK, HD, DKPT, DKPW, PLT, PLW, SVT, SVW, RP, 0);
 				IPlayer.UpdateHonorTag(HP);
 			}
-			
+
 		}
 
 		return 0;
@@ -63,7 +62,7 @@ int __cdecl CDBProcess(char *Data)
 
 	if ((unsigned char)Data[2] == 51)
 	{
-		int PID = 0, Time = 0, Day = 0;Interface<ITools> Tools;
+		int PID = 0, Time = 0, Day = 0; Interface<ITools> Tools;
 		//Tools->ParseData((char*)(void*)(Data + 3), "ddd", &PID, &Day, &Time);
 		CPacket::xRead((char*)(void*)(Data + 3), "ddd", &PID, &Day, &Time);
 		if (PID && Day)
@@ -71,7 +70,7 @@ int __cdecl CDBProcess(char *Data)
 			TargetFind myTarget(0, 1, PID);
 			int Player = (int)myTarget.getTarget();
 			IChar IPlayer((void*)Player);
-			
+
 			if (IPlayer.IsOnline()) {
 				IPlayer.SetProperty(PlayerProperty::EmokTime, Time);
 				IPlayer.SetProperty(PlayerProperty::EmokDay, Day);
@@ -83,14 +82,14 @@ int __cdecl CDBProcess(char *Data)
 
 	if ((unsigned char)Data[2] == 52)
 	{
-		int Remain = 0, Type = 0, PID = 0;Interface<ITools> Tools;
+		int Remain = 0, Type = 0, PID = 0; Interface<ITools> Tools;
 		//Tools->ParseData((char*)(void*)(Data + 3), "ddd", &PID, &Type, &Remain);
 		CPacket::xRead((char*)(void*)(Data + 3), "ddd", &PID, &Type, &Remain);
 		if (PID && Type && Remain) {
 			TargetFind myTarget(0, 1, PID);
 			int Player = (int)myTarget.getTarget();
 			IChar IPlayer((void*)Player);
-			if(IPlayer.IsOnline())
+			if (IPlayer.IsOnline())
 				IPlayer.Buff(Type, Remain, 0);
 		}
 		return 0;
@@ -111,7 +110,7 @@ int __cdecl CDBProcess(char *Data)
 
 		return 0;
 	}
-	
+
 	if ((unsigned char)Data[2] == 54)
 	{
 		const char* Lock = "";
@@ -162,6 +161,7 @@ int __cdecl CDBProcess(char *Data)
 
 				IPlayer.UpdateBuff((BuffNames::DailyQuestBegin + QuestID) % BuffNames::DailyQuestEnd, BuffNames::BuffTime, QuestTime);
 				IPlayer.UpdateBuff((BuffNames::DailyRepeatBegin + QuestID) % BuffNames::DailyRepeatEnd, BuffNames::BuffTime, QuestRepeat);
+
 			}
 		}
 
@@ -181,6 +181,7 @@ int __cdecl CDBProcess(char *Data)
 			if (IPlayer.IsOnline()) {
 				IPlayer.UpdateBuff(BuffNames::MonsterQuestBegin + ((Monster + (Quest * 100)) % (BuffNames::MonsterQuestEnd - BuffNames::MonsterQuestBegin)), BuffNames::BuffTime, Amount);
 				CPlayer::Write((void*)Player, 184, "ddd", Quest << 16, Monster, Amount);
+
 			}
 		}
 
@@ -189,13 +190,13 @@ int __cdecl CDBProcess(char *Data)
 
 	if ((unsigned char)Data[2] == 57)
 	{
-		int PID = 0,BuffID=0,Value=0,SBKey=0,SBName=0,Time=0;
+		int PID = 0, BuffID = 0, Value = 0, SBKey = 0, SBName = 0, Time = 0;
 		Interface<ITools> Tools;
 		CPacket::xRead((char*)(void*)(Data + 3), "dddddd", &PID, &BuffID, &Value, &SBKey, &SBName, &Time);
 		TargetFind myTarget(0, 1, PID);
 		int Player = (int)myTarget.getTarget();
 		IChar IPlayer((void*)Player);
-		
+
 		if (IPlayer.IsOnline()) {
 			if (BuffID == 156 && Value) {
 				if (IPlayer.IsBuff(BuffID)) {
@@ -213,9 +214,10 @@ int __cdecl CDBProcess(char *Data)
 				int RemainTime = Time == BuffNames::BuffTime ? Time : (Time - (int)time(0));
 				if (!IPlayer.IsBuff(BuffID)) {
 					IPlayer.Buff(BuffID, RemainTime, Value);
+					IPlayer.SetBuffIcon(RemainTime * 1000, 0, SBKey, SBName);
 
-					if (SBKey && SBName)
-						IPlayer.SetBuffIcon(RemainTime * 1000, 0, 10004, 10004);
+					//	if (SBKey && SBName)
+					// IPlayer.SetBuffIcon(RemainTime * 1000, 0, 10004, 10004);
 
 					if (BuffID >= BuffNames::Extension1 && BuffID <= BuffNames::Extension3) {
 						if (Value > (int)time(0)) {
@@ -261,7 +263,7 @@ int __cdecl CDBProcess(char *Data)
 			else
 				CDBSocket::Write(95, "ddddddd", 2, PID, BuffID, Value, SBKey, SBName, Time);
 		}
-		
+
 		return 0;
 	}
 
@@ -270,7 +272,7 @@ int __cdecl CDBProcess(char *Data)
 	if ((unsigned char)Data[2] == 58)
 	{
 		const char *Name = "";
-		int PID = 0; 
+		int PID = 0;
 		Interface<ITools> Tools;
 		//Tools->ParseData((char*)(void*)(Data + 3), "ds", &PID, &Name);
 
@@ -303,7 +305,7 @@ int __cdecl CDBProcess(char *Data)
 				else
 					CDBSocket::Write(97, "dddd", PID, Index, Amount, Prefix);
 			}
-			
+
 		}
 		return 0;
 	}
@@ -339,8 +341,8 @@ int __cdecl CDBProcess(char *Data)
 	{
 		int PID = 0, Index = 0;
 
-		CPacket::xRead((char*)(void*)(Data + 3), "dd", &PID,&Index);
-		
+		CPacket::xRead((char*)(void*)(Data + 3), "dd", &PID, &Index);
+
 		if (Index && RidingCollectionIndex.count(Index)) {
 			TargetFind myTarget(0, 1, PID);
 			int Player = (int)myTarget.getTarget();
@@ -350,7 +352,7 @@ int __cdecl CDBProcess(char *Data)
 				int Collection = RidingCollectionIndex.find(Index)->second;
 				if (RidingCollections.count(Collection) && IPlayer.IsBuff(5500 + Collection)) {
 					RidingCollection ridingCollection = RidingCollections.find(Collection)->second;
-					if(!CPlayer::FindItem((void*)Player,Index, 1))
+					if (!CPlayer::FindItem((void*)Player, Index, 1))
 						updateRidingCollection((void*)Player, Collection, 0, ridingCollection.Stat, ridingCollection.Rate);
 				}
 			}
@@ -422,32 +424,33 @@ int __cdecl CDBProcess(char *Data)
 				if (starter.CoordX && starter.CoordY)
 					IPlayer.Teleport(starter.Map, starter.CoordX, starter.CoordY);
 
-				if(starter.EXP)
+				if (starter.EXP)
 					(*(int(__cdecl **)(int, signed int, signed int, unsigned __int64, unsigned __int64))(*(DWORD *)IPlayer.GetOffset() + 88))((int)IPlayer.GetOffset(), 25, 1, (unsigned __int64)starter.EXP, HIDWORD(starter.EXP));
 
 				if (starter.HTML)
 					IPlayer.OpenHTML(starter.HTML);
 
-				if (!starter.Msg.empty()) {
+				if (!starter.Msg.empty() && IPlayer.IsValid()) {
 					size_t sizeOf = starter.Msg.find("$name");
 					if (sizeOf != std::string::npos)
 						starter.Msg.replace(sizeOf, sizeof("$name") - 1, IPlayer.GetName());
-					CPlayer::WriteAll(0xFF, "dsd", 247, starter.Msg.c_str(), 1);
+
+					int textColor = 9;
+					int messageType = 2;
+					RewardMessage reward;
+					reward.message = starter.Msg;
+					reward.textColor = textColor;
+					reward.messageType = messageType;
+
+					PlayerRewardNotice.push_back(reward);
+
+					std::string avatar = Avatar;
+					std::string playerName = std::string(IPlayer.GetName());
+					std::string url = StarterWebhook;
+					SendWebhookMessage(url, starter.Msg.c_str(), avatar.c_str(), std::string(playerName));
+
 				}
 			}
-
-			//if (starterBuffs.count(IPlayer.GetClass())) {
-			//	std::vector<StarterBuffs> buffs = starterBuffs.find(IPlayer.GetClass())->second;
-
-			//	int numberOfBuffs = buffs.size();
-
-			//	for (int i = 0; i < numberOfBuffs; i++) {
-			//		StarterBuffs b = buffs[i];
-
-			//		if (b.Buff)
-			//			IPlayer.SaveBuff(b.Buff, b.Time, b.value, b.SysKey, b.SysKey);
-			//	}
-			//}
 
 			if (StarterItems.count(IPlayer.GetClass())) {
 				std::vector<Items> items = StarterItems.find(IPlayer.GetClass())->second;
@@ -472,8 +475,6 @@ int __cdecl CDBProcess(char *Data)
 
 							if (t.Bof)
 								Info += 2097152;
-
-						
 
 							*(DWORD*)(Item + 48) = Info;
 
@@ -501,15 +502,14 @@ int __cdecl CDBProcess(char *Data)
 									CDBSocket::Write(17, "ddbbb", *(DWORD *)(Item + 36), *(DWORD *)(Item + 32), 9, *(DWORD*)(Item + 112), 0);
 									CDBSocket::Write(28, "ddbb", *(DWORD *)(Item + 36), *(DWORD *)(Item + 32), 2, *(DWORD*)(Item + 124));
 								}
+
+								if (t.Type == 1)
+									CItemWeapon::PutOn(CPlayer::FindItem(IPlayer.GetOffset(), t.Index, 1), (int)IPlayer.GetOffset());
+								else if (t.Type == 2)
+									CItemDefense::PutOn(CPlayer::FindItem(IPlayer.GetOffset(), t.Index, 1), (int)IPlayer.GetOffset());
+								else if (t.Type == 3)
+									CItemOrnament::PutOn(CPlayer::FindItem(IPlayer.GetOffset(), t.Index, 1), (int)IPlayer.GetOffset());
 							}
-
-							if (t.Type == 1)
-								CItemWeapon::PutOn(CPlayer::FindItem(IPlayer.GetOffset(), t.Index, 1), (int)IPlayer.GetOffset());
-							if (t.Type == 2)
-								CItemDefense::PutOn(CPlayer::FindItem(IPlayer.GetOffset(), t.Index, 1), (int)IPlayer.GetOffset());
-							if (t.Type == 3)
-								CItemOrnament::PutOn(CPlayer::FindItem(IPlayer.GetOffset(), t.Index, 1), (int)IPlayer.GetOffset());
-
 							else
 								CBase::Delete((void*)Item);
 						}
@@ -523,14 +523,14 @@ int __cdecl CDBProcess(char *Data)
 	/*
 	if ((unsigned char)Data[2] == 66)
 	{
-		int IID = 0, Index = 0, Prefix = 0, MaxEnd = 0, CurEnd = 0, Info = 0, Num = 0, XHit = 0, XDefense = 0, XAttack = 0, XMagic = 0, XDodge = 0, Protect = 0, UpgrLevel = 0, SetGem = 0, ItemStat = 0;
+	int IID = 0, Index = 0, Prefix = 0, MaxEnd = 0, CurEnd = 0, Info = 0, Num = 0, XHit = 0, XDefense = 0, XAttack = 0, XMagic = 0, XDodge = 0, Protect = 0, UpgrLevel = 0, SetGem = 0, ItemStat = 0;
 
-		CPacket::xRead((void*)(Data + 3), "dddddddddddddddd", &IID, &Index, &MaxEnd, &CurEnd, &Info, &Num, &XHit, &XDefense, &XAttack, &XMagic, &XDodge, &Protect, &UpgrLevel, &SetGem, &Prefix, &ItemStat);
+	CPacket::xRead((void*)(Data + 3), "dddddddddddddddd", &IID, &Index, &MaxEnd, &CurEnd, &Info, &Num, &XHit, &XDefense, &XAttack, &XMagic, &XDodge, &Protect, &UpgrLevel, &SetGem, &Prefix, &ItemStat);
 
-		if (IID != 0 && Index)
-			insertMail(IID, Index, MaxEnd, CurEnd, Info, Num, XHit, XDefense, XAttack, XMagic, XDodge, Protect, UpgrLevel, SetGem, Prefix, ItemStat);
+	if (IID != 0 && Index)
+	insertMail(IID, Index, MaxEnd, CurEnd, Info, Num, XHit, XDefense, XAttack, XMagic, XDodge, Protect, UpgrLevel, SetGem, Prefix, ItemStat);
 
-		return 0;
+	return 0;
 	}
 	*/
 
@@ -586,7 +586,7 @@ int __cdecl CDBProcess(char *Data)
 			string loginMsg = "Dear " + (std::string)IPlayer.GetName() + ", Welcome back to " + thisServerName + ", enjoy the game, dont forget to follow the rules and play fair! You have last logged in at: " + std::string(Message);
 			IPlayer.SystemMessage(loginMsg.c_str(), TEXTCOLOR_GREEN);
 
-		//	IPlayer.BoxMsg("You have last logged in at: " + std::string(Message));
+			//	IPlayer.BoxMsg("You have last logged in at: " + std::string(Message));
 		}
 
 		return 0;
@@ -606,7 +606,7 @@ int __cdecl CDBProcess(char *Data)
 
 		if (IPlayer.IsOnline())
 			IPlayer.GiveReward(HouseReward, 0, HouseRewardAmount, 128, 0, 0, 0, 0, 0, 0, 0, "Congratulations Warrior! Your house has won the weekly reward.");
-		else 
+		else
 			insertOfflineReward(PID, HouseReward, HouseRewardAmount, PID, 0, 128, 0, 0, 0, 0, 0, 0, 0, 0, "Congratulations Warrior! Your house has won the weekly reward..");
 
 		return 0;
@@ -615,30 +615,30 @@ int __cdecl CDBProcess(char *Data)
 	if ((unsigned char)Data[2] == 73)
 	{
 		int PID = 0;
-		int Leader = 0, SubLeader = 0, Chief = 0;
-		int GPosition = 0;
+		int QuestID = 0, Normal = 0, Mini = 0, Instance = 0;
 		Interface<ITools> Tools;
-		CPacket::xRead((char*)(void*)(Data + 3), "dd", &PID, &GPosition);
+		CPacket::xRead((char*)(void*)(Data + 3), "ddddd", &PID, &QuestID, &Normal, &Mini, &Instance);
 		TargetFind myTarget(0, 1, PID);
 		int Player = (int)myTarget.getTarget();
 		IChar IPlayer((void*)Player);
-		
-		if (GuildColors){
 
-			if (GPosition == 1)
-				Leader = 1;
-			if (GPosition == 2)
-				SubLeader = 1;
-			if (GPosition == 3 || GPosition == 4)
-				Chief = 1;
+		if (IPlayer.IsOnline())
+		{
+			if (DutyQuest.count(QuestID)){
+				int questIndex = (QuestID << 16) + 1;
 
-			if (IPlayer.IsOnline() && Leader && GuildColors)
-				IPlayer.Buff(BuffNames::NamePad, BuffNames::BuffTime, LeaderColor);
-			if (IPlayer.IsOnline() && SubLeader && GuildColors)
-				IPlayer.Buff(BuffNames::NamePad, BuffNames::BuffTime, SubLeaderColor);
-			if (IPlayer.IsOnline() && Chief && GuildColors)
-				IPlayer.Buff(BuffNames::NamePad, BuffNames::BuffTime, ChiefColor);
+				IPlayer.Buff(BuffNames::DailyDuty + QuestID, BuffNames::BuffTime, QuestID);
+				IPlayer.Buff(BuffNames::NormalDuty, BuffNames::BuffTime, Normal);
+				IPlayer.Buff(BuffNames::MiniBoss, BuffNames::BuffTime, Mini);
+				IPlayer.Buff(BuffNames::InstanceDuty, BuffNames::BuffTime, Instance);
+
+				CPlayer::Write(IPlayer.GetOffset(), 184, "ddd", questIndex, 5000, Normal);
+				CPlayer::Write(IPlayer.GetOffset(), 184, "ddd", questIndex, 5001, Mini);
+				CPlayer::Write(IPlayer.GetOffset(), 184, "ddd", questIndex, 5002, Instance);
+			}
+
 		}
+
 		return 0;
 	}
 
@@ -648,18 +648,18 @@ int __cdecl CDBProcess(char *Data)
 		int Battlepasslvl = 0, BattlepassEXP = 0, CurrentB = 0, MaxB = 0, CurrentPB = 0;
 		CPacket::xRead((char*)(void*)(Data + 3), "dddddd", &PID, &Battlepasslvl, &BattlepassEXP, &CurrentB, &MaxB, &CurrentPB);
 
-			TargetFind myTarget(0, 1, PID);
-			int Player = (int)myTarget.getTarget();
-			IChar IPlayer((void*)Player);
-			if (IPlayer.IsOnline()){
-				IPlayer.SetProperty(PlayerProperty::CurrentBReward, CurrentB);
-				IPlayer.SetProperty(PlayerProperty::MaxBReward, MaxB);
-				IPlayer.SetProperty(PlayerProperty::CurrentPBReward, CurrentPB);
-				IPlayer.SetProperty(PlayerProperty::BattlepassLv, Battlepasslvl);
+		TargetFind myTarget(0, 1, PID);
+		int Player = (int)myTarget.getTarget();
+		IChar IPlayer((void*)Player);
+		if (IPlayer.IsOnline()){
+			IPlayer.SetProperty(PlayerProperty::CurrentBReward, CurrentB);
+			IPlayer.SetProperty(PlayerProperty::MaxBReward, MaxB);
+			IPlayer.SetProperty(PlayerProperty::CurrentPBReward, CurrentPB);
+			IPlayer.SetProperty(PlayerProperty::BattlepassLv, Battlepasslvl);
 
-				CPlayer::Write((void*)Player, 0xFE, "ddddd", 254, Battlepasslvl, BattlepassEXP, CurrentB, CurrentPB);
-			}
-//		IPlayer.SystemMessage("Executed " + Int2String(Battlepasslvl) + " " + Int2String(BattlepassEXP) + " " + Int2String(CurrentB) + " " + Int2String(MaxB) + " " + Int2String(CurrentPB), TEXTCOLOR_GREEN);
+			CPlayer::Write((void*)Player, 0xFE, "ddddd", 254, Battlepasslvl, BattlepassEXP, CurrentB, CurrentPB);
+		}
+		//		IPlayer.SystemMessage("Executed " + Int2String(Battlepasslvl) + " " + Int2String(BattlepassEXP) + " " + Int2String(CurrentB) + " " + Int2String(MaxB) + " " + Int2String(CurrentPB), TEXTCOLOR_GREEN);
 		return 0;
 	}
 
@@ -672,7 +672,7 @@ int __cdecl CDBProcess(char *Data)
 		TargetFind myTarget(0, 1, PID);
 		int Player = (int)myTarget.getTarget();
 		IChar IPlayer((void*)Player);
-		
+
 		if (RebornID) {
 			IPlayer.SetProperty(PlayerProperty::Reborn, RebornID);
 			if (Reborns.count(RebornID)) {

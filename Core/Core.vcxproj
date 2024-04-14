@@ -20,7 +20,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>NotSet</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v100</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -161,6 +161,7 @@
     <ClInclude Include="GhostKnife.h" />
     <ClInclude Include="GhostWindow.h" />
     <ClInclude Include="Guild.h" />
+    <ClInclude Include="Hardware.h" />
     <ClInclude Include="Hiding.h" />
     <ClInclude Include="HighClassHiding.h" />
     <ClInclude Include="IBuff.h" />
@@ -197,6 +198,7 @@
     <ClInclude Include="Mix.h" />
     <ClInclude Include="MonsterBlob.h" />
     <ClInclude Include="MudRoom.h" />
+    <ClInclude Include="MyFunctions.h" />
     <ClInclude Include="NormalHit.h" />
     <ClInclude Include="NPC.h" />
     <ClInclude Include="OneHitStrike.h" />
@@ -208,6 +210,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PowerfulWideningWound.h" />
     <ClInclude Include="Process.h" />
+    <ClInclude Include="ProcessMsg.h" />
     <ClInclude Include="ProvocationOfBlow.h" />
     <ClInclude Include="Punishment.h" />
     <ClInclude Include="Quest.h" />

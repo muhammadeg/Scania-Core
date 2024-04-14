@@ -21,16 +21,17 @@ void __fastcall BlessingOfIntelligence(int Packet, void *edx, int Player, int Ta
 					{
 						if (CChar::GetRange((int)IPlayer.GetOffset() + 332, Members + 332) <= 300)
 						{
-							IMembers.Buff(49,1800,8*ISkill.GetGrade()+3);
-							IPlayer._ShowBattleAnimation(IMembers,ISkill.GetIndex());
+							IMembers.Buff(49, 1800, 8 * ISkill.GetGrade() + 3);
+							IPlayer._ShowBattleAnimation(IMembers, ISkill.GetIndex());
 						}
 					}
 				}
 				CIOObject::Release(Party);
 			}
-		} else {
-			ITarget.Buff(49,1800,8*ISkill.GetGrade()+3);
-			IPlayer._ShowBattleAnimation(ITarget,ISkill.GetIndex());
+		}
+		else {
+			ITarget.Buff(49, 1800, 8 * ISkill.GetGrade() + 3);
+			IPlayer._ShowBattleAnimation(ITarget, ISkill.GetIndex());
 		}
 	}
 }

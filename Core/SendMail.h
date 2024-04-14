@@ -622,7 +622,7 @@ int __fastcall SendMail(void* Player, void *edx, int a1, int a2, char* ReceiverN
 
 	if (IPlayer.IsOnline())
 	{
-		/*if (IPlayer.GetLevel() < 11 && a2 != 3) {
+		if (IPlayer.GetLevel() < 11 && a2 != 3) {
 			IPlayer.SystemMessage("You must be atleast Level 11 to use this system.", TEXTCOLOR_YELLOW);
 			return 0;
 		}
@@ -635,7 +635,7 @@ int __fastcall SendMail(void* Player, void *edx, int a1, int a2, char* ReceiverN
 		}
 		else {
 			IPlayer.Buff(1973, 20, 0);
-		}*/
+		}
 
 
 		if (Restri && Restrictions.count(IPlayer.GetPID()) && Restrictions.find(IPlayer.GetPID())->second.Mail == 0 && Index != 0) {

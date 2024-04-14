@@ -1,9 +1,11 @@
 int __fastcall UpdateExp(int PlayerEgg ,void *edx, int Player, int Check)
 {
 	IChar IPlayer((void*)Player);
+	Interface<ITools>Tools;
 
 	if (*(DWORD *)(PlayerEgg + 92) >= 100)
 		return 0;
+
 	/*
 	static bool hasIncreasedMovingSpeed = false;
 
@@ -30,10 +32,41 @@ int __fastcall UpdateExp(int PlayerEgg ,void *edx, int Player, int Check)
 	}
 
 
-	for (std::map<int, BuffMaker>::const_iterator it = BuffMakerCheck.begin(); it != BuffMakerCheck.end(); ++it) {
-		const BuffMaker& buff = it->second;
-		if (IPlayer.IsBuff(buff.BuffID) && buff.Egg == "true") {
-			ExpKill -= (ExpKill * buff.count) / 100;
+	int Pet1 = IPlayer.GetBuffValue(BuffNames::PetOwner);
+	int Pet2 = IPlayer.GetBuffValue(BuffNames::PetOwner2);
+	int Pet3 = IPlayer.GetBuffValue(BuffNames::PetOwner3);
+
+
+	if (Pet1)
+	{
+		int ExtraExp = PetTime.find(Pet1)->second.Egg;
+		if (ExtraExp > 0 && ExtraExp < 100) {
+			ExpKill += Tools->Per_calculation_int64(ExtraExp, ExpKill);
+		}
+	}
+
+	if (Pet2)
+	{
+		int ExtraExp = PetTime.find(Pet2)->second.Egg;
+		if (ExtraExp > 0 && ExtraExp < 100) {
+			ExpKill += Tools->Per_calculation_int64(ExtraExp, ExpKill);
+		}
+	}
+
+	if (Pet3)
+	{
+		int ExtraExp = PetTime.find(Pet3)->second.Egg;
+		if (ExtraExp > 0 && ExtraExp < 100) {
+			ExpKill += Tools->Per_calculation_int64(ExtraExp, ExpKill);
+		}
+	}
+
+	for (auto x = BuffMakerCheck.begin(); x != BuffMakerCheck.end(); x++) {
+		const BuffMaker& buff = x->second;
+
+		int BuffID = buff.BuffID;
+		if (IPlayer.IsBuff(BuffID) && buff.Egg == "true") {
+			ExpKill += (ExpKill * buff.count) / 100;
 		}
 	}
 

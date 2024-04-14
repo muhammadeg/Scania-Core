@@ -1,4 +1,4 @@
-void InsertJewels1(void* Player, int DonaAmount, int JewelsAmount){
+void InsertJewels1(void* Player,int DonaAmount,int JewelsAmount){
 	IChar IPlayer(Player);
 	if (GetInventorySize((int)IPlayer.GetOffset(), 0) < 60) {
 		if (CPlayer::RemoveItem(IPlayer.GetOffset(), 9, DonationCoin, DonaAmount)) {
@@ -12,8 +12,7 @@ void InsertJewels1(void* Player, int DonaAmount, int JewelsAmount){
 		}
 		else
 			IPlayer.OpenHTML(999018);
-	}
-	else
+	}else
 		CPlayer::Write(IPlayer.GetOffset(), 67, "b", 40);
 }
 
@@ -58,12 +57,12 @@ bool SaveTimedQuest(IChar IPlayer, int Index, int Flag, bool save) {
 
 		if (save) {
 			quest.MaxRepeat++;
-			if (!qTime.Type)
+			if(!qTime.Type)
 				quest.Time = (int)time(0) + qTime.Time;
 			else {
 				int Time = 0;
 				int TimeIndex = (String2Int(Time::GetHour()) * 3600) + (String2Int(Time::GetMinute()) * 60) + String2Int(Time::GetSecond());
-
+				
 				if (TimeIndex > qTime.Time)
 					Time = (24 * 3600) - (TimeIndex - qTime.Time);
 				else
@@ -71,7 +70,7 @@ bool SaveTimedQuest(IChar IPlayer, int Index, int Flag, bool save) {
 
 				quest.Time = (int)time(0) + Time;
 			}
-
+				
 			bool edited = false;
 
 			string line;
@@ -114,7 +113,7 @@ bool SaveTimedQuest(IChar IPlayer, int Index, int Flag, bool save) {
 
 void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 {
-	IQuest Quest(QuestOffset);
+	IQuest Quest(QuestOffset); 
 
 	IChar IPlayer((void*)PlayerOffset);
 	int MapX = IPlayer.GetX() >> 13;
@@ -128,11 +127,11 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 		CHLOG.close();
 	}
 
-	if (IPlayer.IsOnline() && QuestDisable.count((Quest.GetIndex() * 10000) + Quest.GetFlag()) || QuestDisable.count((Quest.GetIndex() * 10000) + Quest.GetFlag() + (IPlayer.GetMap() * 5000)) || QuestDisable.count((Quest.GetIndex() * 10000) + Quest.GetFlag() + ((MapX * 100) + (MapY * 10)))) {
+	if (IPlayer.IsOnline() && QuestDisable.count((Quest.GetIndex() * 10000) + Quest.GetFlag()) || QuestDisable.count((Quest.GetIndex() * 10000) + Quest.GetFlag()+(IPlayer.GetMap() * 5000)) || QuestDisable.count((Quest.GetIndex() * 10000) + Quest.GetFlag()+((MapX * 100)+(MapY * 10)))) {
 		IPlayer.SystemMessage("This feature is currently disabled.", TEXTCOLOR_RED);
 		return;
 	}
-
+	
 	if (IPlayer.IsOnline() && QuestLevels.count((Quest.GetIndex() * 1000) + Quest.GetFlag())) {
 		QuestLevel qlvl = QuestLevels.find((Quest.GetIndex() * 1000) + Quest.GetFlag())->second;
 		if ((IPlayer.GetLevel() < qlvl.LevelMin) || (IPlayer.GetLevel() > qlvl.LevelMax)) {
@@ -140,60 +139,114 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			return;
 		}
 	}
-	//if (IPlayer.IsOnline() && Quest.GetIndex() == EmoteQuest) {
-	//	int questFlag = Quest.GetFlag();
-	//	if (EmoteSystem.count(questFlag)) {
-	//		const std::pair<std::string, int>& emoteData = EmoteSystem.find(questFlag)->second;
-	//		const std::string& particle = emoteData.first;
-	//		int itemIndex = emoteData.second;
-
-	//		if (!IPlayer.IsBuff(BuffNames::Emote)) {
-	//			if (itemIndex && !CPlayer::FindItem((void*)PlayerOffset, itemIndex, 1)){
-	//				IPlayer.SystemMessage("You dont have the required item to use Emote.", TEXTCOLOR_RED);
-	//				return;
-	//			}
-
-	//			IPlayer.AddParticleE(particle.c_str(), 0);
-	//			IPlayer.Buff(BuffNames::Emote, EmoteCooldown, 0);
-	//			return;
-	//		}
-	//		else {
-	//			IPlayer.SystemMessage("You need to wait " + Int2String(IPlayer.GetBuffRemain(BuffNames::Emote)) + " seconds to use Emote Feature", TEXTCOLOR_RED);
-	//			return;
-	//		}
-	//	}
-	//	return;
-	//}
 
 	if (IPlayer.IsOnline() && Quest.GetIndex() == EmoteQuest) {
 		int questFlag = Quest.GetFlag();
 		if (EmoteSystem.count(questFlag)) {
-			const std::string& particle = EmoteSystem.find(questFlag)->second;
-			if (!IPlayer.IsBuff(BuffNames::Emote)){
-				IPlayer.AddParticleE(particle.c_str(), 0); // Use c_str() to pass a const char*
-				IPlayer.Buff(BuffNames::Emote, EmoteCooldown, 0);
+			const std::pair<std::string, int>& emoteData = EmoteSystem.find(questFlag)->second;
+			const std::string& particle = emoteData.first;
+			int itemIndex = emoteData.second;
+
+			if (!IPlayer.IsBuff(BuffNames::Emote)) {
+				if (itemIndex && !CPlayer::FindItem((void*)PlayerOffset, itemIndex, 1)){
+					IPlayer.SystemMessage("You dont have the required item to use Emote.", TEXTCOLOR_RED);
+					return;
+				}
+
+				IPlayer.AddFxToBone(particle.c_str(), 0);
+				IPlayer.Buff(BuffNames::Emote, EmoteCooldown, questFlag);
+				return;
 			}
-			else
+			else {
 				IPlayer.SystemMessage("You need to wait " + Int2String(IPlayer.GetBuffRemain(BuffNames::Emote)) + " seconds to use Emote Feature", TEXTCOLOR_RED);
+				return;
+			}
 		}
+		return;
 	}
 
-	if (IPlayer.IsOnline() && BattlepassActive){
-		BattlepassCheck((void*)PlayerOffset, QuestOffset);
-		PBattlepassCheck((void*)PlayerOffset, QuestOffset);
-	}
-
-
-	if (IPlayer.IsOnline() && RebornsMaps.count((Quest.GetIndex() * 1000) + Quest.GetFlag()))
+	if (IPlayer.IsOnline() && DutyQuest.count(Quest.GetIndex()))
 	{
-		int CurrentReborn = IPlayer.GetProperty(PlayerProperty::Reborn);
-		RbQuest rb = RebornsMaps.find((Quest.GetIndex() * 1000) + Quest.GetFlag())->second;
+		int QLvl = DutyQuest.find(Quest.GetIndex())->second.pLevel;
+		int QTime = DutyQuest.find(Quest.GetIndex())->second.cooldown;
+		int QID = Quest.GetIndex();
 
-		if (CurrentReborn < rb.rbIndex)
+		if (IPlayer.GetLevel() < QLvl)
 		{
-			IPlayer.SystemMessage("You must be atleast " + Int2String(rb.rbIndex) + " to teleport.", TEXTCOLOR_RED);
+			IPlayer.SystemMessage("Your level must be " + Int2String(QLvl) + " or higher.", TEXTCOLOR_RED);
 			return;
 		}
+
+		if (IPlayer.IsBuff(BuffNames::DutyTrigger + QID))
+		{
+			int TriggerValue = IPlayer.GetBuffRemain(BuffNames::DutyTrigger + QID);
+			int Day = (TriggerValue / 86400);
+			int Hour = ((TriggerValue / 3600) % 24);
+			int Minute = ((TriggerValue / 60) % 60);
+			int Second = (TriggerValue % 60);
+			std::string msg = "You need to wait " + Int2String(Day) + " Days " + Int2String(Hour) + " Hours " + Int2String(Minute) + " Minutes " + Int2String(Second) + " Seconds.";
+			IPlayer.SystemMessage(msg, TEXTCOLOR_RED);
+
+			return;
+		}
+		else 
+			if (!IPlayer.IsBuff(BuffNames::DailyDuty + QID)){
+				IPlayer.StartDutyQuest(QID, 0, 0, 1);
+				IPlayer.Buff(BuffNames::DailyDuty + QID, BuffNames::BuffTime, QID);
+				CDBSocket::Write(125, "dddddd", 4, IPlayer.GetPID(), QID, 0, 0, 0);
+			//	IPlayer.SaveBuff(BuffNames::DutyDelete, BuffNames::BuffTime, QID, 0, 0);
+				return;
+			}
+			else{
+				IPlayer.SystemMessage("You already have quest", TEXTCOLOR_RED);
+				return;
+			}
+	}
+
+	if (IPlayer.IsOnline() && Quest.GetIndex() == StoreCheckQuest)
+	{
+		IPlayer.SystemMessage(Int2String(StoreSoldCheck) + " has been withdrawal from server in total", TEXTCOLOR_INFOMSG);
+		return;
+	}
+
+	//if (IPlayer.IsOnline() && Quest.GetIndex() == EmoteQuest) {
+	//	int questFlag = Quest.GetFlag();
+	//	if (EmoteSystem.count(questFlag)) {
+	//		const std::string& particle = EmoteSystem.find(questFlag)->second;
+	//		if (!IPlayer.IsBuff(BuffNames::Emote)){
+	//			IPlayer.AddParticleE(particle.c_str(), 0); // Use c_str() to pass a const char*
+	//			IPlayer.Buff(BuffNames::Emote, EmoteCooldown, 0);
+	//		}
+	//		else
+	//			IPlayer.SystemMessage("You need to wait " + Int2String(IPlayer.GetBuffRemain(BuffNames::Emote)) + " seconds to use Emote Feature", TEXTCOLOR_RED);
+	//	}
+	//}
+
+	if (IPlayer.IsOnline() && Quest.GetIndex() == AutoMissionQuest){
+
+		bool questFound = false;
+
+			for (auto x = MissionQuestsItem.begin(); x != MissionQuestsItem.end(); x++)
+			{
+				int currentMission = x->first;
+				int questIndex = (currentMission << 16) + 1;
+				bool isQuest = (CPlayer::CheckQuestFlag((int)IPlayer.GetOffset(), questIndex) == true);
+				int isQuestClear = CPlayer::CheckQuestClear((int)IPlayer.GetOffset(), static_cast<char>(currentMission));
+
+				if (isQuest && isQuestClear)
+					continue;
+
+				if (isQuest && !isQuestClear){
+					if (!IPlayer.IsBuff(BuffNames::MissionBuff))
+						IPlayer.SaveBuff(BuffNames::MissionBuff, BuffNames::BuffTime, currentMission, 0, 0);
+					else
+					IPlayer.UpdateSavedBuff(BuffNames::MissionBuff, BuffNames::BuffTime, currentMission, 0, 0);
+					questFound = true;
+					break;
+				}
+			}
+			if (!questFound)
+				IPlayer.SaveBuff(BuffNames::MissionBuff, BuffNames::BuffTime, 0, 0, 0);
 
 	}
 
@@ -287,7 +340,7 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			if (IPlayer.IsValid()) {
 				IPlayer.ScreenTime(aQuest.Time + 1);
 				IPlayer.Teleport(aQuest.TMap, aQuest.TX, aQuest.TY);
-				IPlayer.Buff(BuffNames::AreaQuest, aQuest.Time, (Quest.GetIndex() * 1000) + Quest.GetFlag());
+				IPlayer.Buff(BuffNames::AreaQuest, aQuest.Time, (Quest.GetIndex() * 1000) + Quest.GetFlag()); 
 				SaveTimedQuest(IPlayer, Quest.GetIndex(), Quest.GetFlag(), true);
 			}
 		}
@@ -295,128 +348,9 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 		return;
 	}
 
-	if (!SaveTimedQuest(IPlayer, Quest.GetIndex(), Quest.GetFlag(), true))
-		return;
-	std::string Name = BanditsName;
-	// Bandits System
-	if (IPlayer.IsOnline() && Quest.GetIndex() == (BanditsQuest % 65536)){
-
-		if (Bandits::Active == true)
-		{
-
-			IPlayer.SystemMessage("You can not register while " + Name + " System running.", TEXTCOLOR_RED);
-			return;
-		}
-
-		if (BanditsRegisteration.count(IPlayer.GetPID()))
-		{
-			IPlayer.SystemMessage("You already registered to " + Name + " System.", TEXTCOLOR_RED);
-			return;
-		}
-
-		if (IPlayer.GetLevel() < BanditsLevel)
-		{
-			IPlayer.SystemMessage("You must be atleast level " + Int2String(BanditsLevel) + " to register for " + Name + " System", TEXTCOLOR_RED);
-			return;
-		}
-		else {
-			BanditsRegisteration.insert(IPlayer.GetPID());
-			Bandits::RegisterAmount += 1;
-			IPlayer.SystemMessage("Successfully registered to " + Name + " System", TEXTCOLOR_GREEN);
-			return;
-		}
-		return;
-	}
-
-	if (IPlayer.IsOnline() && Quest.GetIndex() == (QuestHistoryEN % 65536)){
-		IPlayer.BoxMsg(HistoryENmsg);
-		return;
-	}
-
-	if (IPlayer.IsOnline() && Quest.GetIndex() == (QuestHistoryPL % 65536)){
-		IPlayer.BoxMsg(HistoryPLmsg);
-		return;
-	}
-
-	if (IPlayer.IsOnline() && Quest.GetIndex() == (QuestEventsEN % 65536)){
-		IPlayer.BoxMsg(EventsENmsg);
-		return;
-	}
-
-	if (IPlayer.IsOnline() && Quest.GetIndex() == (QuestEventsPL % 65536)){
-		IPlayer.BoxMsg(EventsPLmsg);
-		return;
-	}
-
-	if (IPlayer.IsOnline() && Quest.GetIndex() == (BanditsCheck1 % 65536)){
-		IPlayer.Buff(BuffNames::BanditsCheck1, 3600, 1);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck2);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck3);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck4);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck5);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck6);
-		IPlayer.SystemMessage("Check point saved.", TEXTCOLOR_BLUE);
-		return;
-	}
-
-	if (IPlayer.IsOnline() && Quest.GetIndex() == (BanditsCheck2 % 65536)){
-		IPlayer.Buff(BuffNames::BanditsCheck2, 3600, 1);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck1);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck3);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck4);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck5);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck6);
-		IPlayer.SystemMessage("Check point saved.", TEXTCOLOR_BLUE);
+	if (!SaveTimedQuest(IPlayer, Quest.GetIndex(), Quest.GetFlag(),true))
 		return;
 
-	}
-
-	if (IPlayer.IsOnline() && Quest.GetIndex() == (BanditsCheck3 % 65536)){
-		IPlayer.Buff(BuffNames::BanditsCheck3, 3600, 1);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck2);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck1);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck4);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck5);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck6);
-		IPlayer.SystemMessage("Check point saved.", TEXTCOLOR_BLUE);
-		return;
-
-	}
-
-	if (IPlayer.IsOnline() && Quest.GetIndex() == (BanditsCheck4 % 65536)){
-		IPlayer.Buff(BuffNames::BanditsCheck4, 3600, 1);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck2);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck1);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck3);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck5);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck6);
-		IPlayer.SystemMessage("Check point saved.", TEXTCOLOR_BLUE);
-		return;
-
-	}
-	if (IPlayer.IsOnline() && Quest.GetIndex() == (BanditsCheck5 % 65536)){
-		IPlayer.Buff(BuffNames::BanditsCheck5, 3600, 1);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck2);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck1);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck3);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck4);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck6);
-		IPlayer.SystemMessage("Check point saved.", TEXTCOLOR_BLUE);
-		return;
-
-	}
-	if (IPlayer.IsOnline() && Quest.GetIndex() == (BanditsCheck6 % 65536)){
-		IPlayer.Buff(BuffNames::BanditsCheck6, 3600, 1);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck2);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck1);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck3);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck4);
-		IPlayer.CancelBuff(BuffNames::BanditsCheck5);
-		IPlayer.SystemMessage("Check point saved.", TEXTCOLOR_BLUE);
-		return;
-
-	}
-	// Bandits End
 
 	if (IPlayer.IsOnline() && Quest.GetIndex() == (F10Quest % 65536))
 	{
@@ -481,13 +415,13 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 		std::string SysName(BossEXPName);
 		if (BossEXP::Active == true)
 		{
-			IPlayer.SystemMessage("You can not register while " + SysName + " is running.", TEXTCOLOR_RED);
+			IPlayer.SystemMessage("You can not register while "+ SysName +" is running.", TEXTCOLOR_RED);
 			return;
 		}
 
 		if (BossEXPRegistration.count(IPlayer.GetPID()))
 		{
-			IPlayer.SystemMessage("You already registered to " + SysName + ".", TEXTCOLOR_RED);
+			IPlayer.SystemMessage("You already registered to "+ SysName+".", TEXTCOLOR_RED);
 			return;
 		}
 		else {
@@ -594,7 +528,7 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 
 				SummonQuestRegistration.erase((Quest.GetIndex() * 1000) + Quest.GetFlag());
 
-				if (!msConfig.notice.empty())
+				if(!msConfig.notice.empty())
 					CPlayer::WriteAll(0xFF, "ds", 234, msConfig.notice.c_str());
 			}
 			SummonedQuest.replaceInsert((Quest.GetIndex() * 1000) + Quest.GetFlag(), msedConfig);
@@ -649,8 +583,8 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 	}
 	/*
 	if (IPlayer.IsOnline() && ((PeaceEvil && Quest.GetIndex() == SlytherinQuest || Quest.GetIndex() == HuffleQuest || Quest.GetIndex() == RavenQuest || Quest.GetIndex() == GryffindorQuest) || (Quest.GetIndex() == 9010 && (Quest.GetFlag() == 1 || Quest.GetFlag() == 2))) && IPlayer.GetLevel() > 1) {
-	IPlayer.SystemMessage("Starter NPC can only be used at level 1!.", TEXTCOLOR_RED);
-	return;
+		IPlayer.SystemMessage("Starter NPC can only be used at level 1!.", TEXTCOLOR_RED);
+		return;
 	}
 	*/
 	//check this quest
@@ -677,6 +611,23 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 		return;
 	}
 
+	if (IPlayer.IsOnline() && BattlepassActive){
+		BattlepassCheck((void*)PlayerOffset, QuestOffset);
+		PBattlepassCheck((void*)PlayerOffset, QuestOffset);
+	}
+
+	if (IPlayer.IsOnline() && RebornsMaps.count((Quest.GetIndex() * 1000) + Quest.GetFlag()))
+	{
+		int CurrentReborn = IPlayer.GetProperty(PlayerProperty::Reborn);
+		RbQuest rb = RebornsMaps.find((Quest.GetIndex() * 1000) + Quest.GetFlag())->second;
+
+		if (CurrentReborn < rb.rbIndex)
+		{
+			IPlayer.SystemMessage("You must be atleast " + Int2String(rb.rbIndex) + " Reborn to use this quest.", TEXTCOLOR_RED);
+			return;
+		}
+	}
+
 	if (IPlayer.IsOnline() && RebornActive && Quest.GetIndex() == RebornQuest) {
 		int NextReborn = IPlayer.GetProperty(PlayerProperty::Reborn) + 1;
 		if (Reborns.count(NextReborn)) {
@@ -686,7 +637,6 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 				IPlayer.SystemMessage("To reach your next reborn, you must be atleast level " + Int2String(rb.MinLvl) + ".", TEXTCOLOR_RED);
 				return;
 			}
-
 
 			std::string XName(IPlayer.GetName());
 			if (startsWith(XName, "<")) {
@@ -698,6 +648,7 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			XName = "<" + rb.NameTag + ">" + XName;
 
 			IPlayer.ChangeName(XName);
+			//ShowMySkin((void*)PlayerOffset);
 			IPlayer.SetLevel(rb.ResetLevel);
 
 			if (rb.NamePad) {
@@ -708,6 +659,10 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			if (NextReborn >= RebornGZ) {
 				std::string msg = "Congratulations to " + XName + " for reaching Reborn Level " + Int2String(NextReborn) + "!";
 				CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), NOTICECOLOR_RED);
+				std::string url = RebornWebhook;
+				std::string avatar = Avatar;
+				std::string playerName = std::string(IPlayer.GetName());
+				SendWebhookMessage(url, msg.c_str(), avatar.c_str(), std::string(playerName));
 			}
 
 			IPlayer.SetProperty(PlayerProperty::Reborn, NextReborn);
@@ -729,7 +684,7 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 		bool checkHuffle = CPlayer::CheckQuestFlag(PlayerOffset, HQuest);
 
 		if (!checkSlytherin && !checkGryffindor && !checkRaven && !checkHuffle) {
-			IPlayer.Buff(BuffNames::Slytherin, BuffNames::BuffTime, 1);
+			IPlayer.Buff(BuffNames::Slytherin, BuffNames::BuffTime, 1); 
 			IPlayer.ShowHonor();
 			IPlayer.UpdateBuff(BuffNames::NamePad, BuffNames::BuffTime, SlytherinColor);
 			CChar::WriteInSight((void*)PlayerOffset, 0xFE, "ddd", 209, IPlayer.GetID(), SlytherinColor);
@@ -909,7 +864,7 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 					int Minute = ((Time / 60) % 60) * -1;
 					int Second = (Time % 60) * -1;
 					std::string msg = "Exceeded the maximum repeat limit of quest. You need to wait " + Int2String(Day) + " Days " + Int2String(Hour) + " Hours " + Int2String(Minute) + " Minutes " + Int2String(Second) + " Seconds.";
-					IPlayer.SystemMessage(msg, TEXTCOLOR_RED);
+					IPlayer.SystemMessage(msg, TEXTCOLOR_RED); 
 					if (dQuest.Resetable == 1)
 						IPlayer.SystemMessage("This quest also resets at 00:00 server time.", TEXTCOLOR_YELLOW);
 				}
@@ -934,7 +889,7 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 		int Index = (String2Int(Time::GetMonth()) * 1000000) + (String2Int(Time::GetDay()) * 10000) + (String2Int(Time::GetHour()) * 100) + (String2Int(Time::GetMinute()));
 
 		if (Index < poll.Start) {
-			IPlayer.SystemMessage("This poll will start in " + Int2String(poll.Start - Index) + " minutes.", TEXTCOLOR_RED);
+			IPlayer.SystemMessage("This poll will start in " + Int2String(poll.Start - Index) + " minutes." , TEXTCOLOR_RED);
 			return;
 		}
 
@@ -961,8 +916,7 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 				}
 				else
 					IPlayer.SystemMessage("You can only see the results once you have voted.", TEXTCOLOR_RED);
-			}
-			else
+			}else
 				IPlayer.SystemMessage("You can only see the results once you have voted.", TEXTCOLOR_RED);
 			return;
 		}
@@ -981,7 +935,7 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 				return;
 			}
 		}
-
+		
 		int CurVotes = PollVoteAmount.count((Quest.GetIndex() * 1000) + Quest.GetFlag()) ? PollVoteAmount.findValue((Quest.GetIndex() * 1000) + Quest.GetFlag()) : 0;
 		PollVoteAmount.replaceInsert((Quest.GetIndex() * 1000) + Quest.GetFlag(), CurVotes + 1);
 		votes.insert(Quest.GetIndex());
@@ -1040,7 +994,7 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 		CIOCriticalSection::Leave((void*)((char*)IPlayer.GetOffset() + 1020));
 
 		IPlayer.WriteToGuild("$" + (std::string)IPlayer.GetName() + " has donated " + Int2String(Amount) + " raid items. Raid Level: " + Int2String(CurLvl) + ". New Total: " + Int2String(NewAmount) + " donated items.");
-
+		
 		GuildRaidItems.insert(GID, CurAmount + Amount);
 
 		IPlayer.SystemMessage("[Guild Raid System] Your donation has been made.", TEXTCOLOR_GREEN);
@@ -1137,8 +1091,8 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 
 		GuildBuffQuest quest = GuildBuffQuests.find(Quest.GetIndex())->second;
 
-		long Index = uniqueKey(Quest.GetIndex(), GID);
-
+		long Index = uniqueKey(Quest.GetIndex(), GID); 
+		
 		int CurItems = GuildBuffItems.count(Index) ? GuildBuffItems.findValue(Index) : 0;
 
 		int LeftAmount = quest.Amount - CurItems;
@@ -1178,7 +1132,7 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			}
 		}
 		else if (Quest.GetFlag() == quest.ReplyFlag) {
-			IPlayer.SystemMessage("[" + quest.Name + "] " + Int2String(LeftAmount) + " items left to start.", TEXTCOLOR_YELLOW);
+			IPlayer.SystemMessage("["+ quest.Name + "] "+Int2String(LeftAmount) +" items left to start.", TEXTCOLOR_YELLOW);
 			return;
 		}
 		return;
@@ -1232,11 +1186,11 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 
 				if (Member.GetLevel() > Reg.MaxLevel)
 					notAllowed = true;
-
+				
 				std::string Name = " " + (std::string)Member.GetName();
-				if (j < 6)
+				if(j<6)
 					strcpy(Reg.Names[j], Name.c_str());
-
+				
 				j++;
 			}
 			else
@@ -1408,9 +1362,9 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 
 					if (ValidItem == 1)
 					{
-						if (IItem.HighMemory())
+						if(IItem.HighMemory())
 							CDBSocket::Write(17, "ddbbb", *(DWORD *)(Armor + 36), *(DWORD *)(Armor + 32), 15, *(DWORD *)(Armor + 108), 0);
-						if (IItem.HighMemory())
+						if(IItem.HighMemory())
 							CDBSocket::Write(17, "ddbbb", *(DWORD *)(Armor + 36), *(DWORD *)(Armor + 32), 10, *(DWORD *)(Armor + 116), 0);
 
 						//petLifeLock.Enter();
@@ -1727,14 +1681,14 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 
 	if (IPlayer.IsOnline() && cQuestsNotice.count(Quest.GetIndex()))
 	{
-		//		int QuestIn = (CQuestsNotice.find(Quest.GetIndex())->second.clearQ << 16);
+	//		int QuestIn = (CQuestsNotice.find(Quest.GetIndex())->second.clearQ << 16);
 		int ClearQ = CPlayer::CheckQuestClear((int)IPlayer.GetOffset(), cQuestsNotice.find(Quest.GetIndex())->second.clearQ);
-		if (Quest.GetFlag() == cQuestsNotice.find(Quest.GetIndex())->second.qFlag){
-			if (ClearQ){
-				std::string msg = (std::string)IPlayer.GetName() + " " + QuestsNotice.find(Quest.GetIndex())->second.Notice;
-				CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), NOTICECOLOR_WHITE);
+			if (Quest.GetFlag() == cQuestsNotice.find(Quest.GetIndex())->second.qFlag){
+				if (ClearQ){
+					std::string msg = (std::string)IPlayer.GetName() + " " + QuestsNotice.find(Quest.GetIndex())->second.Notice;
+					CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), NOTICECOLOR_WHITE);
+				}
 			}
-		}
 	}
 
 	if (IPlayer.IsOnline() && Quest.GetIndex() == (DNPCRQ % 65536))
@@ -1820,6 +1774,18 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 	{
 		if (IPlayer.GetLevel() <= BufferCheck.find(Quest.GetIndex())->second.Limit)
 		{
+			int cd = BufferCheck.find(Quest.GetIndex())->second.cd;
+
+			if (IPlayer.IsBuff(1625))
+			{
+				IPlayer.SystemMessage("You need to wait " + Int2String(IPlayer.GetBuffRemain(1625)) + " seconds to re-use buff.", TEXTCOLOR_RED);
+				return;
+			}
+
+			if (cd)
+				IPlayer.Buff(1625, cd, 1);
+
+
 			IPlayer.Buff(48, 1800, 8 * (BufferCheck.find(Quest.GetIndex())->second.Grade) + 3);
 			IPlayer.Buff(50, 1800, 8 * (BufferCheck.find(Quest.GetIndex())->second.Grade) + 3);
 			IPlayer.Buff(47, 1800, 8 * (BufferCheck.find(Quest.GetIndex())->second.Grade) + 3);
@@ -1842,18 +1808,29 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 	{
 		if (IPlayer.IsOnline() && LastManStand::Active == true)
 		{
-			IPlayer.SystemMessage(std::string(LMSName) + " already running. Please try again later.", TEXTCOLOR_RED);
+			IPlayer.SystemMessage(std::string(LMSName)+" already running. Please try again later.", TEXTCOLOR_RED);
+			return;
+		}
+
+		if (LMSHWID && LastManHWID.count(IPlayer.GetHWID()))
+		{
+			std::string msg = "You have already registered to " + std::string(LMSName) + " using another character.";
+			IPlayer.SystemMessage(msg.c_str(), TEXTCOLOR_RED);
 			return;
 		}
 
 		if (IPlayer.GetLevel() < LMSLimit)
 		{
-			IPlayer.SystemMessage("You must be atleast " + Int2String(LMSLimit) + " to register for " + std::string(LMSName), TEXTCOLOR_RED);
+			IPlayer.SystemMessage("You must be atleast " + Int2String(LMSLimit) + " to register for " + std::string(LMSName) , TEXTCOLOR_RED);
 		}
 		else {
 			if (!LastManRegistration.count(IPlayer.GetPID()))
 			{
 				LastManRegistration.insert(IPlayer.GetPID());
+
+				if (LMSHWID)
+					LastManHWID.insert(IPlayer.GetHWID());
+
 				IPlayer.SystemMessage("Successfully registered to " + std::string(LMSName), TEXTCOLOR_GREEN);
 			}
 			else {
@@ -1863,29 +1840,30 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 
 		return;
 	}
+
 	if (IPlayer.IsOnline() && EventMapsQuests.count((Quest.GetIndex() * 1000) + Quest.GetFlag())) {
 		int Index = (Quest.GetIndex() * 1000) + Quest.GetFlag();
 		eventMap questEvent = EventMapsQuests.find(Index)->second;
-
+		
 		if (questEvent.LvlMin > IPlayer.GetLevel() || questEvent.LvlMax < IPlayer.GetLevel()) {
 			IPlayer.SystemMessage(questEvent.Name + " registration levels must be between " + Int2String(questEvent.LvlMin) + " and " + Int2String(questEvent.LvlMax) + ".", TEXTCOLOR_RED);
 			return;
 		}
 		if (EventMapsRegistration.count(Index) && EventMapsRegistration.find(Index)->second.count(IPlayer.GetPID())) {
-			IPlayer.SystemMessage("You are already registered for " + questEvent.Name + ".", TEXTCOLOR_RED);
+			IPlayer.SystemMessage("You are already registered for " + questEvent.Name + "." , TEXTCOLOR_RED);
 			return;
 		}
 		if (EventMapsOn.count(Index)) {
 			int PlayerX = IPlayer.GetX() >> 13;
 			int PlayerY = IPlayer.GetY() >> 13;
 			if (questEvent.Maps.count((PlayerX * 1000) + PlayerY)) {
-				IPlayer.SystemMessage("You have left " + questEvent.Name + ".", TEXTCOLOR_FAILED);
+				IPlayer.SystemMessage("You have left "+questEvent.Name+".", TEXTCOLOR_FAILED);
 				IPlayer.RemoveSavedBuff(BuffNames::EventMapQuest);
 				IPlayer.RemoveSavedBuff(BuffNames::EventMapLapse);
 				IPlayer.CloseScreenTime();
 				return;
 			}
-			IPlayer.SystemMessage(questEvent.Name + " is currently running. Please try at another time.", TEXTCOLOR_RED);
+			IPlayer.SystemMessage(questEvent.Name+" is currently running. Please try at another time.", TEXTCOLOR_RED);
 			return;
 		}
 
@@ -1933,16 +1911,28 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 
 				if (CParty::GetSize((void*)Party) < questEvent.PTSize)
 				{
-					IPlayer.SystemMessage("You need at least " + Int2String(questEvent.PTSize) + " members to start " + questEvent.Name + ".", TEXTCOLOR_RED);
+					IPlayer.SystemMessage("You need at least "+Int2String(questEvent.PTSize)+" members to start " + questEvent.Name + ".", TEXTCOLOR_RED);
 					CIOObject::Release((void*)Party);
 					return;
 				}
 
+				bool allMembersHaveItems = true;
 				bool notAllowed = false;
+
 				for (int i = CParty::GetPlayerList((void*)Party); i; i = CBaseList::Pop((void *)i))
 				{
 					int Members = *(DWORD*)((void*)i);
 					IChar Member((void*)*(DWORD*)((void*)i));
+
+					if (!CheckRequiredItemsMembers(Member, questEvent)) {
+						allMembersHaveItems = false;
+						IPlayer.SystemMessage("Player: " +  std::string(Member.GetName()) + " do not have the required key or money for " + questEvent.Name + ".", TEXTCOLOR_RED);
+					}
+
+					if (!allMembersHaveItems) {
+						CIOObject::Release((void*)Party);
+						return;
+					}
 
 					if (CChar::IsNormal(Members) && Member.IsPVPValid())
 					{
@@ -1959,10 +1949,8 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 					return;
 				}
 
-				if (questEvent.ReqItem && questEvent.ReqAmount && !CPlayer::RemoveItem((void*)PlayerOffset, 9, questEvent.ReqItem, questEvent.ReqAmount)) {
-					IPlayer.SystemMessage("You do not have enough required items to register to " + questEvent.Name + ".", TEXTCOLOR_RED);
-					return;
-				}
+				if (!CheckRequiredItems(IPlayer, questEvent)) return;
+				RemoveRequiredItems(IPlayer, questEvent);
 
 				SpawnEventMap(questEvent, 0, questEvent.Duration * 1000);
 				for (int i = CParty::GetPlayerList((void*)Party); i; i = CBaseList::Pop((void *)i))
@@ -1973,6 +1961,8 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 					if (Member.IsOnline()) {
 						Member.UpdateBuff(BuffNames::EventMapQuest, BuffNames::BuffTime, Index);
 						Member.ScreenTime(questEvent.Duration);
+						RemoveRequiredItemsMembers(Member, questEvent);
+
 					}
 				}
 				CIOObject::Release((void*)Party);
@@ -1991,10 +1981,8 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			return;
 		}
 
-		if (questEvent.ReqItem && questEvent.ReqAmount && !CPlayer::RemoveItem((void*)PlayerOffset, 9, questEvent.ReqItem, questEvent.ReqAmount)) {
-			IPlayer.SystemMessage("You do not have enough required items to register to " + questEvent.Name + ".", TEXTCOLOR_RED);
-			return;
-		}
+		if (!CheckRequiredItems(IPlayer, questEvent)) return;
+		RemoveRequiredItems(IPlayer, questEvent);
 
 		EventMapsRegistration.lock();
 		ConcurrentSet<int>& mapSet = EventMapsRegistration.findPointer(Index);
@@ -2007,7 +1995,7 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 		DGkLOG << "(registration (QID " << Index << ")(PID " << IPlayer.GetPID() << "))" << std::endl;
 		DGkLOG.close();
 
-		IPlayer.SystemMessage("You have been registered to " + questEvent.Name + ".", TEXTCOLOR_GREEN);
+		IPlayer.SystemMessage("You have been registered to "+ questEvent.Name+".", TEXTCOLOR_GREEN);
 		return;
 	}
 
@@ -2018,12 +2006,6 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 
 	if (IPlayer.IsOnline() && Quest.GetIndex() == (DTQuest % 65536))
 	{
-
-		if (IPlayer.GetLevel() < DTLimit)
-		{
-			IPlayer.SystemMessage("You must be atleast " + Int2String(DTLimit) + " to register for duel tournament.", TEXTCOLOR_RED);
-			return;
-		}
 		if (IPlayer.IsOnline() && DuelTournament::Active)
 		{
 			IPlayer.SystemMessage("Duel Tournament already running. Please try again later.", TEXTCOLOR_RED);
@@ -2040,7 +2022,7 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			IPlayer.SystemMessage("You are already registered for Duel Tournament.", TEXTCOLOR_RED);
 			return;
 		}
-
+		
 		DuelRegistre reg;
 		reg.PID = IPlayer.GetPID();
 		reg.Name = IPlayer.GetName();
@@ -2073,27 +2055,27 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 		if (Raid::Active == true)
 			IPlayer.SystemMessage("Raid System currently running!", TEXTCOLOR_RED);
 		else
-		if (RaidItem && RaidItemAmount && !CPlayer::FindItem(IPlayer.GetOffset(), RaidItem, RaidItemAmount))
-			IPlayer.SystemMessage("You do not have the required item to register for " + thisServerName + "Raid System!", TEXTCOLOR_RED);
-		else
-		if (IPlayer.GetLevel() < RaidLevel)
-			IPlayer.SystemMessage("Your level is too low to register for " + thisServerName + " Raid System!", TEXTCOLOR_RED);
-		else
-		if (RaidSystem.count(IPlayer.GetPID()))
-			IPlayer.SystemMessage("You're already registered to " + thisServerName + " Raid System!", TEXTCOLOR_RED);
-		else {
-			if (CPlayer::RemoveItem(IPlayer.GetOffset(), 9, RaidItem, RaidItemAmount)) {
-				RaidSystem.insert(IPlayer.GetPID());
-				IPlayer.SystemMessage("Successfully registred to " + thisServerName + " Raid System.", TEXTCOLOR_GREEN);
-			}
-		}
-		return;
+			if (RaidItem && RaidItemAmount && !CPlayer::FindItem(IPlayer.GetOffset(), RaidItem, RaidItemAmount))
+				IPlayer.SystemMessage("You do not have the required item to register for " + thisServerName + "Raid System!", TEXTCOLOR_RED);
+			else
+				if (IPlayer.GetLevel() < RaidLevel)
+					IPlayer.SystemMessage("Your level is too low to register for " + thisServerName + " Raid System!", TEXTCOLOR_RED);
+				else
+					if (RaidSystem.count(IPlayer.GetPID()))
+						IPlayer.SystemMessage("You're already registered to " + thisServerName + " Raid System!", TEXTCOLOR_RED);
+					else {
+						if (CPlayer::RemoveItem(IPlayer.GetOffset(), 9, RaidItem, RaidItemAmount)) {
+							RaidSystem.insert(IPlayer.GetPID());
+							IPlayer.SystemMessage("Successfully registred to " + thisServerName + " Raid System.", TEXTCOLOR_GREEN);
+						}
+					}
+					return;
 	}
 
 	if (IPlayer.IsOnline() && Quest.GetIndex() == (HellQuest % 65536))
 	{
-		if (Hell::Lapse > GetTickCount() || Hell::Countdown > 0){
-			IPlayer.SystemMessage("Try again in a few seconds", TEXTCOLOR_RED);
+		if(Hell::Lapse > GetTickCount() || Hell::Countdown > 0){
+			IPlayer.SystemMessage("Try again in a few seconds",TEXTCOLOR_RED);
 			return;
 		}
 		if (IPlayer.IsBuff(167))
@@ -2105,18 +2087,17 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			{
 				msg = msg + Int2String(Time);
 				msg = msg + " minutes to re-join Picture Of Hell!";
-			}
-			else {
+			} else {
 				msg = msg + " less then a minute to re-join Picture Of Hell!";
 			}
 
-			IPlayer.SystemMessage(msg.c_str(), TEXTCOLOR_RED);
+			IPlayer.SystemMessage(msg.c_str(),TEXTCOLOR_RED);
 			return;
 		}
 
 		if (IPlayer.IsOnline() && Hell::Active == true)
 		{
-			IPlayer.SystemMessage("Picture Of Hell already running. Please try again later.", TEXTCOLOR_RED);
+			IPlayer.SystemMessage("Picture Of Hell already running. Please try again later.",TEXTCOLOR_RED);
 			return;
 		}
 
@@ -2149,7 +2130,7 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			}
 
 			if (notAllowed) {
-				IPlayer.SystemMessage("Some of your party members do not meet the requirements or have time limit.", TEXTCOLOR_RED);
+				IPlayer.SystemMessage("Some of your party members do not meet the requirements or have time limit.",TEXTCOLOR_RED);
 				CIOObject::Release((void*)Party);
 				return;
 			}
@@ -2172,15 +2153,14 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 				{
 					CPlayer::Write(Member.GetOffset(), 0xFF, "ddddd", 242, 74, 255, 255, 255);
 					Member.Teleport(HellMap, HellX, HellY);
-					Member.Buff(166, 1802, 0);
+					Member.Buff(166,1802,0);
 					Member.ScreenTime(1800);
 					Member.SetRebirthTalisman(Hell::Rebirth);
 				}
 			}
 			CIOObject::Release((void*)Party);
-		}
-		else {
-			IPlayer.SystemMessage("You need a party to start Picture Of Hell.", TEXTCOLOR_RED);
+		} else {
+			IPlayer.SystemMessage("You need a party to start Picture Of Hell.",TEXTCOLOR_RED);
 			return;
 		}
 
@@ -2212,22 +2192,21 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 
 		if (IPlayer.IsOnline() && Scenario::Active == true)
 		{
-			IPlayer.SystemMessage("You can not register while Destructing Key Points running.", TEXTCOLOR_RED);
+			IPlayer.SystemMessage("You can not register while Destructing Key Points running.",TEXTCOLOR_RED);
 			return;
 		}
 
 		if (IPlayer.IsOnline() && IPlayer.GetPID() != IPlayer.GetGID())
 		{
-			IPlayer.SystemMessage("Only guild leader can register for Destructing Key Points.", TEXTCOLOR_RED);
+			IPlayer.SystemMessage("Only guild leader can register for Destructing Key Points.",TEXTCOLOR_RED);
 			return;
 		}
 
 		if (IPlayer.IsOnline() && ScenarioRegistration.count(IPlayer.GetPID()))
 		{
-			IPlayer.SystemMessage("You already registered to Destructing Key Points.", TEXTCOLOR_RED);
+			IPlayer.SystemMessage("You already registered to Destructing Key Points.",TEXTCOLOR_RED);
 			return;
-		}
-		else {
+		} else {
 			int PlayerGuild = CPlayer::GetGuildName(PlayerOffset);
 
 			if (IPlayer.IsOnline() && PlayerGuild)
@@ -2238,17 +2217,16 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 				dk.GID = IPlayer.GetGID();
 				dk.Name = (char*)CPlayer::GetGuildName(PlayerOffset);
 				ScenarioGuild.push_back(dk);
-
+				
 				std::string Datko = "./Database/Destructing.db";
 				std::fstream DGkLOG;
 				DGkLOG.open(Datko, std::fstream::in | std::fstream::out | std::fstream::app);
 				DGkLOG << "(registration (GID " << IPlayer.GetGID() << ")(name '" << (char*)CPlayer::GetGuildName(PlayerOffset) << "'))" << std::endl;
 				DGkLOG.close();
 
-				IPlayer.SystemMessage("Successfully registered to Destructing Key Points.", TEXTCOLOR_GREEN);
-			}
-			else {
-				IPlayer.SystemMessage("Guild level is low for Destructing Key Points registration.", TEXTCOLOR_RED);
+				IPlayer.SystemMessage("Successfully registered to Destructing Key Points.",TEXTCOLOR_GREEN);
+			} else {
+				IPlayer.SystemMessage("Guild level is low for Destructing Key Points registration.",TEXTCOLOR_RED);
 			}
 		}
 
@@ -2259,10 +2237,9 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 	{
 		if (HonorShop.find(Quest.GetIndex())->second > IPlayer.GetProperty(PlayerProperty::RPx))
 		{
-			IPlayer.SystemMessage("You do not have enough reward points.", TEXTCOLOR_RED);
+			IPlayer.SystemMessage("You do not have enough reward points.",TEXTCOLOR_RED);
 			return;
-		}
-		else {
+		} else {
 			IPlayer.SetHonor(0, -HonorShop.find(Quest.GetIndex())->second, 0, 0, 0, 0, 0, 0, 0, 0);
 		}
 	}
@@ -2276,13 +2253,20 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 		if (Battlefield::Active == true)
 		{
 			std::string msg = "You can not register while " + SysName + " is running.";
-			IPlayer.SystemMessage(msg.c_str(), TEXTCOLOR_RED);
+			IPlayer.SystemMessage(msg.c_str(),TEXTCOLOR_RED);
 			return;
 		}
 
 		if (BattlefieldRegistration.count(IPlayer.GetPID()))
 		{
 			std::string msg = "You are already registered to " + SysName;
+			IPlayer.SystemMessage(msg.c_str(),TEXTCOLOR_RED);
+			return;
+		}
+		
+		if (BFHWID && BattlefieldHWID.count(IPlayer.GetHWID()))
+		{
+			std::string msg = "You have already registered to " + SysName + " using another character.";
 			IPlayer.SystemMessage(msg.c_str(), TEXTCOLOR_RED);
 			return;
 		}
@@ -2294,9 +2278,13 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 		}
 		else {
 			BattlefieldRegistration.insert(IPlayer.GetPID());
+
+			if (BFHWID)
+				BattlefieldHWID.insert(IPlayer.GetHWID());
+
 			Battlefield::RegisterAmount += 1;
 			std::string msg = "Successfully registered to " + SysName;
-			IPlayer.SystemMessage(msg.c_str(), TEXTCOLOR_GREEN);
+			IPlayer.SystemMessage(msg.c_str(),TEXTCOLOR_GREEN);
 			return;
 		}
 
@@ -2307,18 +2295,17 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 	{
 		if (CaptureFlag::Active == true)
 		{
-			IPlayer.SystemMessage("You can not register while Capture the Flag is running.", TEXTCOLOR_RED);
+			IPlayer.SystemMessage("You can not register while Capture the Flag is running.",TEXTCOLOR_RED);
 			return;
 		}
 
 		if (CaptureRegistration.count(IPlayer.GetPID()))
 		{
-			IPlayer.SystemMessage("You already registered to Capture The Flag.", TEXTCOLOR_RED);
+			IPlayer.SystemMessage("You already registered to Capture The Flag.",TEXTCOLOR_RED);
 			return;
-		}
-		else {
+		} else {
 			CaptureRegistration.insert(IPlayer.GetPID());
-			IPlayer.SystemMessage("Successfully registered to Capture The Flag.", TEXTCOLOR_GREEN);
+			IPlayer.SystemMessage("Successfully registered to Capture The Flag.",TEXTCOLOR_GREEN);
 			return;
 		}
 
@@ -2327,27 +2314,26 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 
 	if (IPlayer.IsOnline() && Quest.GetIndex() == (CPQuestR % 65536))
 	{
-		if (!IPlayer.IsBuff(BuffNames::CPRed)) {
+		if(!IPlayer.IsBuff(BuffNames::CPRed)) {
 			IPlayer.SystemMessage("You are not from the red team", TEXTCOLOR_RED);
 			return;
 		}
 
 		if (CaptureFlag::PlayerID == PlayerOffset) {
-			CaptureFlag::CurrentCapturers = BuffNames::CPRed;
+			CaptureFlag::CurrentCapturers = BuffNames::CPRed; 
 			CPlayer::WriteInMap(CaptureMap, 0xFF, "dsd", 247, "Flag Monster has been respawned in Red Zone.", NOTICECOLOR_REDLONG);
-
+			
 			//Spawn(CaptureMonster, 1, RedCPSummonX, RedCPSummonY, CaptureMap);
 			Summon((int)IPlayer.GetOffset(), CaptureMap, RedCPSummonX, RedCPSummonY, CaptureMonster, 1, 0, 0, 0, 0);
 
 			//Spawn(CPMob, CPMobAmount, CPMobRedX + CTools::Rate(-1050, 1050), CPMobRedY + CTools::Rate(-1050, 1050), CaptureMap);
-			for (int i = 0; i < CPMobAmount; i++)
-				Summon((int)IPlayer.GetOffset(), CaptureMap, CPMobRedX + CTools::Rate(-1050, 1050), CPMobRedY + CTools::Rate(-1050, 1050), CPMob, 1, 0, 0, 0, 0);
+				for (int i = 0; i < CPMobAmount; i++)
+				Summon((int)IPlayer.GetOffset(), CaptureMap, CPMobRedX+CTools::Rate(-1050, 1050), CPMobRedY+CTools::Rate(-1050, 1050), CPMob, 1, 0, 0, 0, 0);
 
 			CaptureFlag::PlayerID = 0;
-		}
-		else
+		}else
 			IPlayer.SystemMessage("Only Capturer is allowed to give the flag.", TEXTCOLOR_RED);
-
+			
 		return;
 	}
 	if (IPlayer.IsOnline() && Quest.GetIndex() == (CPQuestB % 65536))
@@ -2362,14 +2348,14 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			CPlayer::WriteInMap(CaptureMap, 0xFF, "dsd", 247, "Flag Monster has been respawned in Blue Zone.", NOTICECOLOR_REDLONG);
 
 			//Spawn(CaptureMonster, 1, BlueCPSummonX, BlueCPSummonY, CaptureMap);
-
+		
 			//Spawn(CPMob, CPMobAmount, CPMobBlueX + CTools::Rate(-1050, 1050), CPMobBlueY + CTools::Rate(-1050, 1050), CaptureMap);
 
 			Summon((int)IPlayer.GetOffset(), CaptureMap, BlueCPSummonX, BlueCPSummonY, CaptureMonster, 1, 0, 0, 0, 0);
 
 			for (int i = 0; i < CPMobAmount; i++)
 				Summon((int)IPlayer.GetOffset(), CaptureMap, CPMobBlueX + CTools::Rate(-1050, 1050), CPMobBlueY + CTools::Rate(-1050, 1050), CPMob, 1, 0, 0, 0, 0);
-
+			
 			CaptureFlag::PlayerID = 0;
 		}
 		else
@@ -2391,13 +2377,13 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 
 		honor = IPlayer.GetProperty(PlayerProperty::HPx);
 
-		if (honor >= 2790 && honor < 12090)
+		if(honor >= 2790 && honor < 12090)
 			addtime = 30;
-		else if (honor >= 12090 && honor < 44640)
+		else if(honor >= 12090 && honor < 44640)
 			addtime = 40;
-		else if (honor >= 44640 && honor < 78740)
+		else if(honor >= 44640 && honor < 78740)
 			addtime = 50;
-		else if (honor >= 78740)
+		else if(honor >= 78740)
 			addtime = 60;
 
 		if (IPlayer.GetProperty(PlayerProperty::EmokTime) > 10)
@@ -2405,26 +2391,24 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			IPlayer.Buff(BuffNames::EmokTeleport, BuffNames::BuffTime, 0);
 			IPlayer.Buff(156, IPlayer.GetProperty(PlayerProperty::EmokTime), IPlayer.GetProperty(PlayerProperty::EmokEXP));
 			IPlayer.Teleport(EmokMap, EmokX, EmokY);
-		}
-		else if (IPlayer.GetProperty(PlayerProperty::EmokDay) != String2Int(Time::GetDay()))
+		} else if (IPlayer.GetProperty(PlayerProperty::EmokDay) != String2Int(Time::GetDay()))
 		{
 			if (IPlayer.GetBuffValue(156)) {
 				IPlayer.SystemMessage("Your daily free time will be activated once your certificate runs out of time.", TEXTCOLOR_YELLOW);
-				IPlayer.Buff(BuffNames::EmokTeleport, BuffNames::BuffTime, 0);
+				IPlayer.Buff(BuffNames::EmokTeleport, BuffNames::BuffTime, 0); 
 				IPlayer.Teleport(EmokMap, EmokX, EmokY);
 				return;
 			}
 
-			IPlayer.SetProperty(PlayerProperty::EmokTime, EmokTime + addtime);
+			IPlayer.SetProperty(PlayerProperty::EmokTime, 3600 + addtime);
 			IPlayer.SetProperty(PlayerProperty::EmokDay, String2Int(Time::GetDay()));
 			IPlayer.SetProperty(PlayerProperty::EmokEXP, 0);
 			IPlayer.Buff(BuffNames::EmokTeleport, BuffNames::BuffTime, 0);
-			IPlayer.Buff(156, EmokTime + addtime, 0);
+			IPlayer.Buff(156, 3600 + addtime, 0);
 			IPlayer.Teleport(EmokMap, EmokX, EmokY);
-			CDBSocket::Write(83, "ddd", IPlayer.GetPID(), String2Int(Time::GetDay()), EmokTime + addtime);
-		}
-		else {
-			IPlayer.SystemMessage("You already used your daily free time.", TEXTCOLOR_RED);
+			CDBSocket::Write(83,"ddd",IPlayer.GetPID(), String2Int(Time::GetDay()), 3600 + addtime);
+		} else {
+			IPlayer.SystemMessage("You already used your daily free time.",TEXTCOLOR_RED);
 		}
 
 		return;
@@ -2464,18 +2448,18 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			else
 				CheckGrade = IPlayer.GetLevel() - MystLevel + 1;
 
-			IPlayer.SaveBuff(BuffNames::MystPhy, BuffNames::BuffTime, CheckGrade, 0, 0);
-			IPlayer.SetBuffIcon(-2, -1, MystPAtkS, MystPAtkS);
+					IPlayer.SaveBuff(BuffNames::MystPhy, BuffNames::BuffTime, CheckGrade, 0 , 0);
+					IPlayer.SetBuffIcon(-2, -1, MystPAtkS, MystPAtkS);
 
-			if (CheckGrade){
-				IPlayer.AddMinAttack(10 * CheckGrade);
-				IPlayer.BoxMsg("You have learnt Mystery Skill of Physical Attack.");
+					if (CheckGrade){
+						IPlayer.AddMinAttack(10 * CheckGrade);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Physical Attack.");
+					}
+					else {
+						IPlayer.AddMinAttack(10);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Physical Attack.");
+					}
 			}
-			else {
-				IPlayer.AddMinAttack(10);
-				IPlayer.BoxMsg("You have learnt Mystery Skill of Physical Attack.");
-			}
-		}
 
 		else if (Quest.GetIndex() == MystMAtkQ){
 			int CheckGrade = 0;
@@ -2485,17 +2469,17 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			else
 				CheckGrade = IPlayer.GetLevel() - MystLevel + 1;
 
-			IPlayer.SaveBuff(BuffNames::MystMag, BuffNames::BuffTime, CheckGrade, 0, 0);
-			IPlayer.SetBuffIcon(-2, -1, MystMAtkS, MystMAtkS);
+					IPlayer.SaveBuff(BuffNames::MystMag, BuffNames::BuffTime, CheckGrade, 0, 0);
+					IPlayer.SetBuffIcon(-2, -1, MystMAtkS, MystMAtkS);
 
-			if (CheckGrade){
-				IPlayer.AddMaxAttack(10 * CheckGrade);
-				IPlayer.BoxMsg("You have learnt Mystery Skill of Magical Attack.");
-			}
-			else {
-				IPlayer.AddMaxAttack(10);
-				IPlayer.BoxMsg("You have learnt Mystery Skill of Magical Attack.");
-			}
+					if (CheckGrade){
+						IPlayer.AddMaxAttack(10 * CheckGrade);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Magical Attack.");
+					}
+					else {
+						IPlayer.AddMaxAttack(10);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Magical Attack.");
+					}
 
 		}
 
@@ -2507,17 +2491,17 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			else
 				CheckGrade = IPlayer.GetLevel() - MystLevel + 1;
 
-			IPlayer.SaveBuff(BuffNames::MystDef, BuffNames::BuffTime, CheckGrade, 0, 0);
-			IPlayer.SetBuffIcon(-2, -1, MystDefS, MystDefS);
+					IPlayer.SaveBuff(BuffNames::MystDef, BuffNames::BuffTime, CheckGrade, 0, 0);
+					IPlayer.SetBuffIcon(-2, -1, MystDefS, MystDefS);
 
-			if (CheckGrade){
-				IPlayer.AddDef(10 * CheckGrade);
-				IPlayer.BoxMsg("You have learnt Mystery Skill of Defense.");
-			}
-			else {
-				IPlayer.AddDef(10);
-				IPlayer.BoxMsg("You have learnt Mystery Skill of Defense.");
-			}
+					if (CheckGrade){
+						IPlayer.AddDef(10 * CheckGrade);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Defense.");
+					}
+					else {
+						IPlayer.AddDef(10);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Defense.");
+					}
 
 		}
 
@@ -2529,17 +2513,17 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			else
 				CheckGrade = IPlayer.GetLevel() - MystLevel + 1;
 
-			IPlayer.SaveBuff(BuffNames::MystHP, BuffNames::BuffTime, CheckGrade, 0, 0);
-			IPlayer.SetBuffIcon(-2, -1, MystHPS, MystHPS);
+					IPlayer.SaveBuff(BuffNames::MystHP, BuffNames::BuffTime, CheckGrade, 0, 0);
+					IPlayer.SetBuffIcon(-2, -1, MystHPS, MystHPS);
 
-			if (CheckGrade){
-				IPlayer.IncreaseMaxHp(250 * CheckGrade);
-				IPlayer.BoxMsg("You have learnt Mystery Skill of Health Point.");
-			}
-			else {
-				IPlayer.IncreaseMaxHp(250);
-				IPlayer.BoxMsg("You have learnt Mystery Skill of Health Point.");
-			}
+					if (CheckGrade){
+						IPlayer.IncreaseMaxHp(250 * CheckGrade);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Health Point.");
+					}
+					else {
+						IPlayer.IncreaseMaxHp(250);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Health Point.");
+					}
 		}
 
 		else if (Quest.GetIndex() == MystEVAQ){
@@ -2550,17 +2534,17 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			else
 				CheckGrade = IPlayer.GetLevel() - MystLevel + 1;
 
-			IPlayer.SaveBuff(BuffNames::MystEVA, BuffNames::BuffTime, CheckGrade, 0, 0);
-			IPlayer.SetBuffIcon(-2, -1, MystEVAS, MystEVAS);
+					IPlayer.SaveBuff(BuffNames::MystEVA, BuffNames::BuffTime, CheckGrade, 0, 0);
+					IPlayer.SetBuffIcon(-2, -1, MystEVAS, MystEVAS);
 
-			if (CheckGrade){
-				IPlayer.AddEva(2 * CheckGrade);
-				IPlayer.BoxMsg("You have learnt Mystery Skill of Evasion Point.");
-			}
-			else {
-				IPlayer.AddEva(2);
-				IPlayer.BoxMsg("You have learnt Mystery Skill of Evasion Point.");
-			}
+					if (CheckGrade){
+						IPlayer.AddEva(2 * CheckGrade);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Evasion Point.");
+					}
+					else {
+						IPlayer.AddEva(2);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of Evasion Point.");
+					}
 		}
 
 
@@ -2572,17 +2556,17 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			else
 				CheckGrade = IPlayer.GetLevel() - MystLevel + 1;
 
-			IPlayer.SaveBuff(BuffNames::MystOTP, BuffNames::BuffTime, CheckGrade, 0, 0);
-			IPlayer.SetBuffIcon(-2, -1, MystOTPS, MystOTPS);
+					IPlayer.SaveBuff(BuffNames::MystOTP, BuffNames::BuffTime, CheckGrade, 0, 0);
+					IPlayer.SetBuffIcon(-2, -1, MystOTPS, MystOTPS);
 
-			if (CheckGrade){
-				IPlayer.AddOTP(2 * CheckGrade);
-				IPlayer.BoxMsg("You have learnt Mystery Skill of On Target Point.");
-			}
-			else {
-				IPlayer.AddOTP(2);
-				IPlayer.BoxMsg("You have learnt Mystery Skill of On Target Point.");
-			}
+					if (CheckGrade){
+						IPlayer.AddOTP(2 * CheckGrade);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of On Target Point.");
+					}
+					else {
+						IPlayer.AddOTP(2);
+						IPlayer.BoxMsg("You have learnt Mystery Skill of On Target Point.");
+					}
 		}
 	}
 
@@ -2600,15 +2584,15 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 
 		if (!OTP && !EVA && !DEF)
 		{
-			IPlayer.SystemMessage("You do not have mystery skill to reset.", TEXTCOLOR_RED);
+			IPlayer.SystemMessage("You do not have mystery skill to reset.",TEXTCOLOR_RED);
 			return;
 		}
 
-		int MysteryItemCheck = CPlayer::FindItem(IPlayer.GetOffset(), MysteryResetItem, 1);
+		int MysteryItemCheck = CPlayer::FindItem(IPlayer.GetOffset(),MysteryResetItem,1);
 
 		if (!MysteryItemCheck)
 		{
-			IPlayer.SystemMessage("You do not have Stone of chance for Mystery Skill to reset.", TEXTCOLOR_RED);
+			IPlayer.SystemMessage("You do not have Stone of chance for Mystery Skill to reset.",TEXTCOLOR_RED);
 			return;
 		}
 
@@ -2616,9 +2600,9 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 		{
 			IPlayer.RemoveOTP(8 * *(DWORD*)(OTP + 8));
 			*(DWORD*)(OTP + 8) = 0;
-			CPlayer::Write(IPlayer.GetOffset(), 11, "bb", 85, 0);
-			CDBSocket::Write(22, "dbbw", IPlayer.GetPID(), *(DWORD*)(OTP + 4), *(DWORD*)(OTP + 8), *(DWORD*)((int)IPlayer.GetOffset() + 548));
-			*(DWORD*)((int)IPlayer.GetOffset() + 4 * *(DWORD*)(OTP + 4) + 632) = 0;
+			CPlayer::Write(IPlayer.GetOffset(),11,"bb",85,0);
+			CDBSocket::Write(22,"dbbw",IPlayer.GetPID(),*(DWORD*)(OTP + 4),*(DWORD*)(OTP + 8),*(DWORD*)((int)IPlayer.GetOffset() + 548));
+			*(DWORD*)((int)IPlayer.GetOffset() + 4 * *(DWORD*)(OTP +4) + 632) = 0;
 			Undefined::DeleteSkill(OTP);
 		}
 
@@ -2626,9 +2610,9 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 		{
 			IPlayer.RemoveEva(6 * *(DWORD*)(EVA + 8));
 			*(DWORD*)(EVA + 8) = 0;
-			CPlayer::Write(IPlayer.GetOffset(), 11, "bb", 86, 0);
-			CDBSocket::Write(22, "dbbw", IPlayer.GetPID(), *(DWORD*)(EVA + 4), *(DWORD*)(EVA + 8), *(DWORD*)((int)IPlayer.GetOffset() + 548));
-			*(DWORD*)((int)IPlayer.GetOffset() + 4 * *(DWORD*)(EVA + 4) + 632) = 0;
+			CPlayer::Write(IPlayer.GetOffset(),11,"bb",86,0);
+			CDBSocket::Write(22,"dbbw",IPlayer.GetPID(),*(DWORD*)(EVA + 4),*(DWORD*)(EVA + 8),*(DWORD*)((int)IPlayer.GetOffset() + 548));
+			*(DWORD*)((int)IPlayer.GetOffset() + 4 * *(DWORD*)(EVA +4) + 632) = 0;
 			Undefined::DeleteSkill(EVA);
 		}
 
@@ -2636,13 +2620,13 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 		{
 			IPlayer.RemoveDef(24 + (7 * *(DWORD*)(DEF + 8)));
 			*(DWORD*)(DEF + 8) = 0;
-			CPlayer::Write(IPlayer.GetOffset(), 11, "bb", 87, 0);
-			CDBSocket::Write(22, "dbbw", IPlayer.GetPID(), *(DWORD*)(DEF + 4), *(DWORD*)(DEF + 8), *(DWORD*)((int)IPlayer.GetOffset() + 548));
-			*(DWORD*)((int)IPlayer.GetOffset() + 4 * *(DWORD*)(DEF + 4) + 632) = 0;
+			CPlayer::Write(IPlayer.GetOffset(),11,"bb",87,0);
+			CDBSocket::Write(22,"dbbw",IPlayer.GetPID(),*(DWORD*)(DEF + 4),*(DWORD*)(DEF + 8),*(DWORD*)((int)IPlayer.GetOffset() + 548));
+			*(DWORD*)((int)IPlayer.GetOffset() + 4 * *(DWORD*)(DEF +4) + 632) = 0;
 			Undefined::DeleteSkill(DEF);
 		}
 
-		if (!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)MysteryItemCheck + 120))(MysteryItemCheck, IPlayer.GetOffset(), 9, -1))
+		if(!(*(int (__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)MysteryItemCheck + 120))(MysteryItemCheck,IPlayer.GetOffset(),9,-1))
 			CPlayer::_OutOfInven(IPlayer.GetOffset(), MysteryItemCheck);
 
 		return;

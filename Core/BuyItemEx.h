@@ -43,6 +43,7 @@ signed int __fastcall PlayerRemoveItem(void *Player, void *edx, int Value, int I
 
 int __fastcall NPCTick(void *NPC, void *edx)
 {
+
 	if (SufferingValley::Active && !SufferingValley::RedOpened && (SufferingValley::Time - (int)time(0)) <= SVTime && *(DWORD*)((int)NPC + 448) == 609)
 	{
 		(*(void(__thiscall **)(DWORD, DWORD))(*(DWORD*)(int)NPC + 100))((int)NPC, 16);
@@ -71,11 +72,19 @@ int __fastcall NPCTick(void *NPC, void *edx)
 		Protect32::BlueOpened = true;
 	}
 
+	//if (!RaidDoors::Opened && *(DWORD*)((int)NPC + 448) == 1470 + RaidDoors::Round)
+	//{
+	//	(*(void(__thiscall **)(DWORD, DWORD))(*(DWORD*)(int)NPC + 100))((int)NPC, 16);
+	//	*(DWORD *)((int)NPC + 480) = 1197000 + GetTickCount();
+	//	RaidDoors::Opened = true;
+	//}
+
 	return CNPCDoor::Tick(NPC);
 }
 
 void __fastcall BuyItemEx(void *Player, void *edx, char Npc, int Tax, int ItemSize, int pPacket, int pPos)
 {
+
 	IChar IPlayer(Player);
 
 	if (IPlayer.IsOnline())
@@ -112,6 +121,13 @@ void __fastcall BuyItemEx(void *Player, void *edx, char Npc, int Tax, int ItemSi
 
 					if (Price <= 0)
 					{
+						CBase::Delete((void*)Item);
+						return;
+					}
+
+					if ((Price * Amount) > 2000000000)
+					{
+						IPlayer.SystemMessage("You are not allowed to buy this amount from this store.", TEXTCOLOR_RED);
 						CBase::Delete((void*)Item);
 						return;
 					}

@@ -1,5 +1,6 @@
 void SetLearnUpgradeLimit()
 {
+
 	Interface<IMemory> Memory;
 	int NewPacket = 96;
 	Memory->Copy((void*)0x0047F97C, &NewPacket, 1);
@@ -7,6 +8,7 @@ void SetLearnUpgradeLimit()
 	Memory->Copy((void*)0x0047F6BC, &NewPacket, 1);
 	int FriendSize = 200;
 	Memory->Copy((void*)0x00467E12, &FriendSize, 1);
+
 }
 
 bool LearnBlessingSonOfSky(IChar IPlayer, void* SkillPointer, bool Item) {
@@ -270,11 +272,13 @@ bool LearnBlessingSonOfSky(IChar IPlayer, void* SkillPointer, bool Item) {
 			}
 		}
 	}
+
 	return result;
 }
 
 void __fastcall SkillOnLoad(int SkillPointer, void *edx, int SkillID, int pPos)
 {
+
 	if (SkillID == 80 || SkillID == 81) {
 		IChar IPlayer((void*)*(DWORD*)SkillPointer);
 
@@ -289,6 +293,7 @@ void __fastcall SkillOnLoad(int SkillPointer, void *edx, int SkillID, int pPos)
 
 void __fastcall Occupation(void *SkillPointer, void *edx)
 {
+
 	IChar IPlayer((void*)*(DWORD*)SkillPointer);
 
 	if (IPlayer.IsOnline())
@@ -422,10 +427,12 @@ void __fastcall Occupation(void *SkillPointer, void *edx)
 	}
 
 	CSkill::Occupation(SkillPointer);
+
 }
 
 signed int __fastcall LearnSkillCheck(void *SkillPointer, void *edx, signed int SkillID)
 {
+
 	IChar IPlayer((void*)*(DWORD*)SkillPointer);
 
 	if (IPlayer.IsOnline())
@@ -451,6 +458,7 @@ signed int __fastcall LearnSkillCheck(void *SkillPointer, void *edx, signed int 
 
 void __fastcall AutoLearn(void *SkillPointer, void *edx, int Value)
 {
+
 	IChar IPlayer((void*)*(DWORD*)SkillPointer);
 
 	if (IPlayer.IsOnline())
@@ -850,4 +858,5 @@ void __fastcall AutoLearn(void *SkillPointer, void *edx, int Value)
 	}
 
 	CPlayer::LevelUpUnknown(SkillPointer,Value);
+
 }

@@ -6,18 +6,18 @@ void __fastcall DefenseImprovement(void *pSkill, void *edx, int pPlayer, void *p
 	CPacket::Read((char*)pPacket, (char*)pPos, "bd", &bType, &nTargetID);
 
 	TargetFind myTarget(bType, 0, nTargetID);
-		pTarget = myTarget.getTarget();
+	pTarget = myTarget.getTarget();
 
 	if (pTarget && IPlayer.IsValid())
 	{
-		if ((**(int (__thiscall ***)(DWORD, DWORD, DWORD))pSkill)((int)pSkill, pPlayer, (int)pTarget))
+		if ((**(int(__thiscall ***)(DWORD, DWORD, DWORD))pSkill)((int)pSkill, pPlayer, (int)pTarget))
 		{
 			IChar ITarget(pTarget);
 
 			if (ITarget.IsValid() && IPlayer.IsValid())
 			{
 				if (IPlayer.GetCurMp() <= ISkill.DecreaseMana()) {
-					
+
 					return;
 				}
 				else
@@ -40,21 +40,22 @@ void __fastcall DefenseImprovement(void *pSkill, void *edx, int pPlayer, void *p
 								{
 									CChar::CancelAllBuff((void *)Members, 37);
 									int AddBuff = CBuff::CreateBuff(37, 1800, 30 * *((DWORD *)pSkill + 2) + 5, 20 * *((DWORD *)pSkill + 2) + 5);
-									(*(int (__thiscall **)(int, int))(*(DWORD *)Members + 180))(Members, AddBuff);
-									IPlayer._ShowBattleAnimation(IMembers,ISkill.GetIndex());
+									(*(int(__thiscall **)(int, int))(*(DWORD *)Members + 180))(Members, AddBuff);
+									IPlayer._ShowBattleAnimation(IMembers, ISkill.GetIndex());
 								}
 							}
 						}
 						CIOObject::Release(Party);
 					}
-				} else {
+				}
+				else {
 					CChar::CancelAllBuff(ITarget.GetOffset(), 37);
 					int AddBuff = CBuff::CreateBuff(37, 1800, 30 * *((DWORD *)pSkill + 2) + 5, 20 * *((DWORD *)pSkill + 2) + 5);
-					(*(int (__thiscall **)(int, int))(*(DWORD *)(int)ITarget.GetOffset() + 180))((int)ITarget.GetOffset(), AddBuff);
-					IPlayer._ShowBattleAnimation(ITarget,ISkill.GetIndex());
+					(*(int(__thiscall **)(int, int))(*(DWORD *)(int)ITarget.GetOffset() + 180))((int)ITarget.GetOffset(), AddBuff);
+					IPlayer._ShowBattleAnimation(ITarget, ISkill.GetIndex());
 				}
 			}
 		}
 	}
-	
+
 }

@@ -9,6 +9,9 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Skills">
+      <UniqueIdentifier>{0ad38954-45c5-4804-b432-1b1fb3a46779}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Exports.h">
@@ -50,31 +53,7 @@
     <ClInclude Include="Memory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DefenseImprovement.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BlessingOfIntelligence.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RefiningWeapon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BlessingOfStrength.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="RefreshBuff.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpeedUp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BlessingOfAgility.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BlessingOfCriticalHit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BlessingOfHealth.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Mix.h">
@@ -152,9 +131,6 @@
     <ClInclude Include="Skill.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EggSkill.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="WeaponChangePrefix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -188,46 +164,19 @@
     <ClInclude Include="ItemUse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Revival.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CastleWarFix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CutDownExp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Calls.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Transform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PowerfulWideningWound.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PerfectDefense.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Calculations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ProvocationOfBlow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpinSlash.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ContinuesSkill.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SwordDance.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Blessing.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TherapeuticTouch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ResetContinueSkill.h">
@@ -236,52 +185,7 @@
     <ClInclude Include="NormalHit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Fireball.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IceArrow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Icicle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Thunderbolt.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VirulentArrow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ArrowExplosion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CombativeSpirit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ArrowRain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Summon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BloodSuction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RevolveAttack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EggThunderbolt.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LifeAbsorption.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FlameInjection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LightningArrow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CounterDamage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Lisans.h">
@@ -293,130 +197,16 @@
     <ClInclude Include="Ornament.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShinRhoe.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WhirlwindFeather.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ZilPoong.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HighClassHiding.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hiding.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Behead.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpinBlade.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WrathOfHeaven.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ShadowSlash.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LightningSlash.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpinAttack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ArmorBreaker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TwinBladeStrike.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SuicidalBlow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FinalBlow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Assault.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AnkleAmputate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VitalStrike.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FatalWound.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Rupture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Storage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Strangle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Stun.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Confusion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DualShadow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CBaseDelete.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TheBoomOfEarth.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TheWaveOfEarth.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WalkOnTheAir.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ShoutOfDefense.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ShoutOfFightingSpirit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MassiveFire.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpiritOfTheArrows.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ArrowsOfTheMaster.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OneHitStrike.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CriticalStrike.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Punishment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CriticalDiffusion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DestroyingArmor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="StrikeOfGod.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Bombing.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Incapacitation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ReleasingTheEnergy.h">
@@ -428,85 +218,10 @@
     <ClInclude Include="MD5.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GhostKnife.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GhostFlash.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SoulShield.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MudRoom.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Wave.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GhostWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TheSoulsPenance.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ExecutiveDirector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="JeungjangKing.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="JigukKing.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WaveOfEmperor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AmplificationOfBlood.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Entangling.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpearOfPain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="JeungjangKingOfTaein.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="JigukKingOfTaein.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SoulBlow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DrainBlood.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MentalBreakdown.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MagicalExplosion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ExplodingSpirit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SixSouls.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Collapse.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Doggebi.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpiritWave.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RisingKing4th.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Gangshin4th.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="base64.h">
@@ -597,6 +312,303 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SkillCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WrathOfHeaven.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="WhirlwindFeather.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="WaveOfEmperor.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Wave.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="WalkOnTheAir.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="VitalStrike.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="VirulentArrow.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="TwinBladeStrike.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Thunderbolt.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="TheWaveOfEarth.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="TheSoulsPenance.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="TherapeuticTouch.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="TheBoomOfEarth.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Stun.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="StrikeOfGod.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Strangle.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="SpiritWave.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="SpiritOfTheArrows.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="SpinSlash.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="SpinBlade.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="SpinAttack.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="SpeedUp.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="SpearOfPain.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="SoulShield.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="SoulBlow.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="ShoutOfFightingSpirit.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="ShoutOfDefense.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="ShinRhoe.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowSlash.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Rupture.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="RisingKing4th.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="RevolveAttack.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="RefiningWeapon.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Punishment.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="ProvocationOfBlow.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="PowerfulWideningWound.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="PerfectDefense.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="OneHitStrike.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="MentalBreakdown.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="MagicalExplosion.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="MassiveFire.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="LightningSlash.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="LightningArrow.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="LifeAbsorption.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="JigukKingOfTaein.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="JigukKing.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="JeungjangKingOfTaein.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="JeungjangKing.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Incapacitation.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Icicle.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="IceArrow.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="HighClassHiding.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Hiding.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="GhostWindow.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="GhostKnife.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="GhostFlash.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Gangshin4th.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="FlameInjection.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Fireball.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="FatalWound.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplodingSpirit.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="EggThunderbolt.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Entangling.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="DualShadow.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="DrainBlood.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="DestroyingArmor.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="DefenseImprovement.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="CounterDamage.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="CriticalDiffusion.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="CriticalStrike.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="CombativeSpirit.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="BlessingOfStrength.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="BloodSuction.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Bombing.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="BlessingOfIntelligence.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="BlessingOfCriticalHit.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="BlessingOfHealth.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="BlessingOfAgility.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="AmplificationOfBlood.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="AnkleAmputate.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrowsOfTheMaster.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Blessing.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrowRain.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrowExplosion.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Assault.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Behead.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Calls.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Confusion.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="EggSkill.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="MudRoom.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Revival.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="SixSouls.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="SuicidalBlow.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="SwordDance.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessMsg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ArmorBreaker.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Collapse.h">
+      <Filter>Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hardware.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,6 @@
 LONG __fastcall WarGState(int Player, void *edx, int Argument)
 {
+
 	LONG C = CChar::AddGState(Player, Argument);
 	IChar IPlayer((void*)Player);
 	if (IPlayer.GetType() == 0) {
@@ -12,6 +13,7 @@ LONG __fastcall WarGState(int Player, void *edx, int Argument)
 
 void __cdecl WarBegin(int Time)
 {
+
 	CCastle::WarBegin(Time);
 
 	CIOCriticalSection::Enter((void*)0x004e2078);
@@ -34,10 +36,12 @@ void __cdecl WarBegin(int Time)
 	}
 
 	CIOCriticalSection::Leave((void*)0x004e2078);
+
 }
 
 time_t __cdecl GetWarEndTime()
 {
+
 	time_t v1; // [sp+0h] [bp-8h]@1
 	struct tm *v2; // [sp+4h] [bp-4h]@1
 
@@ -68,6 +72,7 @@ time_t __cdecl GetWarEndTime()
 	}
 	v2->tm_sec = 0;
 	v2->tm_min = 0;
+
 	return mktime(v2);
 }
 

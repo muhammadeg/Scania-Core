@@ -39,6 +39,7 @@ public:
 	int _UpdateBuff(int BuffID, int Time, int Value);
 	void SaveBuff(int BuffID,int Time);
 	void SaveBuff(int BuffID, int Time, int Value, int SBName, int SBKey);
+	void UpdateSavedBuff(int BuffID, int Time, int Value, int SBName, int SBKey);
 	void RemoveSavedBuff(int BuffID);
 	void AddFire_Resistance(int amount);
 	void RemoveFire_Resistance(int amount);
@@ -254,7 +255,7 @@ public:
 	void SetAsAdmin();
 	void SetAsSleep();
 	void IncreaseMovingSpeed(int amount);
-	int GetMovingSpeed();
+	void GetMovingSpeed();
 
 	void DecreaseMovingSpeed(int amount);
 	int GetRidingType();
@@ -266,7 +267,7 @@ public:
 	void StartQuest(int QuestID, int Time, int Repeat, int Count);
 	void EndQuest(int QuestID, int Time, int Repeat, int Count);
 	void EndQuestMission(int QuestID, int Time, int Repeat, int Count);
-	void DeleteQuest(int QuestID);
+	void StartDutyQuest(int QuestID, int Time, int Repeat, int Count);
 
 	void QuitQuest(int QuestID, int Time, int Repeat, int Count);
 	void DailyQuestUpdate(int QuestID,int Monster,int CountEach);
@@ -347,6 +348,8 @@ public:
 	void PortToVillage();
 	int InsertDeletedItem(int IID);
 	void SetLevel(int Level);
+	void ResetLevel(int Level);
+
 	void ChangeName(std::string NewName);
 	void SetName(std::string NewName);
 

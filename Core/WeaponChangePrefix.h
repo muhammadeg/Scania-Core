@@ -78,72 +78,76 @@ void __fastcall WeaponUpgradeDestroy(int Item, void *edx, int Player)
 signed int __fastcall WeaponUpgradeLevel(void* Item, void *edx, int Player)
 {
 	int result; // eax@1
-	signed int v3; // esi@15
+	signed int UpgradeRate; // esi@15
 	int v4; // [sp+4h] [bp-30h]@29
 	signed int v5; // [sp+Ch] [bp-28h]@13
 	signed int v6; // [sp+10h] [bp-24h]@10
 	int v7; // [sp+14h] [bp-20h]@5
-	int v8; // [sp+18h] [bp-1Ch]@1
+	int Itemx; // [sp+18h] [bp-1Ch]@1
 	signed int v9; // [sp+28h] [bp-Ch]@19
-	int v10; // [sp+2Ch] [bp-8h]@8
+	int MoneyToRemove; // [sp+2Ch] [bp-8h]@8
 	int v11; // [sp+30h] [bp-4h]@8
 
-	v8 = (int)Item;
+	IChar IPlayer((void*)Player);
+	Itemx = (int)Item;
 	result = CItem::GetLevel((int)Item);
 	if (result >= 40)
 	{
-		result = CItem::IsState(v8, 1);
+		result = CItem::IsState(Itemx, 1);
 		if (!result)
 		{
-			int ItemType = *(DWORD *)(*(DWORD *)(v8 + 40) + 72);
 
-			v7 = (abs(ItemType) == 1) ? *(DWORD *)(v8 + 104) : *(DWORD *)(v8 + 100);
-			result = v8;
-			if (*(DWORD *)(v8 + 124) < v7)
+			int ItemType = *(DWORD *)(*(DWORD *)(Itemx + 40) + 72);
+
+			v7 = (abs(ItemType) == 1) && !(*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 3) ? *(DWORD *)(Itemx + 104) : *(DWORD *)(Itemx + 100);
+			result = Itemx;
+
+			if (*(DWORD *)(Itemx + 124) < v7)
 			{
-				v10 = 1500 * (*(DWORD *)(v8 + 124) + 1);
-				result = CPlayer::_FindItem((int)Player, 31, v10);
+
+				MoneyToRemove = 1500 * (*(DWORD *)(Itemx + 124) + 1);
+				result = CPlayer::_FindItem((int)Player, 31, MoneyToRemove);
 				v11 = result;
 				if (result)
 				{
-					if (*(DWORD *)(v8 + 124) >= 19)
+					if (*(DWORD *)(Itemx + 124) >= 19)
 						v6 = 19;
 					else
-						v6 = *(DWORD *)(v8 + 124);
-					if (*(DWORD *)(v8 + 124) >= 19)
+						v6 = *(DWORD *)(Itemx + 124);
+					if (*(DWORD *)(Itemx + 124) >= 19)
 						v5 = 19;
 					else
-						v5 = *(DWORD *)(v8 + 124);
-					v3 = Charming::EBMin[v6] + *(DWORD *)(v8 + 128) * Charming::EBMax[v5];
-					if (v3 < CTools::Rate(1, 100))
+						v5 = *(DWORD *)(Itemx + 124);
+					UpgradeRate = Charming::EBMin[v6] + *(DWORD *)(Itemx + 128) * Charming::EBMax[v5];
+					if (UpgradeRate < CTools::Rate(1, 100))
 					{
 						v9 = CTools::Rate(1, 100);
 						if (v9 > 60)
 						{
 							if (v9 > 90)
 							{
-								CPlayer::Write((void*)Player, 68, "bd", 82, *(DWORD *)(v8 + 36));
-								if (*(DWORD *)(v8 + 44))
-									v4 = *(DWORD *)(*(DWORD *)(v8 + 44) + 32);
+								CPlayer::Write((void*)Player, 68, "bd", 82, *(DWORD *)(Itemx + 36));
+								if (*(DWORD *)(Itemx + 44))
+									v4 = *(DWORD *)(*(DWORD *)(Itemx + 44) + 32);
 								else
 									v4 = 0;
-								CDBSocket::Write(3, "ddwdbddd", *(DWORD *)(v8 + 36), *(DWORD *)(v8 + 32), *(DWORD *)(*(DWORD *)(v8 + 40) + 64), *(DWORD *)(v8 + 52), 47, *(DWORD *)(v8 + 100) & 0xFF | ((*(DWORD *)(v8 + 84) & 0xFF) << 8) | ((*(DWORD *)(v8 + 92) & 0xFF) << 16) | (v4 << 24), ((*(DWORD *)(v8 + 112) & 0xFF) << 8) | (*(DWORD *)(v8 + 104) << 24), ((*(DWORD *)(v8 + 128) & 0xFF) << 8) | ((*(DWORD *)(v8 + 124) & 0xFF) << 16) | (*(DWORD *)(v8 + 120) << 24));
-								CPlayer::_OutOfInven((void*)Player, v8);
-								result = CBase::Delete((char *)v8);
+								CDBSocket::Write(3, "ddwdbddd", *(DWORD *)(Itemx + 36), *(DWORD *)(Itemx + 32), *(DWORD *)(*(DWORD *)(Itemx + 40) + 64), *(DWORD *)(Itemx + 52), 47, *(DWORD *)(Itemx + 100) & 0xFF | ((*(DWORD *)(Itemx + 84) & 0xFF) << 8) | ((*(DWORD *)(Itemx + 92) & 0xFF) << 16) | (v4 << 24), ((*(DWORD *)(Itemx + 112) & 0xFF) << 8) | (*(DWORD *)(Itemx + 104) << 24), ((*(DWORD *)(Itemx + 128) & 0xFF) << 8) | ((*(DWORD *)(Itemx + 124) & 0xFF) << 16) | (*(DWORD *)(Itemx + 120) << 24));
+								CPlayer::_OutOfInven((void*)Player, Itemx);
+								result = CBase::Delete((char *)Itemx);
 							}
 							else
 							{
-								*(DWORD *)(v8 + 128) = 0;
-								if (*(DWORD *)(v8 + 124) <= 0)
-									CDBSocket::Write(28, "ddbb", *(DWORD *)(v8 + 36), *(DWORD *)(v8 + 32), 2, 0);
+								*(DWORD *)(Itemx + 128) = 0;
+								if (*(DWORD *)(Itemx + 124) <= 0)
+									CDBSocket::Write(28, "ddbb", *(DWORD *)(Itemx + 36), *(DWORD *)(Itemx + 32), 2, 0);
 								else
-									CDBSocket::Write(28, "ddbb", *(DWORD *)(v8 + 36), *(DWORD *)(v8 + 32), 2, --*(DWORD *)(v8 + 124));
-								result = CItem::SendItemInfo((void *)v8, Player, 92);
+									CDBSocket::Write(28, "ddbb", *(DWORD *)(Itemx + 36), *(DWORD *)(Itemx + 32), 2, --*(DWORD *)(Itemx + 124));
+								result = CItem::SendItemInfo((void *)Itemx, Player, 92);
 							}
 						}
 						else
 						{
-							if (!(*(int(__thiscall **)(int, int, signed int, int))(*(DWORD *)v11 + 120))(v11, Player, 47, -v10))
+							if (!(*(int(__thiscall **)(int, int, signed int, int))(*(DWORD *)v11 + 120))(v11, Player, 47, -MoneyToRemove))
 								CPlayer::_OutOfInven((void*)Player, v11);
 							CPlayer::Write((void*)Player, 67, "b", 81);
 							result = 1;
@@ -151,11 +155,11 @@ signed int __fastcall WeaponUpgradeLevel(void* Item, void *edx, int Player)
 					}
 					else
 					{
-						if (!(*(int(__thiscall **)(int, int, signed int, int))(*(DWORD *)v11 + 120))(v11, Player, 47, -v10))
+						if (!(*(int(__thiscall **)(int, int, signed int, int))(*(DWORD *)v11 + 120))(v11, Player, 47, -MoneyToRemove))
 							CPlayer::_OutOfInven((void*)Player, v11);
-						*(DWORD *)(v8 + 128) = 0;
-						CDBSocket::Write(28, "ddbb", *(DWORD *)(v8 + 36), *(DWORD *)(v8 + 32), 2, ++*(DWORD *)(v8 + 124));
-						result = CItem::SendItemInfo((void *)v8, Player, 92);
+						*(DWORD *)(Itemx + 128) = 0;
+						CDBSocket::Write(28, "ddbb", *(DWORD *)(Itemx + 36), *(DWORD *)(Itemx + 32), 2, ++*(DWORD *)(Itemx + 124));
+						result = CItem::SendItemInfo((void *)Itemx, Player, 92);
 					}
 				}
 			}
@@ -1085,6 +1089,579 @@ signed int __fastcall WeaponChangePrefix(void *Item, void *edx, int Player, int 
 
 		}
 
+		int impgrade = HighGradeImperial.find(NewPrefix)->second;
+		int impprefix = HighGradeImperial.find(NewPrefix)->first;
+		std::string msg = (std::string)IPlayer.GetName();
+
+		if (HighGradeImperial.count(NewPrefix) || NewPrefix == Imp2ConfigRead)
+		{
+			if (IItem.CheckIndex() >= 769 && IItem.CheckIndex() <= 801
+				|| IItem.CheckIndex() >= 1433 && IItem.CheckIndex() <= 1441
+				|| IItem.CheckIndex() >= 1700 && IItem.CheckIndex() <= 1704
+				|| IItem.CheckIndex() >= 3033 && IItem.CheckIndex() <= 3039
+				|| IItem.CheckIndex() >= 1921 && IItem.CheckIndex() <= 1927
+				|| IItem.CheckIndex() >= 1821 && IItem.CheckIndex() <= 1824
+				|| IItem.CheckIndex() >= 1448 && IItem.CheckIndex() <= 1453
+				|| IItem.CheckIndex() >= 1442 && IItem.CheckIndex() <= 1445
+				|| IItem.CheckIndex() >= 2676 && IItem.CheckIndex() <= 2682
+				|| IItem.CheckIndex() >= 2688 && IItem.CheckIndex() <= 2693
+				|| IItem.CheckIndex() >= 2700 && IItem.CheckIndex() <= 2705
+				|| IItem.CheckIndex() >= 4329 && IItem.CheckIndex() <= 4335
+				|| IItem.CheckIndex() == 1853 || IItem.CheckIndex() == 1669
+				|| IItem.CheckIndex() == 1668)
+			{
+				IPlayer.SystemMessage("Your weapon already imperial.", TEXTCOLOR_RED);
+				return 0;
+			}
+
+			if (IItem.CheckIndex() == 575)
+			{
+				IPlayer.SystemMessage("2 Handed Sword can not be upgraded.", TEXTCOLOR_RED);
+				return 0;
+			}
+			int ItemStat = 0;
+			itemStat.Enter();
+			if (GetItemStat.count(IItem.GetIID()))
+				ItemStat = GetItemStat.find(IItem.GetIID())->second;
+			itemStat.Leave();
+
+			int GetWeaponGrade = *(DWORD*)(*(DWORD *)((int)Item + 40) + 80), Imp = 0, xMixPrefix = 0, ImpItem = 0;
+
+			if (GetWeaponGrade > 80)
+				return 0;
+
+			//if (GetWeaponGrade != impgrade) {
+			//	IPlayer.SystemMessage("Imperial Talisman is not compitable with weapon grade.", TEXTCOLOR_RED);
+			//	return 0;
+			//}
+
+			if (impgrade == GetWeaponGrade || GetWeaponGrade) {
+				switch (GetWeaponGrade)
+				{
+				case 0x28:
+					if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == -1)
+					{
+						Imp = 7210;
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 3)
+					{
+						Imp = 1433;
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96))
+					{
+						if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1)
+							Imp = 771;
+						else
+							Imp = 770;
+					}
+					else {
+						Imp = 769;
+					}
+					break;
+				case 0x2D:
+					if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == -1)
+					{
+						Imp = 7290;
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 3)
+					{
+						Imp = 1434;
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96))
+					{
+						if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1)
+							Imp = 774;
+						else
+							Imp = 773;
+					}
+					else {
+						Imp = 772;
+					}
+					break;
+				case 0x30:
+					if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == -1)
+					{
+						Imp = 7214;
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 3)
+					{
+						Imp = 1435;
+						msg = msg + " has enhanced " + GetDaggerName(GetWeaponGrade) + " with the Power of Imperial!";
+
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96))
+					{
+						if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1) {
+							Imp = 777;
+							msg = msg + " has enhanced " + GetStickName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+						else {
+							Imp = 776;
+							msg = msg + " has enhanced " + GetBowName(GetWeaponGrade) + " with the Power of Imperial!";
+
+						}
+					}
+					else {
+						Imp = 775;
+						msg = msg + " has enhanced " + GetSwordName(GetWeaponGrade) + " with the Power of Imperial!";
+
+					}
+					break;
+				case 0x32:
+					if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == -1)
+					{
+						Imp = 7218;
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 3)
+					{
+						Imp = 1436;
+						msg = msg + " has enhanced " + GetDaggerName(GetWeaponGrade) + " with the Power of Imperial!";
+
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96))
+					{
+						if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1) {
+							Imp = 781;
+							msg = msg + " has enhanced " + GetStickName(GetWeaponGrade) + " with the Power of Imperial!";
+
+						}
+						else {
+							Imp = 780;
+							msg = msg + " has enhanced " + GetBowName(GetWeaponGrade) + " with the Power of Imperial!";
+
+						}
+					}
+					else {
+						Imp = (*(DWORD *)(*(DWORD *)((int)Item + 40) + 72) != 0) + 778;
+						msg = msg + " has enhanced " + GetSwordName(GetWeaponGrade, (*(DWORD *)(*(DWORD *)((int)Item + 40) + 72) != 0)) + " with the Power of Imperial!";
+
+					}
+					break;
+				case 0x35:
+					if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == -1)
+					{
+						Imp = 7222;
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 3)
+					{
+						Imp = 1437;
+						msg = msg + " has enhanced " + GetDaggerName(GetWeaponGrade) + " with the Power of Imperial!";
+
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96))
+					{
+						if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1)
+						{
+
+							Imp = 785;
+							msg = msg + " has enhanced " + GetStickName(GetWeaponGrade) + " with the Power of Imperial!";
+
+						}
+						else {
+							Imp = 784;
+							msg = msg + " has enhanced " + GetBowName(GetWeaponGrade) + " with the Power of Imperial!";
+
+						}
+					}
+					else {
+						Imp = (*(DWORD *)(*(DWORD *)((int)Item + 40) + 72) != 0) + 782;
+						msg = msg + " has enhanced " + GetSwordName(GetWeaponGrade, (*(DWORD *)(*(DWORD *)((int)Item + 40) + 72) != 0)) + " with the Power of Imperial!";
+
+					}
+					break;
+				case 0x38:
+					if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == -1)
+					{
+						Imp = 7226;
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 3)
+					{
+						Imp = 1438;
+						msg = msg + " has enhanced " + GetDaggerName(GetWeaponGrade) + " with the Power of Imperial!";
+
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96))
+					{
+						if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1) {
+							Imp = 789;
+							msg = msg + " has enhanced " + GetStickName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+						else {
+							Imp = 788;
+							msg = msg + " has enhanced " + GetBowName(GetWeaponGrade) + " with the Power of Imperial!";
+
+						}
+					}
+					else {
+						Imp = (*(DWORD *)(*(DWORD *)((int)Item + 40) + 72) != 0) + 786;
+						msg = msg + " has enhanced " + GetSwordName(GetWeaponGrade, (*(DWORD *)(*(DWORD *)((int)Item + 40) + 72) != 0)) + " with the Power of Imperial!";
+
+					}
+					break;
+				case 0x3B:
+					if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == -1)
+					{
+						Imp = 7230;
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 3)
+					{
+						Imp = 1439;
+						msg = msg + " has enhanced " + GetDaggerName(GetWeaponGrade) + " with the Power of Imperial!";
+
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96))
+					{
+						if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1)
+						{
+
+							Imp = 793;
+							msg = msg + " has enhanced " + GetStickName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+						else {
+							Imp = 792;
+							msg = msg + " has enhanced " + GetBowName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+					}
+					else {
+						Imp = (*(DWORD *)(*(DWORD *)((int)Item + 40) + 72) != 0) + 790;
+						msg = msg + " has enhanced " + GetSwordName(GetWeaponGrade, (*(DWORD *)(*(DWORD *)((int)Item + 40) + 72) != 0)) + " with the Power of Imperial!";
+
+					}
+					break;
+				case 0x3E:
+					if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == -1)
+					{
+						if (IItem.CheckIndex() == 7231)
+							Imp = 7230;
+						else if (IItem.CheckIndex() == 7233)
+							Imp = 7235;
+						else if (IItem.CheckIndex() == 7234)
+							Imp = 7236;
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 3)
+					{
+						Imp = 1440;
+						msg = msg + " has enhanced " + GetDaggerName(GetWeaponGrade) + " with the Power of Imperial!";
+
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96))
+					{
+						if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1) {
+							Imp = 797;
+							msg = msg + " has enhanced " + GetStickName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+						else {
+							Imp = 796;
+							msg = msg + " has enhanced " + GetBowName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+					}
+					else {
+						Imp = (*(DWORD *)(*(DWORD *)((int)Item + 40) + 72) != 0) + 794;
+						msg = msg + " has enhanced " + GetSwordName(GetWeaponGrade, (*(DWORD *)(*(DWORD *)((int)Item + 40) + 72) != 0)) + " with the Power of Imperial!";
+
+					}
+					break;
+				case 0x41:
+					if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == -1)
+					{
+						Imp = 7238;
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 3)
+					{
+						Imp = 1441;
+						msg = msg + " has enhanced " + GetDaggerName(GetWeaponGrade) + " with the Power of Imperial!";
+
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96))
+					{
+						if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1 && IItem.CheckIndex() == 672) {
+							Imp = 801;
+							msg = msg + " has enhanced " + GetStickName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+						else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1 && IItem.CheckIndex() == 1677)
+						{
+							Imp = 1821;
+							msg = msg + " has enhanced " + GetStickName(GetWeaponGrade) + " with the Power of Imperial!";
+
+						}
+						else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1 && IItem.CheckIndex() == 1678) {
+							Imp = 1822;
+							msg = msg + " has enhanced " + GetStickName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+						else {
+							Imp = 800;
+							msg = msg + " has enhanced " + GetBowName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+					}
+					else {
+						Imp = (*(DWORD *)(*(DWORD *)((int)Item + 40) + 72) != 0) + 798;
+						msg = msg + " has enhanced " + GetSwordName(GetWeaponGrade, (*(DWORD *)(*(DWORD *)((int)Item + 40) + 72) != 0)) + " with the Power of Imperial!";
+					}
+					break;
+				case 0x46:
+					if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == -1)
+					{
+						if (IItem.CheckIndex() == 7239)
+							Imp = 7241;
+						else if (IItem.CheckIndex() == 7240)
+							Imp = 7242;
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 3)
+					{
+						Imp = 1704;
+						msg = msg + " has enhanced " + GetDaggerName(GetWeaponGrade) + " with the Power of Imperial!";
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96))
+					{
+						if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1 && IItem.CheckIndex() == 1698) {
+							Imp = 1853;
+							msg = msg + " has enhanced " + GetStickName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+						else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1 && IItem.CheckIndex() == 1705) {
+							Imp = 1823;
+							msg = msg + " has enhanced " + GetStickName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+						else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1 && IItem.CheckIndex() == 1706) {
+							Imp = 1824;
+							msg = msg + " has enhanced " + GetStickName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+						else {
+							Imp = 1702;
+							msg = msg + " has enhanced " + GetBowName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+					}
+					else {
+						if (IItem.CheckIndex() == 1695) {
+							Imp = 1700;
+							msg = msg + " has enhanced " + GetSwordName(GetWeaponGrade, false) + " with the Power of Imperial!";
+						}
+						else {
+							Imp = 1701;
+							msg = msg + " has enhanced " + GetSwordName(GetWeaponGrade, true) + " with the Power of Imperial!";
+						}
+					}
+					break;
+				case 0x4B:
+					if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == -1)
+					{
+						if (IItem.CheckIndex() == 7243)
+							Imp = 7245;
+						else if (IItem.CheckIndex() == 7244)
+							Imp = 7246;
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 3)
+					{
+						if (IItem.CheckIndex() == -1328) {
+							Imp = 4335;
+							msg = msg + " has enhanced " + GetDaggerName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+						else {
+							Imp = 1927;
+							msg = msg + " has enhanced " + GetDaggerName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96))
+					{
+						if (IItem.CheckIndex() == 1917) {
+							Imp = 1924;
+							msg = msg + " has enhanced " + GetStickName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+						else if (IItem.CheckIndex() == 1918) {
+							Imp = 1925;
+							msg = msg + " has enhanced " + GetStickName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+						else if (IItem.CheckIndex() == 1919) {
+							Imp = 1926;
+							msg = msg + " has enhanced " + GetStickName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+						else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1 && IItem.CheckIndex() == -1325) {
+							Imp = 4332;
+							msg = msg + " has enhanced " + GetStickName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+						else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1 && IItem.CheckIndex() == -1326) {
+							Imp = 4333;
+							msg = msg + " has enhanced " + GetStickName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+						else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1 && IItem.CheckIndex() == -1327) {
+							Imp = 4334;
+							msg = msg + " has enhanced " + GetStickName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+						else if (IItem.CheckIndex() == -1324) {
+							Imp = 4331;
+							msg = msg + " has enhanced " + GetStickName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+						else {
+							Imp = 1923;
+							msg = msg + " has enhanced " + GetBowName(GetWeaponGrade) + " with the Power of Imperial!";
+						}
+					}
+					else {
+						if (IItem.CheckIndex() == 1914) {
+							Imp = 1921;
+							msg = msg + " has enhanced " + GetSwordName(GetWeaponGrade, false) + " with the Power of Imperial!";
+						}
+						else if (IItem.CheckIndex() == -1322) {
+							Imp = 4329;
+							msg = msg + " has enhanced " + GetSwordName(impgrade, false) + " with the Power of Imperial!";
+						}
+						else if (IItem.CheckIndex() == -1323) {
+							Imp = 4330;
+							msg = msg + " has enhanced " + GetSwordName(impgrade, false) + " with the Power of Imperial!";
+						}
+						else {
+							Imp = 1922;
+							msg = msg + " has enhanced " + GetSwordName(impgrade, true) + " with the Power of Imperial!";
+
+						}
+					}
+					break;
+				case 0x50:
+					if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == -1)
+					{
+						if (IItem.CheckIndex() == 7247)
+							Imp = 7249;
+						else if (IItem.CheckIndex() == 7248)
+							Imp = 7250;
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 3)
+					{
+						Imp = 3039;
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96))
+					{
+						if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1 && IItem.CheckIndex() == 3029)
+							Imp = 3036;
+						else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1 && IItem.CheckIndex() == 3030)
+							Imp = 3037;
+						else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1 && IItem.CheckIndex() == 3031)
+							Imp = 3038;
+						else
+							Imp = 3035;
+					}
+					else {
+						if (IItem.CheckIndex() == 3026)
+							Imp = 3033;
+						else
+							Imp = 3034;
+					}
+					break;
+				case 0x5A:
+					if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == -1)
+					{
+						if (IItem.CheckIndex() == 7251)
+							Imp = 7253;
+						else if (IItem.CheckIndex() == 7252)
+							Imp = 7254;
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 3)
+					{
+						Imp = 3161;
+					}
+					else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96))
+					{
+						if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1 && IItem.CheckIndex() == 3150)
+							Imp = 3158;
+						else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1 && IItem.CheckIndex() == 3151)
+							Imp = 3159;
+						else if (*(DWORD *)(*(DWORD *)((int)Item + 40) + 96) == 1 && IItem.CheckIndex() == 3152)
+							Imp = 3160;
+						else
+							Imp = 3157;
+					}
+					else {
+						if (IItem.CheckIndex() == 3147)
+							Imp = 3155;
+						else
+							Imp = 3156;
+					}
+					break;
+				default:
+					break;
+				}
+
+
+			}
+
+			if (!Imp)
+				return 0;
+
+			if (*(DWORD *)((int)Item + 44))
+				xMixPrefix = *(DWORD *)(*(DWORD *)((int)Item + 44) + 32);
+			else
+				xMixPrefix = 0;
+
+			int DeleteCheck = (*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)Item + 120))((int)Item, IPlayer.GetOffset(), 9, -1);
+
+			if (!DeleteCheck)
+			{
+				ImpItem = CItem::CreateItem(Imp, xMixPrefix, 1, -1);
+
+				if (ImpItem)
+				{
+					CIOObject::AddRef(ImpItem);
+
+					if (*(DWORD *)((int)Item + 48))
+						*(DWORD *)(ImpItem + 48) = *(DWORD *)((int)Item + 48);
+
+					if (*(DWORD *)((int)Item + 100))
+						*(DWORD *)(ImpItem + 100) = *(DWORD *)((int)Item + 100);
+
+					if (*(DWORD *)((int)Item + 104))
+						*(DWORD *)(ImpItem + 104) = *(DWORD *)((int)Item + 104);
+
+					if (*(DWORD *)((int)Item + 112))
+						*(DWORD *)(ImpItem + 112) = *(DWORD *)((int)Item + 112);
+
+					if (*(DWORD *)((int)Item + 124))
+						*(DWORD *)(ImpItem + 124) = *(DWORD *)((int)Item + 124);
+
+					if (*(DWORD *)((int)Item + 84))
+						*(DWORD *)(ImpItem + 84) = *(DWORD *)((int)Item + 84);
+
+					if (CPlayer::_InsertItem(IPlayer.GetOffset(), 27, ImpItem) != 1)
+					{
+						CConsole::Red("MixItem() insert item Null error [PID (%d)] ", IPlayer.GetPID());
+						CBase::Delete((void *)ImpItem);
+						CIOObject::Release((void *)ImpItem);
+						return 0;
+					}
+
+					CIOObject::Release((void *)ImpItem);
+					itemStat.Enter();
+					GetItemStat[*(DWORD *)(ImpItem + 36)] = ItemStat;
+					itemStat.Leave();
+
+					CDBSocket::Write(90, "dd", ItemStat, *(DWORD *)(ImpItem + 36));
+					CDBSocket::Write(87, "ddd", IPlayer.GetPID(), *(DWORD *)(ImpItem + 84), *(DWORD *)(ImpItem + 36));
+					CDBSocket::Write(21, "dddbb", *(DWORD *)(ImpItem + 36), *(DWORD *)(ImpItem + 32), *(DWORD *)(ImpItem + 48), 8, 7);
+					CDBSocket::Write(17, "ddbbb", *(DWORD *)(ImpItem + 36), *(DWORD *)(ImpItem + 32), 27, *(DWORD *)(ImpItem + 100), 0);
+					CDBSocket::Write(17, "ddbbb", *(DWORD *)(ImpItem + 36), *(DWORD *)(ImpItem + 32), 28, *(DWORD *)(ImpItem + 104), 0);
+					CDBSocket::Write(17, "ddbbb", *(DWORD *)(ImpItem + 36), *(DWORD *)(ImpItem + 32), 9, *(DWORD *)(ImpItem + 112), 0);
+					CDBSocket::Write(28, "ddbb", *(DWORD *)(ImpItem + 36), *(DWORD *)(ImpItem + 32), 2, *(DWORD *)(ImpItem + 124));
+					CItem::SendItemInfo((void*)ImpItem, (int)IPlayer.GetOffset(), 92);
+					CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddddd", 242, 10, 0, 128, 255);
+
+					if (!msg.empty() && IPlayer.IsValid()) {
+						int textColor = NOTICECOLOR_YELLOW; // Default color
+						int messageType = 2; // Default messageType
+						RewardMessage reward;
+						reward.message = msg;
+						reward.textColor = textColor;
+						reward.messageType = messageType;
+
+						PlayerRewardNotice.push_back(reward);
+						ToNoticeWebhook(msg.c_str());
+					}
+
+				}
+			}
+			else {
+				return 0;
+			}
+
+			return 1;
+
+		}
 		AddPrefix = CItem::FindPrefix(NewPrefix);
 
 		if (!AddPrefix)

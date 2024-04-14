@@ -1,5 +1,6 @@
 int __fastcall CanAttack(void *Player, void *edx, int Target, int Value)
 {
+
 	IChar IPlayer(Player);
 	IChar ITarget((void*)Target);
 
@@ -106,6 +107,7 @@ int __fastcall CanAttack(void *Player, void *edx, int Target, int Value)
 			}
 		}
 	}
+
 	return CPlayer::CanAttack(Player, Target, Value);
 }
 

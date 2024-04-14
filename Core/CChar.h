@@ -1,11 +1,15 @@
 int __fastcall ObjectRelease(void* Object, void *edx, volatile LONG* lpAddend)
 {
+
 	if (Object)
 		return CIOObject::_Release(Object, lpAddend);
+
 	return 0;
 }
 
 LONG __fastcall CIOBufferRelease(void* Buffer, void* edx) {
+
+
 	if (Buffer)
 		return CIOBuffer::Release(Buffer);
 	return 0;
@@ -13,6 +17,7 @@ LONG __fastcall CIOBufferRelease(void* Buffer, void* edx) {
 
 LONG __fastcall ObjectRef(int Object, void *edx, volatile LONG *lpAddend)
 {
+
 	if (Object)
 		return CIOObject::_AddRef(Object, lpAddend);
 	return 0;
@@ -20,6 +25,7 @@ LONG __fastcall ObjectRef(int Object, void *edx, volatile LONG *lpAddend)
 
 void __fastcall ObjectTick(int Object, void *edx)
 {
+
 	IChar IObject((void*)Object);
 
 	if (IObject.GetType() == 1) {

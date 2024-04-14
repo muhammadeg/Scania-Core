@@ -1,6 +1,6 @@
 void ExecuteMonsterSkill(IChar IPlayer, IChar Object, MSkill mSkill) {
 	if (IPlayer.IsValid() && Object.IsValid() && Object.GetType() == 0) {
-		int DMG = CTools::Rate(mSkill.DamageMin, mSkill.DamageMax);
+		int DMG = CTools::Rate(mSkill.DamageMin, mSkill.DamageMax); 
 		int n = DMG;
 		int digits = 0;
 		while (n /= 10)
@@ -20,7 +20,7 @@ void ExecuteMonsterSkill(IChar IPlayer, IChar Object, MSkill mSkill) {
 
 			Check = (*(int(__thiscall**)(LONG, void*, unsigned int, int*, int*, int*, DWORD))(*(DWORD*)Object.GetOffset() + 72))((int)Object.GetOffset(), IPlayer.GetOffset(), DMG, &NormalDamage, &DamageArgument, &EBDamage, 0);
 			GetType = Check | 2 * DamageArgument | 4 * TypeKind;
-			if (!mSkill.EffectType)
+			if(!mSkill.EffectType)
 				Object.AddFxToTarget(mSkill.Effect, 0, 0, 0);
 
 			CChar::WriteInSight(IPlayer.GetOffset(), 62, "ddddbd", IPlayer.GetID(), Object.GetID(), NormalDamage, EBDamage, GetType, 0);
@@ -58,6 +58,12 @@ int __fastcall GetFatalDamage(int Player, void *edx, int Damage, int Argument, i
 
 	if (FatalDamage) {
 		if (IPlayer.GetType() == 0) {
+
+			int HonorValue = IPlayer.GetBuffValue(BuffNames::HonorFatal);
+
+			if (IPlayer.IsBuff(BuffNames::HonorFatal))
+				FatalDamage += (FatalDamage * HonorValue) / 100;
+
 			if (IPlayer.IsBuff(BuffNames::PVPHit))
 				FatalDamage = (FatalDamage * FatalDamagePVP) / 100;
 			else
@@ -110,7 +116,7 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 		if (strlen(AntiKsCheck) && ((std::string)AntiKsCheck == "true" || (std::string)AntiKsCheck == "True"))
 		{
 			if (ITarget.GetType() == 1 && IPlayer.GetType() == 0) {
-				if (AntiKs.count(ITarget.GetMobIndex()) && ITarget.GetMobTanker()) {
+				if (!AntiKs.count(ITarget.GetMobIndex()) && ITarget.GetMobTanker()) {
 					IChar Tanker((void*)ITarget.GetMobTanker());
 					int KSTime = 0;
 
@@ -127,14 +133,13 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 						if (!AntiKSTime || KSTime >= GetTickCount()) {
 							IPlayer.SystemMessage("[Anti ks] Our server doesn't tolerate ksing.", TEXTCOLOR_RED);
 							return 0;
-						}
-						else if (AntiKSTime)
+						}else if(AntiKSTime)
 							ITarget.UpdateBuff(BuffNames::AntiKS, BuffNames::BuffTime, GetTickCount() + (AntiKSTime * 1000));
 					}
 				}
 			}
 		}
-
+		
 		if (IPlayer.GetType() == 0 && !IPlayer.GetAdmin()) {
 			int range = 0;
 
@@ -149,27 +154,27 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 				return 0;
 		}
 
+		if (IPlayer.GetType() == 0 && ITarget.GetType() == 1 && IPlayer.IsBuff(BuffNames::HonorPVE))
+		{
+			int PVEValue = IPlayer.GetBuffValue(BuffNames::HonorPVE);
+
+			CheckDamage += (CheckDamage * PVEValue) / 100;
+
+		}
+
+		if (IPlayer.GetType() == 0 && ITarget.GetType() == 1 && IPlayer.IsBuff(BuffNames::NewComer))
+			CheckDamage += (CheckDamage * NewcomerValue) / 100;
+
+		if (IPlayer.GetType() == 0 && ITarget.GetType() == 0 && IPlayer.IsBuff(BuffNames::HonorPVP))
+		{
+			int PVPValue = IPlayer.GetBuffValue(BuffNames::HonorPVP);
+
+			CheckDamage += (CheckDamage * PVPValue) / 100;
+
+		}
+
 		if (CheckDamage && IPlayer.GetType() == 0 && ITarget.GetType() == 0 && IPlayer.IsBuff(25))
 			IPlayer.CancelBuff(25);
-
-
-		if (CheckDamage && IPlayer.GetType() == 0 && ITarget.GetType() == 0)
-		{
-
-			for (std::map<int, PVEWeaponsS>::const_iterator it = PVEWeapon.begin(); it != PVEWeapon.end(); ++it) {
-				const PVEWeaponsS& weapon = it->second;
-				int PVEWep = CPlayer::FindItem(IPlayer.GetOffset(), weapon.index, 1);
-
-				if (CheckDamage && IPlayer.GetType() == 0 && ITarget.GetType() == 0 && PVEWep && CItem::IsState(PVEWep, 1))
-				{
-
-					IPlayer.SystemMessage("You are not allowed to attack players using a PVE Weapon.", TEXTCOLOR_RED);
-					return 0;
-
-				}
-
-			}
-		}
 
 		if (CheckDamage && IPlayer.GetMap() != LawlessMap && IPlayer.GetType() == 0 && ITarget.GetType() == 0 && AssassinParty)
 		{
@@ -185,7 +190,7 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 		{
 			if ((IPlayer.GetLevel() >= ITarget.GetLevel() + AssassinLimit) && CChar::IsGState((int)IPlayer.Offset, 256))
 			{
-				IPlayer.SystemMessage("You are not allowed to assasinate a player who is " + Int2String(AssassinLimit) + " levels lower than you.", TEXTCOLOR_RED);
+				IPlayer.SystemMessage("You are not allowed to assasinate a player who is " + Int2String(AssassinLimit) +" levels lower than you.", TEXTCOLOR_RED);
 				return 0;
 			}
 
@@ -274,9 +279,6 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 			IPlayer.Buff(BuffNames::PVPHit, 3, 0);
 		}
 
-		if (ITarget.GetType() == 0 && IPlayer.GetType() == 0 && ITarget.IsBuff(347) && ITarget.GetMap() != BanditsMap)
-			ITarget.DisableRiding();
-
 		if (SkillsEdit) {
 			int Check = IPlayer.GetDamage(SkillsEdit, ITarget.GetOffset());
 			if (Check)
@@ -286,15 +288,14 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 		if (IPlayer.GetType() == 1 && ITarget.GetType() == 0 && ITarget.IsBuff(52) && CheckDamage)
 			CheckDamage -= (CheckDamage * 10) / 100;
 
-		if (CheckDamage > 0 && IPlayer.GetType() == 0 && ITarget.GetType() == 1)
+		if (CheckDamage > 0 && IPlayer.GetType() == 1 && ITarget.GetType() == 0)
 		{
-			for (std::map<int, BuffMaker>::const_iterator it = BuffMakerCheck.begin(); it != BuffMakerCheck.end(); ++it) {
-				const BuffMaker& buff = it->second;
-				if (IPlayer.IsBuff(buff.BuffID) && buff.Damage == "true") {
-					CheckDamage -= (CheckDamage * buff.MD) / 100;
-				}
-			}
+			for (auto x = BuffMakerCheck.begin(); x != BuffMakerCheck.end(); x++) {
+				const BuffMaker& buff = x->second;
 
+				if (ITarget.IsBuff(buff.BuffID) && buff.Damage == "true" && buff.MD && buff.MD < 100)
+					CheckDamage -= ((CheckDamage * buff.MD) / 100);
+			}
 		}
 
 		int AddCheck = IPlayer.GetBuffValue(2125);
@@ -451,6 +452,13 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 				return 0;
 		}
 
+
+		if (CheckDamage && IPlayer.IsBuff(BuffNames::BattlefieldBoss) && ITarget.GetType() == 1)
+			CheckDamage += (CheckDamage * 10) / 100;
+
+		if (CheckDamage && IPlayer.IsBuff(BuffNames::CastleWarBuffW) && ITarget.GetType() == 1)
+			CheckDamage += (CheckDamage * 10) / 100;
+
 		if (ITarget.GetType() == 0 && CheckDamage && (CaptureFlag::Active || Battlefield::Active))
 		{
 			//if ((int)ITarget.GetOffset() == CaptureFlag::PlayerID && CaptureFlag::Active == true)
@@ -521,7 +529,7 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 					if (CheckDamage <= 0)
 						CheckDamage = nDmg;
 
-					if (CheckDamage)
+					if(CheckDamage)
 						CheckDamage += nDmg;
 				}
 			}
@@ -534,10 +542,10 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 			if (ITarget.IsBuff(284) && CheckDamage > 10 && ITarget.GetType() != 0)
 				CheckDamage /= 10;
 
-			if (ITarget.IsBuff(BuffNames::Blessing) && CheckDamage > 10 && ITarget.GetType() == 0)
-				CheckDamage *= (BlessPVP / 100);
-			if (ITarget.IsBuff(BuffNames::Blessing) && CheckDamage > 10 && ITarget.GetType() != 0)
-				CheckDamage = 0;
+			//if (ITarget.IsBuff(BuffNames::Blessing) && CheckDamage > 10 && ITarget.GetType() == 0)
+			//	CheckDamage *= (BlessPVP / 100);
+			//if (ITarget.IsBuff(BuffNames::Blessing) && CheckDamage > 10 && ITarget.GetType() != 0)
+			//	CheckDamage = 0;
 		}
 
 		if (ITarget.GetType() == 0)
@@ -673,7 +681,7 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 					{
 						IChar Object((void*)*(DWORD*)Around);
 
-						int nDmg = CheckDamage + (nSkillGrade * CTools::Rate(TCOMin, TCOMax));
+						int nDmg = (CheckDamage + (nSkillGrade * CTools::Rate(TCOMin, TCOMax))) / 2;
 						/*if (ITarget.GetLevel() >= 70)
 							nDmg += ((ITarget.GetLevel() - 69) * 250);	//Counter Offensive Damage Changed 250
 							*/
@@ -752,9 +760,6 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 		if (CaptureFlag::Active && CaptureFlag::CurrentCapturers &&  ITarget.GetType() == 1 && ITarget.GetMobIndex() == CPMob && IPlayer.GetType() == 0 && IPlayer.IsBuff(CaptureFlag::CurrentCapturers))
 			return 0;
 
-		if (ITarget.GetType() == 0 && CheckDamage > ITarget.GetCurHp() && ITarget.IsBuff(349) && ITarget.GetMap() != BanditsMap)
-			ITarget.DisableRiding();
-
 		if (IPlayer.IsValid() && IPlayer.GetType() == 1 && MonsterSkills.count(IPlayer.GetMobIndex()) && !IPlayer.GetBuffValue(4999)) {
 			std::vector<int> Skills = MonsterSkills.find(IPlayer.GetMobIndex())->second;
 			srand(time(0));
@@ -824,7 +829,7 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 					IPlayer.Buff(BuffNames::OrnamentDmg, bNecklace.Duration, bNecklace.Dmg);
 					IPlayer.Buff(BuffNames::CritChance, bNecklace.Duration, bNecklace.CritChance);
 					IPlayer.Buff(BuffNames::NecklaceCD, bNecklace.Cooldown + bNecklace.Duration, 0);
-					IPlayer.AddFxToBone(bNecklace.Effect, 0);
+					IPlayer.AddFxToBone(bNecklace.Effect,0);
 				}
 			}
 		}
@@ -855,6 +860,23 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 		}
 
 	}
+
+	if (CheckDamage && IPlayer.GetType() == 0 && ITarget.GetType() == 1 && ITarget.GetMobIndex() == LMSMobIndex && IPlayer.GetMap() == LMSMap)
+	{
+		if (IPlayer.IsInRange(ITarget, LMSRange))
+			IPlayer.IncreaseHp(750);
+
+		CheckDamage = 750;
+	}
+
+	//if (CheckDamage && IPlayer.GetType() == 0 && ITarget.GetType() == 1 && ITarget.GetMobIndex() == BFBoss && IPlayer.GetMap() == BFMap)
+	//	CheckDamage = 1;
+
+	if (CheckDamage && IPlayer.GetType() == 0 && IPlayer.IsBuff(1950))
+		return 0;
+
+
+
 
 	return CheckDamage;
 }

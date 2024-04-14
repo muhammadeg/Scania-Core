@@ -619,10 +619,12 @@ void __fastcall DefenseApplySpec(int Item, void *edx, int Player)
 			}
 		}
 	}
+
 }
 
 void __fastcall ArmorPutOn(int Item, void *edx, int Player)
 {
+
 	IItem IItem((void*)Item);
 	IChar IPlayer((void*)Player);
 
@@ -645,10 +647,12 @@ void __fastcall ArmorPutOn(int Item, void *edx, int Player)
 				IItem.SetLevelLimit(IItem.LevelLimit() + 5);
 		}
 	}
+
 }
 
 int __fastcall DefenseSetWearState(int Item, void *edx, int Player)
 {
+
 	IItem IItem((void*)Item);
 	IChar IPlayer((void*)Player);
 
@@ -673,11 +677,13 @@ int __fastcall DefenseSetWearState(int Item, void *edx, int Player)
 			return 0;
 		}
 	}
+
 	return CItemDefense::SetWearState(Item,Player);
 }
 
 void __fastcall DefensePutOff(void *Item, void *edx, int Player)
 {
+
 	IItem aItem(Item);
 	IChar IPlayer((void*)Player);
 	if (IPlayer.IsOnline())
@@ -1415,4 +1421,5 @@ void __fastcall DefensePutOff(void *Item, void *edx, int Player)
 			IPlayer.RemoveStr(1);
 		}
 	}
+
 }

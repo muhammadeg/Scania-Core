@@ -1,24 +1,26 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "dirent.h"
-int ScrollTimeCheck = 0;
+int maximum(int a, int b) {
+	return (a > b) ? a : b;
+}
+int ScrollTimeCheck = 0, isReloadingNPC = 0;
 char ConfigCheck[50], ConfigClient[50], ConfigEngine[50], ConfigEpk[50], AntiKsCheck[50], SinCheck[50], PlayerCheck[50], Active2ndPwd[50], ThiefActiveCheck[50],ShamanActiveCheck[50], ShopRewardCheck[50];
 char ServerName[50], AuthSvr[50], VoteAPIKey[50];
 char BossEXPName[50], BossEXPFinalMsg[BUFSIZ];
-int BanditsDeathCount = 0;
 char BFName[50], LMSName[50], DKName[50], PLName[50], TBName[50], SVName[50], DTName[50], CTFName[50], LotteryName[50], LottoName[50], F10Name[50], MautName[50], HuntingSysName[50], WCName[50];
-char BanditsName[50];
+char ShoutsWebhook[BUFSIZ], LevelWebhook[BUFSIZ], BofWebhook[BUFSIZ], NoticeWebHook[BUFSIZ], Avatar[BUFSIZ], StarterWebhook[BUFSIZ], RebornWebhook[BUFSIZ];
 int CurGroup=1, WorldCupTime=195;
-int BattlepassActive = 0, BattlepassQuest = 0, BattlepassIndex = 0;
 std::string ConfigCheckDB3 = "Hell", ConfigCheckDB4 = "Hell";
 char key1 = '255', key2 = '255', key3 = '255', key4 = '255', key5 = '255', key6 = '255', key7 = '255';
 int ConfigMix = 0, ConfigImp = 0, ConfigDBCheck = 0;
 int EggExpTime = 0, EggExpKill = 0, ConfigMaxDamage = 0, ConfigMaxMagAtk = 0, ConfigMaxPhyAtk = 0;
-int EmokQuestIndex = 0, EmokX = 0, EmokY = 0, EmokMap = 0, EmokCert = 0, EmokTime = 0;
+int EmokQuestIndex = 0, EmokX = 0, EmokY = 0, EmokMap = 0, EmokCert = 0;
 int MysteryResetItem = 0, MysteryQuest = 0, MysteryEnable = 0;
 int MD5Check = 0, HellCooldown=0, testcmd=0,tmcd=0;
-int Shouts = 0;
-int iceStoneMax = 0, iceStoneValue = 0, iceStoneDebuff = 0;
+int Shouts = 0, DefaultUnblob = 0, DefaultSkinView = 0;
+int BattlepassActive = 0, BattlepassQuest = 0, BattlepassIndex = 0;
+
 int IPEnable = 0;
 int SkillTestAction = 0, SkillR1 = 0, SkillR2 = 0, SkillTimer = 0, SkillIndex = 0;
 int testK = 0;
@@ -29,10 +31,13 @@ volatile LONG LastIP = 0;
 int MautMap = 0, MautQuest = 0, MautQuestEnd = 0, MautRIndex = 0, MautRPrefix = 0, MautRAmount = 0, MautChance = 0, MautX = 0, MautY = 0, MautSpawnX = 0, MautSpawnY = 0, MautLevel = 0;
 int BossEXPChance = 0;
 int maxxStatPoints = 254;
-
+long long int StoreSoldCheck = 0, StoreCheckQuest = 0;
+int NewcomerValue = 0, NewcomerLevel = 0, NewcomerActive = 0, NewcomerSys = 0;
 int Snow = 0;
 int tradePVP = 0;
+int RaidRoundCounter = 0;
 double DelaySpam = 0;
+int FireStormVThief = 0;
 int PacketProtection = 0, AFKRange = 0;
 unsigned __int64 LotteryCheck = 0;
 int itemin=0,itemam=0,itempr=0;
@@ -87,7 +92,7 @@ int TStunReduce = 0, TStunMul = 0, TStunMin = 0, TStunMax = 0;
 int BFMap = 0, BFQuest = 0, ScenarioMap = 0, ScenarioQuest = 0, DonationCoin = 0, F10Quest = 0, BFTime = 0, ScenarioTime = 0, F10Level = 0;
 int GVETime = 0;
 int DTQuest = 0, DTLimit = 0, ConfigPVPMaxDmg = 100000;
-int BFRange = 0;
+int BFRange = 0, BFBoss = 0, BFBossX = 0, BFBossY = 0, BFBossTime = 0, BFBossReward = 0, BFBossBuffX1 = 0, BFBossBuffY1 = 0, BFBossBuffX2 = 0, BFBossBuffY2 = 0;
 //REWARDS
 int WinnerBF = 0, LoserBF = 0, DrawBF = 0;
 int WinnerDK = 0, LoserDK = 0, DrawDK = 0;
@@ -99,8 +104,6 @@ int WinnerLMS = 0, LoserLMS = 0;
 int WinnerHell = 0;
 int VoteReward = 0;
 int BossHuntReward = 0;
-int ScaleBuff = 0;
-
 int ExtensionTime = 0;
 int ScenarioQuestR = 0, ScenarioQuestB = 0;
 int COKQuest=0,COKLimit=0,COKR=0,COKA=0;
@@ -125,7 +128,7 @@ int RaidReward3=0,RaidAmount3=0,RaidReward5=0,RaidAmount5=0,RaidReward7=0,RaidAm
 char RaidTime[50] = "", CaptureTime[50] = "";
 int RaidItem=0,RaidItemAmount=0,RaidLevel=0;
 int RaidMini1=0,RaidMiniAmount1=0,RaidMini2=0,RaidMiniAmount2=0,RaidMini3=0,RaidMiniAmount3=0,RaidMini4=0,RaidMiniAmount4=0;
-int packetDebugger = 0, chatDebug = 0, skillDebug = 0, commandDebug = 0, questDebug = 0, loginDebug = 0;
+int packetDebugger = 0, chatDebug = 0, skillDebug = 0, commandDebug = 0, questDebug = 0, loginDebug = 0, rangeDebug = 0;
 int HWIDBlock = 0, EXPLimit=0, MaxEXP=0;
 int GOBOTP = 0, SOFSMIN=0, SOFSMAX=0, LMSReward = 0, LMSAmount = 0, BFReward=0, BFAmount=0, GVGReward=0,GVGAmount=0,PReward=0,PAmount=0;
 int DReward=0,DAmount=0, FishScale=0;
@@ -134,26 +137,30 @@ int betAct = 0,betGeon = 0,betDona = 0, betCoin = 0, betSuicide = 0, betSurrende
 int LotAct = 0,LotQuest = 0, LotRQuest = 0, LotIndex = 0, LotAmount = 0, HRQuest = 0;
 int LotLevelMin = 0, LotLevelMax = 0;
 int levellimit=0;
+int PVPArenaTiming = 0;
 int LottoAct = 0, LottoQuest = 0, LottoIndex = 0, LottoAmount = 0, LottoReward = 0, LottoRAmount = 0, LottoLevelMin = 0, LottoLevelMax = 0;
 int BossIndex = 0,BossRewardIndex=0,BossRewardAmount=0;
 int BFRewardPts=0,BFHonorPts=0,ScenarioRewardPts=0,ScenarioHonorPts=0,ProtectHonorPts=0,ProtectRewardPts=0,DuelRewardPts=0,DuelHonorPts=0,CaptureHonorPts=0,CaptureRewardPts=0,LMSRewardPts=0,LMSHonorPts=0;
 int KVK = 0, KVA = 0, KVM = 0, KVT = 0, KVS = 0, AVK = 0, AVA = 0, AVM = 0, AVT = 0, AVS = 0, MVK = 0, MVA = 0, MVM = 0, MVT = 0, MVS = 0, TVK = 0, TVA = 0, TVM = 0, TVT = 0, TVS = 0, SVK = 0, SVA = 0, SVM = 0, SVT = 0, SVS = 0;
 int FatalDamagePVP = 0, FatalDamagePVE = 0;
-char boxnotice[BUFSIZ], moveto[BUFSIZ], portuser[BUFSIZ], bet[BUFSIZ], ignoredPlayer[BUFSIZ], unignoredPlayer[BUFSIZ], block[BUFSIZ], unblock[BUFSIZ], hardblock[BUFSIZ], newnotice[BUFSIZ], donatename[BUFSIZ], duelname[BUFSIZ], mutename[BUFSIZ],jailname[BUFSIZ], ipname[BUFSIZ], nameugog[BUFSIZ], buffnameplayer[BUFSIZ], unjailname[BUFSIZ], unmutename[BUFSIZ], guildinvitename[BUFSIZ], honorupName[BUFSIZ], rewardupName[BUFSIZ];
+char boxnotice[BUFSIZ], moveto[BUFSIZ], portuser[BUFSIZ], bet[BUFSIZ], ignoredPlayer[BUFSIZ], unignoredPlayer[BUFSIZ], block[BUFSIZ], unblock[BUFSIZ], hardblock[BUFSIZ], newnotice[BUFSIZ], donatename[BUFSIZ], duelname[BUFSIZ], mutename[BUFSIZ],jailname[BUFSIZ], ipname[BUFSIZ], nameugog[BUFSIZ], buffnameplayer[BUFSIZ], unjailname[BUFSIZ], unmutename[BUFSIZ], guildinvitename[BUFSIZ], honorupName[BUFSIZ], rewardupName[BUFSIZ], bypassName[BUFSIZ];
+int blocktime = 0;
 int newnoticetype = 0, senditemindx = 0, buffid = 0, bufftime = 0, buffvalue = 0, geonamount = 0, speedvalue = 0, maskups = 0, killmobs = 0, summonindex = 1, summonamount = 1, donateamount = 1, senditemprefix = 0, cwtotaltime = 0, mutetime = 0;
 const char *MyReLisansCheckChar = "nothing"; std::string MyReLisansCheckStr = "nothing";
 int ShopRewardTime = 0;
 int ShopFortCheck = 0;
 int shopPlayers = 0;
-char ShopRewardIndex[512], ShopRewardAmount[512];
+char ShopRewardIndex[512], ShopRewardAmount[512], ShopRewardLvl[512];
 char ExpEventStart[50] = "Hell", ExpEventEnd[50] = "Hell", ActiveExpEvent[50] = "Hell";
 char Honor1[50] = "Empty", Honor2[50] = "Empty", Honor3[50] = "Empty", Honor4[50] = "Empty", Honor5[50] = "Empty", Honor6[50] = "Empty", Honor7[50] = "Empty", Honor8[50] = "Empty", Honor9[50] = "Empty", Honor10[50] = "Empty";
-char HistoryENmsg[512] = "Empty", EventsENmsg[512] = "Empty", HistoryPLmsg[512] = "Empty", EventsPLmsg[512] = "Empty";
-int Honor1Sys = 0, Honor2Sys = 0, Honor3Sys = 0, Honor4Sys = 0, Honor5Sys = 0, Honor6Sys = 0, Honor7Sys = 0, Honor8Sys = 0, Honor9Sys = 0, Honor10Sys = 0, Honor1Stats = 0, Honor2Stats = 0, Honor3Stats = 0, Honor4Stats = 0, Honor5Stats = 0, Honor6Stats = 0, Honor7Stats = 0, Honor8Stats = 0, Honor9Stats = 0, Honor10Stats = 0, Honor1Atk = 0, Honor2Atk = 0, Honor3Atk = 0, Honor4Atk = 0, Honor5Atk = 0, Honor6Atk = 0, Honor7Atk = 0, Honor8Atk = 0, Honor9Atk = 0, Honor10Atk = 0;
-int BanditsEnable = 0, BanditsMap = 0, BanditsTX = 0, BanditsTY = 0, BanditsBossSec = 0, BanditsBoss2Sec = 0, BanditsMobSec = 0, BanditsMobIndex = 0, BanditsBossIndex = 0, BanditsMobAmount = 0, BanditsQuest = 0, BanditsLevel = 0, BanditsTime = 0, BanditsCheck1 = 0, BanditsCheck2 = 0, BanditsCheck3 = 0, BanditsCheck4 = 0, BanditsCheck5 = 0, BanditsCheck6 = 0, Check1X = 0, Check1Y = 0, Check2X = 0, Check2Y = 0, Check3X = 0, Check3Y = 0, Check4X = 0, Check4Y = 0, Check5X = 0, Check5Y = 0, Check6X = 0, Check6Y = 0, BanditsReviveCD = 0, BanditsIndex = 0, BanditsAmount = 0, BanditsMaxDeath = 0, BanditsMaxDeathItem = 0, BanditsBossX = 0, BanditsBossY = 0;
+int Honor1Sys = 0, Honor2Sys = 0, Honor3Sys = 0, Honor4Sys = 0, Honor5Sys = 0, Honor6Sys = 0, Honor7Sys = 0, Honor8Sys = 0, Honor9Sys = 0, Honor10Sys = 0, Honor1Stats = 0, Honor2Stats = 0, Honor3Stats = 0, Honor4Stats = 0, Honor5Stats = 0, Honor6Stats = 0, Honor7Stats = 0, Honor8Stats = 0, Honor9Stats = 0, Honor10Stats = 0, Honor1PVE = 0, Honor2PVE = 0, Honor3PVE = 0, Honor4PVE = 0, Honor5PVE = 0, Honor6PVE = 0, Honor7PVE = 0, Honor8PVE = 0, Honor9PVE = 0, Honor10PVE = 0;
+int Honor1PVP = 0, Honor2PVP = 0, Honor3PVP = 0, Honor4PVP = 0, Honor5PVP = 0, Honor6PVP = 0, Honor7PVP = 0, Honor8PVP = 0, Honor9PVP = 0, Honor10PVP = 0;
+int Honor1Fatal = 0, Honor2Fatal = 0, Honor3Fatal = 0, Honor4Fatal = 0, Honor5Fatal = 0, Honor6Fatal = 0, Honor7Fatal = 0, Honor8Fatal = 0, Honor9Fatal = 0, Honor10Fatal = 0;
+int Honor1EB = 0, Honor2EB = 0, Honor3EB = 0, Honor4EB = 0, Honor5EB = 0, Honor6EB = 0, Honor7EB = 0, Honor8EB = 0, Honor9EB = 0, Honor10EB = 0;
+int DutyTotalAmount = 0;
 int HonorTimer = 0;
-int QuestHistoryEN = 0, QuestEventsEN = 0, QuestHistoryPL = 0, QuestEventsPL = 0;
 int LMSLimit = 0, LMSQuest = 0, LMSMap = 0, LMSX = 0, LMSY = 0;
+int LMSMobIndex = 0, LMSMobX = 0, LMSMobY = 0, LMSRange = 0;
 int PLQuest = 0, PLMap = 0, PLRNPC = 0, PLBNPC = 0;
 int NWOEMul = 0, NWOEMin = 0, NWOEMax = 0, NWOEReduce = 0;
 int NOHSMul = 0, NOHSMin = 0, NOHSMax = 0, NOHSReduce = 0;
@@ -175,17 +182,19 @@ int Insanity = 0, Thunder = 0, Violent = 0, Storm = 0, Ancient = 0, Perfo = 0;
 int ReplyWC = 0, WCWinQuest=0;
 int maxAllowedSpeed = 0;
 int off = 0,pla=0;
+int FOESkillsActive = 0;
 int Tries = 0;
 int Restri = 0, TrackerActive = 0;
 int BFTeleRedX = 0, BFTeleRedY = 0, BFTeleRedZ = 0, BFTeleBlueX = 0, BFTeleBlueY = 0, BFTeleBlueZ = 0, BFRedSafeX1 = 0, BFRedSafeX2 = 0, BFRedSafeY1 = 0, BFRedSafeY2 = 0, BFBlueSafeX1 = 0, BFBlueSafeX2 = 0, BFBlueSafeY1 = 0, BFBlueSafeY2 = 0;
 int CPTeleRedX = 0, CPTeleRedY = 0, CPTeleBlueX = 0, CPTeleBlueY = 0, CPRedSafeX1 = 0, CPRedSafeX2 = 0, CPBlueSafeX1 = 0, CPBlueSafeX2 = 0;
 int RedStoneX = 0, RedStoneY = 0, BlueStoneX = 0, BlueStoneY = 0;
-
+int PVPMobIndex = 0, PartyTime = 0, PartyMobScore = 0, PartyReviveCD = 0;
 RECT rectBlueSafe = RECT(), rectRedSafe = RECT();
 int BFTeleRedXG = 0, BFTeleRedYG = 0, BFTeleRedZG = 0, BFTeleBlueXG = 0, BFTeleBlueYG = 0, BFTeleBlueZG = 0, BFRedSafeX1G = 0, BFRedSafeX2G = 0, BFRedSafeY1G = 0, BFRedSafeY2G = 0, BFBlueSafeX1G = 0, BFBlueSafeX2G = 0, BFBlueSafeY1G = 0, BFBlueSafeY2G = 0;
 int CPTeleRedXG = 0, CPTeleRedYG = 0, CPTeleBlueXG = 0, CPTeleBlueYG = 0, CPRedSafeX1G = 0, CPRedSafeX2G = 0, CPBlueSafeX1G = 0, CPBlueSafeX2G = 0;
 int RedStoneXG = 0, RedStoneYG = 0, BlueStoneXG = 0, BlueStoneYG = 0;
 RECT rectBlueSafeG = RECT(), rectRedSafeG = RECT();
+RECT BFBossBuff = RECT();
 
 int CPSummonX = 0, CPSummonY = 0, RedCPSummonX = 0, RedCPSummonY = 0, BlueCPSummonX = 0, BlueCPSummonY = 0;
 int CPQuestR = 0, CPQuestB = 0;
@@ -217,7 +226,8 @@ int GuildEXPGrade4 = 0;
 int GuildEXPGrade3 = 0;
 int GuildEXPGrade2 = 0;
 int GuildColors = 0, LeaderColor = 0, SubLeaderColor = 0, ChiefColor = 0;
-
+int iceStoneMax = 0, iceStoneValue = 0;
+char IceStoneEffect[BUFSIZ] = "", LightningStoneEffect[BUFSIZ] = "";
 int AuthTimer = 0;
 int MemberFull1 = 0;
 int MemberFull2 = 0;
@@ -227,7 +237,9 @@ int TempMemberFull = 0;
 int AllyMemberFull = 0;
 int MaxTimeAlly = 0;
 int ChannelActivated = 0;
-int EmokLvl = 0, BattlefieldLevel = 0;
+int EmokLvl = 0, BattlefieldLevel = 0, BattlefieldAFK = 0, BFAFKActive = 0, BFHWID = 0, LMSHWID = 0, PVPHWID = 0, BattlefieldBuffs = 0;
+int BattlefieldSpeed = 0;
+
 int MLMMax = 0;
 int MLMStudentLevel = 0;
 int MLMTeacherLevel = 0;
@@ -256,10 +268,11 @@ int StBroken = 0;
 int STBuffEnabled = 0;
 int ShopBound = 0;
 int TastyLvl = 0;
+int ScrollOfInv = 0, ScrollOfMovingPL = 0;
 int EggPercentage, EggSBName = 0, EggSBKey = 0;
 int EggBuff = 0, EggValue = 0;
 int DamagePercentage, DamageSBName = 0, DamageSBKey = 0;
-int thirdCheck = 0, thirdCheck2 = 0 , fuseNotice = 0, F10Limit = 0, MautLimit = 0;
+int thirdCheck = 0, thirdCheck2 = 0 , fuseNotice = 0, F10Limit = 0, MautLimit = 0, InstanceLimit = 0;
 int BossEXPLimit = 0;
 int JailMap = 0;
 int CwRewardGuild = 0, CwRewardAlly = 0, CwRewardOther = 0;
@@ -282,13 +295,14 @@ int AETime = 0;
 int OBPVPEnable = 0, OBActive = 0;
 int LawlessMap = 0;
 int LawlessMKill = 0, LawlessPKill = 0;
+int ARRange = 0, MRange = 0, KRange = 0, TRange = 0, SRange = 0, RangeKick = 0;
 int CWRLimit = 0;
 bool ShamanDisabled = false, ThiefDisabled = false;
 int LawlessSpawnX = 0, LawlessSpawnY = 0, LawlessReviveCD = 0;
 int TBPlayersMin = 0, TBPlayersMax = 0, TBMin = 0, TBMax = 0;
 int TBBackX = 0, TBBackY = 0, TBBackZ = 0, EmblemSet = 0, EmblemPull = 0, EmblemExpire = 0;
 int TBReward0 = 0, TBReward1 = 0, TBReward2 = 0, TBReward3 = 0;
-int TestVV = 0;
+int TestVV = 0, AutoMissionQuest = 0;
 int TBMap = 0, TBRedX = 0, TBRedY = 0, TBRedZ = 0, TBBlueX = 0, TBBlueY = 0, TBBlueZ = 0, TBYellowX = 0, TBYellowY = 0, TBYellowZ = 0, TBBuffEach = 0, TBTime = 0, TBCooldown = 0;
 int SVMap = 0, SVReplyQuest = 0, SVRegisterDefault = 0, SVTime = 0, SVWinnerReward = 0, SVLoserReward = 0, SVDrawReward = 0, SVPtMob = 0, SVPtPlayer = 0;
 int RupPVPAoe = 0, RupRange = 0, RupAOE = 0;
@@ -300,7 +314,7 @@ int SlytherinDieX = 0, SlytherinDieY = 0, SlytherinDieZ = 0, GryffindorDieX = 0,
 int DQuestGap = 0;
 int ManaCostActive = 0;
 int TransmigrationLimit = 0;
-int SEMapX = 0, SEMapY = 0, SEMapX2 = 0, SEMapY2 = 0, SERewardWinner = 0, SERewardLoser = 0, SEPtsPerMob = 0, SEPtsPerPlayer = 0, SEMinimumPoints = 0, SEDefaultTime = 0, SESpawnCycle = 0, SEImmunityTime = 0;
+int SEMapX = 0, SEMapY = 0, SERewardWinner = 0, SERewardLoser = 0, SEPtsPerMob = 0, SEPtsPerPlayer = 0, SEMinimumPoints = 0, SEDefaultTime = 0, SESpawnCycle = 0, SEImmunityTime = 0;
 int BoundAllow = 0;
 int ScrollEM = 0;
 int RebornQuest = 0, RebornActive = 0, RebornGZ = 0;
@@ -310,8 +324,8 @@ int PPSys = 0, PPSysB = 0, PPEXP = 0, CJBEXP = 0, CJBSYS = 0, CJBSYSB = 0, CJBEX
 int itemIndex = 0;
 int EVGoodReward = 0, EVGoodLoser = 0, EVGoodDraw = 0;
 int PetBound = 0, TimedItemBound = 0;
-int ARRange = 0, MRange = 0, KRange = 0, TRange = 0, SRange = 0, RangeKick = 0;
 int BossEXPQuest = 0, BossEXPRange = 0, BossEXPTime = 0, BossEXPPrepare = 0, BossEXPMap = 0, BossEXPMob = 0, BossEXPMX = 0, BossEXPMY = 0, BossEXPPX = 0, BossEXPPY = 0;
+int t1 = 0, t2 = 0, t3 = 0, t4 = 0, t5 = 0, t6 = 0, t7 = 0, t8 = 0, t9 = 0, t10 = 0, t11 = 0, t12 = 0, t13 = 0, t14 = 0, t15 = 0, t16 = 0, t17 = 0, t18 = 0, t19 = 0, t20 = 0, t21 = 0, t22 = 0, t23 = 0;
 bool sortByChance(const ChanceItem &a, const ChanceItem &b)
 {
 	return a.Chance < b.Chance;
@@ -359,6 +373,17 @@ int GetTBMap() {
 	return TBMap;
 }
 
+void logLastExecutedCode(const std::string& message) {
+	std::string Dato = "./Debugger/CrashCheck/Debugger.txt";
+
+	std::ofstream DGLOG(Dato, std::ofstream::app);
+
+	if (DGLOG.is_open()) {
+		DGLOG << Time::GetDay() << "_" << Time::GetMonth() << "_" << Time::GetTime() << "(Message: " << message << ")" << endl;
+		DGLOG.flush();  // Flush the stream
+	}
+}
+
 void ReadConfig(bool command)
 {
 	if (command) {
@@ -377,6 +402,28 @@ void ReadConfig(bool command)
 	PetBound = GetPrivateProfileIntA("Bound", "Active", 1, "./Configs/Pet.txt");
 	TimedItemBound = GetPrivateProfileIntA("Bound", "Active", 1, "./Configs/TimedItems.txt");
 
+	DefaultUnblob = GetPrivateProfileIntA("DefaultSet", "Unblob", 1, "./Configs/Protection.txt");
+	DefaultSkinView = GetPrivateProfileIntA("DefaultSet", "SkinView", 1, "./Configs/Protection.txt");
+
+	BattlepassActive = GetPrivateProfileIntA("Battlepass", "Active", 0, "./Configs/Battlepass.txt");
+	BattlepassQuest = GetPrivateProfileIntA("Battlepass", "Quest", 0, "./Configs/Battlepass.txt");
+	BattlepassIndex = GetPrivateProfileIntA("Battlepass", "PremiumToken", 0, "./Configs/Battlepass.txt");
+
+	StoreCheckQuest = GetPrivateProfileIntA("Store", "ReplyQuest", 0, "./Configs/Protection.txt");
+	NewcomerValue = GetPrivateProfileIntA("Newcomer", "PVE", 15, "./Configs/Protection.txt");
+	NewcomerLevel = GetPrivateProfileIntA("Newcomer", "MaxLvl", 50, "./Configs/Protection.txt");
+	NewcomerActive = GetPrivateProfileIntA("Newcomer", "Active", 1, "./Configs/Protection.txt");
+	NewcomerSys = GetPrivateProfileIntA("Newcomer", "Syskey", 0, "./Configs/Protection.txt");
+	NoticesEnabled = GetPrivateProfileIntA("CustomNotices", "Enable", 0, "./Configs/Protection.txt");
+
+	ARRange = GetPrivateProfileIntA("RangeProtection", "Archer", 9, "./Configs/Range.txt");
+	MRange = GetPrivateProfileIntA("RangeProtection", "Mage", 8, "./Configs/Range.txt");
+	KRange = GetPrivateProfileIntA("RangeProtection", "Knight", 3, "./Configs/Range.txt");
+	TRange = GetPrivateProfileIntA("RangeProtection", "Thief", 4, "./Configs/Range.txt");
+	SRange = GetPrivateProfileIntA("RangeProtection", "Shaman", 8, "./Configs/Range.txt");
+	RangeKick = GetPrivateProfileIntA("PlayerKick", "Enable", 0, "./Configs/Range.txt");
+
+
 	RebornActive = GetPrivateProfileIntA("Reborn", "Active", 0, "./Configs/Reborn.txt");
 	RebornQuest = GetPrivateProfileIntA("Quest", "Index", 0, "./Configs/Reborn.txt");
 	RebornGZ = GetPrivateProfileIntA("GzMsg", "MinReborn", 1, "./Configs/Reborn.txt");
@@ -389,15 +436,18 @@ void ReadConfig(bool command)
 	CJBEXP = GetPrivateProfileIntA("CJBParty", "EXP", 20, "./Configs/Protection.txt");
 	CJBSYS = GetPrivateProfileIntA("CJBParty", "SysKey", 0, "./Configs/Protection.txt");
 	CJBSYSB = GetPrivateProfileIntA("CJBParty", "BuffKey", 0, "./Configs/Protection.txt");
-	CJBEXPActive = GetPrivateProfileIntA("CJBParty", "Active", 1, "./Configs/Protection.txt");
+	CJBEXPActive = GetPrivateProfileIntA("CJBParty", "Active", 0, "./Configs/Protection.txt");
 	CJBRange = GetPrivateProfileIntA("CJBParty", "Range", 30, "./Configs/Protection.txt");
 
 	ScrollEM = GetPrivateProfileIntA("SavingScroll", "Active", 1, "./Configs/EventMaps.txt");
 
+	PVPMobIndex = GetPrivateProfileIntA("PartyVsParty", "FlagIndex", 3377, "./Systems/PartyVsParty.txt");
+	PartyTime = GetPrivateProfileIntA("PartyVsParty", "FlagTime", 60, "./Systems/PartyVsParty.txt");
+	PartyMobScore = GetPrivateProfileIntA("PartyVsParty", "Score", 10, "./Systems/PartyVsParty.txt");
+	PartyReviveCD = GetPrivateProfileIntA("PartyVsParty", "ReviveCD", 10, "./Systems/PartyVsParty.txt");
+
 	SEMapX = GetPrivateProfileIntA("Map", "X", 0, "./Systems/SinEvent.txt");
 	SEMapY = GetPrivateProfileIntA("Map", "Y", 0, "./Systems/SinEvent.txt");
-	SEMapX2 = GetPrivateProfileIntA("Map", "X2", 0, "./Systems/SinEvent.txt");
-	SEMapY2 = GetPrivateProfileIntA("Map", "Y2", 0, "./Systems/SinEvent.txt");
 	SERewardLoser = GetPrivateProfileIntA("Reward", "ParticipantRewardID", 0, "./Systems/SinEvent.txt");
 	SERewardWinner = GetPrivateProfileIntA("Reward", "WinnerRewardID", 0, "./Systems/SinEvent.txt");
 	SEMinimumPoints = GetPrivateProfileIntA("Limit", "MinimumPoints", 0, "./Systems/SinEvent.txt");
@@ -407,6 +457,30 @@ void ReadConfig(bool command)
 	SEPtsPerMob = GetPrivateProfileIntA("Points", "PerMob", 1, "./Systems/SinEvent.txt");
 	SEPtsPerPlayer = GetPrivateProfileIntA("Points", "PerPlayer", 2, "./Systems/SinEvent.txt");
 	
+	t1 = GetPrivateProfileIntA("Test", "a1", 120, "./Configs/Test.txt");
+	t2 = GetPrivateProfileIntA("Test", "a2", 0, "./Configs/Test.txt");
+	t3 = GetPrivateProfileIntA("Test", "a3", 0, "./Configs/Test.txt");
+	t4 = GetPrivateProfileIntA("Test", "a4", 0, "./Configs/Test.txt");
+	t5 = GetPrivateProfileIntA("Test", "a5", 0, "./Configs/Test.txt");
+	t6 = GetPrivateProfileIntA("Test", "a6", 0, "./Configs/Test.txt");
+	t7 = GetPrivateProfileIntA("Test", "a7", 0, "./Configs/Test.txt");
+	t8 = GetPrivateProfileIntA("Test", "a8", 0, "./Configs/Test.txt");
+	t9 = GetPrivateProfileIntA("Test", "a9", 0, "./Configs/Test.txt");
+	t10 = GetPrivateProfileIntA("Test", "a10", 0, "./Configs/Test.txt");
+	t11 = GetPrivateProfileIntA("Test", "a11", 0, "./Configs/Test.txt");
+	t12 = GetPrivateProfileIntA("Test", "a12", 0, "./Configs/Test.txt");
+	t13 = GetPrivateProfileIntA("Test", "a13", 0, "./Configs/Test.txt");
+	t14 = GetPrivateProfileIntA("Test", "a14", 0, "./Configs/Test.txt");
+	t15 = GetPrivateProfileIntA("Test", "a15", 0, "./Configs/Test.txt");
+	t16 = GetPrivateProfileIntA("Test", "a16", 0, "./Configs/Test.txt");
+	t17 = GetPrivateProfileIntA("Test", "a17", 0, "./Configs/Test.txt");
+	t18 = GetPrivateProfileIntA("Test", "a18", 0, "./Configs/Test.txt");
+	t19 = GetPrivateProfileIntA("Test", "a19", 0, "./Configs/Test.txt");
+	t20 = GetPrivateProfileIntA("Test", "a20", 0, "./Configs/Test.txt");
+	t21 = GetPrivateProfileIntA("Test", "a21", 0, "./Configs/Test.txt");
+	t22 = GetPrivateProfileIntA("Test", "a22", 0, "./Configs/Test.txt");
+	t23 = GetPrivateProfileIntA("Test", "a23", 0, "./Configs/Test.txt");
+
 	BoundAllow = GetPrivateProfileIntA("Storage", "Allow", 0, "./Configs/BoundItems.txt");
 
 
@@ -442,16 +516,15 @@ void ReadConfig(bool command)
 	GetPrivateProfileStringA("SystemNames", "ProtectingLeader", "Protecting Leader", PLName, 50, "./Systems/Names.txt");
 	GetPrivateProfileStringA("SystemNames", "SufferingValley", "Suffering Valley", SVName, 50, "./Systems/Names.txt");
 	GetPrivateProfileStringA("SystemNames", "Hunting", "Hunting", HuntingSysName, 50, "./Systems/Names.txt");
-	GetPrivateProfileStringA("SystemNames", "Bandits", "Bandits", BanditsName, 50, "./Systems/Names.txt");
 
+	GetPrivateProfileStringA("Webhook", "Shouts", "https://discord.com/api/webhooks/1193728182982025286/y0YEGdScsfyJKEWHdTWWcEO1UU9xxBYr9fNoVHOtbdUYsl00IWxtasBvDphjqY7zKvtq", ShoutsWebhook, 512, "./Configs/Discord.txt");
+	GetPrivateProfileStringA("Webhook", "Level", "https://discord.com/api/webhooks/1193728182982025286/y0YEGdScsfyJKEWHdTWWcEO1UU9xxBYr9fNoVHOtbdUYsl00IWxtasBvDphjqY7zKvtq", LevelWebhook, 512, "./Configs/Discord.txt");
+	GetPrivateProfileStringA("Webhook", "Notice", "https://discord.com/api/webhooks/1193728182982025286/y0YEGdScsfyJKEWHdTWWcEO1UU9xxBYr9fNoVHOtbdUYsl00IWxtasBvDphjqY7zKvtq", NoticeWebHook, 512, "./Configs/Discord.txt");
+	GetPrivateProfileStringA("Webhook", "Enchant", "https://discord.com/api/webhooks/1193728182982025286/y0YEGdScsfyJKEWHdTWWcEO1UU9xxBYr9fNoVHOtbdUYsl00IWxtasBvDphjqY7zKvtq", BofWebhook, 512, "./Configs/Discord.txt");
+	GetPrivateProfileStringA("Webhook", "Starter", "https://discord.com/api/webhooks/1193728182982025286/y0YEGdScsfyJKEWHdTWWcEO1UU9xxBYr9fNoVHOtbdUYsl00IWxtasBvDphjqY7zKvtq", StarterWebhook, 512, "./Configs/Discord.txt");
+	GetPrivateProfileStringA("Webhook", "Reborn", "https://discord.com/api/webhooks/1193728182982025286/y0YEGdScsfyJKEWHdTWWcEO1UU9xxBYr9fNoVHOtbdUYsl00IWxtasBvDphjqY7zKvtq", RebornWebhook, 512, "./Configs/Discord.txt");
 
-	ARRange = GetPrivateProfileIntA("RangeProtection", "Archer", 9, "./Configs/Range.txt");
-	MRange = GetPrivateProfileIntA("RangeProtection", "Mage", 8, "./Configs/Range.txt");
-	KRange = GetPrivateProfileIntA("RangeProtection", "Knight", 3, "./Configs/Range.txt");
-	TRange = GetPrivateProfileIntA("RangeProtection", "Thief", 4, "./Configs/Range.txt");
-	SRange = GetPrivateProfileIntA("RangeProtection", "Shaman", 8, "./Configs/Range.txt");
-	RangeKick = GetPrivateProfileIntA("PlayerKick", "Enable", 0, "./Configs/Range.txt");
-
+	GetPrivateProfileStringA("Avatar", "URL", "https://cdn.discordapp.com/attachments/1048039559360958465/1197387263571673119/Kal_Online_Logo.png?ex=65bb14ca&is=65a89fca&hm=4701133d38b57a71fec995b1e36d72f56829d71be89b1cd7ca878f726736d9dd&", Avatar, 512, "./Configs/Discord.txt");
 
 	TestVV = GetPrivateProfileIntA("Test", "Value", 0, "./Configs/Test.txt");
 	BSOFSky = GetPrivateProfileIntA("BlessingSonOfTheSky", "ItemIndex", 0, "./Configs/Protection.txt");
@@ -506,6 +579,8 @@ void ReadConfig(bool command)
 	TBTime = GetPrivateProfileIntA("Time", "Duration", 1800, "./Systems/TriangularBattle.txt");
 	TBCooldown = GetPrivateProfileIntA("Time", "CooldownToStart", 240, "./Systems/TriangularBattle.txt");
 
+	AutoMissionQuest = GetPrivateProfileIntA("Quest", "FirstMission", 0, "./Configs/Missions.txt");
+
 	LawlessReviveCD = GetPrivateProfileIntA("Revive", "Cooldown", 30, "./Systems/Lawless.txt");
 	LawlessSpawnX = GetPrivateProfileIntA("DeathSpawn", "X", 257514, "./Systems/Lawless.txt");
 	LawlessSpawnY = GetPrivateProfileIntA("DeathSpawn", "Y", 259273, "./Systems/Lawless.txt");
@@ -535,10 +610,6 @@ void ReadConfig(bool command)
 	FatalDamagePVE = GetPrivateProfileIntA("FatalDamage", "PVERate", 100, "./Configs/FatalDamage.txt");
 	FatalDamagePVP = GetPrivateProfileIntA("FatalDamage", "PVPRate", 100, "./Configs/FatalDamage.txt");
 
-	BattlepassActive = GetPrivateProfileIntA("Battlepass", "Active", 0, "./Configs/Battlepass.txt");
-	BattlepassQuest = GetPrivateProfileIntA("Battlepass", "Quest", 0, "./Configs/Battlepass.txt");
-	BattlepassIndex = GetPrivateProfileIntA("Battlepass", "PremiumToken", 0, "./Configs/Battlepass.txt");
-
 	JailMap = GetPrivateProfileIntA("Map", "Index", 7, "./Configs/Jail.txt");
 	GoldenCoinA = GetPrivateProfileIntA("GoldenCoin", "Amount", 1, "./Configs/Protection.txt");
 	GoldenCoinI = GetPrivateProfileIntA("GoldenCoin", "Index", 649, "./Configs/Protection.txt");
@@ -552,7 +623,9 @@ void ReadConfig(bool command)
 	thirdCheck2 = GetPrivateProfileIntA("ThirdJobUpgrade", "Level2", 71, "./Configs/Protection.txt");
 	fuseNotice = GetPrivateProfileIntA("FuseNotice", "Active", 0, "./Configs/Protection.txt");
 
-	TastyLvl = GetPrivateProfileIntA("TastyItems", "Level", 30, "./Configs/ItemUse.txt");
+	TastyLvl = GetPrivateProfileIntA("TastyItems", "Level", 70, "./Configs/ItemUse.txt");
+	ScrollOfInv = GetPrivateProfileIntA("Scrolls", "Invincibility", 0, "./Configs/ItemUse.txt");
+	ScrollOfMovingPL = GetPrivateProfileIntA("Scrolls", "PLLeader", 0, "./Configs/ItemUse.txt");
 
 	IPEnable = GetPrivateProfileIntA("IP", "Active", 1, "./Configs/Protection.txt");
 	StBroken = GetPrivateProfileIntA("Break", "Active", 0, "./Configs/StandardBreak.txt");
@@ -569,7 +642,7 @@ void ReadConfig(bool command)
 
 	MystPAtkQ = GetPrivateProfileIntA("PhyAttack", "QuestIndex", 0, "./Configs/NewMystery.txt");
 	MystPAtkS = GetPrivateProfileIntA("PhyAttack", "SysKey", 0, "./Configs/NewMystery.txt");
-		
+
 	MystMAtkQ = GetPrivateProfileIntA("MagAttack", "QuestIndex", 0, "./Configs/NewMystery.txt");
 	MystMAtkS = GetPrivateProfileIntA("MagAttack", "SysKey", 0, "./Configs/NewMystery.txt");
 
@@ -624,59 +697,6 @@ void ReadConfig(bool command)
 	HouseReward = GetPrivateProfileIntA("HouseRank", "RewardIndex", 0, "./Configs/Hogwarts.txt");
 	HouseRewardAmount = GetPrivateProfileIntA("HouseRank", "RewardAmount", 0, "./Configs/Hogwarts.txt");
 
-	// Bandits System
-	BanditsEnable = GetPrivateProfileIntA("Bandits", "Enable", 0, "./Configs/Bandits.txt");
-	BanditsMap = GetPrivateProfileIntA("Teleport", "Map", 24, "./Configs/Bandits.txt");
-	BanditsTX = GetPrivateProfileIntA("Teleport", "X", 0, "./Configs/Bandits.txt");
-	BanditsTY = GetPrivateProfileIntA("Teleport", "Y", 0, "./Configs/Bandits.txt");
-	BanditsMobSec = GetPrivateProfileIntA("Monsters", "SpawnEvery", 0, "./Configs/Bandits.txt");
-	BanditsMobIndex = GetPrivateProfileIntA("Monsters", "Index", 0, "./Configs/Bandits.txt");
-	BanditsBossSec = GetPrivateProfileIntA("Monsters", "Boss1Spawn", 0, "./Configs/Bandits.txt");
-	BanditsBoss2Sec = GetPrivateProfileIntA("Monsters", "Boss2Spawn", 0, "./Configs/Bandits.txt");
-	BanditsBossIndex = GetPrivateProfileIntA("Monsters", "BossIndex", 0, "./Configs/Bandits.txt");
-	BanditsMobAmount = GetPrivateProfileIntA("Monsters", "Amount", 0, "./Configs/Bandits.txt");
-	BanditsBossX = GetPrivateProfileIntA("Monsters", "BossX", 0, "./Configs/Bandits.txt");
-	BanditsBossY = GetPrivateProfileIntA("Monsters", "BossY", 0, "./Configs/Bandits.txt");
-	BanditsQuest = GetPrivateProfileIntA("Quest", "Index", 0, "./Configs/Bandits.txt");
-	BanditsLevel = GetPrivateProfileIntA("Quest", "Level", 0, "./Configs/Bandits.txt");
-	BanditsTime = GetPrivateProfileIntA("Bandits", "Time", 0, "./Configs/Bandits.txt");
-	BanditsCheck1 = GetPrivateProfileIntA("Quest", "Check1", 0, "./Configs/Bandits.txt");
-	BanditsCheck2 = GetPrivateProfileIntA("Quest", "Check2", 0, "./Configs/Bandits.txt");
-	BanditsCheck3 = GetPrivateProfileIntA("Quest", "Check3", 0, "./Configs/Bandits.txt");
-	BanditsCheck4 = GetPrivateProfileIntA("Quest", "Check4", 0, "./Configs/Bandits.txt");
-	BanditsCheck5 = GetPrivateProfileIntA("Quest", "Check5", 0, "./Configs/Bandits.txt");
-	BanditsCheck6 = GetPrivateProfileIntA("Quest", "Check6", 0, "./Configs/Bandits.txt");
-	Check1X = GetPrivateProfileIntA("Bandits", "Check1X", 0, "./Configs/Bandits.txt");
-	Check1Y = GetPrivateProfileIntA("Bandits", "Check1Y", 0, "./Configs/Bandits.txt");
-	Check2X = GetPrivateProfileIntA("Bandits", "Check2X", 0, "./Configs/Bandits.txt");
-	Check2Y = GetPrivateProfileIntA("Bandits", "Check2Y", 0, "./Configs/Bandits.txt");
-	Check3X = GetPrivateProfileIntA("Bandits", "Check3X", 0, "./Configs/Bandits.txt");
-	Check3Y = GetPrivateProfileIntA("Bandits", "Check3Y", 0, "./Configs/Bandits.txt");
-	Check4X = GetPrivateProfileIntA("Bandits", "Check4X", 0, "./Configs/Bandits.txt");
-	Check4Y = GetPrivateProfileIntA("Bandits", "Check4Y", 0, "./Configs/Bandits.txt");
-	Check5X = GetPrivateProfileIntA("Bandits", "Check5X", 0, "./Configs/Bandits.txt");
-	Check5Y = GetPrivateProfileIntA("Bandits", "Check5Y", 0, "./Configs/Bandits.txt");
-	Check6X = GetPrivateProfileIntA("Bandits", "Check6X", 0, "./Configs/Bandits.txt");
-	Check6Y = GetPrivateProfileIntA("Bandits", "Check6Y", 0, "./Configs/Bandits.txt");
-	BanditsReviveCD = GetPrivateProfileIntA("Bandits", "ReviveCD", 0, "./Configs/Bandits.txt");
-	BanditsIndex = GetPrivateProfileIntA("Bandits", "Index", 0, "./Configs/Bandits.txt");
-	BanditsAmount = GetPrivateProfileIntA("Bandits", "Amount", 0, "./Configs/Bandits.txt");
-	BanditsMaxDeath = GetPrivateProfileIntA("MaxDead", "Value", 10, "./Configs/Bandits.txt");
-	BanditsMaxDeathItem = GetPrivateProfileIntA("MaxDead", "Item", 0, "./Configs/Bandits.txt");
-
-	// Quest Message Box
-	QuestHistoryEN = GetPrivateProfileIntA("Quest", "HistoryEN", 0, "./Configs/WorldHistory.txt");
-	QuestEventsEN = GetPrivateProfileIntA("Quest", "EventsEN", 0, "./Configs/WorldHistory.txt");
-	QuestHistoryPL = GetPrivateProfileIntA("Quest", "HistoryPL", 0, "./Configs/WorldHistory.txt");
-	QuestEventsPL = GetPrivateProfileIntA("Quest", "EventsPL", 0, "./Configs/WorldHistory.txt");
-	GetPrivateProfileStringA("Message", "HistoryEN", "", HistoryENmsg, 512, "./Configs/WorldHistory.txt");
-	GetPrivateProfileStringA("Message", "EventsEN", "", EventsENmsg, 512, "./Configs/WorldHistory.txt");
-	GetPrivateProfileStringA("Message", "HistoryPL", "", HistoryPLmsg, 512, "./Configs/WorldHistory.txt");
-	GetPrivateProfileStringA("Message", "EventsPL", "", EventsPLmsg, 512, "./Configs/WorldHistory.txt");
-
-
-	ScaleBuff = GetPrivateProfileIntA("BuffScale", "Active", 0, "./Configs/StickBuff.txt");
-
 	// Honor Rank Buff
 	GetPrivateProfileStringA("Recruit", "Effect", "", Honor1, 512, "./Configs/HonorEffects.txt");
 	GetPrivateProfileStringA("Private", "Effect", "", Honor2, 512, "./Configs/HonorEffects.txt");
@@ -713,16 +733,49 @@ void ReadConfig(bool command)
 	Honor9Stats = GetPrivateProfileIntA("Colonel", "Stats", 0, "./Configs/HonorEffects.txt");
 	Honor10Stats = GetPrivateProfileIntA("General", "Stats", 0, "./Configs/HonorEffects.txt");
 
-	Honor1Atk = GetPrivateProfileIntA("Recruit", "Attack", 0, "./Configs/HonorEffects.txt");
-	Honor2Atk = GetPrivateProfileIntA("Private", "Attack", 0, "./Configs/HonorEffects.txt");
-	Honor3Atk = GetPrivateProfileIntA("Specialist", "Attack", 0, "./Configs/HonorEffects.txt");
-	Honor4Atk = GetPrivateProfileIntA("Corporal", "Attack", 0, "./Configs/HonorEffects.txt");
-	Honor5Atk = GetPrivateProfileIntA("Sergeant", "Attack", 0, "./Configs/HonorEffects.txt");
-	Honor6Atk = GetPrivateProfileIntA("Lieutenant", "Attack", 0, "./Configs/HonorEffects.txt");
-	Honor7Atk = GetPrivateProfileIntA("Captain", "Attack", 0, "./Configs/HonorEffects.txt");
-	Honor8Atk = GetPrivateProfileIntA("Major", "Attack", 0, "./Configs/HonorEffects.txt");
-	Honor9Atk = GetPrivateProfileIntA("Colonel", "Attack", 0, "./Configs/HonorEffects.txt");
-	Honor10Atk = GetPrivateProfileIntA("General", "Attack", 0, "./Configs/HonorEffects.txt");
+	Honor1PVE = GetPrivateProfileIntA("Recruit", "PVEDmg", 0, "./Configs/HonorEffects.txt");
+	Honor2PVE = GetPrivateProfileIntA("Private", "PVEDmg", 0, "./Configs/HonorEffects.txt");
+	Honor3PVE = GetPrivateProfileIntA("Specialist", "PVEDmg", 0, "./Configs/HonorEffects.txt");
+	Honor4PVE = GetPrivateProfileIntA("Corporal", "PVEDmg", 0, "./Configs/HonorEffects.txt");
+	Honor5PVE = GetPrivateProfileIntA("Sergeant", "PVEDmg", 0, "./Configs/HonorEffects.txt");
+	Honor6PVE = GetPrivateProfileIntA("Lieutenant", "PVEDmg", 0, "./Configs/HonorEffects.txt");
+	Honor7PVE = GetPrivateProfileIntA("Captain", "PVEDmg", 0, "./Configs/HonorEffects.txt");
+	Honor8PVE = GetPrivateProfileIntA("Major", "PVEDmg", 0, "./Configs/HonorEffects.txt");
+	Honor9PVE = GetPrivateProfileIntA("Colonel", "PVEDmg", 0, "./Configs/HonorEffects.txt");
+	Honor10PVE = GetPrivateProfileIntA("General", "PVEDmg", 0, "./Configs/HonorEffects.txt");
+
+	Honor1PVP = GetPrivateProfileIntA("Recruit", "PVPDmg", 0, "./Configs/HonorEffects.txt");
+	Honor2PVP = GetPrivateProfileIntA("Private", "PVPDmg", 0, "./Configs/HonorEffects.txt");
+	Honor3PVP = GetPrivateProfileIntA("Specialist", "PVPDmg", 0, "./Configs/HonorEffects.txt");
+	Honor4PVP = GetPrivateProfileIntA("Corporal", "PVPDmg", 0, "./Configs/HonorEffects.txt");
+	Honor5PVP = GetPrivateProfileIntA("Sergeant", "PVPDmg", 0, "./Configs/HonorEffects.txt");
+	Honor6PVP = GetPrivateProfileIntA("Lieutenant", "PVPDmg", 0, "./Configs/HonorEffects.txt");
+	Honor7PVP = GetPrivateProfileIntA("Captain", "PVPDmg", 0, "./Configs/HonorEffects.txt");
+	Honor8PVP = GetPrivateProfileIntA("Major", "PVPDmg", 0, "./Configs/HonorEffects.txt");
+	Honor9PVP = GetPrivateProfileIntA("Colonel", "PVPDmg", 0, "./Configs/HonorEffects.txt");
+	Honor10PVP = GetPrivateProfileIntA("General", "PVPDmg", 0, "./Configs/HonorEffects.txt");
+
+	Honor1Fatal = GetPrivateProfileIntA("Recruit", "FatalDmg", 0, "./Configs/HonorEffects.txt");
+	Honor2Fatal = GetPrivateProfileIntA("Private", "FatalDmg", 0, "./Configs/HonorEffects.txt");
+	Honor3Fatal = GetPrivateProfileIntA("Specialist", "FatalDmg", 0, "./Configs/HonorEffects.txt");
+	Honor4Fatal = GetPrivateProfileIntA("Corporal", "FatalDmg", 0, "./Configs/HonorEffects.txt");
+	Honor5Fatal = GetPrivateProfileIntA("Sergeant", "FatalDmg", 0, "./Configs/HonorEffects.txt");
+	Honor6Fatal = GetPrivateProfileIntA("Lieutenant", "FatalDmg", 0, "./Configs/HonorEffects.txt");
+	Honor7Fatal = GetPrivateProfileIntA("Captain", "FatalDmg", 0, "./Configs/HonorEffects.txt");
+	Honor8Fatal = GetPrivateProfileIntA("Major", "FatalDmg", 0, "./Configs/HonorEffects.txt");
+	Honor9Fatal = GetPrivateProfileIntA("Colonel", "FatalDmg", 0, "./Configs/HonorEffects.txt");
+	Honor10Fatal = GetPrivateProfileIntA("General", "FatalDmg", 0, "./Configs/HonorEffects.txt");
+
+	Honor1EB = GetPrivateProfileIntA("Recruit", "ExplosiveBlow", 0, "./Configs/HonorEffects.txt");
+	Honor2EB = GetPrivateProfileIntA("Private", "ExplosiveBlow", 0, "./Configs/HonorEffects.txt");
+	Honor3EB = GetPrivateProfileIntA("Specialist", "ExplosiveBlow", 0, "./Configs/HonorEffects.txt");
+	Honor4EB = GetPrivateProfileIntA("Corporal", "ExplosiveBlow", 0, "./Configs/HonorEffects.txt");
+	Honor5EB = GetPrivateProfileIntA("Sergeant", "ExplosiveBlow", 0, "./Configs/HonorEffects.txt");
+	Honor6EB = GetPrivateProfileIntA("Lieutenant", "ExplosiveBlow", 0, "./Configs/HonorEffects.txt");
+	Honor7EB = GetPrivateProfileIntA("Captain", "ExplosiveBlow", 0, "./Configs/HonorEffects.txt");
+	Honor8EB = GetPrivateProfileIntA("Major", "ExplosiveBlow", 0, "./Configs/HonorEffects.txt");
+	Honor9EB = GetPrivateProfileIntA("Colonel", "ExplosiveBlow", 0, "./Configs/HonorEffects.txt");
+	Honor10EB = GetPrivateProfileIntA("General", "ExplosiveBlow", 0, "./Configs/HonorEffects.txt");
 
 	SlytherinDieX = GetPrivateProfileIntA("DeathSpawn", "SlytherinX", 257514, "./Configs/Hogwarts.txt");
 	SlytherinDieY = GetPrivateProfileIntA("DeathSpawn", "SlytherinY", 259273, "./Configs/Hogwarts.txt");
@@ -796,6 +849,13 @@ void ReadConfig(bool command)
 	AssassinLimit = GetPrivateProfileIntA("Assassin", "LevelDiff", 10, "./Configs/PKKill.txt");
 	AssassinParty = GetPrivateProfileIntA("Assassin", "PartyEnable", 0, "./Configs/PKKill.txt");
 
+	iceStoneMax = GetPrivateProfileIntA("IceStone", "MaxTime", 10, "./Configs/Mix.txt");
+	iceStoneValue = GetPrivateProfileIntA("IceStone", "Value", 10, "./Configs/Mix.txt");
+
+	GetPrivateProfileStringA("Effects", "Ice", "", IceStoneEffect, 512, "./Configs/Mix.txt");
+	GetPrivateProfileStringA("Effects", "Light", "", LightningStoneEffect, 512, "./Configs/Mix.txt");
+
+
 	PSActive = GetPrivateProfileIntA("PointSystem", "Active", 0, "./Configs/PKKill.txt");
 	PSLimit = GetPrivateProfileIntA("PointSystem", "Limit", 20, "./Configs/PKKill.txt");
 	KrPSsysReward = GetPrivateProfileIntA("PointSystem", "KillerRewardID", 0, "./Configs/PKKill.txt");
@@ -814,10 +874,12 @@ void ReadConfig(bool command)
 	DamageSBKey = GetPrivateProfileIntA("Damage", "SBKey", 650, "./Systems/Damage.txt");
 	DamageSBName = GetPrivateProfileIntA("Damage", "SBName", 6150, "./Systems/Damage.txt");
 
+	FireStormVThief = GetPrivateProfileIntA("FireStorm", "Activate", 1, "./Configs/Protection.txt");
 
-	ExpansionIndex = GetPrivateProfileIntA("InvExpansion", "Index", 3360, "./Configs/Protection.txt");
-	ExpansionAmount = GetPrivateProfileIntA("InvExpansion", "Amount", 100, "./Configs/Protection.txt");
-	ExtensionTime = GetPrivateProfileIntA("InvExpansion", "Time", 1296000, "./Configs/Protection.txt");
+
+	ExpansionIndex = GetPrivateProfileIntA("InvExpansion", "Index", 3360, "./Configs/ItemUse.txt");
+	ExpansionAmount = GetPrivateProfileIntA("InvExpansion", "Amount", 100, "./Configs/ItemUse.txt");
+	ExtensionTime = GetPrivateProfileIntA("InvExpansion", "Time", 1296000, "./Configs/ItemUse.txt");
 
 	ShopLevelLimit = GetPrivateProfileIntA("LevelLimit", "Shop", 11, "./Configs/Protection.txt");
 	TradeLevelLimit = GetPrivateProfileIntA("LevelLimit", "Trade", 11, "./Configs/Protection.txt");
@@ -981,6 +1043,7 @@ void ReadConfig(bool command)
 	chatDebug = GetPrivateProfileIntA("Debugger", "Chats", 0, "./Configs/Protection.txt");
 	commandDebug = GetPrivateProfileIntA("Debugger", "Commands", 0, "./Configs/Protection.txt");
 	skillDebug = GetPrivateProfileIntA("Debugger", "Skills", 0, "./Configs/Protection.txt");
+	rangeDebug = GetPrivateProfileIntA("Debugger", "Range", 0, "./Configs/Protection.txt");
 	loginDebug = GetPrivateProfileIntA("Debugger", "Logins", 0, "./Configs/Protection.txt");
 	HWIDBlock = GetPrivateProfileIntA("HWIDBlock", "ExtraBlock", 0, "./Configs/Protection.txt");
 	EXPLimit = GetPrivateProfileIntA("MaxEXP", "Active", 0, "./Configs/Protection.txt");
@@ -1098,6 +1161,11 @@ void ReadConfig(bool command)
 	NWOEMax = GetPrivateProfileIntA("TheWaveOfEarth", "GradeDamageIncreaseMax", 1, "./Skills/Nirvana.txt");
 	NWOEReduce = GetPrivateProfileIntA("TheWaveOfEarth", "PVPReduce", 1, "./Skills/Nirvana.txt");
 	LMSLimit = GetPrivateProfileIntA("Limit", "Level", 100, "./Systems/LastManStand.txt");
+	LMSMobIndex = GetPrivateProfileIntA("StoneHP", "MobIndex", 1446, "./Systems/LastManStand.txt");
+	LMSMobX = GetPrivateProfileIntA("StoneHP", "X", 1446, "./Systems/LastManStand.txt");
+	LMSMobY = GetPrivateProfileIntA("StoneHP", "Y", 1446, "./Systems/LastManStand.txt");
+	LMSRange = GetPrivateProfileIntA("StoneHP", "HealRange", 300, "./Systems/LastManStand.txt");
+
 	LMSQuest = GetPrivateProfileIntA("Quest", "Index", 1, "./Systems/LastManStand.txt");
 	LMSMap = GetPrivateProfileIntA("Map", "Index", 1, "./Systems/LastManStand.txt");
 	LMSX = GetPrivateProfileIntA("Teleport", "X", 1, "./Systems/LastManStand.txt");
@@ -1115,6 +1183,8 @@ void ReadConfig(bool command)
 	GetPrivateProfileStringA("ShopReward", "Active", "false", ShopRewardCheck, 50, "./Configs/Protection.txt");
 	GetPrivateProfileStringA("ShopReward", "Index", "0", ShopRewardIndex, 512, "./Configs/Protection.txt");
 	GetPrivateProfileStringA("ShopReward", "Amount", "0", ShopRewardAmount, 512, "./Configs/Protection.txt");
+	GetPrivateProfileStringA("ShopReward", "Level", "1", ShopRewardLvl, 512, "./Configs/Protection.txt");
+
 	ShopRewardTime = GetPrivateProfileIntA("ShopReward", "Time", 3600, "./Configs/Protection.txt");
 	ShopFortCheck = GetPrivateProfileIntA("ShopReward", "FortCheck", 1, "./Configs/Protection.txt");
 	ShopBound = GetPrivateProfileIntA("ShopReward", "Bound", 1, "./Configs/Protection.txt");
@@ -1135,6 +1205,8 @@ void ReadConfig(bool command)
 	HellQuest = GetPrivateProfileIntA("Quest", "Index", 0, "./Systems/Hell.txt");
 	HellCooldown = GetPrivateProfileIntA("Quest", "Cooldown", 0, "./Systems/Hell.txt");
 	F10Limit = GetPrivateProfileIntA("Limit", "Active", 1, "./Systems/F10.txt");
+	InstanceLimit = GetPrivateProfileIntA("Instance", "Limit", 1, "./Configs/EventMaps.txt");
+
 	F10Exp1 = GetPrivateProfileIntA("First", "Amount", 1, "./Systems/F10.txt");
 	F10Exp2 = GetPrivateProfileIntA("Second", "Amount", 1, "./Systems/F10.txt");
 	F10Exp3 = GetPrivateProfileIntA("Third", "Amount", 1, "./Systems/F10.txt");
@@ -1209,7 +1281,9 @@ void ReadConfig(bool command)
 	LoserDuelRound = GetPrivateProfileIntA("Reward", "RoundLoser", 0, "./Systems/Duel.txt");
 
 	WinnerHell = GetPrivateProfileIntA("Reward", "RewardID", 0, "./Systems/Hell.txt");
-	WinnerLMS = GetPrivateProfileIntA("Reward", "RewardID", 0, "./Systems/LastManStand.txt");
+	WinnerLMS = GetPrivateProfileIntA("Reward", "Winner", 0, "./Systems/LastManStand.txt");
+	LoserLMS = GetPrivateProfileIntA("Reward", "Loser", 0, "./Systems/LastManStand.txt");
+
 	VoteReward = GetPrivateProfileIntA("Reward", "RewardID", 0, "./Systems/Vote.txt");
 	BossHuntReward = GetPrivateProfileIntA("Reward", "RewardID", 0, "./Systems/Boss.txt");
 
@@ -1242,10 +1316,15 @@ void ReadConfig(bool command)
 	BFTeleBlueY = GetPrivateProfileIntA("BlueTeleport", "Y", 208690, "./Systems/Battlefield.txt");
 	BFTeleBlueZ = GetPrivateProfileIntA("BlueTeleport", "Z", 0, "./Systems/Battlefield.txt");
 
-	BlueStoneX = GetPrivateProfileIntA("BlueStone", "X", 276460, "./Systems/Battlefield.txt");
-	BlueStoneY = GetPrivateProfileIntA("BlueStone", "Y", 315762, "./Systems/Battlefield.txt");
-	RedStoneX = GetPrivateProfileIntA("RedStone", "X", 275535, "./Systems/Battlefield.txt");
-	RedStoneY = GetPrivateProfileIntA("RedStone", "Y", 314195, "./Systems/Battlefield.txt");
+	//BlueStoneX = GetPrivateProfileIntA("BlueStone", "X", 276460, "./Systems/Battlefield.txt");
+	//BlueStoneY = GetPrivateProfileIntA("BlueStone", "Y", 315762, "./Systems/Battlefield.txt");
+	//RedStoneX = GetPrivateProfileIntA("RedStone", "X", 275535, "./Systems/Battlefield.txt");
+	//RedStoneY = GetPrivateProfileIntA("RedStone", "Y", 314195, "./Systems/Battlefield.txt");
+
+	BlueStoneX = GetPrivateProfileIntA("BlueStone", "X", 0, "./Systems/Battlefield.txt");
+	BlueStoneY = GetPrivateProfileIntA("BlueStone", "Y", 0, "./Systems/Battlefield.txt");
+	RedStoneX = GetPrivateProfileIntA("RedStone", "X", 0, "./Systems/Battlefield.txt");
+	RedStoneY = GetPrivateProfileIntA("RedStone", "Y", 0, "./Systems/Battlefield.txt");
 
 	//shelter
 	BFRedSafeX1G = GetPrivateProfileIntA("RedRectSafeZone", "X1", 0, "./Configs/Hogwarts.txt");
@@ -1275,10 +1354,10 @@ void ReadConfig(bool command)
 	BFTeleBlueYG = GetPrivateProfileIntA("BlueTeleport", "Y", 208690, "./Configs/Hogwarts.txt");
 	BFTeleBlueZG = GetPrivateProfileIntA("BlueTeleport", "Z", 0, "./Configs/Hogwarts.txt");
 
-	BlueStoneXG = GetPrivateProfileIntA("BlueStone", "X", 276460, "./Configs/Hogwarts.txt");
-	BlueStoneYG = GetPrivateProfileIntA("BlueStone", "Y", 315762, "./Configs/Hogwarts.txt");
-	RedStoneXG = GetPrivateProfileIntA("RedStone", "X", 275535, "./Configs/Hogwarts.txt");
-	RedStoneYG = GetPrivateProfileIntA("RedStone", "Y", 314195, "./Configs/Hogwarts.txt");
+	BlueStoneXG = GetPrivateProfileIntA("BlueStone", "X", 0, "./Configs/Hogwarts.txt");
+	BlueStoneYG = GetPrivateProfileIntA("BlueStone", "Y", 0, "./Configs/Hogwarts.txt");
+	RedStoneXG = GetPrivateProfileIntA("RedStone", "X", 0, "./Configs/Hogwarts.txt");
+	RedStoneYG = GetPrivateProfileIntA("RedStone", "Y", 0, "./Configs/Hogwarts.txt");
 
 	GVETime = GetPrivateProfileIntA("GoodVsEvil", "Time", 1800, "./Configs/Hogwarts.txt");
 	EVGoodReward = GetPrivateProfileIntA("GoodVsEvil", "WinnerRewardID", WinnerBF, "./Configs/Hogwarts.txt");
@@ -1287,10 +1366,35 @@ void ReadConfig(bool command)
 	//shelterend
 
 	BattlefieldLevel = GetPrivateProfileIntA("Limit", "Level", 50, "./Systems/Battlefield.txt");
+	BFAFKActive = GetPrivateProfileIntA("AFKCheck", "Active", 0, "./Systems/Battlefield.txt");
+	BattlefieldAFK = GetPrivateProfileIntA("AFKCheck", "Time", 300, "./Systems/Battlefield.txt");
+	BattlefieldBuffs = GetPrivateProfileIntA("Revive", "BuffGrade", 0, "./Systems/Battlefield.txt");
+	BattlefieldSpeed = GetPrivateProfileIntA("Revive", "SpeedValue", 0, "./Systems/Battlefield.txt");
+
+	BFHWID = GetPrivateProfileIntA("HWIDLimit", "Active", 1, "./Systems/Battlefield.txt");
+	LMSHWID = GetPrivateProfileIntA("HWIDLimit", "Active", 1, "./Systems/LastManStand.txt");
+
+	FOESkillsActive = GetPrivateProfileIntA("ForestOfElements", "SkillsActive", 0, "./Configs/Protection.txt");
+
 	BFTime = GetPrivateProfileIntA("Time", "Time", 3600, "./Systems/Battlefield.txt");
 	BFMap = GetPrivateProfileIntA("Map", "Index", 100, "./Systems/Battlefield.txt");
 	BFQuest = GetPrivateProfileIntA("Quest", "Index", 0, "./Systems/Battlefield.txt");
 	BFRange = GetPrivateProfileIntA("Map", "Range", 100, "./Systems/Battlefield.txt");
+	BFBoss = GetPrivateProfileIntA("Boss", "Index", 205, "./Systems/Battlefield.txt");
+	BFBossX = GetPrivateProfileIntA("Boss", "X", 0, "./Systems/Battlefield.txt");
+	BFBossY = GetPrivateProfileIntA("Boss", "Y", 0, "./Systems/Battlefield.txt");
+	BFBossTime = GetPrivateProfileIntA("Boss", "SpawnEvery", 0, "./Systems/Battlefield.txt");
+	BFBossReward = GetPrivateProfileIntA("Boss", "RewardID", 0, "./Systems/Battlefield.txt");
+	BFBossBuffX1 = GetPrivateProfileIntA("Boss", "BuffX1", 0, "./Systems/Battlefield.txt");
+	BFBossBuffY1 = GetPrivateProfileIntA("Boss", "BuffY1", 0, "./Systems/Battlefield.txt");
+	BFBossBuffX2 = GetPrivateProfileIntA("Boss", "BuffX2", 0, "./Systems/Battlefield.txt");
+	BFBossBuffY2 = GetPrivateProfileIntA("Boss", "BuffY2", 0, "./Systems/Battlefield.txt");
+
+	BFBossBuff.left = min(BFBossBuffX1, BFBossBuffX2);
+	BFBossBuff.right = max(BFBossBuffX1, BFBossBuffX2);
+	BFBossBuff.top = min(BFBossBuffY1, BFBossBuffY2);
+	BFBossBuff.bottom = max(BFBossBuffY1, BFBossBuffY2);
+
 	CaptureMap = GetPrivateProfileIntA("Map", "Index", 100, "./Systems/Capture.txt"); 
 	CPRedSafeX1 = GetPrivateProfileIntA("RedRectSafeZone", "MaxX", 8560, "./Systems/Capture.txt");
 	CPRedSafeX2 = GetPrivateProfileIntA("RedRectSafeZone", "MinX", 8579, "./Systems/Capture.txt");
@@ -1517,17 +1621,12 @@ void ReadConfig(bool command)
 	EmokY = GetPrivateProfileIntA("Teleport", "Y", 1, "./Configs/Emok.txt");
 	EmokMap = GetPrivateProfileIntA("Map", "Index", 1, "./Configs/Emok.txt");
 	EmokQuestIndex = GetPrivateProfileIntA("Quest", "Index", 1, "./Configs/Emok.txt");
-	EmokTime = GetPrivateProfileIntA("Map", "Time", 1800, "./Configs/Emok.txt");
-
 	EmokLvl = GetPrivateProfileIntA("Quest", "Level", 50, "./Configs/Emok.txt");
 	ConfigMaxDamage = GetPrivateProfileIntA("Protection", "MaxDamage", 100000, "./Configs/Protection.txt");
 	ConfigMaxMagAtk = GetPrivateProfileIntA("Protection", "MaxMagAtk", 10000, "./Configs/Protection.txt");
 	ConfigMaxPhyAtk = GetPrivateProfileIntA("Protection", "MaxPhyAtk", 10000, "./Configs/Protection.txt");
 	EggExpTime = GetPrivateProfileIntA("EggExp", "ByTime", 1, "./Configs/Protection.txt");
 	EggExpKill = GetPrivateProfileIntA("EggExp", "ByKill", 1, "./Configs/Protection.txt");
-	iceStoneMax = GetPrivateProfileIntA("IceStone", "MaxIcedTimes", 10, "./Configs/Mix.txt");
-	iceStoneValue = GetPrivateProfileIntA("IceStone", "ValuePerHit", -10, "./Configs/Mix.txt");
-	iceStoneDebuff = GetPrivateProfileIntA("IceStone", "DebuffValue", 5, "./Configs/Mix.txt");
 	ConfigMix = GetPrivateProfileIntA("Mix", "Rate", 1, "./Configs/Mix.txt");
 	ConfigImp = GetPrivateProfileIntA("Imp", "Rate", 1, "./Configs/Mix.txt");
 	MD5Check = GetPrivateProfileIntA("MD5", "Active", 0, "./Configs/MD5Check.txt");
@@ -1589,6 +1688,7 @@ void ReadConfig(bool command)
 	if (!command || (command && modifiedFiles.count("./Configs/MonsterPets.txt"))) {
 		FILE *filemo = fopen("./Configs/MonsterPets.txt", "r");
 		if (filemo != NULL) {
+			MonsterPet.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filemo) != NULL)
 			{
@@ -1701,13 +1801,19 @@ void ReadConfig(bool command)
 	if (!command || (command && modifiedFiles.count("./Configs/EXPItem.txt"))) {
 		FILE* filekd = fopen("./Configs/EXPItem.txt", "r");
 		if (filekd != NULL) {
+			AreasExpItems.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filekd) != NULL) {
-
+				int map = 0, exp = 0, item = 0, time = 0;
 				AreaExpItem newArea;
-				if (sscanf(line, "(Area (map %d)(exp %d)(item %d)(time %d))", &newArea.map, &newArea.experience, &newArea.item, &newArea.time) == 4) {
+				if (sscanf(line, "(Area (map %d)(exp %d)(item %d)(time %d))", &map, &exp, &item, &time) == 4) {
 					newArea.type = 2;
-					AreasExpItems.push_back(newArea); // add the new area to the vector
+					newArea.map = map;
+					newArea.item = item;
+					newArea.experience = exp;
+					newArea.time = time;
+
+					AreasExpItems[map] = newArea;
 				}
 			}
 			fclose(filekd);
@@ -1716,40 +1822,113 @@ void ReadConfig(bool command)
 
 
 
+
 	if (!command || (command && modifiedFiles.count("./Configs/Missions.txt"))) {
 		FILE* Missions = fopen("./Configs/Missions.txt", "r");
 		if (Missions != NULL) {
+			MissionQuests.clear();
+			MissionQuestsItem.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, Missions) != NULL) {
 				int index = 0, nextmission = 0, teleportX = 0, teleportY = 0, monsterIndex = 0, amount = 0, reward = 0, itemIndex = 0, itemAmount = 0, teleportMap = 0;
+				char MissionItems[BUFSIZ], MissionAmounts[BUFSIZ];
 				if (sscanf(line, "(Mission (CurrentMission %d)(NextMission %d)(Teleport %d %d)(Monster %d)(MobAmount %d)(Reward %d))",
 					&index, &nextmission, &teleportX, &teleportY, &monsterIndex, &amount, &reward) == 7) {
 					MissionInfo mission;
 					mission.nextmission = nextmission;
 					mission.teleportX = teleportX;
 					mission.teleportY = teleportY;
+					mission.currentmission = index;
 					mission.Monster = monsterIndex;
 					mission.Amount = amount;
 					mission.rewardID = reward;
-					// Insert the mission information into the map
-					MissionQuests[index] = mission;
-				}
 
-				else if (sscanf(line, "(MissionItem (CurrentMission %d)(NextMission %d)(Teleport %d %d %d)(ItemIndex %d)(ItemAmount %d)(Reward %d))",
-					&index, &nextmission, &teleportMap, &teleportX, &teleportY, &itemIndex, &itemAmount, &reward) == 8) {
+					MissionQuests[monsterIndex] = mission;
+				}
+				else if (sscanf(line, "(MissionItem (CurrentMission %d)(NextMission %d)(Teleport %d %d %d)(ItemIndex %[0-9/,])(ItemAmount %[0-9/,])(Reward %d))",
+					&index, &nextmission, &teleportMap, &teleportX, &teleportY, &MissionItems, &MissionAmounts, &reward) == 8) {
+					std::string ItemsX = std::string((const char*)MissionItems);
+					std::string AmountsX = std::string((const char*)MissionAmounts);
+
 					MissionInfo mission;
 					mission.nextmission = nextmission;
 					mission.teleportX = teleportX;
 					mission.teleportY = teleportY;
 					mission.teleportMap = teleportMap;
-					mission.Item = itemIndex;
-					mission.itemAmount = itemAmount;
+					mission.Items = explode(",", ItemsX);
+					mission.Amounts = explode(",", AmountsX);
 					mission.rewardID = reward;
-					// Insert the mission information into the map
-					MissionQuests[index] = mission;
+
+					MissionQuestsItem[index] = mission;
 				}
 			}
 			fclose(Missions);
+		}
+	}
+
+
+	if (!command || (command && modifiedFiles.count("./Configs/DailyDuty.txt"))) {
+		FILE* DDuty = fopen("./Configs/DailyDuty.txt", "r");
+		if (DDuty != NULL) {
+			DutyQuest.clear();
+			DutyMonsterQuests.clear();
+			char line[BUFSIZ];
+			while (fgets(line, sizeof line, DDuty) != NULL) {
+				int index = 0, reward = 0, qlevel = 0, cooldown = 0;
+				char nMobs[BUFSIZ], nAmounts[BUFSIZ], Bosses[BUFSIZ], bAmounts[BUFSIZ], iMobs[BUFSIZ], insAmounts[BUFSIZ];
+				
+				if (sscanf(line, "(Duty (Quest %d)(Level %d)(NormalMobs %[0-9/,])(Amounts %[0-9/,])(MiniBosses %[0-9/,])(Amounts %[0-9/,])(Instances %[0-9/,])(Amounts %[0-9/,])(Reward %d)(Cooldown %d))",
+					&index, &qlevel, &nMobs, &nAmounts, &Bosses, &bAmounts, &iMobs, &insAmounts, &reward, &cooldown) == 10) {
+					DailyDuty mission;
+
+					std::string nIndexes = std::string((const char*)nMobs);
+					std::string nmAmounts = std::string((const char*)nAmounts);
+
+					std::string MIndexes = std::string((const char*)Bosses);
+					std::string MmAmounts = std::string((const char*)bAmounts);
+
+					std::string iIndexes = std::string((const char*)iMobs);
+					std::string iAmounts = std::string((const char*)insAmounts);
+					std::vector<std::string> _nIndexes = explode(",", nIndexes);
+					std::vector<std::string> _MIndexes = explode(",", MIndexes);
+					std::vector<std::string> _iIndexes = explode(",", iIndexes);
+
+					mission.NormalMob = _nIndexes;
+					mission.NormalAmount = explode(",", nmAmounts);
+
+					mission.MiniBoss = _MIndexes;
+					mission.BossAmount = explode(",", MmAmounts);
+
+					mission.InstanceD = _iIndexes;
+					mission.IMobAmount = explode(",", iAmounts);
+					mission.pLevel = qlevel;
+					mission.cooldown = cooldown;
+
+					//mission.Boxes = Boxes;
+					//mission.BoxAmount = boxAmounts;
+					mission.Reward = reward;
+
+					int maxSize = maximum(_MIndexes.size(), maximum(_nIndexes.size(), _iIndexes.size()));
+
+					for (int i = 0; i < maxSize; i++) {
+						MonsterDailyDuty mQuest = MonsterDailyDuty();
+						mQuest.Quest = index;
+
+						if (i < _MIndexes.size())
+							DutyMonsterQuests[String2Int(_MIndexes[i])].push_back(mQuest);
+
+						if (i < _nIndexes.size())
+							DutyMonsterQuests[String2Int(_nIndexes[i])].push_back(mQuest);
+
+						if (i < _iIndexes.size())
+							DutyMonsterQuests[String2Int(_iIndexes[i])].push_back(mQuest);
+					}
+
+					DutyQuest[index] = mission;
+				}
+
+			}
+			fclose(DDuty);
 		}
 	}
 
@@ -1785,71 +1964,46 @@ void ReadConfig(bool command)
 		}
 	}
 
-
-
-	if (!command || (command && modifiedFiles.count("./Configs/StickBuff.txt"))) {
-		FILE *filessbf = fopen("./Configs/StickBuff.txt", "r");
-		if (filessbf != NULL)
-		{
-			char line[BUFSIZ];
-			while (fgets(line, sizeof line, filessbf) != NULL)
-			{
-				int def = 0, hp = 0, str = 0, agi = 0, intel = 0, crit = 0, atk = 0, stickg = 0;
-				char buffName[BUFSIZ];
-
-				if (sscanf(line, "(Stick (Grade %d)(BuffName '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Def %d)(Str %d)(HP %d)(Agi %d)(Intel %d)(Crit %d)(Ref %d))", &stickg, &buffName, &def, &str, &hp, &agi, &intel, &crit, &atk) == 9) {
-					BuffScale[stickg].Sgrade = stickg;
-					BuffScale[stickg].atk = atk;
-					BuffScale[stickg].str = atk;
-					BuffScale[stickg].hp = atk;
-					BuffScale[stickg].agi = atk;
-					BuffScale[stickg].intel = atk;
-					BuffScale[stickg].crit = atk;
-					BuffScale[stickg].def = atk;
-					BuffScale[stickg].BuffName = buffName;
-				}
-				fclose(filessbf);
-			}
-		}
-	}
-
-
-	//if (!command || (command && modifiedFiles.count("./Configs/EmoteSystem.txt"))) {
-	//	FILE *fileemote = fopen("./Configs/EmoteSystem.txt", "r");
-	//	if (fileemote != NULL) {
-	//		EmoteSystem.clear();
-	//		char line[BUFSIZ];
-	//		while (fgets(line, sizeof line, fileemote) != NULL) {
-	//			int QuestFlag = 0, itemIndex = 0;
-	//			char Particle[512];
-
-	//			if (sscanf(line, "(Emote (QuestFlag %d)(Particle '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(ItemIndex %d))", &QuestFlag, Particle, &itemIndex) == 3) {
-	//				EmoteSystem[QuestFlag] = std::make_pair(Particle, itemIndex);
-	//			}
-	//		}
-	//		fclose(fileemote);
-	//	}
-	//}
 	if (!command || (command && modifiedFiles.count("./Configs/EmoteSystem.txt"))) {
 		FILE *fileemote = fopen("./Configs/EmoteSystem.txt", "r");
 		if (fileemote != NULL) {
+			EmoteSystem.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, fileemote) != NULL) {
-				int QuestFlag = 0;
+				int QuestFlag = 0, itemIndex = 0;
 				char Particle[512];
 
-				if (sscanf(line, "(Emote (QuestFlag %d)(Particle '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &QuestFlag, Particle) == 2) {
-					EmoteSystem[QuestFlag] = Particle;
+				if (sscanf(line, "(Emote (QuestFlag %d)(Particle '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(ItemIndex %d))", &QuestFlag, Particle, &itemIndex) == 3) {
+					EmoteSystem[QuestFlag] = std::make_pair(Particle, itemIndex);
 				}
 			}
 			fclose(fileemote);
 		}
 	}
+	//if (!command || (command && modifiedfiles.count("./configs/emotesystem.txt"))) {
+	//	file *fileemote = fopen("./configs/emotesystem.txt", "r");
+	//	if (fileemote != null) {
+	//		emotesystem.clear();
+	//		char line[bufsiz];
+	//		while (fgets(line, sizeof line, fileemote) != null) {
+	//			int questflag = 0;
+	//			char particle[512];
+
+	//			if (sscanf(line, "(emote (questflag %d)(particle '%[a-z | a-z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &questflag, particle) == 2) {
+	//				emotesystem[questflag] = particle;
+	//			}
+	//		}
+	//		fclose(fileemote);
+	//	}
+	//}
 	if (!command || (command && modifiedFiles.count("./Configs/BuffSystem.txt"))) {
 		FILE *Sys = fopen("./Configs/BuffSystem.txt", "r");
 		if (Sys != NULL)
 		{
-			char line[1000], LimitMsg[BUFSIZ], BuffIcon[BUFSIZ], ExpALLOW[BUFSIZ], save[BUFSIZ], Egg[BUFSIZ], ItemN[BUFSIZ], mana_heal[BUFSIZ], hp_heal[BUFSIZ], Damage[BUFSIZ];
+			BuffMakerCheck.clear();
+			BuffDisableCheck.clear();
+			BuffRemoveCheck.clear();
+			char line[1000], LimitMsg[BUFSIZ], BuffDisableID[BUFSIZ], BuffRemoveID[BUFSIZ], BuffIcon[BUFSIZ], ExpALLOW[BUFSIZ], save[BUFSIZ], Egg[BUFSIZ], ItemN[BUFSIZ], mana_heal[BUFSIZ], hp_heal[BUFSIZ], Damage[BUFSIZ], altBuff[BUFSIZ];
 			while (fgets(line, sizeof line, Sys) != NULL)
 			{
 				int Quest_Index = 0, CQuest_Index = 0, Buff = 0, Call = 0, Maker = 0, Delete = 0, MinLevel = 0, MaxLevel = 0, StrBuff = 0, AgiBuff = 0, HthBuff = 0, IntBuff = 0, DefBuff = 0,
@@ -1857,86 +2011,87 @@ void ReadConfig(bool command)
 					, MinAttack = 0, MaxAttack = 0, Hp = 0, Str = 0, Int = 0, Wis = 0, Agi = 0, OTP = 0, Eva = 0, Def = 0, Fire_Resistance = 0, Ice_Resistance = 0
 					, Lightning_Resistance = 0, Absorb = 0, CritRate = 0, CritDamage = 0, exp = 0, HTML = 0, Time = 0, Sys_name = 0, BuffID = 0,
 					amount = 0, count = 0, Expindex = 0, expcount = 0, HPx = 0, RPx = 0, DKPTx = 0, DKPWx = 0, PLTx = 0, PLWx = 0, SVTx = 0, SVWx = 0,
-					Honorindex = 0, Removeindex = 0, mana = 0, hp = 0, MaxHp = 0, MaxMp = 0, MD = 0, EBRate = 0, altBuff = 0, BuffDisableIndex = 0, BuffDisableID = 0;
+					Honorindex = 0, Removeindex = 0, mana = 0, hp = 0, MaxHp = 0, MaxMp = 0, MD = 0, EBRate = 0, BuffDisableIndex = 0, BuffRemoveIndex = 0;
 
-				if (sscanf(line, "(ItemBuffDisable (Index %d) (Buff %d))", &BuffDisableIndex, &BuffDisableID) == 2)
+				if (sscanf(line, "(ItemBuffDisable (Index %d) (Buff %[0-9/,]))", &BuffDisableIndex, &BuffDisableID) == 2)
 				{
+					std::string disableBuff = std::string((const char*)BuffDisableID);
+
 					BuffDisableCheck[BuffDisableIndex].BuffDisableIndex = BuffDisableIndex;
-					BuffDisableCheck[BuffDisableIndex].BuffDisableID = BuffDisableID;
-
+					BuffDisableCheck[BuffDisableIndex].BuffDisableID = explode(",", disableBuff);
 				}
-				if (sscanf(line, "(Buff (Item_Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Index %d)(Permanently %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Buff-> Str %d Agi %d Hth %d Int %d Def %d Crit %d Ref %d Speed %d))", &ItemN, &Buff, &Delete, &MinLevel, &MaxLevel, &LimitMsg, &StrBuff, &AgiBuff, &HthBuff, &IntBuff, &DefBuff, &CritBuff, &RefBuff, &SpeedBuff) == 14)
+
+				if (sscanf(line, "(ItemBuffRemove (Index %d) (Buff %[0-9/,]))", &BuffRemoveIndex, &BuffRemoveID) == 2)
 				{
-					BuffCheck[Buff].Buff = Buff;
-					BuffCheck[Buff].Delete = Delete;
-					BuffCheck[Buff].MinLevel = MinLevel;
-					BuffCheck[Buff].MaxLevel = MaxLevel;
-					BuffCheck[Buff].LimitMsg = LimitMsg;
-					BuffCheck[Buff].StrBuff = StrBuff;
-					BuffCheck[Buff].AgiBuff = AgiBuff;
-					BuffCheck[Buff].HthBuff = HthBuff;
-					BuffCheck[Buff].IntBuff = IntBuff;
-					BuffCheck[Buff].DefBuff = DefBuff;
-					BuffCheck[Buff].CritBuff = CritBuff;
-					BuffCheck[Buff].RefBuff = RefBuff;
-					BuffCheck[Buff].SpeedBuff = SpeedBuff;
+					std::string removeBuff = std::string((const char*)BuffRemoveID);
+
+					BuffRemoveCheck[BuffRemoveIndex].BuffDisableIndex = BuffRemoveIndex;
+					BuffRemoveCheck[BuffRemoveIndex].BuffDisableID = explode(",", removeBuff);
 				}
 				if (sscanf(line, "(Call (Item_Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Index %d)(Permanently %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Call-> LightningDefense %d IceDefense %d FireDefense %d OTPCall %d PhysicalAttack %d CallofDefense %d))", &ItemN, &Call, &Delete, &MinLevel, &MaxLevel, &LimitMsg, &LightningDefense, &IceDefense, &FireDefense, &OTPCall, &PhysicalAttack, &CallofDefense) == 12)
 				{
-					BuffCheck[Call].Call = Call;
-					BuffCheck[Call].Delete = Delete;
-					BuffCheck[Call].MinLevel = MinLevel;
-					BuffCheck[Call].MaxLevel = MaxLevel;
-					BuffCheck[Call].LimitMsg = LimitMsg;
-					BuffCheck[Call].LightningDefense = LightningDefense;
-					BuffCheck[Call].IceDefense = IceDefense;
-					BuffCheck[Call].FireDefense = FireDefense;
-					BuffCheck[Call].OTPCall = OTPCall;
-					BuffCheck[Call].PhysicalAttack = PhysicalAttack;
-					BuffCheck[Call].CallofDefense = CallofDefense;
+					ConfigBuff Calls = ConfigBuff();
+					Calls.Call = Call;
+					Calls.Delete = Delete;
+					Calls.MinLevel = MinLevel;
+					Calls.MaxLevel = MaxLevel;
+					Calls.LimitMsg = LimitMsg;
+					Calls.LightningDefense = LightningDefense;
+					Calls.IceDefense = IceDefense;
+					Calls.FireDefense = FireDefense;
+					Calls.OTPCall = OTPCall;
+					Calls.PhysicalAttack = PhysicalAttack;
+					Calls.CallofDefense = CallofDefense;
+					BuffCheck[Call] = Calls;
 				}
-				if (sscanf(line, "(Maker (Item_Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Index %d)(Permanently %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Stats-> PhyAtk %d MagAtk %d Hp %d Str %d Int %d Wis %d Agi %d OTP %d Eva %d Def %d Fire_Resistance %d Ice_Resistance %d Lightning_Resistance %d Absorb %d CritRate %d CritDamage %d MaxHp %d MaxMp %d Explosive_Blow %d)(auto_heal Active_HP'%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' amount %d Active_MP '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' amount %d)(Damage_monster-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Decrease %d)(BuffIcon-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Time %d Sys %d BuffID %d [Login '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'])(Exp-> Exp_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Exp %d Egg_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Egg %d AltBuff %d))", &ItemN, &Maker, &Delete, &MinLevel, &MaxLevel, &LimitMsg, &MinAttack, &MaxAttack, &Hp, &Str, &Int, &Wis, &Agi, &OTP, &Eva, &Def, &Fire_Resistance, &Ice_Resistance, &Lightning_Resistance, &Absorb, &CritRate, &CritDamage, &MaxHp, &MaxMp, &EBRate, &hp_heal, &hp, &mana_heal, &mana, &Damage, &MD, &BuffIcon, &Time, &Sys_name, &BuffID, &save, &ExpALLOW, &amount, &Egg, &count, &altBuff) == 41)
+				if (sscanf(line, "(Maker (Item_Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Index %d)(Permanently %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Stats-> PhyAtk %d MagAtk %d Hp %d Str %d Int %d Wis %d Agi %d OTP %d Eva %d Def %d Fire_Resistance %d Ice_Resistance %d Lightning_Resistance %d Absorb %d CritRate %d CritDamage %d MaxHp %d MaxMp %d Explosive_Blow %d)(auto_heal Active_HP'%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' amount %d Active_MP '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' amount %d)(Damage_monster-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Decrease %d)(BuffIcon-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Time %d Sys %d BuffID %d [Login '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'])(Exp-> Exp_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Exp %d Egg_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Egg %d AltBuff %[0-9/,]))", &ItemN, &Maker, &Delete, &MinLevel, &MaxLevel, &LimitMsg, &MinAttack, &MaxAttack, &Hp, &Str, &Int, &Wis, &Agi, &OTP, &Eva, &Def, &Fire_Resistance, &Ice_Resistance, &Lightning_Resistance, &Absorb, &CritRate, &CritDamage, &MaxHp, &MaxMp, &EBRate, &hp_heal, &hp, &mana_heal, &mana, &Damage, &MD, &BuffIcon, &Time, &Sys_name, &BuffID, &save, &ExpALLOW, &amount, &Egg, &count, &altBuff) == 41)
 				{
-					BuffMakerCheck[Maker].Maker = Maker;
-					BuffMakerCheck[Maker].Delete = Delete;
-					BuffMakerCheck[Maker].MinLevel = MinLevel;
-					BuffMakerCheck[Maker].MaxLevel = MaxLevel;
-					BuffMakerCheck[Maker].LimitMsg = LimitMsg;
-					BuffMakerCheck[Maker].MinAttack = MinAttack;
-					BuffMakerCheck[Maker].MaxAttack = MaxAttack;
-					BuffMakerCheck[Maker].Hp = Hp;
-					BuffMakerCheck[Maker].Str = Str;
-					BuffMakerCheck[Maker].Int = Int;
-					BuffMakerCheck[Maker].Wis = Wis;
-					BuffMakerCheck[Maker].Agi = Agi;
-					BuffMakerCheck[Maker].OTP = OTP;
-					BuffMakerCheck[Maker].Eva = Eva;
-					BuffMakerCheck[Maker].Def = Def;
-					BuffMakerCheck[Maker].Fire_Resistance = Fire_Resistance;
-					BuffMakerCheck[Maker].Ice_Resistance = Ice_Resistance;
-					BuffMakerCheck[Maker].Lightning_Resistance = Lightning_Resistance;
-					BuffMakerCheck[Maker].Absorb = Absorb;
-					BuffMakerCheck[Maker].CritRate = CritRate;
-					BuffMakerCheck[Maker].CritDamage = CritDamage;
-					BuffMakerCheck[Maker].MaxHp = MaxHp;
-					BuffMakerCheck[Maker].MaxMp = MaxMp;
-					BuffMakerCheck[Maker].BuffIcon = BuffIcon;
-					BuffMakerCheck[Maker].Time = Time;
-					BuffMakerCheck[Maker].Sys_name = Sys_name;
-					BuffMakerCheck[Maker].BuffID = BuffID;
-					BuffMakerCheck[Maker].EBRate = EBRate;
-					BuffMakerCheck[Maker].save = save;
-					BuffMakerCheck[Maker].mana = mana;
-					BuffMakerCheck[Maker].hp = hp;
-					BuffMakerCheck[Maker].mana_heal = mana_heal;
-					BuffMakerCheck[Maker].hp_heal = hp_heal;
-					BuffMakerCheck[Maker].Damage = Damage;
-					BuffMakerCheck[Maker].MD = MD;
-					BuffMakerCheck[Maker].ExpALLOW = ExpALLOW;
-					BuffMakerCheck[Maker].amount = amount;
-					BuffMakerCheck[Maker].Egg = Egg;
-					BuffMakerCheck[Maker].count = count;
-					BuffMakerCheck[Maker].altBuff = altBuff;
+					BuffMaker buffer = BuffMaker();
+
+					buffer.Maker = Maker;
+					buffer.Delete = Delete;
+					buffer.MinLevel = MinLevel;
+					buffer.MaxLevel = MaxLevel;
+					buffer.LimitMsg = LimitMsg;
+					buffer.MinAttack = MinAttack;
+					buffer.MaxAttack = MaxAttack;
+					buffer.Hp = Hp;
+					buffer.Str = Str;
+					buffer.Int = Int;
+					buffer.Wis = Wis;
+					buffer.Agi = Agi;
+					buffer.OTP = OTP;
+					buffer.Eva = Eva;
+					buffer.Def = Def;
+					buffer.Fire_Resistance = Fire_Resistance;
+					buffer.Ice_Resistance = Ice_Resistance;
+					buffer.Lightning_Resistance = Lightning_Resistance;
+					buffer.Absorb = Absorb;
+					buffer.CritRate = CritRate;
+					buffer.CritDamage = CritDamage;
+					buffer.MaxHp = MaxHp;
+					buffer.MaxMp = MaxMp;
+					buffer.BuffIcon = BuffIcon;
+					buffer.Time = Time;
+					buffer.Sys_name = Sys_name;
+					buffer.BuffID = BuffID;
+					buffer.EBRate = EBRate;
+					buffer.save = save;
+					buffer.mana = mana;
+					buffer.hp = hp;
+					buffer.mana_heal = mana_heal;
+					buffer.hp_heal = hp_heal;
+					buffer.Damage = Damage;
+					buffer.MD = MD;
+					buffer.ExpALLOW = ExpALLOW;
+					buffer.amount = amount;
+					buffer.Egg = Egg;
+					buffer.count = count;
+
+					std::string alternativeBuffs = std::string((const char*)altBuff);
+
+					buffer.altBuff = explode(",", alternativeBuffs);
+					BuffMakerCheck[Maker] = buffer;
 				}
 
 				if (sscanf(line, "(NPC_Buff (Quest_Index %d)(Str %d)(Agi %d)(Hth %d)(Int %d)(Def %d)(Crit %d)(Speed %d)(Ref %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))",
@@ -1980,6 +2135,7 @@ void ReadConfig(bool command)
 	if (!command || (command && modifiedFiles.count("./Configs/BoundItems.txt"))) {
 		FILE *filemo = fopen("./Configs/BoundItems.txt", "r");
 		if (filemo != NULL) {
+			BoundAllowedItems.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filemo) != NULL)
 			{
@@ -1999,11 +2155,14 @@ void ReadConfig(bool command)
 
 		std::vector<std::string> shopiex = Tools->Explode(ShopRewardIndex, ",");
 		std::vector<std::string> amountiex = Tools->Explode(ShopRewardAmount, ",");
+		std::vector<std::string> levelx = Tools->Explode(ShopRewardLvl, ",");
 
-		if (shopiex.size() == amountiex.size()) {
+		if (shopiex.size() == amountiex.size() == levelx.size()) {
 			for (int i = 0; i < shopiex.size(); i++) {
 				RShopItems.push_back(String2Int(shopiex[i]));
 				RShopAmounts.push_back(String2Int(amountiex[i]));
+				RShopLevels.push_back(String2Int(levelx[i]));
+
 			}
 		}
 	}
@@ -2017,7 +2176,7 @@ void ReadConfig(bool command)
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filepa) != NULL)
 			{
-				int SkillID = 0, Class = 0, PVPReduces = 0, AOE = 0;
+				int SkillID = 0, Class = 0, PVPReduces = 0, AOE = 0, PVEDamageT = 0, PVPDamageT = 0, CritDmgPVP = 0, CritDmgPVE = 0;
 				char Damage[BUFSIZ];
 				int maxDamage = 0, maxPVPDamage = 0;
 				if (sscanf(line, "(EditSkill (class %d)(action %d)(damage '%[a-z | A-Z | 0-9/<>|.,~*;` ():!^+%&=?_-£#$€]')(pvpreduce %d)(maxpvedamage %d)(maxpvpdamage %d)(AOE %d))", &Class, &SkillID, &Damage, &PVPReduces, &maxDamage, &maxPVPDamage, &AOE) == 7)
@@ -2054,15 +2213,35 @@ void ReadConfig(bool command)
 		}
 	}
 
+	if (!command || (command && modifiedFiles.count("./Configs/Range.txt"))) {
+		FILE *filerange = fopen("./Configs/Range.txt", "r");
+		if (filerange != NULL)
+		{
+			CheckRangeConfig.clear();
+
+			char line[BUFSIZ];
+			while (fgets(line, sizeof line, filerange) != NULL)
+			{
+				int classId = 0, skillId = 0, maxRange = 0;
+				if (sscanf(line, "(SkillRange (Class %d)(Action %d)(MaxRange %d))", &classId, &skillId, &maxRange) == 3)
+					CheckRangeConfig[skillId + (classId * 100)].maxRange = maxRange;
+
+			}
+			fclose(filerange);
+		}
+
+	}
+
 	if (!command || (command && modifiedFiles.count("./Configs/Pet.txt"))) {
 		FILE *file = fopen("./Configs/Pet.txt", "r");
 		if (file != NULL)
 		{
+			PetTime.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, file) != NULL)
 			{
-				int PetIndex = 0, GetPetTime = 0, Heal = 0, AutoPick = 0, HPLimit = 0, RangePick = 0, EXP = 0;
-				if (sscanf(line, "(pet (index %d)(time %d)(heal %d)(hplimit %d)(autopick %d)(pickrange %d)(addexp %d))", &PetIndex, &GetPetTime, &Heal, &HPLimit, &AutoPick, &RangePick, &EXP) == 7)
+				int PetIndex = 0, GetPetTime = 0, Heal = 0, AutoPick = 0, HPLimit = 0, RangePick = 0, EXP = 0, EGGEXP = 0;
+				if (sscanf(line, "(pet (index %d)(time %d)(heal %d)(hplimit %d)(autopick %d)(pickrange %d)(addexp %d)(eggexp %d))", &PetIndex, &GetPetTime, &Heal, &HPLimit, &AutoPick, &RangePick, &EXP, &EGGEXP) == 8)
 				{
 					ConfigPetTime pet = ConfigPetTime();
 					pet.Time = GetPetTime;
@@ -2072,12 +2251,13 @@ void ReadConfig(bool command)
 					pet.HPLimit = HPLimit;
 					pet.Monster = 0;
 					pet.Exp = EXP;
+					pet.Egg = EGGEXP;
 					PetTime[PetIndex] = pet;
 				}
 				else {
 					int Monster = 0, Speed = 0, Attack = 0, Delay = 0;
 					char effects[BUFSIZ];
-					if (sscanf(line, "(pet (index %d)(monster %d)(speed %d)(time %d)(heal %d)(hplimit %d)(autopick %d)(pickrange %d)(addexp %d)(attack %d)(AOEDelay %d)(effects '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &PetIndex, &Monster, &Speed, &GetPetTime, &Heal, &HPLimit, &AutoPick, &RangePick, &EXP, &Attack, &Delay, &effects) >= 9)
+					if (sscanf(line, "(pet (index %d)(monster %d)(speed %d)(time %d)(heal %d)(hplimit %d)(autopick %d)(pickrange %d)(addexp %d)(eggexp %d)(attack %d)(AOEDelay %d)(effects '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &PetIndex, &Monster, &Speed, &GetPetTime, &Heal, &HPLimit, &AutoPick, &RangePick, &EXP, &EGGEXP, &Attack, &Delay, &effects) >= 10)
 					{
 						std::string sEffects = std::string((const char*)effects);
 						ConfigPetTime pet = ConfigPetTime();
@@ -2087,6 +2267,7 @@ void ReadConfig(bool command)
 						pet.Pick = AutoPick;
 						pet.Range = RangePick;
 						pet.Exp = EXP;
+						pet.Egg = EGGEXP;
 						pet.Monster = Monster;
 						pet.AttackPet = Attack;
 						pet.effects = explode(",", sEffects);
@@ -2255,7 +2436,17 @@ void ReadConfig(bool command)
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filewe) != NULL)
 			{
-				int ItemIndex = 0, HTMLPage = 0, Remove = 0, Time = 0;
+				int timeindex = 0, extime = 0;
+				if (sscanf(line, "(timetalisman (index %d)(time %d))", &timeindex, &extime) == 2)
+				{
+					ConfigTimeTalisman talis = ConfigTimeTalisman();
+
+					talis.itemindex = timeindex;
+					talis.time = extime;
+					TimeTalisman[timeindex] = talis;
+				}
+
+				int ItemIndex = 0, HTMLPage = 0, Remove = 0, Time = 0, Prevent = 0, AddIcon = 0;
 				if (sscanf(line, "(ItemWindow (Index %d)(HTML %d)(Remove %d))", &ItemIndex, &HTMLPage, &Remove) == 3)
 				{
 					ItemUsed[ItemIndex].HTML = HTMLPage;
@@ -2268,16 +2459,6 @@ void ReadConfig(bool command)
 					ItemTasty[ItemIndeX].index = ItemIndeX;
 					ItemTasty[ItemIndeX].remove = ItemRemove;
 					ItemTasty[ItemIndeX].level = ItemLevel;
-
-				}
-
-				if (sscanf(line, "(ItemExpansion (Index %d)(Days %d)(Remove %d)(Level %d))", &ItemIndeX, &Time, &ItemRemove, &ItemLevel) == 4)
-				{
-					ItemExpansion[ItemIndeX].index = ItemIndeX;
-					ItemExpansion[ItemIndeX].remove = ItemRemove;
-					ItemExpansion[ItemIndeX].level = ItemLevel;
-					ItemExpansion[ItemIndeX].Time = Time;
-
 
 				}
 
@@ -2303,6 +2484,15 @@ void ReadConfig(bool command)
 				}
 
 
+				if (sscanf(line, "(ItemExpansion (Index %d)(Days %d)(Remove %d)(Level %d))", &ItemIndeX, &Time, &ItemRemove, &ItemLevel) == 4)
+				{
+					ItemExpansion[ItemIndeX].index = ItemIndeX;
+					ItemExpansion[ItemIndeX].remove = ItemRemove;
+					ItemExpansion[ItemIndeX].level = ItemLevel;
+					ItemExpansion[ItemIndeX].Time = Time;
+
+
+				}
 				int Item = 0, Quest = 0, Flag = 0;
 				if (sscanf(line, "(ItemQuest (Index %d)(Quest %d %d))", &Item, &Quest, &Flag) == 3)
 				{
@@ -2370,6 +2560,8 @@ void ReadConfig(bool command)
 			fclose(filewe);
 		}
 	}
+
+
 	if (!command || (command && modifiedFiles.count("./Configs/Jail.txt"))) {
 		FILE *JailCoordsFile = fopen("./Configs/Jail.txt", "r");
 		if (JailCoordsFile != NULL)
@@ -2449,7 +2641,7 @@ void ReadConfig(bool command)
 			{
 				int index = 0;
 
-				if (sscanf(line, "(enable (index %d))", &index) == 1)
+				if (sscanf(line, "(disable (index %d))", &index) == 1)
 				{
 					AntiKs.insert(index);
 				}
@@ -2458,60 +2650,15 @@ void ReadConfig(bool command)
 		}
 	}
 
-
-	if (!command || (command && modifiedFiles.count("./Configs/ItemEffects.txt"))) {
-		FILE *Effectsfile = fopen("./Configs/ItemEffects.txt", "r");
-		if (Effectsfile != NULL)
-		{
-			EquipEffects.clear();
-			char line[BUFSIZ];
-			while (fgets(line, sizeof line, Effectsfile) != NULL)
-			{
-				int index = 0, efTime = 0;
-				char EffectName[BUFSIZ];
-
-				if (sscanf(line, "(ItemEffect (Index %d) (Effect '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (Time %d))", &index, &EffectName, &efTime) == 3){
-					PVEWeaponsS Equipment = PVEWeaponsS();
-
-					Equipment.index = index;
-					Equipment.Effect = EffectName;
-					Equipment.effectTime = efTime;
-
-					EquipEffects[index] = Equipment;
-				}
-			}
-			fclose(Effectsfile);
-		}
-	}
-
-	if (!command || (command && modifiedFiles.count("./Configs/PVEWeapon.txt"))) {
-		FILE *PVEFile = fopen("./Configs/PVEWeapon.txt", "r");
-		if (PVEFile != NULL)
-		{
-			PVEWeapon.clear();
-			char line[BUFSIZ];
-			while (fgets(line, sizeof line, PVEFile) != NULL)
-			{
-				int index = 0;
-
-				if (sscanf(line, "(PVEWeapon (Index %d))", &index) == 1)
-					PVEWeapon[index].index = index;
-			}
-			fclose(PVEFile);
-		}
-	}
-
 	if (!command || (command && modifiedFiles.count("./Configs/Starter.txt"))) {
 		FILE *StarterFile = fopen("./Configs/Starter.txt", "r");
 		if (StarterFile != NULL)
 		{
 			StarterItems.clear();
-			starterBuffs.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, StarterFile) != NULL)
 			{
 				int Class = 0, Info = 0, RewardIndex = 0, Amount = 0, Bof = 0, Dss = 0, Def = 0, Eva = 0, Prefix = 0, Atk = 0, Magic = 0, TOA = 0, UPG = 0, Mix = 0, Type = 0;
-				int BClass = 0, buffIndex = 0, SysKey = 0, buffValue, buffTime;
 
 				if (sscanf(line, "(starterItem (class %d)(index %d)(amount %d)(info %d)(prefix %d)(defense %d)(evasion %d)(attack %d)(magic %d)(toa %d)(upgrade %d)(mix %d)(bof %d)(dss %d)(type %d))", &Class, &RewardIndex, &Amount, &Info, &Prefix, &Def, &Eva, &Atk, &Magic, &TOA, &UPG, &Mix, &Bof, &Dss, &Type) == 15)
 				{
@@ -2532,18 +2679,6 @@ void ReadConfig(bool command)
 					t.Type = Type;
 
 					StarterItems[Class].push_back(t);
-				}
-				else	if (sscanf(line, "(starterBuff (class %d)(index %d)(time %d)(value %d)(syskey %d))", &BClass, &buffIndex, &buffTime, &buffValue, &SysKey) == 5)
-				{
-					StarterBuffs b = StarterBuffs();
-					b.Class = BClass;
-					b.Buff = buffIndex;
-					b.SysKey = SysKey;
-					b.Time = buffTime;
-					b.value = buffValue;
-
-
-					starterBuffs[BClass].push_back(b);
 				}
 				else {
 					int Map = 0, X = 0, Y = 0, HTML = 0;
@@ -2620,12 +2755,16 @@ void ReadConfig(bool command)
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filte) != NULL)
 			{
-				int BoxIndex = 0, Bof = 0, RewardIndex = 0, Amount = 0, Dss = 0, Def = 0, Eva = 0, Prefix = 0, Atk = 0, Magic = 0, TOA = 0, UPG = 0, Mix = 0, stat = 0, bound = 0, rewardID = 0;
+				char RewardIndex[BUFSIZ], Amount[BUFSIZ];
+				int BoxIndex = 0, Bof = 0, Dss = 0, Def = 0, Eva = 0, Prefix = 0, Atk = 0, Magic = 0, TOA = 0, UPG = 0, Mix = 0, stat = 0, bound = 0, rewardID = 0;
 				if (sscanf(line, "(box (index %d)(rewardindex %[0-9/,])(amount %[0-9/,])(prefix %d)(defense %d)(evasion %d)(attack %d)(magic %d)(toa %d)(upgrade %d)(mix %d)(bof %d)(dss %d)(itemstat %d)(bound %d))", &BoxIndex, &RewardIndex, &Amount, &Prefix, &Def, &Eva, &Atk, &Magic, &TOA, &UPG, &Mix, &Bof, &Dss, &stat, &bound) >= 13)
 				{
-					Items t = Items();
-					t.Index = RewardIndex;
-					t.Amount = Amount;
+					std::string Indexes = std::string((const char*)RewardIndex);
+					std::string Amounts = std::string((const char*)Amount);
+
+					SBoxes t = SBoxes();
+					t.Rewards = explode(",", Indexes);
+					t.Amounts = explode(",", Amounts);
 					t.Bof = Bof;
 					t.Bound = bound;
 					t.Def = Def;
@@ -2638,14 +2777,14 @@ void ReadConfig(bool command)
 					t.Toa = TOA;
 					t.Upgrade = UPG;
 					t.ItemStat = stat;
-					Boxes[BoxIndex].push_back(t);
+					Boxes[BoxIndex] = t;
 				}
 
 			}
 			fclose(filte);
 		}
 	}
-
+	// commar
 	if (!command || (command && modifiedFiles.count("./Configs/Rewards.txt"))) {
 		FILE *filte = fopen("./Configs/Rewards.txt", "r");
 		if (filte != NULL)
@@ -2654,11 +2793,12 @@ void ReadConfig(bool command)
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filte) != NULL)
 			{
-				char indexes[BUFSIZ], amounts[BUFSIZ], keyLine[BUFSIZ];
+				char indexes[BUFSIZ], amounts[BUFSIZ], notice[BUFSIZ];
+				memset(notice, 0, sizeof(notice));
 				int ID = 0, HonorPts = 0, RewardPts = 0, HTML = 0, Bound = 0, HousePoints = 0;
-				int userKey = 0;
+		//		int userKey = 0;
 				signed __int64 EXP = 0;
-				if (sscanf(line, "(Reward (ID %d) (ItemIndex %[0-9/,]) (ItemAmount %[0-9/,]) (HonorPt %d) (RewardPt %d) (EXP %lld) (HTML %d) (Bound %d))", &ID, &indexes, &amounts, &HonorPts, &RewardPts, &EXP, &HTML, &Bound) >= 7)
+				if (sscanf(line, "(Reward (ID %d) (ItemIndex %[0-9/,]) (ItemAmount %[0-9/,]) (HonorPt %d) (RewardPt %d) (EXP %lld) (HTML %d) (Bound %d) (Msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &ID, &indexes, &amounts, &HonorPts, &RewardPts, &EXP, &HTML, &Bound, &notice) >= 8)
 				{
 					std::string sBIndexs = std::string((const char*)indexes);
 					std::string sBAmounts = std::string((const char*)amounts);
@@ -2671,11 +2811,16 @@ void ReadConfig(bool command)
 					pReward.RewardPts = RewardPts;
 					pReward.HTML = HTML;
 					pReward.Bound = Bound;
+					if (notice && strlen(notice))
+						pReward.Notice = notice;
+					else
+						pReward.Notice = ""; // Set to empty string for rewards without a message
+
 					if (pReward.Indexes.size() == pReward.Amounts.size())
 						Rewards[ID] = pReward;
 				}
 
-				if (PeaceEvil && sscanf(line, "(Reward (ID %d) (ItemIndex %[0-9/,]) (ItemAmount %[0-9/,]) (HonorPt %d) (RewardPt %d) (EXP %lld) (HTML %d) (Bound %d) (HousePoints %d))", &ID, &indexes, &amounts, &HonorPts, &RewardPts, &EXP, &HTML, &Bound, &HousePoints) >= 8)
+				if (PeaceEvil && sscanf(line, "(RewardHouse (ID %d) (ItemIndex %[0-9/,]) (ItemAmount %[0-9/,]) (HonorPt %d) (RewardPt %d) (EXP %lld) (HTML %d) (Bound %d) (HousePoints %d))", &ID, &indexes, &amounts, &HonorPts, &RewardPts, &EXP, &HTML, &Bound, &HousePoints) >= 8)
 				{
 					std::string sBIndexs = std::string((const char*)indexes);
 					std::string sBAmounts = std::string((const char*)amounts);
@@ -2692,31 +2837,31 @@ void ReadConfig(bool command)
 					if (pReward.Indexes.size() == pReward.Amounts.size())
 						Rewards[ID] = pReward;
 				}
-				_snprintf(keyLine, sizeof(keyLine), "ExpReward (Key %d)", userKey);
-				if (strstr(line, keyLine)) {
-						int Level = 0;
-						int Percentage = 0;
-						if (sscanf(line, "(Exp (Level %d) (Percentage %d))", &Level, &Percentage) == 2) {
-							std::string sBIndexs = std::string((const char*)indexes);
-							std::string sBAmounts = std::string((const char*)amounts);
+				//_snprintf(keyLine, sizeof(keyLine), "ExpReward (Key %d)", userKey);
+				//if (strstr(line, keyLine)) {
+				//		int Level = 0;
+				//		int Percentage = 0;
+				//		if (sscanf(line, "(Exp (Level %d) (Percentage %d))", &Level, &Percentage) == 2) {
+				//			std::string sBIndexs = std::string((const char*)indexes);
+				//			std::string sBAmounts = std::string((const char*)amounts);
 
-							Reward pReward = Reward();
-							pReward.Indexes = explode(",", 0);
-							pReward.Amounts = explode(",", 0);
-							pReward.EXP = 0;
-							pReward.HonorPts = 0;
-							pReward.RewardPts = 0;
-							pReward.HTML = 0;
-							pReward.Bound = 0;
-							pReward.HousePoints = 0;
-							pReward.userKey = userKey;
-							if (pReward.Indexes.size() == pReward.Amounts.size())
-								Rewards[userKey] = pReward;
-							F10EXPRewards[Level].Level = Level;
-							F10EXPRewards[Level].Progress = Percentage;
+				//			Reward pReward = Reward();
+				//			pReward.Indexes = explode(",", 0);
+				//			pReward.Amounts = explode(",", 0);
+				//			pReward.EXP = 0;
+				//			pReward.HonorPts = 0;
+				//			pReward.RewardPts = 0;
+				//			pReward.HTML = 0;
+				//			pReward.Bound = 0;
+				//			pReward.HousePoints = 0;
+				//			pReward.userKey = userKey;
+				//			if (pReward.Indexes.size() == pReward.Amounts.size())
+				//				Rewards[userKey] = pReward;
+				//			F10EXPRewards[Level].Level = Level;
+				//			F10EXPRewards[Level].Progress = Percentage;
 
-						}
-					}
+				//		}
+				//	}
 				}
 			}
 		}
@@ -2730,10 +2875,10 @@ void ReadConfig(bool command)
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filte) != NULL)
 			{
-				int PTSize = 0, QIndex = 0, QFlag = 0, PVPArena = 0, MinL = 0, MaxL = 0, RID = 0;
+				int PTSize = 0, QIndex = 0, QFlag = 0, PVPArena = 0, MinL = 0, MaxL = 0, RID = 0, PTTime = 0;
 				char RStart[BUFSIZ], REnd[BUFSIZ], StartTime[BUFSIZ], Day[BUFSIZ], commands[BUFSIZ];
 
-				if (sscanf(line, "(PartyVsParty (Quest %d %d) (PVPArena %d) (PartySize %d) (Level %d-%d) (RewardID %d) (Day '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (RegistrationTime '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'-'%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (StartTime '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (commands '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &QIndex, &QFlag, &PVPArena, &PTSize, &MinL, &MaxL, &RID, &Day, &RStart, &REnd, &StartTime, &commands) >= 11)
+				if (sscanf(line, "(PartyVsParty (Quest %d %d) (PVPArena %d) (PartySize %d) (Level %d-%d) (RewardID %d) (Day '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (RegistrationTime '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'-'%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (StartTime '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (commands '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (DuelTime %d))", &QIndex, &QFlag, &PVPArena, &PTSize, &MinL, &MaxL, &RID, &Day, &RStart, &REnd, &StartTime, &commands, &PTTime) >= 12)
 				{
 					if (PVPArena > 8)
 						PVPArena %= 8;
@@ -2744,6 +2889,7 @@ void ReadConfig(bool command)
 					PartyReg Reg = PartyReg();
 					Reg.Day = Day;
 					Reg.PartySize = PTSize;
+					Reg.ArenaTime = PTTime;
 					Reg.PVPArena = PVPArena;
 					Reg.MaxLevel = MaxL;
 					Reg.MinLevel = MinL;
@@ -2887,6 +3033,8 @@ void ReadConfig(bool command)
 		FILE *falex = fopen("./Configs/QuestWebsite.txt", "r");
 		if (falex != NULL)
 		{
+			CustomCommands.clear();
+			QuestWebsite.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, falex) != NULL)
 			{
@@ -2897,7 +3045,7 @@ void ReadConfig(bool command)
 
 				int QIndex = 0, QFlag = 0;
 
-				char url[BUFSIZ];
+				char url[BUFSIZ], cmd[BUFSIZ];
 
 				if (sscanf(line, "(QuestWebsite (index %d %d)(Link '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &QIndex, &QFlag, &url) == 3) {
 					for (int i = 0; i < strlen(url); i++) {
@@ -2907,6 +3055,16 @@ void ReadConfig(bool command)
 
 					QuestWebsite[((QIndex % 65536) * 1000) + QFlag] = url;
 				}
+
+
+				if (sscanf(line, "(WebsiteCmd (command '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Link '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &cmd, &url) == 2) {
+					for (int i = 0; i < strlen(url); i++) {
+						if (url[i] == '!')
+							url[i] = '-';
+					}
+					CustomCommands[cmd].Link = url;
+				}
+
 
 			}
 			fclose(falex);
@@ -3101,12 +3259,10 @@ void ReadConfig(bool command)
 		if (filetx != NULL)
 		{
 			SinSpawners.clear();
-			SinEventWeapon.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filetx) != NULL)
 			{
 				int index = 0, amount = 0, X = 0, Y = 0;
-				int itemIndex = 0, Class = 0;
 				if (sscanf(line, "(Spawn (Index %d)(Amount %d)(X %d)(Y %d))", &index, &amount, &X, &Y) == 4) {
 					SinSpawner spawner = SinSpawner();
 					spawner.Index = index;
@@ -3114,11 +3270,6 @@ void ReadConfig(bool command)
 					spawner.X = X;
 					spawner.Y = Y;
 					SinSpawners.push_back(spawner);
-				}
-
-				if (sscanf(line, "(Weapon (Index %d)(Class %d))", &itemIndex, &Class) == 2) {
-					SinEventWeapon[itemIndex].index = itemIndex;
-					SinEventWeapon[itemIndex].Class = Class;
 				}
 			}
 			fclose(filetx);
@@ -3474,21 +3625,27 @@ void ReadConfig(bool command)
 			string line;
 			while (getline(filenwu, line))
 			{
-				int QuestID, PTSize = 0, Cooldown = 0, QuestFlag, Duration, MinLvl, MaxLvl, TX = 0, TY = 0, Lapse = 0, ReqItem = 0, ReqAmount = 0;
-				char Reward[BUFSIZ], mobs[BUFSIZ], amounts[BUFSIZ], day[BUFSIZ], name[BUFSIZ], X[BUFSIZ], Y[BUFSIZ];
+				int QuestID, PTSize = 0, Cooldown = 0, QuestFlag, Duration, MinLvl, MaxLvl, TX = 0, TY = 0, Lapse = 0;
+				char Reward[BUFSIZ], mobs[BUFSIZ], amounts[BUFSIZ], day[BUFSIZ], name[BUFSIZ], X[BUFSIZ], Y[BUFSIZ], ReqItemx[BUFSIZ], ReqAmountx[BUFSIZ], ReqItemM[BUFSIZ], ReqAmountM[BUFSIZ];
 				int hour = 0, minute = 0, second = 0, hourr = 0, minuter = 0, secondr = 0;
-				if (sscanf(line.c_str(), "(EventMap (Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (Quest %d %d) (ReqItem %d) (ReqAmount %d) (Level %d-%d) (Teleport %d %d) (Mobs %[0-9\\,-]) (Amount %[0-9\\,-]) (SpawnX %[0-9\\,-]) (SpawnY %[0-9\\,-]) (Day '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (Time '%d:%d:%d') (RegistrationTime '%d:%d:%d') (Duration %d) (Lapse %d) (Reward %[0-9\\,-]))", &name, &QuestID, &QuestFlag, &ReqItem, &ReqAmount, &MinLvl, &MaxLvl, &TX, &TY, &mobs, &amounts, &X, &Y, &day, &hour, &minute, &second, &hourr, &minuter, &secondr, &Duration, &Lapse, &Reward) == 23)
+				int item2 = 0, item2am = 0;
+
+				if (sscanf(line.c_str(), "(EventMap (Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (Quest %d %d) (ReqItem %[0-9\\,-]) (ReqAmount %[0-9\\,-]) (Level %d-%d) (Teleport %d %d) (Mobs %[0-9\\,-]) (Amount %[0-9\\,-]) (SpawnX %[0-9\\,-]) (SpawnY %[0-9\\,-]) (Day '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (Time '%d:%d:%d') (RegistrationTime '%d:%d:%d') (Duration %d) (Lapse %d) (Reward %[0-9\\,-]))", &name, &QuestID, &QuestFlag, &ReqItemx, &ReqAmountx, &MinLvl, &MaxLvl, &TX, &TY, &mobs, &amounts, &X, &Y, &day, &hour, &minute, &second, &hourr, &minuter, &secondr, &Duration, &Lapse, &Reward) == 23)
 				{
 					std::string sBIndexs = std::string((const char*)mobs);
 					std::string sBAmounts = std::string((const char*)amounts);
 					std::string sRewards = std::string((const char*)Reward);
 					std::string Xs = std::string((const char*)X);
 					std::string Ys = std::string((const char*)Y);
+					std::string itemIndexes = std::string((const char*)ReqItemx);
+					std::string itemAmounts = std::string((const char*)ReqAmountx);
+
 					std::vector<std::string> Rewards_ = explode(",", sRewards);
 					std::vector<std::string> Monsters_ = explode(",", sBIndexs);
 					std::vector<std::string> Amounts_ = explode(",", sBAmounts);
 					std::vector<std::string> X_ = explode(",", Xs);
 					std::vector<std::string> Y_ = explode(",", Ys);
+
 					if (Monsters_.size() == Amounts_.size() && X_.size() == Y_.size()) {
 						std::string realDay(day);
 						int day = EventConfig(realDay);
@@ -3528,25 +3685,32 @@ void ReadConfig(bool command)
 						mapEvent.LvlMin = MinLvl;
 						mapEvent.LvlMax = MaxLvl;
 						mapEvent.Reward = Rewards_;
-						mapEvent.ReqAmount = ReqAmount;
-						mapEvent.ReqItem = ReqItem;
+						mapEvent.ReqItemx = explode(",", itemIndexes);
+						mapEvent.ReqAmountx = explode(",", itemAmounts);
 						mapEvent.Quest = (QuestID * 1000) + QuestFlag;
 						EventMapsQuests[(QuestID * 1000) + QuestFlag] =  mapEvent;
 					}
 				}
 				else
-					if (sscanf(line.c_str(), "(InstanceDungeon (Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (PartySize %d) (Quest %d %d) (ReqItem %d) (ReqAmount %d) (Level %d-%d) (Teleport %d %d) (Mobs %[0-9\\,-]) (Amount %[0-9\\,-]) (SpawnX %[0-9\\,-]) (SpawnY %[0-9\\,-]) (Duration %d) (Lapse %d) (Cooldown %d) (Reward %[0-9\\,-]))", &name, &PTSize, &QuestID, &QuestFlag, &ReqItem, &ReqAmount, &MinLvl, &MaxLvl, &TX, &TY, &mobs, &amounts, &X, &Y, &Duration, &Lapse, &Cooldown, &Reward) == 18)
+					if (sscanf(line.c_str(), "(InstanceDungeon (Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (PartySize %d) (Quest %d %d) (LeaderReqItem %[0-9\\,-]) (LeaderReqAmount %[0-9\\,-]) (MemberReqItem %[0-9\\,-]) (MemberReqAmount %[0-9\\,-]) (Level %d-%d) (Teleport %d %d) (Mobs %[0-9\\,-]) (Amount %[0-9\\,-]) (SpawnX %[0-9\\,-]) (SpawnY %[0-9\\,-]) (Duration %d) (Lapse %d) (Cooldown %d) (Reward %[0-9\\,-]))", &name, &PTSize, &QuestID, &QuestFlag, &ReqItemx, &ReqAmountx, &ReqItemM, &ReqAmountM, &MinLvl, &MaxLvl, &TX, &TY, &mobs, &amounts, &X, &Y, &Duration, &Lapse, &Cooldown, &Reward) == 20)
 					{
 						std::string sBIndexs = std::string((const char*)mobs);
 						std::string sBAmounts = std::string((const char*)amounts);
 						std::string sRewards = std::string((const char*)Reward);
 						std::string Xs = std::string((const char*)X);
 						std::string Ys = std::string((const char*)Y);
+						std::string itemIndexes = std::string((const char*)ReqItemx);
+						std::string itemAmounts = std::string((const char*)ReqAmountx);
+						std::string MitemIndexes = std::string((const char*)ReqItemM);
+						std::string MitemAmounts = std::string((const char*)ReqAmountM);
+
 						std::vector<std::string> Rewards_ = explode(",", sRewards);
 						std::vector<std::string> Monsters_ = explode(",", sBIndexs);
 						std::vector<std::string> Amounts_ = explode(",", sBAmounts);
 						std::vector<std::string> X_ = explode(",", Xs);
 						std::vector<std::string> Y_ = explode(",", Ys);
+
+
 						if (Monsters_.size() == Amounts_.size() && X_.size() == Y_.size()) {
 
 							eventMap mapEvent = eventMap();
@@ -3577,8 +3741,10 @@ void ReadConfig(bool command)
 							mapEvent.LvlMin = MinLvl;
 							mapEvent.LvlMax = MaxLvl;
 							mapEvent.Reward = Rewards_;
-							mapEvent.ReqAmount = ReqAmount;
-							mapEvent.ReqItem = ReqItem;
+							mapEvent.ReqItemx = explode(",", itemIndexes);
+							mapEvent.ReqAmountx = explode(",", itemAmounts);
+							mapEvent.ReqItemM = explode(",", MitemIndexes);
+							mapEvent.ReqAmountM = explode(",", MitemAmounts);
 							mapEvent.Quest = (QuestID * 1000) + QuestFlag;
 							EventMapsQuests[(QuestID * 1000) + QuestFlag] = mapEvent;
 						}
@@ -3771,43 +3937,53 @@ void ReadConfig(bool command)
 		FILE *fileq = fopen("./Configs/Buff.txt", "r");
 		if (fileq != NULL)
 		{
+			BufferCheck.clear();
+
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, fileq) != NULL)
 			{
 				int Index = 0, IRemove = 0, ILevel = 0, IGrade = 0, Quest = 0, QGrade = 0, QRemove = 0, QLimit = 0;
-				int Speed = 0, SpeedQ = 0;
-				if (sscanf(line, "(buff (index %d)(grade %d)(remove %d)(level %d))", &Index, &IGrade, &IRemove, &ILevel) == 4)
+				int Speed = 0, SpeedQ = 0, cd = 0;
+				if (sscanf(line, "(buff (index %d)(grade %d)(remove %d)(level %d)(cd %d))", &Index, &IGrade, &IRemove, &ILevel, &cd) >= 4)
 				{
 					BufferCheck[Index].Index = Index;
 					BufferCheck[Index].Speed = 60;
 					BufferCheck[Index].Grade = IGrade;
 					BufferCheck[Index].Delete = IRemove;
 					BufferCheck[Index].Limit = ILevel;
+					BufferCheck[Index].cd = cd;
+
 				}
-				else if (sscanf(line, "(buff (index %d)(grade %d)(speed %d)(remove %d)(level %d))", &Index, &IGrade, &Speed, &IRemove, &ILevel) == 5)
+				else if (sscanf(line, "(buff (index %d)(grade %d)(speed %d)(remove %d)(level %d)(cd %d))", &Index, &IGrade, &Speed, &IRemove, &ILevel, &cd) >= 5)
 				{
 					BufferCheck[Index].Index = Index;
 					BufferCheck[Index].Speed = Speed;
 					BufferCheck[Index].Grade = IGrade;
 					BufferCheck[Index].Delete = IRemove;
 					BufferCheck[Index].Limit = ILevel;
+					BufferCheck[Index].cd = cd;
+
 				}
 
-				if (sscanf(line, "(buff (quest %d)(grade %d)(remove %d)(level %d))", &Quest, &QGrade, &QRemove, &QLimit) == 4)
+				if (sscanf(line, "(buff (quest %d)(grade %d)(remove %d)(level %d)(cd %d))", &Quest, &QGrade, &QRemove, &QLimit, &cd) >= 4)
 				{
 					BufferCheck[Quest % 65536].Index = Quest;
 					BufferCheck[Quest % 65536].Speed = 45;
 					BufferCheck[Quest % 65536].Grade = QGrade;
 					BufferCheck[Quest % 65536].Delete = QRemove;
 					BufferCheck[Quest % 65536].Limit = QLimit;
+					BufferCheck[Quest % 65536].cd = cd;
+
 				}
-				else if (sscanf(line, "(buff (quest %d)(grade %d)(speed %d)(remove %d)(level %d))", &Quest, &QGrade, &SpeedQ, &QRemove, &QLimit) == 5)
+				else if (sscanf(line, "(buff (quest %d)(grade %d)(speed %d)(remove %d)(level %d)(cd %d))", &Quest, &QGrade, &SpeedQ, &QRemove, &QLimit, &cd) >= 5)
 				{
 					BufferCheck[Quest % 65536].Index = Quest;
 					BufferCheck[Quest % 65536].Speed = SpeedQ;
 					BufferCheck[Quest % 65536].Grade = QGrade;
 					BufferCheck[Quest % 65536].Delete = QRemove;
 					BufferCheck[Quest % 65536].Limit = QLimit;
+					BufferCheck[Quest % 65536].cd = cd;
+
 				}
 			}
 			fclose(fileq);
@@ -3861,6 +4037,7 @@ void ReadConfig(bool command)
 			fclose(fileaym);
 		}
 	}
+
 	if (!command || (command && modifiedFiles.count("./Configs/SkillBook.txt"))) {
 		FILE *filey = fopen("./Configs/SkillBook.txt", "r");
 		if (filey != NULL)
@@ -3917,24 +4094,6 @@ void ReadConfig(bool command)
 		}
 	}
 
-	if (!command || (command && modifiedFiles.count("./Configs/Range.txt"))) {
-		FILE *filerange = fopen("./Configs/Range.txt", "r");
-		if (filerange != NULL)
-		{
-			CheckRangeConfig.clear();
-			char line[BUFSIZ];
-			while (fgets(line, sizeof line, filerange) != NULL)
-			{
-				int classId = 0, skillId = 0, maxRange = 0;
-				if (sscanf(line, "(SkillRange (Class %d)(Action %d)(MaxRange %d))", &classId, &skillId, &maxRange) == 3)
-					CheckRangeConfig[skillId + (classId * 100)].maxRange = maxRange;
-
-			}
-			fclose(filerange);
-		}
-
-	}
-
 	if (!command || (command && modifiedFiles.count("./Configs/PvPSkillDamage.txt"))) {
 		FILE *filegw = fopen("./Configs/PvPSkillDamage.txt", "r");
 		if (filegw != NULL)
@@ -3954,13 +4113,65 @@ void ReadConfig(bool command)
 		}
 	}
 
+	if (!command || (command && modifiedFiles.count("./Configs/Battlepass.txt"))) {
+		FILE *Battlepass = fopen("./Configs/Battlepass.txt", "r");
+		if (Battlepass != NULL)
+		{
+			char line[BUFSIZ];
+			while (fgets(line, sizeof line, Battlepass) != NULL)
+			{
+				int Class = 0, Level = 0, Prefix = 0, ID = 0; char rewardnotice[BUFSIZ];
+				char indexes[BUFSIZ], amounts[BUFSIZ];
+
+
+				if (sscanf(line, "(normal (ID %d)(level %d)(class %d)(indexes %[0-9/,])(amounts %[0-9/,])(prefix %d)(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &ID, &Level, &Class, &indexes, &amounts, &Prefix, &rewardnotice) == 7)
+				{
+					ConfigLevelReward battleReward = ConfigLevelReward();
+
+					std::string bpIndexes = std::string((const char*)indexes);
+					std::string bpAmounts = std::string((const char*)amounts);
+
+					battleReward.Class = Class;
+					battleReward.Indexes = explode(",", bpIndexes);
+					battleReward.Prefix = Prefix;
+					battleReward.Amounts = explode(",", bpAmounts);
+					battleReward.Msg = rewardnotice;
+					battleReward.ID = ID;
+
+					if (battleReward.Indexes.size() == battleReward.Amounts.size())
+						BattlepassReward[Level].push_back(battleReward);
+
+				}
+
+				if (sscanf(line, "(premium (ID %d)(level %d)(class %d)(indexes %[0-9/,])(amounts %[0-9/,])(prefix %d)(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &ID, &Level, &Class, &indexes, &amounts, &Prefix, &rewardnotice) == 7)
+				{
+					ConfigLevelReward premiumReward = ConfigLevelReward();
+
+					std::string bpPIndexes = std::string((const char*)indexes);
+					std::string bpPAmounts = std::string((const char*)amounts);
+
+					premiumReward.Class = Class;
+					premiumReward.Indexes = explode(",", bpPIndexes);
+					premiumReward.Prefix = Prefix;
+					premiumReward.Amounts = explode(",", bpPAmounts);
+					premiumReward.Msg = rewardnotice;
+					premiumReward.ID = ID;
+
+					if (premiumReward.Indexes.size() == premiumReward.Amounts.size())
+						PremiumPass[Level].push_back(premiumReward);
+				}
+			}
+			fclose(Battlepass);
+		}
+	}
+
 	if (!command || (command && modifiedFiles.count("./Configs/PacketBlock.txt"))) {
 		FILE *filjw = fopen("./Configs/PacketBlock.txt", "r");
 		if (filjw != NULL)
 		{
 			PacketSpam.clear();
 			PacketBlock.clear();
-
+			PacketSpamConf.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filjw) != NULL)
 			{
@@ -4102,16 +4313,15 @@ void ReadConfig(bool command)
 		{
 			MonstersItem.clear();
 			MonstersRewards.clear();
-			MonstersRSummon.clear();
 
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filemorewa) != NULL)
 			{
-				int monsterindex = 0, reward = 0, randomitem = 0, randomchance = 0, itemamount = 0, playerchance = 0, randommonster = 0, randomamount = 0;
+				int monsterindex = 0, reward = 0, randomitem = 0, randomchance = 0, itemamount = 0, playerchance = 0, Range = 0;
 				int chance = 0;
 				bool found = false;
 
-				if (sscanf(line, "(MonsterReward (Index %d)(RewardID %d)(RandomItemIndex %d)(Amount %d)(ItemChance %d)(PlayerChance %d))", &monsterindex, &reward, &randomitem, &itemamount, &randomchance, &playerchance) == 6)
+				if (sscanf(line, "(MonsterReward (Index %d)(RewardID %d)(RandomItemIndex %d)(Amount %d)(ItemChance %d)(PlayerChance %d)(Range %d))", &monsterindex, &reward, &randomitem, &itemamount, &randomchance, &playerchance, &Range) == 7)
 				{
 					for (int i = 0; i < MonstersItem.size(); i++) {
 						ChanceItem f = MonstersItem[i];
@@ -4126,25 +4336,16 @@ void ReadConfig(bool command)
 					mobsitems.Amount = itemamount;
 					mobsitems.Chance = randomchance;
 					MonstersItem.push_back(mobsitems);
+					
+					CMonstersRewards MobReward = CMonstersRewards();
+					MobReward.mobindex = monsterindex;
+					MobReward.rewardid = reward;
+					MobReward.randomindex = randomitem;
+					MobReward.itemamount = itemamount;
+					MobReward.pickchance = playerchance;
+					MobReward.Range = Range;
+					MonstersRewards[monsterindex] = MobReward;
 
-					MonstersRewards[monsterindex].mobindex = monsterindex;
-					MonstersRewards[monsterindex].rewardid = reward;
-					MonstersRewards[monsterindex].randomindex = randomitem;
-					MonstersRewards[monsterindex].itemamount = itemamount;
-					MonstersRewards[monsterindex].pickchance = playerchance;
-
-
-				}
-
-				if (sscanf(line, "(MonsterSummon (Index %d)(RewardID %d)(SummonIndex %d)(Amount %d)(SummonChance %d))", &monsterindex, &reward, &randommonster, &randomamount, &randomchance) == 5)
-				{
-					CMonstersRSummon Random = CMonstersRSummon();
-					Random.rewardid = reward;
-					Random.randomindex = randommonster;
-					Random.randomamount = randomamount;
-					Random.pickchance = randomchance;
-
-					MonstersRSummon[monsterindex] = Random;
 				}
 
 			}
@@ -4152,28 +4353,6 @@ void ReadConfig(bool command)
 			fclose(filemorewa);
 		}
 	}
-
-
-	if (!command || (command && modifiedFiles.count("./Skills/Mage.txt"))) {
-		FILE *filemageh = fopen("./Skills/Mage.txt", "r");
-		if (filemageh != NULL)
-		{
-			MapSD.clear();
-			char line[BUFSIZ];
-			while (fgets(line, sizeof line, filemageh) != NULL)
-			{
-				int mapX = 0, mapY = 0, AOE = 0;
-				if (sscanf(line, "(SoulDestruction (file %d_%d)(Disable %d))", &mapX, &mapY, &AOE) == 3)
-				{
-					MapSD[(mapX * 1000) + (mapY)].SDAOE = AOE;
-				}
-
-			}
-			fclose(filemageh);
-		}
-	}
-
-
 	if (!command || (command && modifiedFiles.count("./Configs/Area.txt"))) {
 		FILE *filekd = fopen("./Configs/Area.txt", "r");
 		if (filekd != NULL)
@@ -4370,6 +4549,7 @@ void ReadConfig(bool command)
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filen) != NULL)
 			{
+				int CustomBofPrefix = 0, CustomImpPrefix = 0;
 				int ArmorGetPrefix = 0, ArmorGetDef = 0, BofGrade = 0, ImpGrade = 0, BofPrefix = 0, DGPrefix = 0, ImpPrefix = 0, InPrefix = 0, QiPrefix = 0, GetA = 0, GetM = 0, GetTOA = 0, GetUpg = 0, GetPrefix = 0, MixPrefix = 0, MixInfo = 0; char mixnotice[BUFSIZ];
 				if (sscanf(line, "(armorpimp (prefix %d)(defense %d))", &ArmorGetPrefix, &ArmorGetDef) == 2)
 				{
@@ -4381,9 +4561,14 @@ void ReadConfig(bool command)
 					BofConfigRead = BofPrefix;
 				}
 
+				if (sscanf(line, "(CustomBof (prefix %d))", &CustomBofPrefix) == 1)
+				{
+					Bof2ConfigRead = CustomBofPrefix;
+				}
+
 				if (sscanf(line, "(HighBof (prefix %d) (grade %d))", &BofPrefix, &BofGrade) == 2)
 				{
-					HighGradeBof[BofGrade] = BofPrefix;
+					HighGradeBof[BofPrefix] = BofGrade;
 				}
 
 				int dmgPrefix = 0, type = 0, damagePimp = 0;
@@ -4415,9 +4600,15 @@ void ReadConfig(bool command)
 				{
 					ImpConfigRead = ImpPrefix;
 				}
+
+				if (sscanf(line, "(CustomImp (prefix %d))", &CustomImpPrefix) == 1)
+				{
+					Imp2ConfigRead = CustomImpPrefix;
+				}
+
 				if (sscanf(line, "(HighImp (prefix %d) (grade %d))", &ImpPrefix, &ImpGrade) == 2)
 				{
-					HighGradeImperial[ImpGrade] = ImpPrefix;
+					HighGradeImperial[ImpPrefix] = ImpGrade;
 				}
 
 				if (sscanf(line, "(pimp (prefix %d)(attack %d)(magic %d)(toa %d)(upgrade %d))", &GetPrefix, &GetA, &GetM, &GetTOA, &GetUpg) == 5)
@@ -4481,6 +4672,7 @@ void ReadConfig(bool command)
 		}
 	}
 
+
 	if (!command || (command && modifiedFiles.count("./Configs/Reborn.txt"))) {
 		FILE *fileo = fopen("./Configs/Reborn.txt", "r");
 		if (fileo != NULL)
@@ -4488,10 +4680,12 @@ void ReadConfig(bool command)
 			Reborns.clear();
 			RebornsPenalty.clear();
 			RebornsMaps.clear();
+			RebornGear.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, fileo) != NULL)
 			{
 				int ID = 0, NamePad = 0, MinLvl = 0, ResetLevel = 0, RewardID = 0, Penalty = 0, QuestIndex = 0, QuestFlag = 0;
+				int RebornLvl = 0, RebornGrade = 0;
 				char tag[10];
 				if (sscanf(line, "(Reborn (Num %d)(NameTag '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(NamePad %d)(MinLvl %d)(ResetLvl %d)(RewardID %d))", &ID, &tag, &NamePad, &MinLvl, &ResetLevel, &RewardID) == 6)
 				{
@@ -4502,6 +4696,13 @@ void ReadConfig(bool command)
 					rb.RewardID = RewardID;
 					rb.NameTag = tag;
 					Reborns[ID] = rb;
+				}
+
+				if (sscanf(line, "(RebornGear (Grade %d)(Reborn %d))", &RebornGrade, &RebornLvl) == 2)
+				{
+					RbGear rb = RbGear();
+					rb.Level = RebornLvl;
+					RebornGear[RebornGrade] = rb;
 				}
 
 				if (sscanf(line, "(RebornPenalty (Num %d)(Penalty %d))", &ID, &Penalty) == 2)
@@ -5119,9 +5320,33 @@ void ReadConfig(bool command)
 					RentalItems[ID].Time = EXTime;
 					RentalItems[ID].Price = Price;
 				}
-
 			}
 			fclose(filetm);
+		}
+	}
+
+	if (!command || (command && modifiedFiles.count("./Configs/SummonGuard.txt"))) {
+		FILE *SummonGuardians = fopen("./Configs/SummonGuard.txt", "r");
+		if (SummonGuardians != NULL)
+		{
+			SGuard.clear();
+			char line[BUFSIZ];
+			while (fgets(line, sizeof line, SummonGuardians) != NULL)
+			{
+				int BossIndex = 0, GuardIndex = 0, HP = 0, Amount = 0;
+				if (sscanf(line, "(Guard (BossIndex %d)(GuardIndex %d)(SpawnHP %d)(SpawnAmount %d))", &BossIndex, &GuardIndex, &HP, &Amount) >= 4)
+				{
+					SummonGuard summon = SummonGuard();
+					summon.amount = Amount;
+					summon.boss = BossIndex;
+					summon.guard = GuardIndex;
+					summon.hp = HP;
+
+					SGuard[BossIndex] = summon;
+				}
+
+			}
+			fclose(SummonGuardians);
 		}
 	}
 
@@ -5294,59 +5519,6 @@ void ReadConfig(bool command)
 				}
 			}
 			fclose(LReward);
-		}
-	}
-
-	if (!command || (command && modifiedFiles.count("./Configs/Battlepass.txt"))) {
-		FILE *Battlepass = fopen("./Configs/Battlepass.txt", "r");
-		if (Battlepass != NULL)
-		{
-			BattlepassReward.clear();
-			char line[BUFSIZ];
-			while (fgets(line, sizeof line, Battlepass) != NULL)
-			{
-				int Class = 0, Level = 0, Prefix = 0, ID = 0; char rewardnotice[BUFSIZ];
-				char indexes[BUFSIZ], amounts[BUFSIZ];
-
-
-				if (sscanf(line, "(normal (ID %d)(level %d)(class %d)(indexes %[0-9/,])(amounts %[0-9/,])(prefix %d)(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &ID, &Level, &Class, &indexes, &amounts, &Prefix, &rewardnotice) == 7)
-				{
-					ConfigLevelReward battleReward = ConfigLevelReward();
-
-					std::string bpIndexes = std::string((const char*)indexes);
-					std::string bpAmounts = std::string((const char*)amounts);
-
-					battleReward.Class = Class;
-					battleReward.Indexes = explode(",", bpIndexes);
-					battleReward.Prefix = Prefix;
-					battleReward.Amounts = explode(",", bpAmounts);
-					battleReward.Msg = rewardnotice;
-					battleReward.ID = ID;
-
-					if (battleReward.Indexes.size() == battleReward.Amounts.size())
-					BattlepassReward[Level].push_back(battleReward);
-
-				}
-
-				if (sscanf(line, "(premium (ID %d)(level %d)(class %d)(indexes %[0-9/,])(amounts %[0-9/,])(prefix %d)(msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &ID, &Level, &Class, &indexes, &amounts, &Prefix, &rewardnotice) == 7)
-				{
-					ConfigLevelReward premiumReward = ConfigLevelReward();
-
-					std::string bpPIndexes = std::string((const char*)indexes);
-					std::string bpPAmounts = std::string((const char*)amounts);
-
-					premiumReward.Class = Class;
-					premiumReward.Indexes = explode(",", bpPIndexes);
-					premiumReward.Prefix = Prefix;
-					premiumReward.Amounts = explode(",", bpPAmounts);
-					premiumReward.Msg = rewardnotice;
-					premiumReward.ID = ID;
-
-					if (premiumReward.Indexes.size() == premiumReward.Amounts.size())
-					PremiumPass[Level].push_back(premiumReward);
-				}
-			}
-			fclose(Battlepass);
 		}
 	}
 
@@ -6083,7 +6255,9 @@ void CleanLoadConfig() {
 	DailyQuest.clear();
 	DisableSkill.clear();
 	MapMax.clear();
+	PacketSpam.clear();
 	PacketBlock.clear();
+	PacketSpamConf.clear();
 	Filter.clear();
 	BlockList.clear();
 	Tracker.clear();
@@ -6097,24 +6271,31 @@ void CleanLoadConfig() {
 	MonstersBuff.clear();
 	RMonstersBuff.clear();
 	QuestsNotice.clear();
+	SkillBook.clear();
+	SkillDowngrade.clear();
 	CheckCooldownConfig.clear();
 	CheckEggCooldownConfig.clear();
-	SkillDowngrade.clear();
-	SkillBook.clear();
-	PVEWeapon.clear();
-	EquipEffects.clear();
-	RebornsPenalty.clear();
+	PetTime.clear();
+	CheckRangeConfig.clear();
+	QuestWebsite.clear();
+	CustomCommands.clear();
+	SGuard.clear();
+	BuffDisableCheck.clear();
+	BuffRemoveCheck.clear();
+	MissionQuestsItem.clear();
+	MissionQuests.clear();
+	BufferCheck.clear();
+	BuffMakerCheck.clear();
+	BofConfigRead = 0;
+	Bof2ConfigRead = 0;
+
+	HighGradeBof.clear();
 	BattlepassReward.clear();
-	PremiumPass.clear();
-	MapSD.clear();
-	BossEXPMsgs.clear();
-	RebornsMaps.clear();
-	SinEventWeapon.clear();
-	StarterItems.clear();
-	starterBuffs.clear();
-	MonstersRewards.clear();
-	MonstersItem.clear();
-	MonstersRSummon.clear();
+	HighGradeImperial.clear();
+	TimeTalisman.clear();
+	Rewards.clear();
+	DutyQuest.clear();
+	DutyMonsterQuests.clear();
 
 	ReadConfig(false);
 }

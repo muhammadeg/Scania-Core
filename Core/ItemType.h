@@ -27,44 +27,17 @@ void rewardLimit(IChar IPlayer) {
 	RewardLimit.insert(check);
 }
 
-bool isBFRewarded(IChar IPlayer) {
-	std::string check = IPlayer.GetIP();
-	if (RewardHWID && User.count(IPlayer.GetPID()))
-		check = User.findValue(IPlayer.GetPID()).Hardware;
-
-	return BFRewardLimit.count(check);
-}
-
-void BFrewardLimit(IChar IPlayer) {
-	std::string check = IPlayer.GetIP();
-	if (RewardHWID && User.count(IPlayer.GetPID()))
-		check = User.findValue(IPlayer.GetPID()).Hardware;
-
-	BFRewardLimit.insert(check);
-}
-
-bool isDKRewarded(IChar IPlayer) {
-	std::string check = IPlayer.GetIP();
-	if (RewardHWID && User.count(IPlayer.GetPID()))
-		check = User.findValue(IPlayer.GetPID()).Hardware;
-
-	return DKRewardLimit.count(check);
-}
-
-void DKrewardLimit(IChar IPlayer) {
-	std::string check = IPlayer.GetIP();
-	if (RewardHWID && User.count(IPlayer.GetPID()))
-		check = User.findValue(IPlayer.GetPID()).Hardware;
-
-	DKRewardLimit.insert(check);
-}
-
 bool isItemRiding(int Index) {
 	if(NewItemType.count(Index))
 		return NewItemType.find(Index)->second == RIDING_PET;
 	return false;
 }
 
+bool isWings(int Index) {
+	if (NewItemType.count(Index))
+		return NewItemType.find(Index)->second == Wings;
+	return false;
+}
 bool isItemSuit(int Index) {
 	if (NewItemType.count(Index))
 		return NewItemType.find(Index)->second == COSTUME_SUIT;

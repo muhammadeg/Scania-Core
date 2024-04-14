@@ -6,6 +6,7 @@ bool __fastcall GenMonsterReloadCheck(void* MonsterValue, void* edx, int argumen
 }
 
 int GetChannelPlayerAround(int Genmonster, int range) {
+
 	char N[0x298u];
 	memset(N, 0, sizeof(N));
 	int GetSetXY[2];
@@ -19,6 +20,7 @@ int GetChannelPlayerAround(int Genmonster, int range) {
 }
 
 int GetChannelObjectAround(int Genmonster, int range) {
+
 	char N[0x298u];
 	memset(N, 0, sizeof(N));
 	int GetSetXY[2];
@@ -31,6 +33,7 @@ int GetChannelObjectAround(int Genmonster, int range) {
 	return CPlayer::GetObjectAround(*(void **)((int)N + 320), (int)N + 324, range);
 }
 int __fastcall GenMonsterCheck(void* MonsterValue, void* edx) {
+
 	int Check = Undefined::GetValue(MonsterValue);
 
 	if (Check) {
@@ -57,6 +60,7 @@ int __fastcall GenMonsterCheck(void* MonsterValue, void* edx) {
 }
 
 char* __cdecl MonsterChannel(int Monster, int Genmonster) {
+
 	if (reloadingM)
 		return 0;
 
@@ -75,6 +79,7 @@ char* __cdecl MonsterChannel(int Monster, int Genmonster) {
 
 void __fastcall MonsterSendCreate(void *Monster, void *edx, int Player, int Argument)
 {
+
 	IChar IPlayer((void*)Player);
 	IChar IMonster(Monster);
 
@@ -86,6 +91,7 @@ void __fastcall MonsterSendCreate(void *Monster, void *edx, int Player, int Argu
 
 void __cdecl MonsterSendCreateInSight(void *monster, unsigned char Type, char* format, short index, long id, long x, long y, unsigned short direction, long curhp, long maxhp, unsigned long gState, unsigned __int64 mState64, char* guildName, char race, long GID, char* userName)
 {
+
 	IChar IMonster(monster);
 	CChar::WriteInSight(monster, 0x33, "wdddwddIIsbdsIIbd", index, id, x, y, direction, curhp, maxhp,
 		(unsigned __int64)gState, mState64, guildName, race, GID, userName,
@@ -96,6 +102,7 @@ void __cdecl MonsterSendCreateInSight(void *monster, unsigned char Type, char* f
 
 void __cdecl MonsterSendCreatePacket(void *player, unsigned char Type, char* format, short index, long id, long x, long y, unsigned short direction, long curhp, long maxhp, unsigned long gState, unsigned __int64 mState64, char* guildName, char race, long GID, char* userName)
 {
+
 	TargetFind myTarget(1, 0, id);
 	int monster = (int)myTarget.getTarget();
 	IChar IMonster((void*)monster);
@@ -113,6 +120,7 @@ void __cdecl MonsterSendCreatePacket(void *player, unsigned char Type, char* for
 
 int __cdecl MonsterWriteExclusive(unsigned char Type, char* format, short index, int id, int x, int y, unsigned short direction, int curhp, int maxhp, unsigned long gState, unsigned __int64 mState64, char* guildName, char race, long GID, char* userName)
 {
+
 	TargetFind myTarget(1, 0, id);
 	int monster = (int)myTarget.getTarget();
 	IChar IMonster((void*)monster);
@@ -123,6 +131,7 @@ int __cdecl MonsterWriteExclusive(unsigned char Type, char* format, short index,
 
 int __fastcall MonsterScanSight(int Monster, void *edx)
 {
+
 	IChar IMonster((void*)Monster);
 
 	if (ChannelActivated && ChannelMaps.count(IMonster.GetMapIndex())) {
@@ -165,6 +174,7 @@ bool is_file_exist(const char *fileName)
 }
 
 void GenMonsterChannel() {
+
 	if (is_file_exist("./Config/GenmonsterC.txt")) {
 		remove("./Config/Genmonster.txt");
 		rename("./Config/GenmonsterC.txt", "./Config/Genmonster.txt");
@@ -222,6 +232,7 @@ void GenMonsterChannel() {
 
 int __fastcall CObjectDBOpen(int Object, void *edx, char* File)
 {
+
 	bool isGenM = false;
 
 	if (std::string(File) == "Config\\GenMonster.txt") {
@@ -246,6 +257,7 @@ int __fastcall ChannelAround(int Object, void* edx) {
 
 int __cdecl ChatFix(unsigned char Type, char* format, char* name, char* msg)
 {
+
 	TargetFind myTarget(name);
 	int player = (int)myTarget.getTarget();
 	IChar IPlayer((void*)player);
@@ -253,6 +265,7 @@ int __cdecl ChatFix(unsigned char Type, char* format, char* name, char* msg)
 }
 
 void __fastcall MagicSkillsFix(int Monster, void* edx, int Player) {
+
 	IChar IMonster((void*)Monster);
 	IChar IPlayer((void*)Player);
 
@@ -265,11 +278,13 @@ void __fastcall MagicSkillsFix(int Monster, void* edx, int Player) {
 
 void __fastcall CMapSendPacket(DWORD Player, void *edx, int Packet)
 {
+
 	(*(void(__thiscall **)(DWORD, int))(*(DWORD *)Player + 40))(Player, Packet);
 }
 
 int __fastcall CBaseNext(int Object, void* edx)
 {
+
 	IChar IObject((void*)Object);
 	int NextObject = Object;
 
@@ -284,6 +299,7 @@ int __fastcall CBaseNext(int Object, void* edx)
 
 int __fastcall CBasePlayerNext(int Object, void *edx)
 {
+
 	IChar NObject((void*)Object);
 	int Type = NObject.GetType();
 
@@ -309,6 +325,7 @@ int __fastcall CBasePlayerNext(int Object, void *edx)
 
 void __cdecl ItemSendCreate(void *player, unsigned char Type, char* format, WORD index, long iid, long x, long y, long amount)
 {
+
 	int ItemChannel = (ChannelActivated && ChannelItems.count(iid)) ? ChannelItems.findValue(iid) : 0;
 
 	CPlayer::Write(player, 0x36, "wdddddd", index, iid, x, y, 0xffffffff, amount, ItemChannel);
@@ -316,6 +333,7 @@ void __cdecl ItemSendCreate(void *player, unsigned char Type, char* format, WORD
 
 DWORD __cdecl PrepItemDrop(unsigned char Type, char* format, WORD index, long iid, long x, long y, long amount)
 {
+
 	int ItemChannel = ChannelActivated ? ChannelItems.findExists(iid) : 0;
 
 	return CObject::WriteExclusive(0x36, "wdddddd", index, iid, x, y, 0xffffffff, amount, ItemChannel);
@@ -323,6 +341,7 @@ DWORD __cdecl PrepItemDrop(unsigned char Type, char* format, WORD index, long ii
 
 int __cdecl DropItemClean(unsigned char Type, const char *Format, int itemid)
 {
+
 	if (ChannelActivated)
 		ChannelItems.erase(itemid);
 

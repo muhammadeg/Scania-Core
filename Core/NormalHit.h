@@ -23,8 +23,6 @@ int __fastcall NormalHit(void *Player, void *edx, int bType, int nTargetID)
 	
 	if (IPlayer.IsValid() && IPlayer.IsBuff(349))
 	{
-		if (IPlayer.GetMap() == BanditsMap)
-			return 0;
 
 		if (!isBattleRiding(IPlayer.GetBuffValue(349) + 7856)) {
 			IPlayer.DisableRiding();
@@ -42,8 +40,6 @@ int __fastcall NormalHit(void *Player, void *edx, int bType, int nTargetID)
 		if (Check > 500) return 0;
 	}
 
-	if (myc)
-		return 0;
 
 	if (IPlayer.IsOnline() && IPlayer.GetType() == 0 && CChar::IsGState((int)IPlayer.GetOffset(),512) && IPlayer.IsBuff(327))
 		IPlayer.CancelBuff(327);

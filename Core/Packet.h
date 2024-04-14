@@ -18,7 +18,7 @@ void LearnSkill(IChar IPlayer, int SkillID, bool Skillbook) {
 				*((DWORD*)(DWORD*)((int)IPlayer.GetOffset() + 624) + SkillID + 2) = Recheck;
 				CDBSocket::Write(9, "dbw", IPlayer.GetPID(), SkillID, 1);
 				CPlayer::Write(IPlayer.GetOffset(), 81, "bb", SkillID, 1);
-				if(!Skillbook)
+				if (!Skillbook)
 					IPlayer.RemoveSkillPoint(1);
 			}
 		}
@@ -49,8 +49,8 @@ void SkillLearnPacket(IChar IPlayer, int SkillID) {
 			return;
 		}
 
-		if(IPlayer.GetLevel() < sLearn.Levels[0]) {
-			IPlayer.SystemMessage("This skill can be learnable at level " + Int2String(sLearn.Levels[0]) +".", TEXTCOLOR_RED);
+		if (IPlayer.GetLevel() < sLearn.Levels[0]) {
+			IPlayer.SystemMessage("This skill can be learnable at level " + Int2String(sLearn.Levels[0]) + ".", TEXTCOLOR_RED);
 			return;
 		}
 
@@ -60,7 +60,7 @@ void SkillLearnPacket(IChar IPlayer, int SkillID) {
 			ISkill xSkill((void*)pSkill);
 			int Grade = xSkill.GetGrade();
 			int MaxGrade = sLearn.Levels.size();
-			
+
 			if (Grade >= MaxGrade) {
 				IPlayer.SystemMessage("You have already reached the max grade for this skill.", TEXTCOLOR_RED);
 				return;
@@ -78,7 +78,7 @@ void SkillLearnPacket(IChar IPlayer, int SkillID) {
 
 	if (IPlayer.GetLevel() >= 81 && SkillID >= 87 && SkillID <= 89 && IPlayer.GetSpecialty() > 1)
 	{
-		if(!MysteryEnable) {
+		if (!MysteryEnable) {
 			IPlayer.SystemMessage("Mystery skills are disabled", TEXTCOLOR_RED);
 			return;
 		}
@@ -256,7 +256,7 @@ void SkillLearnPacket(IChar IPlayer, int SkillID) {
 		}
 	}
 
-	LABEL_2:
+LABEL_2:
 	if (*(DWORD *)((int)IPlayer.GetOffset() + 548) > 0)
 		CSkill::LearnSkill((DWORD*)((int)IPlayer.GetOffset() + 624), SkillID);
 }
@@ -281,7 +281,7 @@ void upgradeSkill(IChar IPlayer, int SkillID) {
 void updateSatiety(IChar IPlayer, int Value) {
 	int SatietyGet = IPlayer.GetBuffValue(BuffNames::Satiety);
 	Value = Value > 30 ? Value - SatietyGet : Value;
-	if(IPlayer.IsBuff(349))
+	if (IPlayer.IsBuff(349))
 		IPlayer.AddHp(Value / 5);
 	int Satiety = SatietyGet + Value;
 	int IID = IPlayer.GetBuffValue(BuffNames::RidingIID);
@@ -378,15 +378,17 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			CPacket::Read((char*)pPacket, (char*)pPos, "dddb", &a1, &a2, &a3, &a4);
 
 			if (a4 == 1) {
-				if (!IPlayer.GetBuffValue(BuffNames::PetPick))
-					return;
+			if (!IPlayer.GetBuffValue(BuffNames::PetPick))
+			return;
 			}
-		}*/
+			}*/
+
+
 
 		if (packet == 18) {
 			char type = 0;
 			int z = 0;
-			CPacket::Read((char*)pPacket, (char*)pPos, "bd", &type,&z);
+			CPacket::Read((char*)pPacket, (char*)pPos, "bd", &type, &z);
 
 			if ((type >= 0 && type <= 2) && !z && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && !CChar::IsGState((int)IPlayer.GetOffset(), 256)) {
 				IPlayer.Teleport(IPlayer.GetMap(), IPlayer.GetX(), IPlayer.GetY());
@@ -434,14 +436,14 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			int ID = 0;
 			CPacket::Read((char*)pPacket, (char*)pPos, "d", &ID);
 
-		//	IPlayer.UpdateBuff(BuffNames::TargetAttack, BuffNames::BuffTime, ID);
+			//	IPlayer.UpdateBuff(BuffNames::TargetAttack, BuffNames::BuffTime, ID);
 			return;
 		}
 
 		if (packet == 106) {
 			int Type1 = 0, Type2 = 0;
 			CPacket::Read((char*)pPacket, (char*)pPos, "dd", &Type1, &Type2);
-			
+
 			int Type = Type2 - 10;
 
 			if (!Type)
@@ -471,7 +473,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 							pt.nPosition = 0;
 							pt.nWinCnt = 0;
 						}
-						
+
 						Tools->Compile(PlayerPack + Packetsize, "s", pt.szName);
 						Tools->Compile(PlayerPack + Packetsize + 128, "dddd", pt.bAbsence, pt.bNULL, pt.nPosition, pt.nWinCnt);
 						Packetsize += 144;
@@ -506,7 +508,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				}
 
 				if (IPlayer.GetLevel() > quest.MaxLvl || IPlayer.GetLevel() < quest.MinLvl) {
-					IPlayer.SystemMessage("This questex is only available for players between level " + Int2String(quest.MinLvl) + " and " + Int2String(quest.MaxLvl) + "." , TEXTCOLOR_RED);
+					IPlayer.SystemMessage("This questex is only available for players between level " + Int2String(quest.MinLvl) + " and " + Int2String(quest.MaxLvl) + ".", TEXTCOLOR_RED);
 					return;
 				}
 
@@ -536,7 +538,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					for (int i = 0; i < quest.Required.size(); i++) {
 						int ItemIndex = quest.Required[i];
 						int ItemAmount = quest.Amounts[i];
-						if(ItemIndex && ItemAmount)
+						if (ItemIndex && ItemAmount)
 							CPlayer::RemoveItem((void*)Player, 9, ItemIndex, ItemAmount);
 					}
 				}
@@ -565,7 +567,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				if (quest.html)
 					IPlayer.OpenHTML(quest.html);
 
-				if(!quest.Save)
+				if (!quest.Save)
 					CPlayer::SaveQuestFlag(Player, Quest, 1);
 			}
 			else
@@ -651,13 +653,13 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					AuctionItem item = AuctionItems.find(iid)->second;
 					//auctionLock.Leave();
 					if (CPlayer::RemoveItem((void*)Player, 9, 31, item.Price)) {
-						
+
 						if (item.RPID)
 							CDBSocket::Write(104, "dddd", item.RPID, 31, item.CurrentBid, 0);
 
 						CDBSocket::Write(104, "dddd", item.PID, 31, item.Price, 0);
 						CDBSocket::Write(30, "dbdbbssdbwbdds", -1, 0, -1, 0, 1, "Kal Online", IPlayer.GetName(), iid, item.SetGem, item.Index, item.Prefix, item.Amount, 0, "Congratulations, you have won the auction for this item.");
-						
+
 						//auctionLock.Enter();
 						AuctionItems.erase(iid);
 						//auctionLock.Leave();
@@ -667,7 +669,8 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						CDBSocket::Write(107, "d", iid);
 						ShowAuction((void*)Player, 0, 1);
 						CPlayer::Write((void*)Player, 0xFE, "db", 206, 3);
-					}else
+					}
+					else
 						CPlayer::Write((void*)Player, 0xFE, "db", 206, 0xD);
 				}
 				return;
@@ -683,7 +686,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 			if (Bid) {
 				for (int i = 0; i < 3; i++) {
-					if(first != i)
+					if (first != i)
 						ShowAuction((void*)Player, i, 1);
 				}
 
@@ -701,7 +704,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				//auctionLock.Enter();
 				int Counted = AuctionItems.count(iid);
 				//auctionLock.Leave();
-				
+
 				if (Counted)
 					return;
 
@@ -714,12 +717,12 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					return;
 				if (Hours == 168 && !CPlayer::RemoveItem((void*)Player, 9, 1829, 1))
 					return;
-				
+
 				if (CurrentBid > Price)
 					return;
 
 				int ItemOffset = IPlayer.ItemPointerLock(iid);
-				
+
 				if (!ItemOffset)
 					return;
 
@@ -763,7 +766,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						IPlayer.SystemMessage("Locked items can not be added in aution.", TEXTCOLOR_RED);
 						return;
 					}
-					
+
 					if (AuctionLimit) {
 						int count = 0;
 						//auctionLock.Enter();
@@ -772,8 +775,8 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 						for (auto x = cloneAuction.rbegin(); x != cloneAuction.rend(); x++) {
 							if (x->second.PID == IPlayer.GetPID())
-								count++; 
-							
+								count++;
+
 							if (count >= AuctionLimit) {
 								IPlayer.SystemMessage("You can only have up to " + Int2String(AuctionLimit) + " registered items in auction.", TEXTCOLOR_RED);
 								return;
@@ -1349,12 +1352,12 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					}
 					memset(item.ItemPacket, 0, sizeof item.ItemPacket);
 					Tools->Compile(item.ItemPacket, "wdbddbbbbbbbbwbbbbbdbwwwwbbbbbbbbbbdbbwbbd", index, iid, prefix, info, amount, maxend, curend, setgem, xatk, xmagic, xdefense, xhit, xevasion, xprotect, upgrlvl, upgrrate, x, y, z, remaintime, dsstype, phyatk, magatk, def, absorb, eva, otp, hpinc, mpinc, str, hp, intel, wis, agi, PerfShotCheck, QigongGrade, dg1stat, dg1type, a, dg2stat, dg2type, refill);
-					
+
 					//auctionLock.Enter();
 					AuctionItems[iid] = item;
 					//auctionLock.Leave();
 					UpdateAuction();
-					ShowAuction((void*)Player,0,1);
+					ShowAuction((void*)Player, 0, 1);
 					CDBSocket::Write(105, "sddsdmd", IPlayer.GetName(), (int)time(0) + (3600 * Hours), Price, "", CurrentBid, item.ItemPacket, 67, IPlayer.GetPID());
 
 					int v18 = (*(int(__thiscall **)(int, int, signed int, int))(*(DWORD *)ItemOffset + 132))(ItemOffset, Player, 10, IItem.GetAmount());
@@ -1379,7 +1382,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 				CPlayer::Write((void*)Player, 0xFE, "dbb", 188, Face, Hair);
 				IPlayer.Teleport(IPlayer.GetMap(), IPlayer.GetX(), IPlayer.GetY());
-				IPlayer.SystemMessage("Successfully changed your appearance.",TEXTCOLOR_GREEN);
+				IPlayer.SystemMessage("Successfully changed your appearance.", TEXTCOLOR_GREEN);
 			}
 			return;
 		}
@@ -1390,11 +1393,11 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			int BidPrice = 0;
 			char Type = 0, Type2 = 0;
 			CPacket::Read((char*)pPacket, (char*)pPos, "ddbbd", &BidType, &IID, &Type, &Type2, &BidPrice);
-			
+
 			//auctionLock.Enter();
 			int Counted = AuctionItems.count(IID);
 			//auctionLock.Leave();
-			
+
 			if (Counted) {
 				//auctionLock.Enter();
 				AuctionItem item = AuctionItems.find(IID)->second;
@@ -1433,7 +1436,8 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					ShowAuction((void*)Player, 0, 1);
 					CDBSocket::Write(106, "ddds", IID, IPlayer.GetPID(), BidPrice, IPlayer.GetName());
 					CPlayer::Write((void*)Player, 0xFE, "db", 206, 2);
-				}else
+				}
+				else
 					CPlayer::Write((void*)Player, 0xFE, "db", 206, 0xD);
 
 			}
@@ -1443,7 +1447,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 		if (packet == 189) {
 			int type = 0, key = 0, iid1 = 0, iid2 = 0, iid3 = 0, iid4 = 0, iid5 = 0, iid6 = 0;
 			CPacket::Read((char*)pPacket, (char*)pPos, "dddddddd", &type, &key, &iid1, &iid2, &iid3, &iid4, &iid5, &iid6);
-			
+
 			if (type == 2) {
 				if (SecretBlackSmith.count(key)) {
 					SecretBlackSmithSkill InitSwap = SecretBlackSmith.find(key)->second;
@@ -1487,7 +1491,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 								int Amount = 0;
 
 								for (int j = 0; j < requireAmounts.size(); j++) {
-									if(String2Int(requireIndex[j]) == IItem.CheckIndex())
+									if (String2Int(requireIndex[j]) == IItem.CheckIndex())
 										Amount = String2Int(requireAmounts[j]);
 								}
 
@@ -1521,9 +1525,9 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				return;
 
 			if (Type == 0) {
-				
+
 				int Item = IPlayer.ItemPointerLock(IID);
-				
+
 				if (!Item)
 					return;
 
@@ -1613,7 +1617,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			if (Type == 9) {
 
 				int Item = IPlayer.ItemPointerLock(IID);
-				
+
 				if (!Item)
 					return;
 				IItem IItem((void*)Item);
@@ -1697,9 +1701,9 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			}
 
 			if (Type == 3) {
-				
+
 				int Item = IPlayer.ItemPointerLock(IID);
-				
+
 				if (!Item)
 					return;
 
@@ -1825,9 +1829,9 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			}
 
 			if (Type == 5) {
-				
+
 				int Item = IPlayer.ItemPointerLock(IID);
-				
+
 				if (!Item)
 					return;
 				IItem ItemX((void*)Item);
@@ -1891,13 +1895,13 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 									if (ReplaceItem)
 									{
 										CIOObject::AddRef(ReplaceItem);
-										if(ReplaceInfo)
+										if (ReplaceInfo)
 											*(DWORD *)(ReplaceItem + 48) = ReplaceInfo;
-										if(ReplaceDef)
+										if (ReplaceDef)
 											*(DWORD *)(ReplaceItem + 108) = ReplaceDef;
-										if(ReplaceEva)
+										if (ReplaceEva)
 											*(DWORD *)(ReplaceItem + 116) = ReplaceEva;
-										if(ReplaceGem)
+										if (ReplaceGem)
 											*(DWORD *)(ReplaceItem + 84) = ReplaceGem;
 
 										if (CPlayer::InsertItem(IPlayer.GetOffset(), 27, ReplaceItem) != 1)
@@ -1912,10 +1916,10 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 										CDBSocket::Write(87, "ddd", IPlayer.GetPID(), *(DWORD *)(ReplaceItem + 84), *(DWORD *)(ReplaceItem + 36));
 										CDBSocket::Write(21, "dddbb", *(DWORD *)(ReplaceItem + 36), *(DWORD *)(ReplaceItem + 32), *(DWORD *)(ReplaceItem + 48), 8, 7);
 
-										if(ReplaceDef)
+										if (ReplaceDef)
 											CDBSocket::Write(17, "ddbbb", *(DWORD *)(ReplaceItem + 36), *(DWORD *)(ReplaceItem + 32), 15, *(DWORD *)(ReplaceItem + 108), 0);
 
-										if(ReplaceEva)
+										if (ReplaceEva)
 											CDBSocket::Write(17, "ddbbb", *(DWORD *)(ReplaceItem + 36), *(DWORD *)(ReplaceItem + 32), 10, *(DWORD *)(ReplaceItem + 116), 0);
 
 										CItem::SendItemInfo((void*)ReplaceItem, (int)IPlayer.GetOffset(), 92);
@@ -1953,7 +1957,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					}
 
 					int Item2 = IPlayer.ItemPointerLock(JewelUse);
-					
+
 					if (!Item2)
 						return;
 
@@ -2013,13 +2017,13 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 							{
 								CIOObject::AddRef(ReplaceItem);
 
-								if(ReplaceInfo)
+								if (ReplaceInfo)
 									*(DWORD *)(ReplaceItem + 48) = ReplaceInfo;
-								if(ReplaceDef)
+								if (ReplaceDef)
 									*(DWORD *)(ReplaceItem + 108) = ReplaceDef;
-								if(ReplaceEva)
+								if (ReplaceEva)
 									*(DWORD *)(ReplaceItem + 116) = ReplaceEva;
-								if(ReplaceGem)
+								if (ReplaceGem)
 									*(DWORD *)(ReplaceItem + 84) = ReplaceGem;
 
 								if (CPlayer::InsertItem(IPlayer.GetOffset(), 27, ReplaceItem) != 1)
@@ -2033,9 +2037,9 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 								CDBSocket::Write(87, "ddd", IPlayer.GetPID(), *(DWORD *)(ReplaceItem + 84), *(DWORD *)(ReplaceItem + 36));
 								CDBSocket::Write(21, "dddbb", *(DWORD *)(ReplaceItem + 36), *(DWORD *)(ReplaceItem + 32), *(DWORD *)(ReplaceItem + 48), 8, 7);
-								if(ReplaceDef)
+								if (ReplaceDef)
 									CDBSocket::Write(17, "ddbbb", *(DWORD *)(ReplaceItem + 36), *(DWORD *)(ReplaceItem + 32), 15, *(DWORD *)(ReplaceItem + 108), 0);
-								if(ReplaceEva)
+								if (ReplaceEva)
 									CDBSocket::Write(17, "ddbbb", *(DWORD *)(ReplaceItem + 36), *(DWORD *)(ReplaceItem + 32), 10, *(DWORD *)(ReplaceItem + 116), 0);
 								CItem::SendItemInfo((void*)ReplaceItem, (int)IPlayer.GetOffset(), 92);
 								CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddddd", 242, 0, 0, 128, 255);
@@ -2097,7 +2101,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			CPacket::Read((char*)pPacket, (char*)pPos, "dd", &Type, &IID);
 
 			int Item = IPlayer.ItemPointerLock(IID);
-			
+
 			if (!Item)
 				return;
 			IItem IItem((void*)Item);
@@ -2159,31 +2163,14 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 		}
 
 		if (packet == 66) {
+
 			if (IPlayer.IsBuff(256))
 			{
 				IPlayer.SystemMessage("You need to wait 3 seconds to put off your item.", TEXTCOLOR_INFOMSG);
 				return;
 			}
+
 			IPlayer.Buff(256, 2, 0);
-
-			int IID = 0;
-			CPacket::Read((char*)pPacket, (char*)pPos, "d", &IID);
-
-			int Item = IPlayer.ItemPointerLock(IID);
-
-			if (!Item)
-				return;
-			IItem IItem((void*)Item);
-
-
-			for (std::map<int, StickBuff>::const_iterator it = BuffScale.begin(); it != BuffScale.end(); ++it) {
-				const StickBuff& stick = it->second;
-				int def = stick.def, str = stick.str, hp = stick.hp, agi = stick.agi, intel = stick.intel, crit = stick.crit, ref = stick.atk, sgrade = stick.Sgrade;
-				std::string buffName = stick.BuffName;
-
-				if (IPlayer.IsBuff(BuffNames::StickScale + (sgrade * 2)) && IPlayer.GetClass() == 1 && ScaleBuff && IPlayer.GetSpecialty() == 11 && CItem::GetLevel((int)IItem.GetOffset()) == stick.Sgrade)
-					IPlayer.RemoveSavedBuff(BuffNames::StickScale + (sgrade * 2));
-			}
 		}
 
 		if (packet == 65) {
@@ -2195,7 +2182,6 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			}
 			IPlayer.Buff(256, 2, 0);
 
-
 			int IID = 0;
 			CPacket::Read((char*)pPacket, (char*)pPos, "d", &IID);
 
@@ -2203,17 +2189,16 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 			if (!Item)
 				return;
+
 			IItem IItem((void*)Item);
 
-			for (std::map<int, StickBuff>::const_iterator it = BuffScale.begin(); it != BuffScale.end(); ++it) {
-				const StickBuff& stick = it->second;
-				int def = stick.def, str = stick.str, hp = stick.hp, agi = stick.agi, intel = stick.intel, crit = stick.crit, ref = stick.atk, sgrade = stick.Sgrade;
-				std::string buffName = stick.BuffName;
+			int ItemGrade = CItem::GetLevel((int)IItem.GetOffset());
+			int CurrentReborn = IPlayer.GetProperty(PlayerProperty::Reborn);
 
-				if (!IPlayer.IsBuff(BuffNames::StickScale + (sgrade * 2)) && IPlayer.GetClass() == 1 && ScaleBuff && IPlayer.GetSpecialty() == 11 && CItem::GetLevel((int)IItem.GetOffset()) == stick.Sgrade)
-					IPlayer.SaveBuff(BuffNames::StickScale + (sgrade * 2), BuffNames::BuffTime);
+			if (RebornGear.count(ItemGrade) && CurrentReborn < RebornGear.find(ItemGrade)->second.Level){
+				IPlayer.SystemMessage("You need to have atleast " + Int2String(RebornGear.find(ItemGrade)->second.Level) + " Reborn to equip this item", TEXTCOLOR_INFOMSG);
+				return;
 			}
-
 
 			int MapX = IPlayer.GetX() >> 13;
 			int MapY = IPlayer.GetY() >> 13;
@@ -2258,6 +2243,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			return;
 		}
 
+
 		//jail check 
 		if (IPlayer.IsBuff(BuffNames::Jail)) {
 			if ((packet == 34 || packet == 35)) {
@@ -2283,18 +2269,35 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 		if (packet == 82 && IPlayer.GetBuffValue(BuffNames::RidingUsing)){
 			IPlayer.DisableRiding();
-	//		IPlayer.SystemMessage("Please un-equip your riding pet before transforming.", TEXTCOLOR_RED);
+			//		IPlayer.SystemMessage("Please un-equip your riding pet before transforming.", TEXTCOLOR_RED);
 		}
 
 		if (packet == 167 || packet == 149 || PacketBlock.count(packet))
 			return;
 
-		if(packet == 67 && CChar::IsGState(Player,32)){
+		if (packet == 67 && CChar::IsGState(Player, 32)){
 			IPlayer.SystemMessage("You can not fish and shop at the same time.", TEXTCOLOR_RED);
 			return;
 		}
 
-		if (IPlayer.IsOnline() && packet == 67 && !IPlayer.IsBuff(3959))
+		//if (packet == 67)
+		//{
+		//	int Start = 0;
+		//	CPacket::Read((char*)pPacket, (char*)pPos, "b", &Start);
+
+		//	if (IPlayer.IsOnline() && IPlayer.GetBuffValue(BuffNames::WeaponWear))
+		//	{
+		//		int ItemIID = IPlayer.GetBuffValue(BuffNames::WeaponWear);
+		//		IItem IItem((void*)ItemIID);
+
+		//		if (IItem.Exists() && CItem::IsState((int)IItem.GetOffset(), 1)){
+		//			CPlayer::SwitchStall((void*)Player, Start);
+		//			return;
+		//		}
+		//	}
+		//}
+
+		if (IPlayer.IsOnline() && packet == C2S_Shop && !IPlayer.IsBuff(3959))
 		{
 			if (ShoppingLimit && ShopLimit.count(sha256(IPlayer.GetHWID() + IPlayer.GetIP())) && ShopLimit.find(sha256(IPlayer.GetHWID() + IPlayer.GetIP()))->second >= ShoppingLimit) {
 				IPlayer.SystemMessage("Exceeded Shop Limit.", TEXTCOLOR_RED);
@@ -2380,7 +2383,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 								}
 
 								Tools->Compile(Packet + xi * 71, "wdbddbbbbbbbbwbbbbbdbwwwwbbbbbbbbbbdbbwbbdd", x->first, x->second.iid, 0, 0, x->second.amount, CurEnd, CurEnd,
-									0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, x->second.price);
+									0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, x->second.price);
 								xi++;
 							}
 							CPlayer::Write(IPlayer.GetOffset(), 13, "bddbbm", 0, Value, 0, Items, 0, Packet, Size);
@@ -2514,7 +2517,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				if (type2) {
 					int JewelCheck = CPlayer::FindItem(IPlayer.GetOffset(), JewelIndex, 42);
 					if (JewelCheck) {
-						if(!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)JewelCheck + 120))((int)JewelCheck, IPlayer.GetOffset(), 9, -42))
+						if (!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)JewelCheck + 120))((int)JewelCheck, IPlayer.GetOffset(), 9, -42))
 							CPlayer::_OutOfInven((void*)Player, JewelCheck);
 
 						if (IItem.CheckIndex() == 7881)
@@ -2530,7 +2533,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				else {
 					int JewelCheck = CPlayer::FindItem(IPlayer.GetOffset(), JewelIndex, 6);
 					if (JewelCheck) {
-						if(!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)JewelCheck + 120))((int)JewelCheck, IPlayer.GetOffset(), 9, -6))
+						if (!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)JewelCheck + 120))((int)JewelCheck, IPlayer.GetOffset(), 9, -6))
 							CPlayer::_OutOfInven((void*)Player, JewelCheck);
 
 						updateSatiety(IPlayer, 30);
@@ -2548,7 +2551,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 		if (packet == 185) {
 			char type = 0;
 			int IID = 0;
-			CPacket::Read((char*)pPacket, (char*)pPos, "bd",&type, &IID);
+			CPacket::Read((char*)pPacket, (char*)pPos, "bd", &type, &IID);
 
 			int Item = IPlayer.ItemPointerLock(IID);
 
@@ -2575,7 +2578,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					return;
 				}
 
-				if(!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)JewelCheck + 120))((int)JewelCheck, IPlayer.GetOffset(), 9, -rental.Price))
+				if (!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)JewelCheck + 120))((int)JewelCheck, IPlayer.GetOffset(), 9, -rental.Price))
 					CPlayer::_OutOfInven((void*)Player, JewelCheck);
 
 				*(DWORD*)(Item + 68) = GetTickCount() + (2000 * (Time - (int)time(0)));
@@ -2647,6 +2650,13 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						CIOObject::AddRef(Item);
 						Price = (int)*(DWORD*)(*(DWORD*)(Item + 40) + 108);
 
+						if ((Price * Amount) > 2000000000)
+						{
+							IPlayer.SystemMessage("You are not allowed to buy this amount from this store.", TEXTCOLOR_RED);
+							CBase::Delete((void*)Item);
+							return;
+						}
+
 						if (Price <= 0)
 						{
 							CBase::Delete((void*)Item);
@@ -2663,6 +2673,8 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 						CBase::Delete((void*)Item);
 						CIOObject::Release((void*)Item);
+						//int SoldCheck = Price * Amount;
+						//CDBSocket::Write(122, "d", SoldCheck);
 					}
 				}
 			}
@@ -2718,12 +2730,12 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 				int ItemIn = IPlayer.ItemPointerLock(IID1);
 				int ItemMaterial = IPlayer.ItemPointerLock(IID2);
-				
+
 				if (!ItemIn || !ItemMaterial)
 					return;
-				
+
 				IItem IItem1((void*)ItemMaterial);
-				
+
 				if (IItem1.CheckIndex() != mEnchant.MaterialUsed || IItem1.GetAmount() < rateCount)
 					return;
 
@@ -2737,8 +2749,9 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					return;
 
 				if (CTools::Rate(0, 1000) <= EnchantCount.find((mEnchant.Rate * 1000) + rateCount)->second) {
-					int ReplacePrefix = 0, ReplaceItem = 0, ReplaceInfo = 0, ReplaceDef = 0, ReplaceEva = 0, ReplaceGem = 0, ReplaceA = 0, ReplaceM = 0, ReplaceTOA = 0, ReplaceEB = 0;
-					
+					int ReplacePrefix = 0, ReplaceItem = 0, ReplaceInfo = 0, ReplaceDef = 0, ReplaceEva = 0, ReplaceGem = 0, ReplaceA = 0, ReplaceM = 0, ReplaceTOA = 0, ReplaceEB = 0, ReplaceMaxEnd = 0, ReplaceNum = 0;
+
+
 					int ItemStat = 0;
 
 					itemStat.Enter();
@@ -2751,6 +2764,14 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 					if (*(DWORD *)((int)ItemIn + 48))
 						ReplaceInfo = *(DWORD *)((int)ItemIn + 48);
+
+					if (IItemIn.IsTransform()) {
+						if (*(DWORD *)((int)ItemIn + 92))
+							ReplaceMaxEnd = *(DWORD *)((int)ItemIn + 92);
+
+						if (*(DWORD *)((int)ItemIn + 96))
+							ReplaceNum = *(DWORD *)((int)ItemIn + 96);
+					}
 
 					if (IItemIn.HighMemory()) {
 
@@ -2782,17 +2803,39 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 					if (IPlayer.RemoveItemLock(ItemIn))
 					{
-						ReplaceItem = CItem::CreateItem(mEnchant.IndexOut, ReplacePrefix, 1, -1);
+						if (ItemIndex == 337 || ItemIndex == 338 || ItemIndex == 339 || ItemIndex == 1596) {
+							int possibleIndexes[] = { 337, 338, 339, 1596 };
+							int numberOfIndexes = sizeof(possibleIndexes) / sizeof(possibleIndexes[0]);
+
+							int randomIndex;
+
+							do {
+								srand(static_cast<unsigned int>(time(0)));
+
+								randomIndex = possibleIndexes[rand() % numberOfIndexes];
+							} while (randomIndex == ItemIndex);
+
+							ReplaceItem = CItem::CreateItem(randomIndex, ReplacePrefix, 1, -1);
+						}
+						else
+							ReplaceItem = CItem::CreateItem(mEnchant.IndexOut, ReplacePrefix, 1, -1);
 
 						if (ReplaceItem)
 						{
 							IItem IItemOut((void*)ReplaceItem);
 							CIOObject::AddRef(ReplaceItem);
 
-							if(ReplaceInfo)
+							if (ReplaceInfo)
 								*(DWORD *)(ReplaceItem + 48) = ReplaceInfo;
-							if(ReplaceGem)
+							if (ReplaceGem)
 								*(DWORD *)(ReplaceItem + 84) = ReplaceGem;
+							if (IItemOut.IsTransform())
+							{
+								if (ReplaceMaxEnd)
+									*(DWORD *)(ReplaceItem + 92) = ReplaceMaxEnd;
+								if (ReplaceNum)
+									*(DWORD *)(ReplaceItem + 96) = ReplaceNum;
+							}
 
 							if (IItemOut.HighMemory()) {
 								if (ReplaceA)
@@ -2809,6 +2852,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 											*(DWORD *)(ReplaceItem + 112) = ReplaceTOA;
 										if (ReplaceEB)
 											*(DWORD *)(ReplaceItem + 124) = ReplaceEB;
+
 									}
 								}
 							}
@@ -2831,22 +2875,26 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 								CDBSocket::Write(90, "dd", ItemStat, IID);
 							}
 
-							if(ReplaceGem)
+							if (ReplaceGem)
 								CDBSocket::Write(87, "ddd", IPlayer.GetPID(), ReplaceGem, IID);
 							if (ReplaceInfo)
 								CDBSocket::Write(21, "dddbb", IID, IPlayer.GetPID(), ReplaceInfo, 8, 7);
-							if(ReplaceDef)
+							if (ReplaceDef)
 								CDBSocket::Write(17, "ddbbb", IID, IPlayer.GetPID(), 15, ReplaceDef, 0);
-							if(ReplaceEva)
+							if (ReplaceEva)
 								CDBSocket::Write(17, "ddbbb", IID, IPlayer.GetPID(), 10, ReplaceEva, 0);
-							if(ReplaceA)
+							if (ReplaceA)
 								CDBSocket::Write(17, "ddbbb", IID, IPlayer.GetPID(), 27, ReplaceA, 0);
-							if(ReplaceM)
+							if (ReplaceM)
 								CDBSocket::Write(17, "ddbbb", IID, IPlayer.GetPID(), 28, ReplaceM, 0);
-							if(ReplaceTOA)
+							if (ReplaceTOA)
 								CDBSocket::Write(17, "ddbbb", IID, IPlayer.GetPID(), 9, ReplaceTOA, 0);
-							if(ReplaceEB)
+							if (ReplaceEB)
 								CDBSocket::Write(28, "ddbb", IID, IPlayer.GetPID(), 2, ReplaceEB);
+							if (ReplaceMaxEnd)
+								CDBSocket::Write(125, "dddd", 1, IPlayer.GetPID(), ReplaceMaxEnd, IID);
+							if (ReplaceNum)
+								CDBSocket::Write(125, "ddddd", 2, IPlayer.GetPID(), 0, IID, ReplaceNum);
 
 							CItem::SendItemInfo((void*)ReplaceItem, (int)IPlayer.GetOffset(), 92);
 							CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddddd", 242, 0, 0, 128, 255);
@@ -2904,11 +2952,11 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 		if (packet == 169) {
 			char type = 0;
 			int index = 0, IID1 = 0, IID2 = 0;
-			CPacket::Read((char*)pPacket, (char*)pPos, "bddd", &type,&index,&IID1,&IID2);
-			
+			CPacket::Read((char*)pPacket, (char*)pPos, "bddd", &type, &index, &IID1, &IID2);
+
 			if (IID1 == IID2)
 				return;
-			
+
 			if (type == 1) {
 				if (InitPetSwap.count(index)) {
 					InitSwap swap = InitPetSwap.find(index)->second;
@@ -2918,7 +2966,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 					if (!Item1 || !Item2)
 						return;
-					
+
 					IItem IItem1((void*)Item1);
 					IItem IItem2((void*)Item2);
 
@@ -2945,19 +2993,19 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 		if (packet == 192) {
 			int nbHours = 0;
 			CPacket::Read((char*)pPacket, (char*)pPos, "d", &nbHours);
-			
+
 			if (nbHours <= 0)
 				return;
 
 			int JewelCheck = CPlayer::FindItem(IPlayer.GetOffset(), JewelIndex, nbHours*TrainingPrice);
 			if (JewelCheck) {
-				if(!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)JewelCheck + 120))(JewelCheck, IPlayer.GetOffset(), 9, -(nbHours*TrainingPrice)))
+				if (!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)JewelCheck + 120))(JewelCheck, IPlayer.GetOffset(), 9, -(nbHours*TrainingPrice)))
 					CPlayer::_OutOfInven((void*)Player, JewelCheck);
 
 				int Time = IPlayer.GetBuffValue(BuffNames::TrainingTime) + (nbHours * 3600);
 				IPlayer.SaveBuff(BuffNames::TrainingTime, BuffNames::BuffTime, Time, 0, 0);
 				IPlayer.CloseWindow("trainingcountsimple");
-				CPlayer::Write((void*)Player, 0xFE, "dd", 207, Time/60);
+				CPlayer::Write((void*)Player, 0xFE, "dd", 207, Time / 60);
 			}
 			else
 				IPlayer.SystemMessage("You do not have enough jewels to extend your training time.", TEXTCOLOR_RED);
@@ -2966,7 +3014,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 		}
 
 		if (packet == 193) {
-			if(IPlayer.GetBuffValue(BuffNames::TrainingTime))
+			if (IPlayer.GetBuffValue(BuffNames::TrainingTime))
 				IPlayer.SystemMessage("Let’s start a training.", TEXTCOLOR_GENERAL);
 			return;
 		}
@@ -2988,7 +3036,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			int JewelCheck = CPlayer::FindItem(IPlayer.GetOffset(), namePadIndex, namePadPrice);
 
 			if (JewelCheck) {
-				if(!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)JewelCheck + 120))((int)JewelCheck, IPlayer.GetOffset(), 9, -namePadPrice))
+				if (!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)JewelCheck + 120))((int)JewelCheck, IPlayer.GetOffset(), 9, -namePadPrice))
 					CPlayer::_OutOfInven((void*)Player, JewelCheck);
 
 				IPlayer.SaveBuff(BuffNames::NamePad, 86400 * namePadDuration, Type, 9900, 9900);
@@ -3009,9 +3057,9 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			if (JewelCheck) {
 				int IETime = ExtensionTime;
 				if (!IPlayer.IsBuff(BuffNames::Extension1)) {
-					if(!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)JewelCheck + 120))((int)JewelCheck, IPlayer.GetOffset(), 9, -ExpansionAmount))
+					if (!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)JewelCheck + 120))((int)JewelCheck, IPlayer.GetOffset(), 9, -ExpansionAmount))
 						CPlayer::_OutOfInven((void*)Player, JewelCheck);
-					
+
 					if (IPlayer.IsBuff(BuffNames::Extension2)) {
 						int Remain = IPlayer.GetBuffValue(BuffNames::Extension2) - (int)time(0);
 						int Remain2 = IPlayer.GetBuffValue(BuffNames::Extension3) - (int)time(0);
@@ -3030,29 +3078,29 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						CPlayer::Write(IPlayer.GetOffset(), 181, "dwd", IPlayer.GetID(), 501, Remain);
 					}
 					else
-						if (IPlayer.IsBuff(BuffNames::Extension3)) {
-							int Remain2 = IPlayer.GetBuffValue(BuffNames::Extension3) - (int)time(0);
+					if (IPlayer.IsBuff(BuffNames::Extension3)) {
+						int Remain2 = IPlayer.GetBuffValue(BuffNames::Extension3) - (int)time(0);
 
-							IPlayer.CancelBuff(BuffNames::Extension3);
-							IPlayer.CancelBuff(BuffNames::Extension2);
-							IPlayer.CancelBuff(BuffNames::Extension1);
+						IPlayer.CancelBuff(BuffNames::Extension3);
+						IPlayer.CancelBuff(BuffNames::Extension2);
+						IPlayer.CancelBuff(BuffNames::Extension1);
 
-							IPlayer.SaveBuff(BuffNames::Extension2, Remain2, Remain2 + (int)time(0), 0, 0);
-							IPlayer.SaveBuff(BuffNames::Extension3, IETime, IETime + (int)time(0), 0, 0);
-							CPlayer::Write(IPlayer.GetOffset(), 204, "d", 72);
-							CPlayer::Write(IPlayer.GetOffset(), 181, "dwd", IPlayer.GetID(), 499, IETime);
-							CPlayer::Write(IPlayer.GetOffset(), 181, "dwd", IPlayer.GetID(), 500, Remain2);
-						}
-						else {
-							IPlayer.CancelBuff(BuffNames::Extension3);
-							IPlayer.CancelBuff(BuffNames::Extension2);
-							IPlayer.CancelBuff(BuffNames::Extension1);
+						IPlayer.SaveBuff(BuffNames::Extension2, Remain2, Remain2 + (int)time(0), 0, 0);
+						IPlayer.SaveBuff(BuffNames::Extension3, IETime, IETime + (int)time(0), 0, 0);
+						CPlayer::Write(IPlayer.GetOffset(), 204, "d", 72);
+						CPlayer::Write(IPlayer.GetOffset(), 181, "dwd", IPlayer.GetID(), 499, IETime);
+						CPlayer::Write(IPlayer.GetOffset(), 181, "dwd", IPlayer.GetID(), 500, Remain2);
+					}
+					else {
+						IPlayer.CancelBuff(BuffNames::Extension3);
+						IPlayer.CancelBuff(BuffNames::Extension2);
+						IPlayer.CancelBuff(BuffNames::Extension1);
 
-							IPlayer.SaveBuff(BuffNames::Extension3, IETime, IETime + (int)time(0), 0, 0);
-							CPlayer::Write(IPlayer.GetOffset(), 204, "d", 36);
-							CPlayer::Write(IPlayer.GetOffset(), 181, "dwd", IPlayer.GetID(), 499, IETime);
-						}
-						IPlayer.BoxMsg("You have successfully Expanded your inventory by 36 more slots for 15 days.");
+						IPlayer.SaveBuff(BuffNames::Extension3, IETime, IETime + (int)time(0), 0, 0);
+						CPlayer::Write(IPlayer.GetOffset(), 204, "d", 36);
+						CPlayer::Write(IPlayer.GetOffset(), 181, "dwd", IPlayer.GetID(), 499, IETime);
+					}
+					IPlayer.BoxMsg("You have successfully Expanded your inventory by 36 more slots for 15 days.");
 				}
 				else
 					IPlayer.BoxMsg("You have already expanded your inventory to the max you could!");
@@ -3061,12 +3109,12 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				IPlayer.SystemMessage("You do not have enough gems to expand your inventory!", TEXTCOLOR_RED);
 			return;
 		}
-		
+
 		if (packet == 218){
-			if(MD5Check==1)
+			if (MD5Check == 1)
 			{
 				int engineCheck = 0, Type = 0, Veri = 0;
-				CPacket::Read((char*)pPacket, (char*)pPos, "ddd", &Type,&Veri, &engineCheck);
+				CPacket::Read((char*)pPacket, (char*)pPos, "ddd", &Type, &Veri, &engineCheck);
 
 				if (Type != 13 || Veri != 2513 || !engineCheck){
 					IPlayer.SystemMessage("Illegal Files detected. Re-extract your client", TEXTCOLOR_RED);
@@ -3074,40 +3122,57 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					return;
 				}
 				else
-				if(engineCheck != catchInt(ConfigEngine)){
+				if (engineCheck != catchInt(ConfigEngine)){
 					IPlayer.SystemMessage("Illegal Files detected. Re-extract your client", TEXTCOLOR_RED);
 					IPlayer.Kick();
 					return;
-				}else{
-					IPlayer.Buff(3076,900,0);
+				}
+				else{
+					IPlayer.Buff(3076, 900, 0);
 				}
 			}
 			return;
 		}
 
 
-		if(packet == 215){
-			const char *pcname="none";
-			int Type=0,hwid=0;
-			CPacket::Read((char*)pPacket, (char*)pPos, "dsd", &Type,&pcname,17,&hwid);
-			
-			if(hwid)
-			User[IPlayer.GetPID()].Hardware.assign((Int2String(hwid)));
-			if(strlen(pcname))
-			User[IPlayer.GetPID()].PCName.assign(pcname);
+		if (packet == 215){
+			const char *pcname = "none";
+			int Type = 0, hwid = 0;
+			CPacket::Read((char*)pPacket, (char*)pPos, "dsd", &Type, &pcname, 17, &hwid);
+
+			if (hwid)
+				User[IPlayer.GetPID()].Hardware.assign((Int2String(hwid)));
+			if (strlen(pcname))
+				User[IPlayer.GetPID()].PCName.assign(pcname);
 
 			return;
 		}
 
+		// Assume you have a function to get the packet name from an enum value
+
+		//if (packetDebugger == 1) {
+		//	std::string Dato = "./Debugger/Packet/PACKETS_" + Time::GetDay() + "_" + Time::GetMonth() + "_" + Time::GetYear() + "_" + Time::GetHour() + "." + Time::GetMinute() + ".txt";
+		//	std::fstream DGLOG;
+		//	DGLOG.open(Dato, std::fstream::in | std::fstream::out | std::fstream::app);
+		//	DGLOG << Time::GetTime() << " " << IPlayer.GetName() << ": " << GetPacketName(packet) << std::endl;
+		//	DGLOG.close();
+		//	
+		//}
 
 		if (packetDebugger == 1) {
 			std::string Dato = "./Debugger/Packet/PACKETS_" + Time::GetDay() + "_" + Time::GetMonth() + "_" + Time::GetYear() + "_" + Time::GetHour() + "." + Time::GetMinute() + ".txt";
-			std::fstream DGLOG;
-			DGLOG.open(Dato, std::fstream::in | std::fstream::out | std::fstream::app);
-			DGLOG << Time::GetTime() << " " << IPlayer.GetName() << ": " << packet << std::endl;
-			DGLOG.close();
+
+			std::ofstream DGLOG(Dato, std::ofstream::app);
+
+			if (DGLOG.is_open()) {
+				DGLOG << Time::GetTime() << " " << IPlayer.GetName() << ": " << GetPacketName(packet) << std::endl;
+				DGLOG.flush();  // Flush the stream
+			}
+			else {
+				CConsole::Red("Error opening Packets_Debug File");
+			}
 		}
-			
+
 		if (IPlayer.GetBuffValue(BuffNames::BetOpponent)) {
 			if (packet == 36) {
 				TargetFind myTarget(0, 0, IPlayer.GetBuffValue(BuffNames::BetOpponent));
@@ -3200,45 +3265,51 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			}
 		}
 
-			if ((packet == 34 || packet == 35 || packet == 63 || packet == 62 || packet == 36 || packet == 28) && IPlayer.IsBuff(3089)){
-				return;
-			}
-			
-			if ((packet == 19 || packet == 89) && IPlayer.IsBuff(3089)) {
-				IPlayer.SystemMessage("You can not logout in the middle of a bet!", TEXTCOLOR_RED);
-				return;
-			}
-			
-			if (packet == 19)
-			{
-				if (IPlayer.IsBuff(3723) && !IPlayer.GetAdmin()) {
-					IPlayer.SystemMessage("Please allow " + Int2String(IPlayer.GetBuffRemain(3723)) + " more seconds to log off.", TEXTCOLOR_YELLOW);
-					return;
-				}
+		if ((packet == 34 || packet == 35 || packet == 63 || packet == 62 || packet == 36 || packet == 28) && IPlayer.IsBuff(3089)){
+			return;
+		}
 
-				for (int i = BuffNames::Essence1; i <= BuffNames::MirrorBuff; i++) {
-					int Value = IPlayer.GetBuffValue(i);
-					if (Value) {
-						int Item = IPlayer.ItemPointerLock(Value);
-						if (Item)
-						{
-							IItem Mirror((void*)Item);
-							*(DWORD*)((int)Mirror.GetOffset() + 48) = 0;
-							CItem::SendItemInfo(Mirror.GetOffset(), (int)IPlayer.GetOffset(), 92);
-							CPlayer::Write(IPlayer.GetOffset(), 6, "ddw", IPlayer.GetID(), Mirror.GetIID(), Mirror.CheckIndex());
-						}
+		if ((packet == 19 || packet == 89) && IPlayer.IsBuff(3089)) {
+			IPlayer.SystemMessage("You can not logout in the middle of a bet!", TEXTCOLOR_RED);
+			return;
+		}
+
+		if (packet == 19)
+		{
+			if (IPlayer.IsBuff(3723) && !IPlayer.GetAdmin()) {
+				IPlayer.SystemMessage("Please allow " + Int2String(IPlayer.GetBuffRemain(3723)) + " more seconds to log off.", TEXTCOLOR_YELLOW);
+				return;
+			}
+
+			for (int i = BuffNames::Essence1; i <= BuffNames::MirrorBuff; i++) {
+				int Value = IPlayer.GetBuffValue(i);
+				if (Value) {
+					int Item = IPlayer.ItemPointerLock(Value);
+					if (Item)
+					{
+						IItem Mirror((void*)Item);
+						*(DWORD*)((int)Mirror.GetOffset() + 48) = 0;
+						CItem::SendItemInfo(Mirror.GetOffset(), (int)IPlayer.GetOffset(), 92);
+						CPlayer::Write(IPlayer.GetOffset(), 6, "ddw", IPlayer.GetID(), Mirror.GetIID(), Mirror.CheckIndex());
 					}
 				}
 			}
+		}
 
-			if ((packet == 94 || packet == 20) && (myc || !ScaniaLicense))
-				return;
+		if ((packet == 94 || packet == C2S_MOVE) && !ScaniaLicense)
+			return;
+
+		if (IPlayer.GetBuffValue(BuffNames::AFKTime) && IPlayer.GetMap() == BFMap && packet == 20)
+			IPlayer.CancelBuff(BuffNames::AFKTime);
+
+		//if (packet == 94)
+		//	IPlayer.SystemMessage("Open Box", TEXTCOLOR_GREEN);
 
 		if (packet == 187)
 		{
 			char Type = 0, Jewel = 0, Amount = 0; int IID = 0, xIIDx = 0; unsigned short Class = 0;
 			CPacket::Read((char*)pPacket, (char*)pPos, "bddbwb", &Type, &IID, &xIIDx, &Jewel, &Class, &Amount);
-			
+
 			if (IID == xIIDx) return;
 
 			int Item = IPlayer.ItemPointerLock(IID);
@@ -3255,13 +3326,13 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 			if (Type == 2 && MainItem.CheckIndex() == 3381 && ItemStatz >= 2)
 			{
-				CPlayer::Write(IPlayer.GetOffset(),192,"b",8);
+				CPlayer::Write(IPlayer.GetOffset(), 192, "b", 8);
 				return;
 			}
 
 			if (Type == 2 && MainItem.CheckIndex() == 3382 && ItemStatz >= 3)
 			{
-				CPlayer::Write(IPlayer.GetOffset(),192,"b",8);
+				CPlayer::Write(IPlayer.GetOffset(), 192, "b", 8);
 				return;
 			}
 
@@ -3306,7 +3377,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 						if (MainItem.CheckIndex() == 3384)
 						{
-							int Value = CTools::Rate(0, 12); 
+							int Value = CTools::Rate(0, 12);
 							int Add = HaninLow.count(Value) ? CTools::Rate(HaninLow.find(Value)->second.Min, HaninLow.find(Value)->second.Max) : 30;
 							CPlayer::Write(IPlayer.GetOffset(), 194, "dd", MainItem.GetIID(), (ItemStatz % 100));
 							CPlayer::Write(IPlayer.GetOffset(), 193, "ddd", MainItem.GetIID(), Value, Add);
@@ -3321,7 +3392,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 						if (MainItem.CheckIndex() == 3385)
 						{
-							int Value = CTools::Rate(0, 19); 
+							int Value = CTools::Rate(0, 19);
 							int Add = HaninMiddle.count(Value) ? CTools::Rate(HaninMiddle.find(Value)->second.Min, HaninMiddle.find(Value)->second.Max) : CTools::Rate(55, 65);
 							CPlayer::Write(IPlayer.GetOffset(), 194, "dd", MainItem.GetIID(), (ItemStatz % 100));
 							CPlayer::Write(IPlayer.GetOffset(), 193, "ddd", MainItem.GetIID(), Value, Add);
@@ -3335,7 +3406,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 						if (MainItem.CheckIndex() == 3386)
 						{
-							int Value = CTools::Rate(0, 21); 
+							int Value = CTools::Rate(0, 21);
 							int Add = HaninHigh.count(Value) ? CTools::Rate(HaninHigh.find(Value)->second.Min, HaninHigh.find(Value)->second.Max) : CTools::Rate(85, 95);
 							CPlayer::Write(IPlayer.GetOffset(), 194, "dd", MainItem.GetIID(), (ItemStatz % 100));
 							CPlayer::Write(IPlayer.GetOffset(), 193, "ddd", MainItem.GetIID(), Value, Add);
@@ -3355,13 +3426,13 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (SuccessRate >= 550)
 							{
-								int Value = CTools::Rate(0, 12); 
+								int Value = CTools::Rate(0, 12);
 								int Add = HaninLow.count(Value) ? CTools::Rate(HaninLow.find(Value)->second.Min, HaninLow.find(Value)->second.Max) : 30;
 								CPlayer::Write(IPlayer.GetOffset(), 194, "dd", MainItem.GetIID(), (ItemStatz % 100));
 								CPlayer::Write(IPlayer.GetOffset(), 193, "ddd", MainItem.GetIID(), Value, Add);
 								CPlayer::Write(IPlayer.GetOffset(), 192, "bddd", 3, MainItem.GetIID(), Value, Add);
 								itemStat.Enter();
-								GetItemStat[IID] = Value + (Add * 1000); 
+								GetItemStat[IID] = Value + (Add * 1000);
 								itemStat.Leave();
 								CDBSocket::Write(90, "dd", Value + (Add * 1000), IID);
 							}
@@ -3374,7 +3445,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (SuccessRate >= 850)
 							{
-								int Value = CTools::Rate(0, 19); 
+								int Value = CTools::Rate(0, 19);
 								int Add = HaninMiddle.count(Value) ? CTools::Rate(HaninMiddle.find(Value)->second.Min, HaninMiddle.find(Value)->second.Max) : CTools::Rate(55, 65);
 								CPlayer::Write(IPlayer.GetOffset(), 194, "dd", MainItem.GetIID(), (ItemStatz % 100));
 								CPlayer::Write(IPlayer.GetOffset(), 193, "ddd", MainItem.GetIID(), Value, Add);
@@ -3393,7 +3464,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (SuccessRate >= 950)
 							{
-								int Value = CTools::Rate(0, 21); 
+								int Value = CTools::Rate(0, 21);
 								int Add = HaninHigh.count(Value) ? CTools::Rate(HaninHigh.find(Value)->second.Min, HaninHigh.find(Value)->second.Max) : CTools::Rate(85, 95);
 								CPlayer::Write(IPlayer.GetOffset(), 194, "dd", MainItem.GetIID(), (ItemStatz % 100));
 								CPlayer::Write(IPlayer.GetOffset(), 193, "ddd", MainItem.GetIID(), Value, Add);
@@ -3431,19 +3502,19 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				if (NextItem.CheckIndex() == 3386)
 					return;
 
-				int chance = CTools::Rate(1,100);
+				int chance = CTools::Rate(1, 100);
 
 				if ((Jewel == 1 && Amount == 1) || chance <= HaninChance)
 				{
 					int JewelAmount = 5; int Index = MainItem.CheckIndex();
 					if (MainItem.CheckIndex() == 3385) JewelAmount = 10;
-					int JewelCheck = CPlayer::_FindItem((int)IPlayer.GetOffset(), JewelIndex,JewelAmount);
-					if (GetInventorySize((int)IPlayer.GetOffset(),0) >= 60)
+					int JewelCheck = CPlayer::_FindItem((int)IPlayer.GetOffset(), JewelIndex, JewelAmount);
+					if (GetInventorySize((int)IPlayer.GetOffset(), 0) >= 60)
 					{
 						CPlayer::Write(IPlayer.GetOffset(), 67, "b", 40);
 						return;
 					}
-				
+
 					if ((Jewel == 1 && Amount == 1)) {
 						if (JewelCheck) {
 							if (!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)JewelCheck + 120))((int)JewelCheck, IPlayer.GetOffset(), 9, -JewelAmount))
@@ -3470,15 +3541,15 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 								CBase::Delete((void*)xItem);
 								return;
 							}
-							int Value = CTools::Rate(0,19); 
+							int Value = CTools::Rate(0, 19);
 							int Add = HaninMiddle.count(Value) ? CTools::Rate(HaninMiddle.find(Value)->second.Min, HaninMiddle.find(Value)->second.Max) : CTools::Rate(55, 65);
-							CPlayer::Write(IPlayer.GetOffset(),193,"ddd",IItem.GetIID(),Value,Add);
-							CPlayer::Write(IPlayer.GetOffset(),192,"bd",5,IItem.GetIID());
+							CPlayer::Write(IPlayer.GetOffset(), 193, "ddd", IItem.GetIID(), Value, Add);
+							CPlayer::Write(IPlayer.GetOffset(), 192, "bd", 5, IItem.GetIID());
 							itemStat.Enter();
-							GetItemStat[IItem.GetIID()] = Value+(Add*1000);
+							GetItemStat[IItem.GetIID()] = Value + (Add * 1000);
 							itemStat.Leave();
-							CDBSocket::Write(90,"dd",Value+(Add*1000),IItem.GetIID());
-							
+							CDBSocket::Write(90, "dd", Value + (Add * 1000), IItem.GetIID());
+
 						}
 					}
 
@@ -3494,7 +3565,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 								CBase::Delete((void*)xItem);
 								return;
 							}
-							int Value = CTools::Rate(0, 21); 
+							int Value = CTools::Rate(0, 21);
 							int Add = HaninHigh.count(Value) ? CTools::Rate(HaninHigh.find(Value)->second.Min, HaninHigh.find(Value)->second.Max) : CTools::Rate(85, 95);
 							CPlayer::Write(IPlayer.GetOffset(), 193, "ddd", IItem.GetIID(), Value, Add);
 							CPlayer::Write(IPlayer.GetOffset(), 192, "bd", 5, IItem.GetIID());
@@ -3505,7 +3576,8 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 						}
 					}
-				} else {
+				}
+				else {
 					int Index = MainItem.CheckIndex();
 					if (CPlayer::GetInvenSize((int)IPlayer.GetOffset()) >= IPlayer.MaxInventorySize())
 					{
@@ -3514,7 +3586,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					}
 					if (!CBase::IsDeleted((int)MainItem.GetOffset())) IPlayer.RemoveItem((int)MainItem.GetOffset());
 					if (!CBase::IsDeleted((int)NextItem.GetOffset())) IPlayer.RemoveItem((int)NextItem.GetOffset());
-					int SuccessRate = CTools::Rate(1,1000);
+					int SuccessRate = CTools::Rate(1, 1000);
 
 					if (Index == 3384)
 					{
@@ -3531,18 +3603,19 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 									return;
 								}
 
-								int Value = CTools::Rate(0,19); 
+								int Value = CTools::Rate(0, 19);
 								int Add = HaninMiddle.count(Value) ? CTools::Rate(HaninMiddle.find(Value)->second.Min, HaninMiddle.find(Value)->second.Max) : CTools::Rate(55, 65);
 
-								CPlayer::Write(IPlayer.GetOffset(),193,"ddd",IItem.GetIID(),Value,Add);
-								CPlayer::Write(IPlayer.GetOffset(),192,"bd",5,IItem.GetIID());
+								CPlayer::Write(IPlayer.GetOffset(), 193, "ddd", IItem.GetIID(), Value, Add);
+								CPlayer::Write(IPlayer.GetOffset(), 192, "bd", 5, IItem.GetIID());
 								itemStat.Enter();
-								GetItemStat[IItem.GetIID()] = Value+(Add*1000);
+								GetItemStat[IItem.GetIID()] = Value + (Add * 1000);
 								itemStat.Leave();
-								CDBSocket::Write(90,"dd",Value+(Add*1000),IItem.GetIID());
+								CDBSocket::Write(90, "dd", Value + (Add * 1000), IItem.GetIID());
 							}
-						} else {
-							CPlayer::Write(IPlayer.GetOffset(),192,"b",6);
+						}
+						else {
+							CPlayer::Write(IPlayer.GetOffset(), 192, "b", 6);
 						}
 					}
 
@@ -3561,22 +3634,23 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 									return;
 								}
 
-								int Value = CTools::Rate(0,21); 
+								int Value = CTools::Rate(0, 21);
 								int Add = HaninHigh.count(Value) ? CTools::Rate(HaninHigh.find(Value)->second.Min, HaninHigh.find(Value)->second.Max) : CTools::Rate(85, 95);
-								CPlayer::Write(IPlayer.GetOffset(),193,"ddd",IItem.GetIID(),Value,Add);
-								CPlayer::Write(IPlayer.GetOffset(),192,"bd",5,IItem.GetIID());
+								CPlayer::Write(IPlayer.GetOffset(), 193, "ddd", IItem.GetIID(), Value, Add);
+								CPlayer::Write(IPlayer.GetOffset(), 192, "bd", 5, IItem.GetIID());
 								itemStat.Enter();
-								GetItemStat[IItem.GetIID()] = Value+(Add*1000);
+								GetItemStat[IItem.GetIID()] = Value + (Add * 1000);
 								itemStat.Leave();
-								CDBSocket::Write(90,"dd",Value+(Add*1000),IItem.GetIID());
+								CDBSocket::Write(90, "dd", Value + (Add * 1000), IItem.GetIID());
 							}
-						} else {
-							CPlayer::Write(IPlayer.GetOffset(),192,"b",6);
+						}
+						else {
+							CPlayer::Write(IPlayer.GetOffset(), 192, "b", 6);
 						}
 					}
 				}
 			}
-			
+
 			if (Type == 2 && IID && MainItem.CheckIndex() == 3383) {
 				itemStat.Enter();
 				if (GetItemStat.find(IID)->second == 0)
@@ -3594,7 +3668,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 					if (JewelCheck)
 					{
-						if(!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)JewelCheck + 120))((int)JewelCheck, IPlayer.GetOffset(), 9, -(Staz * 60)))
+						if (!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)JewelCheck + 120))((int)JewelCheck, IPlayer.GetOffset(), 9, -(Staz * 60)))
 							CPlayer::_OutOfInven((void*)Player, JewelCheck);
 
 						int newValue = Staz + 1;
@@ -3610,7 +3684,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						IPlayer.BoxMsg("You do not have enough gems.");
 					}
 				}
-			} 
+			}
 
 			if (Type == 2 && IID)
 			{
@@ -3625,7 +3699,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						itemStat.Leave();
 						CPlayer::Write(IPlayer.GetOffset(), 194, "dd", IID, 100);
 						CPlayer::Write(IPlayer.GetOffset(), 193, "ddd", IID, 100, Staz + 2);
-						CDBSocket::Write(90, "dd", Staz+1, IID);
+						CDBSocket::Write(90, "dd", Staz + 1, IID);
 						CPlayer::Write(IPlayer.GetOffset(), 192, "b", 7);
 					}
 					else {
@@ -3643,8 +3717,8 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			CPacket::Read((char*)pPacket, (char*)pPos, "bbdws", &Type, &Value, &BillCode, &Amount, &GiftName, 21);
 
 			if (Type == 1 && Value == 0)
-				CPlayer::Write(IPlayer.GetOffset(),186,"bbwwm", 3, 1, 1, ItemShopCheck.size(), ItemShopPacket, ItemShopCheck.size() * 12);
-			
+				CPlayer::Write(IPlayer.GetOffset(), 186, "bbwwm", 3, 1, 1, ItemShopCheck.size(), ItemShopPacket, ItemShopCheck.size() * 12);
+
 			if (QuestRentItem.count(BillCode))
 			{
 				for (int i = 0; i < QuestRentItem[BillCode].size(); i++) {
@@ -3655,9 +3729,9 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			if (Type == 1 && Value == 1)
 			{
 				int Jewel = 0, GoldKC = 0, SilverKC = 0, JewelAmount = 0, GoldKCAmount = 0, SilverKCAmount = 0;
-				Jewel = CPlayer::FindItem(IPlayer.GetOffset(),ShopJewelIndex,1);
-				GoldKC = CPlayer::FindItem(IPlayer.GetOffset(),ShopGoldIndex,1);
-				SilverKC = CPlayer::FindItem(IPlayer.GetOffset(),ShopSilverIndex,1);
+				Jewel = CPlayer::FindItem(IPlayer.GetOffset(), ShopJewelIndex, 1);
+				GoldKC = CPlayer::FindItem(IPlayer.GetOffset(), ShopGoldIndex, 1);
+				SilverKC = CPlayer::FindItem(IPlayer.GetOffset(), ShopSilverIndex, 1);
 				if (Jewel)
 				{
 					IItem xJewel((void*)Jewel);
@@ -3673,13 +3747,13 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					IItem xSilver((void*)SilverKC);
 					SilverKCAmount = xSilver.GetAmount();
 				}
-				CPlayer::Write(IPlayer.GetOffset(),186,"b",0);
+				CPlayer::Write(IPlayer.GetOffset(), 186, "b", 0);
 				CPlayer::Write(IPlayer.GetOffset(), 186, "bdddd", 4, GoldKCAmount, SilverKCAmount, IPlayer.GetProperty(PlayerProperty::RPx), JewelAmount);
 			}
 
 			if ((Type == 2 || Type == 4) && ItemShopCheck.count(BillCode) && ItemShopCheck.find(BillCode)->second.Priority == 4)
 			{
-				CPlayer::Write(IPlayer.GetOffset(),186,"b",11);
+				CPlayer::Write(IPlayer.GetOffset(), 186, "b", 11);
 				return;
 			}
 
@@ -3693,7 +3767,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					int player3 = (int)myTarget.getTarget();
 
 					IChar Target((void*)player3);
-					
+
 					if (!Target.IsOnline())
 					{
 						CPlayer::Write(IPlayer.GetOffset(), 186, "b", 18);
@@ -3732,7 +3806,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						if (GoldKC && GoldKCAmount >= Price && Target.IsOnline() && IPlayer.IsOnline())
 						{
 							CPlayer::Write(IPlayer.GetOffset(), 186, "bdddd", 4, GoldKCAmount - Price, SilverKCAmount, IPlayer.GetProperty(PlayerProperty::RPx), JewelAmount);
-							if(!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)(int)xGold.GetOffset() + 120))((int)xGold.GetOffset(), IPlayer.GetOffset(), 9, -Price))
+							if (!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)(int)xGold.GetOffset() + 120))((int)xGold.GetOffset(), IPlayer.GetOffset(), 9, -Price))
 								CPlayer::_OutOfInven((void*)Player, (int)xGold.GetOffset());
 
 							std::string name = IPlayer.GetName();
@@ -3749,7 +3823,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						if (Jewel && JewelAmount >= Price)
 						{
 							CPlayer::Write(IPlayer.GetOffset(), 186, "bdddd", 4, GoldKCAmount, SilverKCAmount, IPlayer.GetProperty(PlayerProperty::RPx), JewelAmount - Price);
-							if(!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)(int)xJewel.GetOffset() + 120))((int)xJewel.GetOffset(), IPlayer.GetOffset(), 9, -Price))
+							if (!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)(int)xJewel.GetOffset() + 120))((int)xJewel.GetOffset(), IPlayer.GetOffset(), 9, -Price))
 								CPlayer::_OutOfInven((void*)Player, (int)xJewel.GetOffset());
 
 							std::string name = IPlayer.GetName();
@@ -3771,26 +3845,26 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				{
 					if (Amount <= 0)
 					{
-						CPlayer::Write(IPlayer.GetOffset(),186,"bb",6,5);
+						CPlayer::Write(IPlayer.GetOffset(), 186, "bb", 6, 5);
 						return;
 					}
 					int Price = 0; Price = ItemShopCheck.find(BillCode)->second.Price * Amount;
 					if (Price <= 0)
 					{
-						CPlayer::Write(IPlayer.GetOffset(),186,"bb",6,5);
+						CPlayer::Write(IPlayer.GetOffset(), 186, "bb", 6, 5);
 						return;
 					}
 					int Check = 2147483647 / Price;
 					if (Amount >= Check)
 					{
-						CPlayer::Write(IPlayer.GetOffset(),186,"bb",6,5);
+						CPlayer::Write(IPlayer.GetOffset(), 186, "bb", 6, 5);
 						return;
 					}
 					if (ItemShopCheck.find(BillCode)->second.Discount) Price -= ((Price * ItemShopCheck.find(BillCode)->second.Discount) / 100);
 					int Jewel = 0, GoldKC = 0, SilverKC = 0, JewelAmount = 0, GoldKCAmount = 0, SilverKCAmount = 0;
-					Jewel = CPlayer::FindItem(IPlayer.GetOffset(),ShopJewelIndex,1);
-					GoldKC = CPlayer::FindItem(IPlayer.GetOffset(),ShopGoldIndex,1);
-					SilverKC = CPlayer::FindItem(IPlayer.GetOffset(),ShopSilverIndex,1);
+					Jewel = CPlayer::FindItem(IPlayer.GetOffset(), ShopJewelIndex, 1);
+					GoldKC = CPlayer::FindItem(IPlayer.GetOffset(), ShopGoldIndex, 1);
+					SilverKC = CPlayer::FindItem(IPlayer.GetOffset(), ShopSilverIndex, 1);
 					IItem xJewel((void*)Jewel);
 					IItem xGold((void*)GoldKC);
 					IItem xSilver((void*)SilverKC);
@@ -3801,28 +3875,30 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					{
 						if (GoldKC && GoldKCAmount >= Price)
 						{
-							CPlayer::Write(IPlayer.GetOffset(),186,"bdddd",4,GoldKCAmount-Price,SilverKCAmount, IPlayer.GetProperty(PlayerProperty::RPx),JewelAmount);
+							CPlayer::Write(IPlayer.GetOffset(), 186, "bdddd", 4, GoldKCAmount - Price, SilverKCAmount, IPlayer.GetProperty(PlayerProperty::RPx), JewelAmount);
 							if (!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)(int)xGold.GetOffset() + 120))((int)xGold.GetOffset(), IPlayer.GetOffset(), 9, -Price))
 								CPlayer::_OutOfInven((void*)Player, (int)xGold.GetOffset());
 
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,ItemShopCheck.find(BillCode)->second.ItemIndex,0,ItemShopCheck.find(BillCode)->second.Amount * Amount,-1);
-							CPlayer::Write(IPlayer.GetOffset(),186,"bb",5,5);
-						} else {
-							CPlayer::Write(IPlayer.GetOffset(),186,"bb",6,5);
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, ItemShopCheck.find(BillCode)->second.ItemIndex, 0, ItemShopCheck.find(BillCode)->second.Amount * Amount, -1);
+							CPlayer::Write(IPlayer.GetOffset(), 186, "bb", 5, 5);
+						}
+						else {
+							CPlayer::Write(IPlayer.GetOffset(), 186, "bb", 6, 5);
 						}
 					}
 					if (ItemShopCheck.find(BillCode)->second.Type == 2)
 					{
 						if (SilverKC && SilverKCAmount >= Price)
 						{
-							CPlayer::Write(IPlayer.GetOffset(),186,"bdddd",4,GoldKCAmount,SilverKCAmount-Price, IPlayer.GetProperty(PlayerProperty::RPx),JewelAmount);
+							CPlayer::Write(IPlayer.GetOffset(), 186, "bdddd", 4, GoldKCAmount, SilverKCAmount - Price, IPlayer.GetProperty(PlayerProperty::RPx), JewelAmount);
 							if (!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)(int)xSilver.GetOffset() + 120))((int)xSilver.GetOffset(), IPlayer.GetOffset(), 9, -Price))
 								CPlayer::_OutOfInven((void*)Player, (int)xSilver.GetOffset());
 
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,ItemShopCheck.find(BillCode)->second.ItemIndex,0,ItemShopCheck.find(BillCode)->second.Amount * Amount,-1);
-							CPlayer::Write(IPlayer.GetOffset(),186,"bb",5,5);
-						} else {
-							CPlayer::Write(IPlayer.GetOffset(),186,"bb",6,5);
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, ItemShopCheck.find(BillCode)->second.ItemIndex, 0, ItemShopCheck.find(BillCode)->second.Amount * Amount, -1);
+							CPlayer::Write(IPlayer.GetOffset(), 186, "bb", 5, 5);
+						}
+						else {
+							CPlayer::Write(IPlayer.GetOffset(), 186, "bb", 6, 5);
 						}
 					}
 					if (ItemShopCheck.find(BillCode)->second.Type == 3)
@@ -3830,25 +3906,27 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						if (IPlayer.GetProperty(PlayerProperty::RPx) >= Price)
 						{
 							IPlayer.SetHonor(0, -Price, 0, 0, 0, 0, 0, 0, 0, 0);
-							CPlayer::Write(IPlayer.GetOffset(),186,"bdddd",4,GoldKCAmount,SilverKCAmount, IPlayer.GetProperty(PlayerProperty::RPx),JewelAmount);
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,ItemShopCheck.find(BillCode)->second.ItemIndex,0,ItemShopCheck.find(BillCode)->second.Amount * Amount,-1);
-							CPlayer::Write(IPlayer.GetOffset(),186,"bb",5,5);
-						} else {
-							CPlayer::Write(IPlayer.GetOffset(),186,"bb",6,5);
+							CPlayer::Write(IPlayer.GetOffset(), 186, "bdddd", 4, GoldKCAmount, SilverKCAmount, IPlayer.GetProperty(PlayerProperty::RPx), JewelAmount);
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, ItemShopCheck.find(BillCode)->second.ItemIndex, 0, ItemShopCheck.find(BillCode)->second.Amount * Amount, -1);
+							CPlayer::Write(IPlayer.GetOffset(), 186, "bb", 5, 5);
+						}
+						else {
+							CPlayer::Write(IPlayer.GetOffset(), 186, "bb", 6, 5);
 						}
 					}
 					if (ItemShopCheck.find(BillCode)->second.Type == 4)
 					{
 						if (Jewel && JewelAmount >= Price)
 						{
-							CPlayer::Write(IPlayer.GetOffset(),186,"bdddd",4,GoldKCAmount,SilverKCAmount, IPlayer.GetProperty(PlayerProperty::RPx),JewelAmount-Price);
+							CPlayer::Write(IPlayer.GetOffset(), 186, "bdddd", 4, GoldKCAmount, SilverKCAmount, IPlayer.GetProperty(PlayerProperty::RPx), JewelAmount - Price);
 							if (!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)(int)xJewel.GetOffset() + 120))((int)xJewel.GetOffset(), IPlayer.GetOffset(), 9, -Price))
 								CPlayer::_OutOfInven((void*)Player, (int)xJewel.GetOffset());
 
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,ItemShopCheck.find(BillCode)->second.ItemIndex,0,ItemShopCheck.find(BillCode)->second.Amount * Amount,-1);
-							CPlayer::Write(IPlayer.GetOffset(),186,"bb",5,4);
-						} else {
-							CPlayer::Write(IPlayer.GetOffset(),186,"bb",6,4);
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, ItemShopCheck.find(BillCode)->second.ItemIndex, 0, ItemShopCheck.find(BillCode)->second.Amount * Amount, -1);
+							CPlayer::Write(IPlayer.GetOffset(), 186, "bb", 5, 4);
+						}
+						else {
+							CPlayer::Write(IPlayer.GetOffset(), 186, "bb", 6, 4);
 						}
 					}
 				}
@@ -3865,9 +3943,34 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				return;
 			}
 
+
 			IPlayer.Buff(BuffNames::QuestDBCheck, 2, 0);
 			int QuestID = 0, Repeat = 0;
 			CPacket::Read((char*)pPacket, (char*)pPos, "w", &QuestID);
+
+			//if (DutyQuest.count(QuestID)){
+			//	IPlayer.SystemMessage("You can not abandon Daily Duty quest.", TEXTCOLOR_RED);
+			//	return;
+			//}
+
+			if (DutyQuest.count(QuestID))
+			{
+				IPlayer.CancelBuff(BuffNames::NormalDuty);
+				IPlayer.CancelBuff(BuffNames::InstanceDuty);
+				IPlayer.CancelBuff(BuffNames::MiniBoss);
+				IPlayer.CancelBuff(BuffNames::DailyDuty + QuestID);
+				CDBSocket::Write(125, "ddd", 5, IPlayer.GetPID(), QuestID);
+			}
+
+			if (MissionQuests.count(QuestID)){
+				IPlayer.SystemMessage("You can not abandon Auto Missions quest.", TEXTCOLOR_RED);
+				return;
+			}
+
+			if (MissionQuestsItem.count(QuestID)){
+				IPlayer.SystemMessage("You can not abandon Auto Missions quest.", TEXTCOLOR_RED);
+				return;
+			}
 
 			int Daily = 0;
 			if (DailyQuest.count(QuestID)) {
@@ -3901,11 +4004,11 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 		if (packet == 67 && ShopLimit.count(sha256(IPlayer.GetIP())) && ShopLimit.find(sha256(IPlayer.GetIP()))->second && !IPlayer.IsBuff(297))
 		{
-			IPlayer.SystemMessage("Exceeded the maximum shop limit.",TEXTCOLOR_RED);
+			IPlayer.SystemMessage("Exceeded the maximum shop limit.", TEXTCOLOR_RED);
 			return;
 		}
 
-		if (packet == 92)
+		if (packet == C2S_SendMail)
 		{
 			char Type = 0; int Amount = 0;
 			int LeftData = CPacket::Read((char*)pPacket, (char*)pPos, "bd", &Type, &Amount);
@@ -3914,7 +4017,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			{
 				if (Amount > 50)
 				{
-					IPlayer.SystemMessage("You can delete maximum 50 mails in a row.",TEXTCOLOR_RED);
+					IPlayer.SystemMessage("You can delete maximum 50 mails in a row.", TEXTCOLOR_RED);
 					return;
 				}
 
@@ -3922,9 +4025,9 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				{
 					int MAILID = 0;
 					LeftData = CPacket::Read((char*)LeftData, (char*)pPos, "d", &MAILID);
-					
+
 					if (MAILID > 0 && IPlayer.IsOnline())
-						CPlayer::Write(IPlayer.GetOffset(),255,"dd",223,MAILID);
+						CPlayer::Write(IPlayer.GetOffset(), 255, "dd", 223, MAILID);
 				}
 
 				return;
@@ -3933,7 +4036,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 		if (packet == 54)
 		{
-			char Type = 0; int Key = 0, Rate = CTools::Rate(1,1000);
+			char Type = 0; int Key = 0, Rate = CTools::Rate(1, 1000);
 			CPacket::Read((char*)pPacket, (char*)pPos, "bd", &Type, &Key);
 
 			if (Type == 1 && Key)
@@ -3983,7 +4086,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						for (int i = 0; i < requireIndex.size(); i++) {
 							int Index = String2Int(requireIndex[i]);
 							int Amount = String2Int(requireAmounts[i]);
-							if(Index && Amount)
+							if (Index && Amount)
 								CPlayer::RemoveItem((void*)Player, 9, Index, Amount);
 						}
 
@@ -4001,253 +4104,260 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					return;
 				}
 
-				if (Key == 1205 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,11000000) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2655,400)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2663,150) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2668,80)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2666,15) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2672,10)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2675,6))
+				if (Key == 1205 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 11000000) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2655, 400)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2663, 150) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2668, 80)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2666, 15) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2672, 10)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2675, 6))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2705,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2705, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 1204 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,11000000) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2671,300)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2663,130) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2668,85)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2665,25) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2669,25)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2675,6))
+				if (Key == 1204 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 11000000) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2671, 300)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2663, 130) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2668, 85)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2665, 25) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2669, 25)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2675, 6))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2704,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2704, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 1203 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,11000000) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2656,350)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2664,60) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2667,150)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2666,12) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2669,30)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2675,6))
+				if (Key == 1203 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 11000000) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2656, 350)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2664, 60) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2667, 150)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2666, 12) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2669, 30)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2675, 6))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2703,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2703, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 1202 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,11000000) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2655,400)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2658,30) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2661,100)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2666,15) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2672,12)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2675,6))
+				if (Key == 1202 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 11000000) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2655, 400)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2658, 30) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2661, 100)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2666, 15) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2672, 12)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2675, 6))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2702,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2702, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 1201 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,11000000) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2659,400)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2657,120) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2662,38)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2666,12) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2669,12)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2675,6))
+				if (Key == 1201 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 11000000) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2659, 400)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2657, 120) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2662, 38)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2666, 12) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2669, 12)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2675, 6))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2701,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2701, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 1200 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,11000000) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2660,350)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2658,35) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2667,150)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2665,28) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2672,15)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2675,6))
+				if (Key == 1200 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 11000000) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2660, 350)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2658, 35) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2667, 150)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2665, 28) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2672, 15)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2675, 6))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2700,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2700, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 1105 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,4400000) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2671,240)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2657,100) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2664,50)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2665,20) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2674,4))
+				if (Key == 1105 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 4400000) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2671, 240)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2657, 100) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2664, 50)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2665, 20) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2674, 4))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2693,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2693, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 1104 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,4400000) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2655,300)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2663,120) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2667,120)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2669,20) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2674,4))
+				if (Key == 1104 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 4400000) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2655, 300)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2663, 120) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2667, 120)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2669, 20) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2674, 4))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2692,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2692, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 1103 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,4400000) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2671,240)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2664,50) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2667,120)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2672,15) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2674,4))
+				if (Key == 1103 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 4400000) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2671, 240)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2664, 50) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2667, 120)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2672, 15) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2674, 4))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2691,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2691, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 1102 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,4400000) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2659,300)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2658,25) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2668,40)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2666,10) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2674,4))
+				if (Key == 1102 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 4400000) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2659, 300)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2658, 25) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2668, 40)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2666, 10) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2674, 4))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2690,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2690, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 1101 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,4400000) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2656,200)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2664,50) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2661,70)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2666,10) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2674,4))
+				if (Key == 1101 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 4400000) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2656, 200)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2664, 50) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2661, 70)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2666, 10) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2674, 4))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2689,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2689, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 1100 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,4400000) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2656,200)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2663,120) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2661,70)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2672,15) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2674,4))
+				if (Key == 1100 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 4400000) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2656, 200)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2663, 120) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2661, 70)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2672, 15) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2674, 4))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2688,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2688, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 1006 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,880000) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2655,120)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2660,150) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2657,50)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2669,10) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2673,2))
+				if (Key == 1006 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 880000) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2655, 120)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2660, 150) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2657, 50)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2669, 10) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2673, 2))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2682,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2682, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 1005 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,880000) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2655,150)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2659,150) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2658,12)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2664,30) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2673,2))
+				if (Key == 1005 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 880000) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2655, 150)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2659, 150) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2658, 12)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2664, 30) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2673, 2))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2681,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2681, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 1004 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,880000) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2659,150)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2671,80) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2667,60)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2665,10) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2673,2))
+				if (Key == 1004 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 880000) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2659, 150)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2671, 80) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2667, 60)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2665, 10) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2673, 2))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2680,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2680, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 1003 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,880000) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2656,100)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2671,80) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2668,30)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2665,10) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2673,2))
+				if (Key == 1003 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 880000) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2656, 100)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2671, 80) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2668, 30)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2665, 10) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2673, 2))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2679,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2679, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 1002 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,880000) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2656,100)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2660,150) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2663,60)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2668,30) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2673,2))
+				if (Key == 1002 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 880000) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2656, 100)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2660, 150) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2663, 60)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2668, 30) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2673, 2))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2678,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2678, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 1001 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,880000) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2656,100)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2659,150) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2664,30)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2662,12) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2673,2))
+				if (Key == 1001 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 880000) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2656, 100)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2659, 150) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2664, 30)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2662, 12) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2673, 2))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2677,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2677, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 1000 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,880000) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2655,150)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2671,80) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2664,30)
-					&& CPlayer::RemoveItem(IPlayer.GetOffset(),9,2661,30) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2673,2))
+				if (Key == 1000 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 880000) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2655, 150)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2671, 80) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2664, 30)
+					&& CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2661, 30) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2673, 2))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2676,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2676, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 702 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2539,400) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2654,1))
+				if (Key == 702 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2539, 400) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2654, 1))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2538,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2538, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 701 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2539,400))
+				if (Key == 701 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2539, 400))
 				{
 					if (Rate >= 550)
 					{
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2538,0,1,-1);
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2537,0,1,-1);
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2538, 0, 1, -1);
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2537, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 602 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2536,400) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2654,1))
+				if (Key == 602 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2536, 400) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2654, 1))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2675,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2675, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 601 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2536,400))
+				if (Key == 601 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2536, 400))
 				{
 					if (Rate >= 550)
 					{
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2675,0,1,-1);
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2537,0,1,-1);
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2675, 0, 1, -1);
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2537, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 502 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2535,350) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2654,1))
+				if (Key == 502 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2535, 350) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2654, 1))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,2674,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2674, 0, 1, -1);
 					return;
 				}
 
-				if (Key == 501 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2535,350))
+				if (Key == 501 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2535, 350))
 				{
 					if (Rate >= 550)
 					{
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2674,0,1,-1);
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2537,0,1,-1);
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2674, 0, 1, -1);
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2537, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 405 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2534,300))
+				if (Key == 405 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2534, 300))
 				{
 					if (Rate >= 450)
 					{
 						if (Rate >= 650)
 						{
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2671,0,1,-1);
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2672,0,1,-1);
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2671, 0, 1, -1);
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2673,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2672, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2673, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 404 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2534,225) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2654,1))
+				if (Key == 404 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2534, 225) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2654, 1))
 				{
 					if (Rate >= 450)
 					{
 						if (Rate >= 650)
 						{
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2671,0,1,-1);
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2672,0,1,-1);
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2671, 0, 1, -1);
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2673,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2672, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2673, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 403 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2534,225))
+				if (Key == 403 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2534, 225))
 				{
 					if (Rate >= 450)
 					{
@@ -4255,50 +4365,56 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 850)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2671,0,1,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2672,0,1,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2671, 0, 1, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2673,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2672, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2537,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2673, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2537, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 402 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2534,100) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2654,1))
+				if (Key == 402 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2534, 100) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2654, 1))
 				{
 					if (Rate >= 550)
 					{
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2671,0,1,-1);
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2672,0,1,-1);
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2671, 0, 1, -1);
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2672, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 401 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2534,100))
+				if (Key == 401 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2534, 100))
 				{
 					if (Rate >= 450)
 					{
 						if (Rate >= 750)
 						{
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2671,0,1,-1);	
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2672,0,1,-1);
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2671, 0, 1, -1);
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2537,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2672, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2537, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 307 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2533,300))
+				if (Key == 307 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2533, 300))
 				{
 					if (Rate >= 350)
 					{
@@ -4306,21 +4422,24 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 750)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2667,0,1,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2668,0,1,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2667, 0, 1, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2669,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2668, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2670,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2669, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2670, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 306 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2533,225) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2654,1))
+				if (Key == 306 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2533, 225) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2654, 1))
 				{
 					if (Rate >= 400)
 					{
@@ -4328,21 +4447,24 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 800)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2667,0,1,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2668,0,1,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2667, 0, 1, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2669,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2668, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2670,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2669, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2670, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 305 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2533,225))
+				if (Key == 305 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2533, 225))
 				{
 					if (Rate >= 400)
 					{
@@ -4352,41 +4474,47 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 							{
 								if (Rate >= 900)
 								{
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2667,0,1,-1);
-								} else {
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2668,0,1,-1);
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2667, 0, 1, -1);
 								}
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2669,0,1,-1);
+								else {
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2668, 0, 1, -1);
+								}
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2670,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2669, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2537,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2670, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2537, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 304 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2533,150) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2654,1))
+				if (Key == 304 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2533, 150) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2654, 1))
 				{
 					if (Rate >= 400)
 					{
 						if (Rate >= 600)
 						{
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2667,0,1,-1);
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2668,0,1,-1);
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2667, 0, 1, -1);
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2669,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2668, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2669, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 303 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2533,150))
+				if (Key == 303 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2533, 150))
 				{
 					if (Rate >= 450)
 					{
@@ -4394,50 +4522,56 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 850)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2667,0,1,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2668,0,1,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2667, 0, 1, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2669,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2668, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2537,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2669, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2537, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 302 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2533,75) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2654,1))
+				if (Key == 302 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2533, 75) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2654, 1))
 				{
 					if (Rate >= 550)
 					{
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2667,0,1,-1);
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2668,0,1,-1);
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2667, 0, 1, -1);
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2668, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 301 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2533,75))
+				if (Key == 301 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2533, 75))
 				{
 					if (Rate >= 450)
 					{
 						if (Rate >= 750)
 						{
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2667,0,1,-1);	
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2668,0,1,-1);
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2667, 0, 1, -1);
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2537,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2668, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2537, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 207 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2532,300))
+				if (Key == 207 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2532, 300))
 				{
 					if (Rate >= 350)
 					{
@@ -4445,21 +4579,24 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 750)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2663,0,1,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2664,0,1,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2663, 0, 1, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2665,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2664, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2666,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2665, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2666, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 206 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2532,225) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2654,1))
+				if (Key == 206 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2532, 225) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2654, 1))
 				{
 					if (Rate >= 400)
 					{
@@ -4467,21 +4604,24 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 800)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2663,0,1,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2664,0,1,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2663, 0, 1, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2665,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2664, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2666,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2665, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2666, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 205 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2532,225))
+				if (Key == 205 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2532, 225))
 				{
 					if (Rate >= 400)
 					{
@@ -4491,41 +4631,47 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 							{
 								if (Rate >= 900)
 								{
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2663,0,1,-1);
-								} else {
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2664,0,1,-1);
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2663, 0, 1, -1);
 								}
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2665,0,1,-1);
+								else {
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2664, 0, 1, -1);
+								}
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2666,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2665, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2537,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2666, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2537, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 204 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2532,150) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2654,1))
+				if (Key == 204 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2532, 150) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2654, 1))
 				{
 					if (Rate >= 400)
 					{
 						if (Rate >= 600)
 						{
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2663,0,1,-1);
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2664,0,1,-1);
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2663, 0, 1, -1);
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2665,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2664, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2665, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 203 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2532,150))
+				if (Key == 203 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2532, 150))
 				{
 					if (Rate >= 450)
 					{
@@ -4533,50 +4679,56 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 850)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2663,0,1,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2664,0,1,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2663, 0, 1, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2665,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2664, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2537,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2665, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2537, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 202 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2532,75) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2654,1))
+				if (Key == 202 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2532, 75) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2654, 1))
 				{
 					if (Rate >= 550)
 					{
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2663,0,1,-1);
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2664,0,1,-1);
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2663, 0, 1, -1);
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2664, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 201 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2532,75))
+				if (Key == 201 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2532, 75))
 				{
 					if (Rate >= 450)
 					{
 						if (Rate >= 750)
 						{
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2663,0,1,-1);	
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2664,0,1,-1);
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2663, 0, 1, -1);
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2537,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2664, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2537, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 107 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2531,200))
+				if (Key == 107 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2531, 200))
 				{
 					if (Rate >= 350)
 					{
@@ -4584,21 +4736,24 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 750)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2659,0,1,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2660,0,1,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2659, 0, 1, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2661,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2660, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2662,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2661, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2662, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 106 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2531,150) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2654,1))
+				if (Key == 106 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2531, 150) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2654, 1))
 				{
 					if (Rate >= 400)
 					{
@@ -4606,21 +4761,24 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 800)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2659,0,1,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2660,0,1,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2659, 0, 1, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2661,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2660, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2662,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2661, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2662, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 105 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2531,150))
+				if (Key == 105 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2531, 150))
 				{
 					if (Rate >= 400)
 					{
@@ -4630,41 +4788,47 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 							{
 								if (Rate >= 900)
 								{
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2659,0,1,-1);
-								} else {
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2660,0,1,-1);
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2659, 0, 1, -1);
 								}
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2661,0,1,-1);
+								else {
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2660, 0, 1, -1);
+								}
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2662,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2661, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2537,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2662, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2537, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 104 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2531,100) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2654,1))
+				if (Key == 104 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2531, 100) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2654, 1))
 				{
 					if (Rate >= 400)
 					{
 						if (Rate >= 600)
 						{
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2659,0,1,-1);
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2660,0,1,-1);
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2659, 0, 1, -1);
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2661,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2660, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2661, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 103 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2531,100))
+				if (Key == 103 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2531, 100))
 				{
 					if (Rate >= 450)
 					{
@@ -4672,33 +4836,37 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 850)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2659,0,1,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2660,0,1,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2659, 0, 1, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2661,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2660, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2537,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2661, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2537, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 102 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2531,50) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2654,1))
+				if (Key == 102 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2531, 50) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2654, 1))
 				{
 					if (Rate >= 550)
 					{
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2659,0,1,-1);
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2660,0,1,-1);
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2659, 0, 1, -1);
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2660, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 101 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2531,50))
+				if (Key == 101 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2531, 50))
 				{
 					if (Rate >= 550)
 					{
@@ -4708,24 +4876,28 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 							{
 								if (Rate >= 950)
 								{
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2659,0,1,-1);
-								} else {
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2660,0,1,-1);
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2659, 0, 1, -1);
 								}
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2661,0,1,-1);
+								else {
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2660, 0, 1, -1);
+								}
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2662,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2661, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2537,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2662, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2537, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 7 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2530,200))
+				if (Key == 7 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2530, 200))
 				{
 					if (Rate >= 350)
 					{
@@ -4733,21 +4905,24 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 750)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2655,0,1,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2656,0,1,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2655, 0, 1, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2657,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2656, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2658,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2657, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2658, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 6 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2530,150) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2654,1))
+				if (Key == 6 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2530, 150) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2654, 1))
 				{
 					if (Rate >= 400)
 					{
@@ -4755,21 +4930,24 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 800)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2655,0,1,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2656,0,1,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2655, 0, 1, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2657,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2656, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2658,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2657, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2658, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 5 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2530,150))
+				if (Key == 5 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2530, 150))
 				{
 					if (Rate >= 400)
 					{
@@ -4779,41 +4957,47 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 							{
 								if (Rate >= 900)
 								{
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2655,0,1,-1);
-								} else {
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2656,0,1,-1);
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2655, 0, 1, -1);
 								}
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2657,0,1,-1);
+								else {
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2656, 0, 1, -1);
+								}
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2658,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2657, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2537,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2658, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2537, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 4 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2530,100) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2654,1))
+				if (Key == 4 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2530, 100) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2654, 1))
 				{
 					if (Rate >= 400)
 					{
 						if (Rate >= 600)
 						{
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2655,0,1,-1);
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2656,0,1,-1);
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2655, 0, 1, -1);
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2657,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2656, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2657, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 3 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2530,100))
+				if (Key == 3 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2530, 100))
 				{
 					if (Rate >= 450)
 					{
@@ -4821,33 +5005,37 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 850)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2655,0,1,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2656,0,1,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2655, 0, 1, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2657,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2656, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2537,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2657, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2537, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 2 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2530,50) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2654,1))
+				if (Key == 2 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2530, 50) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2654, 1))
 				{
 					if (Rate >= 550)
 					{
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2655,0,1,-1);
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2656,0,1,-1);
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2655, 0, 1, -1);
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2656, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 1 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2530,50))
+				if (Key == 1 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2530, 50))
 				{
 					if (Rate >= 550)
 					{
@@ -4855,15 +5043,18 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 950)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2655,0,1,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2656,0,1,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2655, 0, 1, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2657,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2656, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2537,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2657, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2537, 0, 1, -1);
 					}
 
 					return;
@@ -4893,14 +5084,14 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				return;
 
 			IItem MainItem((void*)ItemGet);
-			int GetRate = 0, PrefixMainItem = MainItem.PrefixID(), PrefixStone = PerfItemx.PrefixID(), Rate = CTools::Rate(0,10000);
+			int GetRate = 0, PrefixMainItem = MainItem.PrefixID(), PrefixStone = PerfItemx.PrefixID(), Rate = CTools::Rate(0, 10000);
 			if (PrefixStone == 0) PrefixStone = 1;
 			if (PrefixMainItem == 0) PrefixMainItem = 1;
-			GetRate = DemonGongStoneEnchant[PrefixMainItem-1][PrefixStone-1];
+			GetRate = DemonGongStoneEnchant[PrefixMainItem - 1][PrefixStone - 1];
 
 			if (MainItem.GetInfo() & 4194304)
 			{
-				IPlayer.SystemMessage("Refining the Stone of Demon Gong can not be use on locked items.",TEXTCOLOR_RED);
+				IPlayer.SystemMessage("Refining the Stone of Demon Gong can not be use on locked items.", TEXTCOLOR_RED);
 				return;
 			}
 
@@ -4934,26 +5125,28 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						CPlayer::_OutOfInven((void*)Player, JewelItem);
 
 					JewelCalculation = JewelAmount;
-					GetRate += (JewelCalculation*500);
-				} else {
+					GetRate += (JewelCalculation * 500);
+				}
+				else {
 					return;
 				}
 			}
 
 			if (Rate <= GetRate)
 			{
-				int AddPrefix = CItem::FindPrefix(PrefixMainItem+1);
+				int AddPrefix = CItem::FindPrefix(PrefixMainItem + 1);
 
 				if (!AddPrefix)
 					return;
 
 				*(DWORD *)((int)MainItem.GetOffset() + 44) = AddPrefix;
-				CDBSocket::Write(19,"ddbb",MainItem.GetIID(),IPlayer.GetID(),PrefixMainItem+1);
+				CDBSocket::Write(19, "ddbb", MainItem.GetIID(), IPlayer.GetID(), PrefixMainItem + 1);
 				CItem::SendItemInfo(MainItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
-				CPlayer::Write(IPlayer.GetOffset(),255,"dbdb",225,0,MainItem.GetIID(),PrefixMainItem+1);
-			} else {
+				CPlayer::Write(IPlayer.GetOffset(), 255, "dbdb", 225, 0, MainItem.GetIID(), PrefixMainItem + 1);
+			}
+			else {
 				IPlayer.BoxMsg("Refining the Stone of Demon Gong has failed.");
-				CPlayer::Write(IPlayer.GetOffset(),255,"dbd",225,1,20);
+				CPlayer::Write(IPlayer.GetOffset(), 255, "dbd", 225, 1, 20);
 			}
 
 			return;
@@ -4967,10 +5160,10 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			if (Index && Type)
 			{
 				ConfigMining pMining = CheckMining.count(IPlayer.GetPID()) ? CheckMining.findValue(IPlayer.GetPID()) : ConfigMining();
-				if (CPlayer::RemoveItem(IPlayer.GetOffset(),9, JewelIndex,1))
+				if (CPlayer::RemoveItem(IPlayer.GetOffset(), 9, JewelIndex, 1))
 				{
 					int Chance = 0, Type = 0;
-					Chance = CTools::Rate(0,1000);
+					Chance = CTools::Rate(0, 1000);
 					if (Chance < 50) Type = 2;
 					else if (Chance < 200) Type = 1;
 
@@ -4989,30 +5182,32 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 					if (pMining.Cycle >= 3)
 					{
-						if (pMining.Amount >= 1 && CPlayer::RemoveItem(IPlayer.GetOffset(),9, pMining.Index,1))
+						if (pMining.Amount >= 1 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, pMining.Index, 1))
 						{
 							pMining.Amount = pMining.Amount - 1;
 							pMining.Cycle = 0;
-						} else {
+						}
+						else {
 							IPlayer.CloseWindow("minebar");
 							pMining.Time = 0;
 							pMining.Cycle = 0;
 							pMining.Index = 0;
 							pMining.Amount = 0;
 							CheckMining.replaceInsert(IPlayer.GetPID(), pMining);
-							CPlayer::Write(IPlayer.GetOffset(),220,"bb",0,3);
+							CPlayer::Write(IPlayer.GetOffset(), 220, "bb", 0, 3);
 							return;
 						}
 					}
 
-					CPlayer::Write(IPlayer.GetOffset(),220,"bbw",0,4,pMining.Index);
+					CPlayer::Write(IPlayer.GetOffset(), 220, "bbw", 0, 4, pMining.Index);
 					pMining.Time = GetTickCount() + 300000;
-				} else {
+				}
+				else {
 					IPlayer.CloseWindow("minebar");
 					pMining.Time = 0;
 					pMining.Cycle = 0;
 					pMining.Index = 0;
-					pMining.Amount = 0; 
+					pMining.Amount = 0;
 				}
 
 				CheckMining.replaceInsert(IPlayer.GetPID(), pMining);
@@ -5050,16 +5245,16 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 				if (ItemStats)
 					PerfGradeCheck = ItemStats / 100000000;
-				
+
 				if (PerfGradeCheck >= 1 && (PerfItemx.CheckIndex() == 3057 || PerfItemx.CheckIndex() == 3059))
 				{
-					IPlayer.SystemMessage("Perforation shot can not be use on item anymore.",TEXTCOLOR_RED);
+					IPlayer.SystemMessage("Perforation shot can not be use on item anymore.", TEXTCOLOR_RED);
 					return;
 				}
 
 				if (MainItem.GetInfo() & 4194304 && (PerfItemx.CheckIndex() == 3057 || PerfItemx.CheckIndex() == 3059))
 				{
-					IPlayer.SystemMessage("You can not add qigong ability on locked items.",TEXTCOLOR_RED);
+					IPlayer.SystemMessage("You can not add qigong ability on locked items.", TEXTCOLOR_RED);
 					return;
 				}
 
@@ -5071,13 +5266,13 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 				if (PerfGradeCheck >= 3 && PerfItemx.CheckIndex() == 3166)
 				{
-					IPlayer.SystemMessage("Gun of demon gong can not be use on item anymore.",TEXTCOLOR_RED);
+					IPlayer.SystemMessage("Gun of demon gong can not be use on item anymore.", TEXTCOLOR_RED);
 					return;
 				}
 
 				if (MainItem.GetInfo() & 4194304 && PerfItemx.CheckIndex() == 3166)
 				{
-					IPlayer.SystemMessage("You can not add demon gong ability on locked items.",TEXTCOLOR_RED);
+					IPlayer.SystemMessage("You can not add demon gong ability on locked items.", TEXTCOLOR_RED);
 					return;
 				}
 
@@ -5089,7 +5284,8 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					if (IPlayer.RemoveItem(JewelIndex, (Multiply*JewelAmount)))
 					{
 						JewelCalculation = JewelAmount;
-					} else {
+					}
+					else {
 						return;
 					}
 				}
@@ -5149,9 +5345,9 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					}
 				}
 
-				if (PerfItemx.CheckIndex() == 3059 && IPlayer.RemoveItem(3059,1))
+				if (PerfItemx.CheckIndex() == 3059 && IPlayer.RemoveItem(3059, 1))
 				{
-					int PerfRate = CTools::Rate(1,1000);
+					int PerfRate = CTools::Rate(1, 1000);
 
 					if (PerfRate <= (Perfo * 10) + (JewelCalculation * 70))
 					{
@@ -5162,19 +5358,20 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 						GetItemStat[IID] = ItemStat + 100000000;
 						itemStat.Leave();
-						CDBSocket::Write(90,"dd", ItemStat + 100000000,MainItem.GetIID());
+						CDBSocket::Write(90, "dd", ItemStat + 100000000, MainItem.GetIID());
 
 						if (CItem::IsState((int)MainItem.GetOffset(), 64))
-							CItem::SubState((int)MainItem.GetOffset(),64);
+							CItem::SubState((int)MainItem.GetOffset(), 64);
 
 						CItem::SendItemInfo(MainItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
 						CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddddd", 242, 0, 0, 128, 255);
 						return;
-					} else {
+					}
+					else {
 						if (CItem::IsState((int)MainItem.GetOffset(), 64))
 						{
-							CDBSocket::Write(21, "dddbb",MainItem.GetIID(),IPlayer.GetID(),64,0,255);
-							CItem::SubState((int)MainItem.GetOffset(),64);
+							CDBSocket::Write(21, "dddbb", MainItem.GetIID(), IPlayer.GetID(), 64, 0, 255);
+							CItem::SubState((int)MainItem.GetOffset(), 64);
 							CItem::SendItemInfo(MainItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
 							return;
 						}
@@ -5186,25 +5383,26 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 						if (MainItem.GetEndurance() <= 0)
 						{
-							CPlayer::Write(IPlayer.GetOffset(), 91, "db",MainItem.GetIID(),MainItem.GetEndurance());
-							CDBSocket::Write(3,"ddwdbddd",MainItem.GetIID(),IPlayer.GetID(),MainItem.CheckIndex(),1,27,0,0,0);
+							CPlayer::Write(IPlayer.GetOffset(), 91, "db", MainItem.GetIID(), MainItem.GetEndurance());
+							CDBSocket::Write(3, "ddwdbddd", MainItem.GetIID(), IPlayer.GetID(), MainItem.CheckIndex(), 1, 27, 0, 0, 0);
 
 							if (CItem::GetLevel((int)MainItem.GetOffset()) >= 40)
 								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 517, 0, 15, -1);
 
 							CBase::Delete(MainItem.GetOffset());
-						} else {
-							CPlayer::Write(IPlayer.GetOffset(), 91, "db",MainItem.GetIID(),MainItem.GetEndurance());
-							CDBSocket::Write(18,"ddb",MainItem.GetIID(),IPlayer.GetID(),MainItem.GetEndurance());
+						}
+						else {
+							CPlayer::Write(IPlayer.GetOffset(), 91, "db", MainItem.GetIID(), MainItem.GetEndurance());
+							CDBSocket::Write(18, "ddb", MainItem.GetIID(), IPlayer.GetID(), MainItem.GetEndurance());
 						}
 
 						return;
 					}
 				}
 
-				if (PerfItemx.CheckIndex() == 3166 && IPlayer.RemoveItem(3166,1))
+				if (PerfItemx.CheckIndex() == 3166 && IPlayer.RemoveItem(3166, 1))
 				{
-					int PerfRate = CTools::Rate(1,1000);
+					int PerfRate = CTools::Rate(1, 1000);
 
 					if (PerfRate <= ((Gun * 10) + (JewelCalculation * 70)))
 					{
@@ -5215,19 +5413,20 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 						GetItemStat[IID] = ItemStat + 100000000;
 						itemStat.Leave();
-						CDBSocket::Write(90,"dd", ItemStat + 100000000,MainItem.GetIID());
+						CDBSocket::Write(90, "dd", ItemStat + 100000000, MainItem.GetIID());
 
 						if (CItem::IsState((int)MainItem.GetOffset(), 64))
-							CItem::SubState((int)MainItem.GetOffset(),64);
+							CItem::SubState((int)MainItem.GetOffset(), 64);
 
 						CItem::SendItemInfo(MainItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
 						CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddddd", 242, 0, 0, 128, 255);
 						return;
-					} else {
+					}
+					else {
 						if (CItem::IsState((int)MainItem.GetOffset(), 64))
 						{
-							CDBSocket::Write(21, "dddbb",MainItem.GetIID(),IPlayer.GetID(),64,0,255);
-							CItem::SubState((int)MainItem.GetOffset(),64);
+							CDBSocket::Write(21, "dddbb", MainItem.GetIID(), IPlayer.GetID(), 64, 0, 255);
+							CItem::SubState((int)MainItem.GetOffset(), 64);
 							CItem::SendItemInfo(MainItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
 							return;
 						}
@@ -5239,16 +5438,17 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 						if (MainItem.GetEndurance() <= 0)
 						{
-							CPlayer::Write(IPlayer.GetOffset(), 91, "db",MainItem.GetIID(),MainItem.GetEndurance());
-							CDBSocket::Write(3,"ddwdbddd",MainItem.GetIID(),IPlayer.GetID(),MainItem.CheckIndex(),1,27,0,0,0);
+							CPlayer::Write(IPlayer.GetOffset(), 91, "db", MainItem.GetIID(), MainItem.GetEndurance());
+							CDBSocket::Write(3, "ddwdbddd", MainItem.GetIID(), IPlayer.GetID(), MainItem.CheckIndex(), 1, 27, 0, 0, 0);
 
 							if (CItem::GetLevel((int)MainItem.GetOffset()) >= 40)
 								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 517, 0, 15, -1);
 
 							CBase::Delete(MainItem.GetOffset());
-						} else {
-							CPlayer::Write(IPlayer.GetOffset(), 91, "db",MainItem.GetIID(),MainItem.GetEndurance());
-							CDBSocket::Write(18,"ddb",MainItem.GetIID(),IPlayer.GetID(),MainItem.GetEndurance());
+						}
+						else {
+							CPlayer::Write(IPlayer.GetOffset(), 91, "db", MainItem.GetIID(), MainItem.GetEndurance());
+							CDBSocket::Write(18, "ddb", MainItem.GetIID(), IPlayer.GetID(), MainItem.GetEndurance());
 						}
 
 						return;
@@ -5275,7 +5475,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 				if (MainItem.GetInfo() & 4194304)
 				{
-					IPlayer.SystemMessage("Qigong can not be use on locked items.",TEXTCOLOR_RED);
+					IPlayer.SystemMessage("Qigong can not be use on locked items.", TEXTCOLOR_RED);
 					return;
 				}
 
@@ -5289,77 +5489,91 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 				if (JewelCheck == 1 && JewelAmount >= 1 && JewelAmount <= 10)
 				{
-					if (IPlayer.RemoveItem(JewelIndex, (10*JewelAmount)))
+					if (IPlayer.RemoveItem(JewelIndex, (10 * JewelAmount)))
 					{
 						JewelCalculation = JewelAmount;
-					} else {
+					}
+					else {
 						return;
 					}
 				}
 
-				if (QigongItemx.CheckIndex() == 3056 && IPlayer.RemoveItem(3056,1))
+				if (QigongItemx.CheckIndex() == 3056 && IPlayer.RemoveItem(3056, 1))
 				{
-					int QigongRate = CTools::Rate(1,1000);
+					int QigongRate = CTools::Rate(1, 1000);
 
-					if (QigongRate >= (550-(JewelCalculation*50)))
+					if (QigongRate >= (550 - (JewelCalculation * 50)))
 					{
-						if (QigongRate >= (750-(JewelCalculation*60)))
+						if (QigongRate >= (750 - (JewelCalculation * 60)))
 						{
-							if (QigongRate >= (850-(JewelCalculation*60)))
+							if (QigongRate >= (850 - (JewelCalculation * 60)))
 							{
-								if (QigongRate >= (950-(JewelCalculation*70)))
+								if (QigongRate >= (950 - (JewelCalculation * 70)))
 								{
-									if (QigongRate >= (970-(JewelCalculation*70)))
+									if (QigongRate >= (970 - (JewelCalculation * 70)))
 									{
-										if (QigongRate >= (980-(JewelCalculation*80)))
+										if (QigongRate >= (980 - (JewelCalculation * 80)))
 										{
-											if (QigongRate >= (990-(JewelCalculation*80)))
+											if (QigongRate >= (990 - (JewelCalculation * 80)))
 											{
-												int Rate = CTools::Rate(71,80);
+												int Rate = CTools::Rate(71, 80);
 												SetType += Rate;
 												std::string msg = (std::string)IPlayer.GetName();
 												msg = msg + " has been fused with the Black Spirit Of Insanity!";
-												if(fuseNotice)
+												if (fuseNotice){
 													CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 8);
-											} else {
-												int Rate = CTools::Rate(61,70);
+													ToNoticeWebhook(msg.c_str());
+
+												}
+											}
+											else {
+												int Rate = CTools::Rate(61, 70);
 												SetType += Rate;
 												std::string msg = (std::string)IPlayer.GetName();
 												msg = msg + " has been fused with the Black Spirit Of Thunder!";
-												if(fuseNotice)
+												if (fuseNotice){
 													CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 8);
-											}	
-										} else {
-											int Rate = CTools::Rate(51,60);
+													ToNoticeWebhook(msg.c_str());
+
+												}
+											}
+										}
+										else {
+											int Rate = CTools::Rate(51, 60);
 											SetType += Rate;
 										}
-									} else {
-										int Rate = CTools::Rate(41,50);
+									}
+									else {
+										int Rate = CTools::Rate(41, 50);
 										SetType += Rate;
 									}
-								} else {
-									int Rate = CTools::Rate(31,40);
+								}
+								else {
+									int Rate = CTools::Rate(31, 40);
 									SetType += Rate;
 								}
-							} else {
-								int Rate = CTools::Rate(21,30);
+							}
+							else {
+								int Rate = CTools::Rate(21, 30);
 								SetType += Rate;
 							}
-						} else {
-							int Rate = CTools::Rate(11,20);
+						}
+						else {
+							int Rate = CTools::Rate(11, 20);
 							SetType += Rate;
 						}
-					} else {
-						int Rate = CTools::Rate(1,10);
+					}
+					else {
+						int Rate = CTools::Rate(1, 10);
 						SetType += Rate;
 					}
 
 					itemStat.Enter();
 					GetItemStat[IID] = (ItemStat + SetType) - QigongGradeCheck;
 					itemStat.Leave();
-					CDBSocket::Write(90,"dd", (ItemStat + SetType) - QigongGradeCheck,MainItem.GetIID());
+					CDBSocket::Write(90, "dd", (ItemStat + SetType) - QigongGradeCheck, MainItem.GetIID());
 					CItem::SendItemInfo(MainItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
-					CPlayer::Write(IPlayer.GetOffset(),0xFF,"ddd",235,MainItem.GetIID(),SetType);
+					CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddd", 235, MainItem.GetIID(), SetType);
 					return;
 				}
 
@@ -5372,16 +5586,21 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						SetType += Rate;
 						std::string msg = (std::string)IPlayer.GetName();
 						msg = msg + " has been fused with the Black Spirit Of Insanity!";
-						if (fuseNotice)
+						if (fuseNotice){
 							CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 8);
+							ToNoticeWebhook(msg.c_str());
+
+						}
 					}
 					else if (QigongRate >= 100 - Thunder) {
 						int Rate = CTools::Rate(61, 70);
 						SetType += Rate;
 						std::string msg = (std::string)IPlayer.GetName();
 						msg = msg + " has been fused with the Black Spirit Of Thunder!";
-						if (fuseNotice)
+						if (fuseNotice){
 							CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 8);
+							ToNoticeWebhook(msg.c_str());
+						}
 					}
 					else if (QigongRate >= 100 - Violent) {
 						int Rate = CTools::Rate(51, 60);
@@ -5468,7 +5687,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 				if (MainItem.GetInfo() & 4194304)
 				{
-					IPlayer.SystemMessage("Demon Gong can not be use on locked items.",TEXTCOLOR_RED);
+					IPlayer.SystemMessage("Demon Gong can not be use on locked items.", TEXTCOLOR_RED);
 					return;
 				}
 
@@ -5498,13 +5717,13 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 					if (SecondDemonGongType)
 					{
-						IPlayer.SystemMessage("This is wrong material item.",TEXTCOLOR_RED);
+						IPlayer.SystemMessage("This is wrong material item.", TEXTCOLOR_RED);
 						return;
 					}
 
 					if (SecondDemonGongType && SecondDemonGongType != DemonGongStyle)
 					{
-						IPlayer.SystemMessage("This is wrong material item.",TEXTCOLOR_RED);
+						IPlayer.SystemMessage("This is wrong material item.", TEXTCOLOR_RED);
 						return;
 					}
 
@@ -5519,7 +5738,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					if (SecondDemonGongStat) return;
 					itemStat.Enter();
 					int newV = GetItemStat.find(IID)->second + (GetStonePrefix * 10000) - 10000;
-					GetItemStat[IID] = newV; 
+					GetItemStat[IID] = newV;
 					itemStat.Leave();
 					CDBSocket::Write(90, "dd", newV, MainItem.GetIID());
 
@@ -5536,13 +5755,13 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				{
 					if (FirstDemonGongType)
 					{
-						IPlayer.SystemMessage("This is wrong material item.",TEXTCOLOR_RED);
+						IPlayer.SystemMessage("This is wrong material item.", TEXTCOLOR_RED);
 						return;
 					}
 
 					if (FirstDemonGongType && FirstDemonGongType != DemonGongStyle)
 					{
-						IPlayer.SystemMessage("This is wrong material item.",TEXTCOLOR_RED);
+						IPlayer.SystemMessage("This is wrong material item.", TEXTCOLOR_RED);
 						return;
 					}
 
@@ -5597,35 +5816,36 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			if (mtype == 10 && yintype == 1)
 			{
 				if (key > 28)
-					key -=6;
+					key -= 6;
 				else if (key > 18)
-					key -=4;
+					key -= 4;
 				else if (key > 8)
-					key -=2;
+					key -= 2;
 
 				if (IPlayer.IsOnline() && CPlayer::GetInvenSize((int)IPlayer.GetOffset()) < IPlayer.MaxInventorySize())
 				{
-					if (IPlayer.RemoveItem((key+2953),2))
+					if (IPlayer.RemoveItem((key + 2953), 2))
 					{
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,(key+2985),0,1,-1);
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, (key + 2985), 0, 1, -1);
 						IPlayer.CloseWindow("yinyang_enchant");
 						IPlayer.OpenWindow("yinyang_enchant", 0, 0);
 					}
-				} else {
-					IPlayer.SystemMessage("Inventory is full.",TEXTCOLOR_RED);
+				}
+				else {
+					IPlayer.SystemMessage("Inventory is full.", TEXTCOLOR_RED);
 				}
 			}
 
 			if (mtype == 20 && yintype == 2)
 			{
 				if (key > 128)
-					key -=6;
+					key -= 6;
 				else if (key > 118)
-					key -=4;
+					key -= 4;
 				else if (key > 108)
-					key -=2;
+					key -= 2;
 
-				if (IPlayer.RemoveItem((key+2853),1))
+				if (IPlayer.RemoveItem((key + 2853), 1))
 				{
 					if (CheckWater == 1 && !IPlayer.RemoveItem(3024, 1)) {
 						IPlayer.SystemMessage("Water trigram was not found, please try again.", TEXTCOLOR_RED);
@@ -5643,59 +5863,64 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 					int GetCurrentGrade = (NewValue % 10000) / 100;
 					if (GetCurrentGrade == 0) GetCurrentGrade = 1;
-					int GetRate = TriagramUpgradeRate[0][GetCurrentGrade-1], Rate = CTools::Rate(1,24000);
-					
-					if (Rate <= GetRate+(CheckWater*1000))
+					int GetRate = TriagramUpgradeRate[0][GetCurrentGrade - 1], Rate = CTools::Rate(1, 24000);
+
+					if (Rate <= GetRate + (CheckWater * 1000))
 					{
 						NewValue += 100;
 						itemStat.Enter();
 						GetItemStat[TargetIID] = NewValue;
 						itemStat.Leave();
-						CDBSocket::Write(90,"dd",NewValue, TargetIID);
-						
+						CDBSocket::Write(90, "dd", NewValue, TargetIID);
+
 						CItem::SendItemInfo(MainItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
-						CPlayer::Write(IPlayer.GetOffset(),176,"bbdd",0,2,0,MainItem.GetIID());
-					} else {
+						CPlayer::Write(IPlayer.GetOffset(), 176, "bbdd", 0, 2, 0, MainItem.GetIID());
+					}
+					else {
 						if (GetCurrentGrade > 4)
 						{
-							int Rate = CTools::Rate(0,2);
+							int Rate = CTools::Rate(0, 2);
 
-							if(CheckWater!=1){
-							if (!Rate)
-							{
-								NewValue -= 100;
+							if (CheckWater != 1){
+								if (!Rate)
+								{
+									NewValue -= 100;
 
-								CPlayer::Write(IPlayer.GetOffset(),176,"bb",0,3);
-								itemStat.Enter();
-								GetItemStat[TargetIID] = NewValue;
-								itemStat.Leave();
-								CDBSocket::Write(90,"dd",NewValue, TargetIID);
-								
-								CItem::SendItemInfo(MainItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
-							} else {
-								CPlayer::Write(IPlayer.GetOffset(),176,"bb",0,4);
+									CPlayer::Write(IPlayer.GetOffset(), 176, "bb", 0, 3);
+									itemStat.Enter();
+									GetItemStat[TargetIID] = NewValue;
+									itemStat.Leave();
+									CDBSocket::Write(90, "dd", NewValue, TargetIID);
+
+									CItem::SendItemInfo(MainItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
+								}
+								else {
+									CPlayer::Write(IPlayer.GetOffset(), 176, "bb", 0, 4);
+								}
 							}
-						}else{
-								
-							if (!Rate)
-							{
-								//CPlayer::Write(IPlayer.GetOffset(),176,"bb",0,3);
-								//GetItemStat[TargetIID] = GetItemStat.find(TargetIID)->second;
-								IPlayer.BoxMsg("Water Upgrading Failed.");
-								itemStat.Enter();
-								int atemStat = GetItemStat.count(TargetIID) ? GetItemStat.find(TargetIID)->second : 0;
-								itemStat.Leave();
-								CDBSocket::Write(90,"dd", atemStat, TargetIID);
-								
-								CItem::SendItemInfo(MainItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
-							} else {
-								CPlayer::Write(IPlayer.GetOffset(),176,"bb",0,4);
-							}
-							
+							else{
+
+								if (!Rate)
+								{
+									//CPlayer::Write(IPlayer.GetOffset(),176,"bb",0,3);
+									//GetItemStat[TargetIID] = GetItemStat.find(TargetIID)->second;
+									IPlayer.BoxMsg("Water Upgrading Failed.");
+									itemStat.Enter();
+									int atemStat = GetItemStat.count(TargetIID) ? GetItemStat.find(TargetIID)->second : 0;
+									itemStat.Leave();
+									CDBSocket::Write(90, "dd", atemStat, TargetIID);
+
+									CItem::SendItemInfo(MainItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
+								}
+								else {
+									CPlayer::Write(IPlayer.GetOffset(), 176, "bb", 0, 4);
+								}
+
 
 							}
-						}else {
-							CPlayer::Write(IPlayer.GetOffset(),176,"bb",0,4);
+						}
+						else {
+							CPlayer::Write(IPlayer.GetOffset(), 176, "bb", 0, 4);
 						}
 					}
 				}
@@ -5703,26 +5928,26 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 			if (mtype == 30 && yintype == 3)
 			{
-				if (key == 2000 && IPlayer.RemoveItem(31,5000) && IPlayer.RemoveItem(2655,3)
-					&& IPlayer.RemoveItem(2659,3) && IPlayer.RemoveItem(2660,1))
+				if (key == 2000 && IPlayer.RemoveItem(31, 5000) && IPlayer.RemoveItem(2655, 3)
+					&& IPlayer.RemoveItem(2659, 3) && IPlayer.RemoveItem(2660, 1))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,3018,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 3018, 0, 1, -1);
 					return;
 				}
 
-				if (key == 2001 && IPlayer.RemoveItem(31,1000000) && IPlayer.RemoveItem(2655,36)
-					&& IPlayer.RemoveItem(2659,36) && IPlayer.RemoveItem(2660,9)
-					&& IPlayer.RemoveItem(2671,9))
+				if (key == 2001 && IPlayer.RemoveItem(31, 1000000) && IPlayer.RemoveItem(2655, 36)
+					&& IPlayer.RemoveItem(2659, 36) && IPlayer.RemoveItem(2660, 9)
+					&& IPlayer.RemoveItem(2671, 9))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,3019,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 3019, 0, 1, -1);
 					return;
 				}
 
-				if (key == 2002 && IPlayer.RemoveItem(31,14000000) && IPlayer.RemoveItem(2655,144)
-					&& IPlayer.RemoveItem(2659,144) && IPlayer.RemoveItem(2660,24)
-					&& IPlayer.RemoveItem(2671,24) && IPlayer.RemoveItem(2673,4))
+				if (key == 2002 && IPlayer.RemoveItem(31, 14000000) && IPlayer.RemoveItem(2655, 144)
+					&& IPlayer.RemoveItem(2659, 144) && IPlayer.RemoveItem(2660, 24)
+					&& IPlayer.RemoveItem(2671, 24) && IPlayer.RemoveItem(2673, 4))
 				{
-					CItem::InsertItem((int)IPlayer.GetOffset(),27,3020,0,1,-1);
+					CItem::InsertItem((int)IPlayer.GetOffset(), 27, 3020, 0, 1, -1);
 					return;
 				}
 			}
@@ -5777,14 +6002,14 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				}
 			}
 
-			if (mtype == 110 && yintype == 11 && MainItem.CheckIndex() >= 3018 && MainItem.CheckIndex() <= 3020 && IPlayer.RemoveItem(3023,1))
+			if (mtype == 110 && yintype == 11 && MainItem.CheckIndex() >= 3018 && MainItem.CheckIndex() <= 3020 && IPlayer.RemoveItem(3023, 1))
 			{
-				CPlayer::Write(IPlayer.GetOffset(),176,"bbdd",0,6);
+				CPlayer::Write(IPlayer.GetOffset(), 176, "bbdd", 0, 6);
 				itemStat.Enter();
 				GetItemStat[TargetIID] = 0;
 				itemStat.Leave();
 
-				CDBSocket::Write(90,"dd",0,MainItem.GetIID());
+				CDBSocket::Write(90, "dd", 0, MainItem.GetIID());
 				CItem::SendItemInfo(MainItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
 			}
 
@@ -5794,7 +6019,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 		if (packet == 142)
 		{
 			int MSSIID = 0, MSSX = 0, MSSY = 0, MSSMap = 0, MSSValue = 0, Value = 0, Item = 0;
-			CPacket::Read((char*)pPacket, (char*)pPos,"ddddd", &MSSIID, &MSSMap, &MSSX, &MSSY, &MSSValue);
+			CPacket::Read((char*)pPacket, (char*)pPos, "ddddd", &MSSIID, &MSSMap, &MSSX, &MSSY, &MSSValue);
 
 			if (MSSIID)
 			{
@@ -5803,18 +6028,18 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 				if (CSMap::IsOnTile(*(void **)((int)IPlayer.Offset + 320), (int)IPlayer.Offset + 332, 131072) || CSMap::IsOnTile(*(void **)((int)IPlayer.Offset + 320), (int)IPlayer.Offset + 332, 1048576))
 				{
-					IPlayer.SystemMessage("Can not be use in safezones.",TEXTCOLOR_ORANGE);
+					IPlayer.SystemMessage("Can not be use in safezones.", TEXTCOLOR_ORANGE);
 					return;
 				}
 
 				if (MSSMap)
 				{
-					IPlayer.SystemMessage("Can not be use in dungeon and battle areas.",TEXTCOLOR_ORANGE);
+					IPlayer.SystemMessage("Can not be use in dungeon and battle areas.", TEXTCOLOR_ORANGE);
 					return;
 				}
 
 				int Item = IPlayer.ItemPointerLock(MSSIID);
-				
+
 				if (!Item)
 					return;
 
@@ -5834,7 +6059,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 								{
 									Monster.Buff(367, BuffNames::BuffTime, 0);
 									//MonsterAI[(int)Monster.GetOffset()] = (int)IPlayer.GetOffset();
-									if(!mss.Public)
+									if (!mss.Public)
 										Monster.UpdateBuff(BuffNames::SummonAI, BuffNames::BuffTime, (int)IPlayer.GetOffset());
 								}
 								else {
@@ -5852,9 +6077,9 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 		if (packet == 219)
 		{
 			int Type = 100; const char *Caller = "", *Recall = "";
-			CPacket::xRead((char*)pPacket,"dss", &Type, &Caller, &Recall);
-			
-			if(!Caller || !Recall || strcmp(Caller, Recall) == 0) return;
+			CPacket::xRead((char*)pPacket, "dss", &Type, &Caller, &Recall);
+
+			if (!Caller || !Recall || strcmp(Caller, Recall) == 0) return;
 
 			if (strlen(Caller) > 0 && strlen(Recall) > 0)
 			{
@@ -5914,8 +6139,8 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 		if (packet == 118)
 		{
 			int Type = 0, IID = 0; const char *Name = "";
-			CPacket::Read((char*)pPacket, (char*)pPos,"bds", &Type, &IID, &Name, 21);
-			
+			CPacket::Read((char*)pPacket, (char*)pPos, "bds", &Type, &IID, &Name, 21);
+
 			if (!Name)
 				return;
 
@@ -5938,17 +6163,19 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					if (CSMap::IsOnTile(*(void **)((int)IPlayer.Offset + 320), (int)IPlayer.Offset + 332, 1048576) || IPlayer.IsBuff(349)){
 						IPlayer.BoxMsg("Can not use recall scroll here");
 						return;
-					}else
+					}
+					else
 					if (IPlayer.RemoveItem(1472, 1))
 					{
 						std::string getname = IPlayer.GetName();
 						std::string send = getname + " will recall you to him(her). Do you accept the recall?";
 						CPlayer::Write(Target.GetOffset(), 0xFF, "ddsss", 228, 1000, send.c_str(), IPlayer.GetName(), Target.GetName());
-						IPlayer.Buff(304,BuffNames::BuffTime,0);
-						IPlayer.SystemMessage("Recall scroll used.",TEXTCOLOR_GREEN);
-					
+						IPlayer.Buff(304, BuffNames::BuffTime, 0);
+						IPlayer.SystemMessage("Recall scroll used.", TEXTCOLOR_GREEN);
+
 					}
-				} else {
+				}
+				else {
 					std::string getname = Name;
 					std::string send = getname + " is not valid or offline.";
 					IPlayer.BoxMsg(send);
@@ -5961,8 +6188,8 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			{
 				if (IPlayer.IsValid() && IPlayer.IsParty())
 				{
-					IPlayer.SystemMessage("Recall scroll used.",TEXTCOLOR_GREEN);
-					IPlayer.Buff(304,BuffNames::BuffTime,0);
+					IPlayer.SystemMessage("Recall scroll used.", TEXTCOLOR_GREEN);
+					IPlayer.Buff(304, BuffNames::BuffTime, 0);
 
 					if (IPlayer.RemoveItem(1473, 1))
 					{
@@ -5982,7 +6209,8 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 							CIOObject::Release((void*)Party);
 						}
 					}
-				} else {
+				}
+				else {
 					IPlayer.BoxMsg("You are not in party.");
 				}
 
@@ -5993,14 +6221,14 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			{
 				if (IPlayer.IsValid() && IPlayer.GetGID())
 				{
-					IPlayer.SystemMessage("Recall scroll used.",TEXTCOLOR_GREEN);
-					IPlayer.Buff(304,BuffNames::BuffTime,0);
+					IPlayer.SystemMessage("Recall scroll used.", TEXTCOLOR_GREEN);
+					IPlayer.Buff(304, BuffNames::BuffTime, 0);
 
 					if (IPlayer.RemoveItem(1474, 1))
 					{
 						CIOCriticalSection::Enter((void*)0x004e2078);
 						CIOCriticalSection::Enter((void*)0x004e2098);
-						CLink::MoveTo((void*)0x004e200c,(int)0x004e2004);
+						CLink::MoveTo((void*)0x004e200c, (int)0x004e2004);
 						CIOCriticalSection::Leave((void*)0x004e2098);
 						for (DWORD i = *(DWORD*)0x004E2004; i != 0x004E2004; i = *(DWORD*)i)
 						{
@@ -6019,7 +6247,8 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 						CIOCriticalSection::Leave((void*)0x004e2078);
 					}
-				} else {
+				}
+				else {
 					IPlayer.BoxMsg("You do not have a guild.");
 				}
 
@@ -6036,149 +6265,149 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 			switch (a1) {
 			case 1: {
-				//register
-				if (TriangularBattle::Active) {
-					CPlayer::Write((void*)Player, 0xFE, "db", 172, 30);
-					return;
-				}
+						//register
+						if (TriangularBattle::Active) {
+							CPlayer::Write((void*)Player, 0xFE, "db", 172, 30);
+							return;
+						}
 
-				if (TriangularBattle::CooldownTime >= (int)time(0)) {
-					CPlayer::Write((void*)Player, 0xFE, "db", 172, 3);
-					return;
-				}
+						if (TriangularBattle::CooldownTime >= (int)time(0)) {
+							CPlayer::Write((void*)Player, 0xFE, "db", 172, 3);
+							return;
+						}
 
-				if (TBRegistration.count(IPlayer.GetPID())) {
-					CPlayer::Write((void*)Player, 0xFE, "db", 172, 2);
-					return;
-				}
-				if (TBRegistration.size() > TBPlayersMax) {
-					CPlayer::Write((void*)Player, 0xFE, "db", 172, 4);
-					return;
-				}
+						if (TBRegistration.count(IPlayer.GetPID())) {
+							CPlayer::Write((void*)Player, 0xFE, "db", 172, 2);
+							return;
+						}
+						if (TBRegistration.size() > TBPlayersMax) {
+							CPlayer::Write((void*)Player, 0xFE, "db", 172, 4);
+							return;
+						}
 
-				if (IPlayer.GetLevel() < TBMin || IPlayer.GetLevel() > TBMax) {
-					IPlayer.BoxMsg("The registration for Triangular Battle can only be done for players between level " + Int2String(TBMin) + " and " + Int2String(TBMax) + ".");
-					return;
-				}
+						if (IPlayer.GetLevel() < TBMin || IPlayer.GetLevel() > TBMax) {
+							IPlayer.BoxMsg("The registration for Triangular Battle can only be done for players between level " + Int2String(TBMin) + " and " + Int2String(TBMax) + ".");
+							return;
+						}
 
-				TBRegistration.insert(IPlayer.GetPID());
-				CPlayer::Write((void*)Player, 0xFE, "db", 172, 1);
-				break;
+						TBRegistration.insert(IPlayer.GetPID());
+						CPlayer::Write((void*)Player, 0xFE, "db", 172, 1);
+						break;
 			}
 			case 2: {
-				//participants
-				CPlayer::Write((void*)Player, 0xFE, "dbd", 171, 1, TBRegistration.size());
-				break;
+						//participants
+						CPlayer::Write((void*)Player, 0xFE, "dbd", 171, 1, TBRegistration.size());
+						break;
 			}
 			case 3: {
-				// go to battle
-				if (!TBRegistration.count(IPlayer.GetPID())) {
-					CPlayer::Write((void*)Player, 0xFE, "db", 172, 6);
-					return;
-				}
-				if (TriangularBattle::CooldownTime <= (int)time(0)) {
-					CPlayer::Write((void*)Player, 0xFE, "db", 172, 7);
-					return;
-				}
-				if (TBRegistration.size() < TBPlayersMin) {
-					CPlayer::Write((void*)Player, 0xFE, "db", 172, 8);
-					return;
-				}
+						// go to battle
+						if (!TBRegistration.count(IPlayer.GetPID())) {
+							CPlayer::Write((void*)Player, 0xFE, "db", 172, 6);
+							return;
+						}
+						if (TriangularBattle::CooldownTime <= (int)time(0)) {
+							CPlayer::Write((void*)Player, 0xFE, "db", 172, 7);
+							return;
+						}
+						if (TBRegistration.size() < TBPlayersMin) {
+							CPlayer::Write((void*)Player, 0xFE, "db", 172, 8);
+							return;
+						}
 
-				if (IPlayer.GetMap() != TBMap) {
-					PortTBPlayer(IPlayer, IPlayer.GetBuffValue(BuffNames::TriangularType));
-					CChar::WriteInSight(IPlayer.GetOffset(), 145, "dI", IPlayer.GetID(), __int64(IPlayer.GetBuffValue(BuffNames::TriangularState)));
-				}
+						if (IPlayer.GetMap() != TBMap) {
+							PortTBPlayer(IPlayer, IPlayer.GetBuffValue(BuffNames::TriangularType));
+							CChar::WriteInSight(IPlayer.GetOffset(), 145, "dI", IPlayer.GetID(), __int64(IPlayer.GetBuffValue(BuffNames::TriangularState)));
+						}
 
-				break;
+						break;
 			}
 
 			case 4: {
-				CPacket::Read((char*)Check, (char*)pPos, "bb", &a2, &a3);
-				if (a2 >= 1 && a2 <= 3) {
-					int Scores[3] = { TriangularBattle::HumanScore, TriangularBattle::DoggebiScore, TriangularBattle::DemonScore };
-					int Pulling[3] = { TriangularBattle::HumanPulling, TriangularBattle::DoggebiPulling, TriangularBattle::DemonPulling };
-					int Setting[3] = { TriangularBattle::HumanSetting, TriangularBattle::DoggebiSetting, TriangularBattle::DemonSetting };
+						CPacket::Read((char*)Check, (char*)pPos, "bb", &a2, &a3);
+						if (a2 >= 1 && a2 <= 3) {
+							int Scores[3] = { TriangularBattle::HumanScore, TriangularBattle::DoggebiScore, TriangularBattle::DemonScore };
+							int Pulling[3] = { TriangularBattle::HumanPulling, TriangularBattle::DoggebiPulling, TriangularBattle::DemonPulling };
+							int Setting[3] = { TriangularBattle::HumanSetting, TriangularBattle::DoggebiSetting, TriangularBattle::DemonSetting };
 
-					if (!IPlayer.GetBuffValue(BuffNames::TriangularTime)) {
-						int TriangularType = IPlayer.GetBuffValue(BuffNames::TriangularType);
-						if (TriangularType && TriangularType != a2) {
-							if (Scores[a2 - 1]) {
-								if (!Pulling[a2 - 1]) {
-									if (!Setting[a2 - 1]) {
-										if (GetInventorySize((int)IPlayer.GetOffset(), 0) < 60) {
-											int NewValue = IPlayer.GetBuffValue(BuffNames::TriangularState) + 0x2000000;
-											IPlayer.UpdateBuff(BuffNames::TriangularState, BuffNames::BuffTime, NewValue);
-											CChar::WriteInSight((void*)Player, 145, "dI", IPlayer.GetID(), __int64(NewValue));
-											CPlayer::Write((void*)Player, 0xFE, "dbb", 171, 10, EmblemPull);
-											IPlayer.Buff(BuffNames::TriangularEmblemPull, EmblemPull + 3, a2);
-											if (a2 == 1)
-												TriangularBattle::HumanPulling = Player;
-											if (a2 == 2)
-												TriangularBattle::DoggebiPulling = Player;
-											if (a2 == 3)
-												TriangularBattle::DemonPulling = Player;
+							if (!IPlayer.GetBuffValue(BuffNames::TriangularTime)) {
+								int TriangularType = IPlayer.GetBuffValue(BuffNames::TriangularType);
+								if (TriangularType && TriangularType != a2) {
+									if (Scores[a2 - 1]) {
+										if (!Pulling[a2 - 1]) {
+											if (!Setting[a2 - 1]) {
+												if (GetInventorySize((int)IPlayer.GetOffset(), 0) < 60) {
+													int NewValue = IPlayer.GetBuffValue(BuffNames::TriangularState) + 0x2000000;
+													IPlayer.UpdateBuff(BuffNames::TriangularState, BuffNames::BuffTime, NewValue);
+													CChar::WriteInSight((void*)Player, 145, "dI", IPlayer.GetID(), __int64(NewValue));
+													CPlayer::Write((void*)Player, 0xFE, "dbb", 171, 10, EmblemPull);
+													IPlayer.Buff(BuffNames::TriangularEmblemPull, EmblemPull + 3, a2);
+													if (a2 == 1)
+														TriangularBattle::HumanPulling = Player;
+													if (a2 == 2)
+														TriangularBattle::DoggebiPulling = Player;
+													if (a2 == 3)
+														TriangularBattle::DemonPulling = Player;
+												}
+												else
+													CPlayer::Write((void*)Player, 0xFE, "db", 171, 16);
+											}
+											else
+												CPlayer::Write((void*)Player, 0xFE, "db", 171, 5);
 										}
 										else
-											CPlayer::Write((void*)Player, 0xFE, "db", 171, 16);
+											CPlayer::Write((void*)Player, 0xFE, "db", 171, 14);
 									}
 									else
-										CPlayer::Write((void*)Player, 0xFE, "db", 171, 5);
+										CPlayer::Write((void*)Player, 0xFE, "db", 171, 13);
 								}
-								else
-									CPlayer::Write((void*)Player, 0xFE, "db", 171, 14);
 							}
-							else
-								CPlayer::Write((void*)Player, 0xFE, "db", 171, 13);
 						}
-					}
-				}
-				break;
+						break;
 			}
 			case 5: {
-				CPacket::Read((char*)Check, (char*)pPos, "bb", &a2, &a3);
-				if (a2 >= 1 && a2 <= 3) {
-					int TriangularType = IPlayer.GetBuffValue(BuffNames::TriangularType);
-					if (TriangularType) {
-						if (a2 == TriangularType) {
-							if ((a2 == 1 && TriangularBattle::HumanPulling) || (a2 == 2 && TriangularBattle::DoggebiPulling) || (a2 == 3 && TriangularBattle::DemonPulling))
-								CPlayer::Write((void*)Player, 0xFE, "db", 171, 14);
-							else
-								if ((a2 == 1 && TriangularBattle::HumanSetting) || (a2 == 2 && TriangularBattle::DoggebiSetting) || (a2 == 3 && TriangularBattle::DemonSetting))
-									CPlayer::Write((void*)Player, 0xFE, "db", 171, 5);
-								else {
-									if (IPlayer.GetBuffValue(BuffNames::TriangularTime) && CPlayer::FindItem((void*)Player, 1941, 1)) {
-										int Value = IPlayer.GetBuffValue(BuffNames::TriangularState) + 0x1000000;
-										CChar::WriteInSight((void*)Player, 145, "dI", IPlayer.GetID(), __int64(Value));
-										IPlayer.UpdateBuff(BuffNames::TriangularState, BuffNames::BuffTime, Value);
-										CPlayer::Write((void*)Player, 0xFE, "dbb", 171, 2, EmblemSet);
-										IPlayer.Buff(BuffNames::TriangularEmblemSet, EmblemSet + 3 , a2);
-										if (a2 == 1)
-											TriangularBattle::HumanSetting = (int)Player;
-										if (a2 == 2)
-											TriangularBattle::DoggebiSetting = (int)Player;
-										if (a2 == 3)
-											TriangularBattle::DemonSetting = (int)Player;
-									}
+						CPacket::Read((char*)Check, (char*)pPos, "bb", &a2, &a3);
+						if (a2 >= 1 && a2 <= 3) {
+							int TriangularType = IPlayer.GetBuffValue(BuffNames::TriangularType);
+							if (TriangularType) {
+								if (a2 == TriangularType) {
+									if ((a2 == 1 && TriangularBattle::HumanPulling) || (a2 == 2 && TriangularBattle::DoggebiPulling) || (a2 == 3 && TriangularBattle::DemonPulling))
+										CPlayer::Write((void*)Player, 0xFE, "db", 171, 14);
 									else
-										CPlayer::Write((void*)Player, 0xFE, "db", 171, 8);
+									if ((a2 == 1 && TriangularBattle::HumanSetting) || (a2 == 2 && TriangularBattle::DoggebiSetting) || (a2 == 3 && TriangularBattle::DemonSetting))
+										CPlayer::Write((void*)Player, 0xFE, "db", 171, 5);
+									else {
+										if (IPlayer.GetBuffValue(BuffNames::TriangularTime) && CPlayer::FindItem((void*)Player, 1941, 1)) {
+											int Value = IPlayer.GetBuffValue(BuffNames::TriangularState) + 0x1000000;
+											CChar::WriteInSight((void*)Player, 145, "dI", IPlayer.GetID(), __int64(Value));
+											IPlayer.UpdateBuff(BuffNames::TriangularState, BuffNames::BuffTime, Value);
+											CPlayer::Write((void*)Player, 0xFE, "dbb", 171, 2, EmblemSet);
+											IPlayer.Buff(BuffNames::TriangularEmblemSet, EmblemSet + 3, a2);
+											if (a2 == 1)
+												TriangularBattle::HumanSetting = (int)Player;
+											if (a2 == 2)
+												TriangularBattle::DoggebiSetting = (int)Player;
+											if (a2 == 3)
+												TriangularBattle::DemonSetting = (int)Player;
+										}
+										else
+											CPlayer::Write((void*)Player, 0xFE, "db", 171, 8);
+									}
 								}
+							}
 						}
-					}
-				}
-				break;
+						break;
 			}
 			case 6: case 7: {
-				ClearTBPlayer(IPlayer);
-				break;
+						ClearTBPlayer(IPlayer);
+						break;
 			}
 			case 8: {
-				//leave
-				QuitTBPlayer(IPlayer);
-				IPlayer.RemoveSavedBuff(BuffNames::TriangularType);
-				IPlayer.RemoveSavedBuff(BuffNames::TriangularState);
-				IPlayer.BoxMsg("You have left The Triangular Battle.");
-				CPlayer::Write(IPlayer.GetOffset(), 0xFE, "db", 172, 18);
+						//leave
+						QuitTBPlayer(IPlayer);
+						IPlayer.RemoveSavedBuff(BuffNames::TriangularType);
+						IPlayer.RemoveSavedBuff(BuffNames::TriangularState);
+						IPlayer.BoxMsg("You have left The Triangular Battle.");
+						CPlayer::Write(IPlayer.GetOffset(), 0xFE, "db", 172, 18);
 			}
 			}
 
@@ -6194,205 +6423,205 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			switch (a2) {
 				//Register member
 			case 1: {
-				if (!GID) {
-					IPlayer.BoxMsg("Only members of a guild can access to that part of the system.");
-					return;
-				}
+						if (!GID) {
+							IPlayer.BoxMsg("Only members of a guild can access to that part of the system.");
+							return;
+						}
 
-				if (IPlayer.GetPID() != GID) {
-					CPlayer::Write((void*)Player, 0xFE, "dbb", 168, 1, 1);
-					return;
-				}
+						if (IPlayer.GetPID() != GID) {
+							CPlayer::Write((void*)Player, 0xFE, "dbb", 168, 1, 1);
+							return;
+						}
 
-				if (IPlayer.GetLevel() < 50) {
-					CPlayer::Write((void*)Player, 0xFE, "dbb", 168, 1, 3);
-					return;
-				}
+						if (IPlayer.GetLevel() < 50) {
+							CPlayer::Write((void*)Player, 0xFE, "dbb", 168, 1, 3);
+							return;
+						}
 
-				if (SufferingValleyRegistration.count(GID)) {
-					CPlayer::Write((void*)Player, 0xFE, "dbb", 168, 1, 5);
-					return;
-				}
+						if (SufferingValleyRegistration.count(GID)) {
+							CPlayer::Write((void*)Player, 0xFE, "dbb", 168, 1, 5);
+							return;
+						}
 
-				if (!CPlayer::RemoveItem((void*)Player, 9, 31, 30000)) {
-					CPlayer::Write((void*)Player, 0xFE, "dbb", 168, 1, 6);
-					return;
-				}
-				std::string GuildName = (char*)CPlayer::GetGuildName(Player);
-				SufferingValleyRegistration.replaceInsert(GID, GuildName);
+						if (!CPlayer::RemoveItem((void*)Player, 9, 31, 30000)) {
+							CPlayer::Write((void*)Player, 0xFE, "dbb", 168, 1, 6);
+							return;
+						}
+						std::string GuildName = (char*)CPlayer::GetGuildName(Player);
+						SufferingValleyRegistration.replaceInsert(GID, GuildName);
 
-				std::string Datko = "./Database/SufferingValley.db";
-				std::fstream DGkLOG;
-				DGkLOG.open(Datko, std::fstream::in | std::fstream::out | std::fstream::app);
-				DGkLOG << "(registration (GID " << GID << ")(name '" << GuildName << "'))" << std::endl;
-				DGkLOG.close();
+						std::string Datko = "./Database/SufferingValley.db";
+						std::fstream DGkLOG;
+						DGkLOG.open(Datko, std::fstream::in | std::fstream::out | std::fstream::app);
+						DGkLOG << "(registration (GID " << GID << ")(name '" << GuildName << "'))" << std::endl;
+						DGkLOG.close();
 
-				CPlayer::Write((void*)Player, 0xFE, "dbb", 168, 1, 0);
-				break;
+						CPlayer::Write((void*)Player, 0xFE, "dbb", 168, 1, 0);
+						break;
 			}
 
 			case 2: {
-				int Size = SufferingValleyRegistration.size();
-				char* PlayerPack = new char[Size * 32];
-				int Packetsize = 0;
-				Interface<ITools> Tools;
-				for (auto x = SufferingValleyRegistration.begin(); x != SufferingValleyRegistration.end(); x++) {
-					std::string name = x->second;
-					Tools->Compile(PlayerPack + Packetsize, "s", name.c_str());
-					Packetsize += name.length() + 1;
-				}
-				CPlayer::Write((void*)Player, 0xFE, "dbbm", 168, 2, Size, PlayerPack, Size * 32);
+						int Size = SufferingValleyRegistration.size();
+						char* PlayerPack = new char[Size * 32];
+						int Packetsize = 0;
+						Interface<ITools> Tools;
+						for (auto x = SufferingValleyRegistration.begin(); x != SufferingValleyRegistration.end(); x++) {
+							std::string name = x->second;
+							Tools->Compile(PlayerPack + Packetsize, "s", name.c_str());
+							Packetsize += name.length() + 1;
+						}
+						CPlayer::Write((void*)Player, 0xFE, "dbbm", 168, 2, Size, PlayerPack, Size * 32);
 
-				delete[] PlayerPack;
-				break;
+						delete[] PlayerPack;
+						break;
 			}
 
 			case 3: {
-				if (!GID) {
-					IPlayer.BoxMsg("Only members of a guild can access to that part of the system.");
-					return;
-				}
-
-				if (IPlayer.GetPID() != GID) {
-					CPlayer::Write((void*)Player, 0xFE, "dbb", 168, 5, 3);
-					return;
-				}
-				if (SufferingValley::Active) {
-					CPlayer::Write((void*)Player, 0xFE, "dbb", 168, 5, 1);
-					return;
-				}
-
-				if (GID != SufferingValley::GuildFirst && GID != SufferingValley::GuildSecond) {
-					CPlayer::Write((void*)Player, 0xFE, "dbb", 168, 5, 2);
-					return;
-				}
-
-				char* PlayerPack = new char[7000];
-				int Packetsize = 0;
-				Interface<ITools> Tools;
-				int Amount = 0;
-
-				int Guild = CPlayer::GetGuild(Player);
-
-				if (Guild)
-				{
-					int v3; // eax@2
-					int v6; // [sp+4h] [bp-10h]@2
-					int v7; // [sp+8h] [bp-Ch]@6
-					DWORD *v8; // [sp+Ch] [bp-8h]@3
-					int v9; // [sp+10h] [bp-4h]@1
-
-					CGuild::CriticalSectionEnter((volatile LONG*)0x004E0980);
-
-					Unnamed::nGetObject((Guild + 380), (int)&v9);
-					while (1)
-					{
-						v3 = Undefined::Check((int)((int)Guild + 380), (int)&v6);
-						if (!(unsigned __int8)Undefined::CheckValues(&v9, v3))
-							break;
-						v8 = *(DWORD **)(*(DWORD *)(Undefined::GetValue(&v9) + 4) + 32);
-						if (v8) {
-							IChar ITarget((void*)v8);
-							Tools->Compile(PlayerPack + Packetsize, "dddsb", ITarget.GetPID(), (ITarget.GetClass() << 16) | ITarget.GetSpecialty(), ITarget.GetLevel(), ITarget.GetName(), (SVParticipantsRed.count(ITarget.GetPID()) || SVParticipantsBlue.count(ITarget.GetPID())) ? 1 : 0);
-							Packetsize += 13 + strlen(ITarget.GetName()) + 1;
-							Amount++;
+						if (!GID) {
+							IPlayer.BoxMsg("Only members of a guild can access to that part of the system.");
+							return;
 						}
-						Undefined::sub_446090(&v9, (char*)&v7, 0);
-					}
 
-					CGuild::CriticalSectionLeave((volatile LONG*)0x004E0980);
-					CSkill::ObjectRelease((void*)Guild, (LONG)(Guild + 40));
-				}
+						if (IPlayer.GetPID() != GID) {
+							CPlayer::Write((void*)Player, 0xFE, "dbb", 168, 5, 3);
+							return;
+						}
+						if (SufferingValley::Active) {
+							CPlayer::Write((void*)Player, 0xFE, "dbb", 168, 5, 1);
+							return;
+						}
 
-				CPlayer::Write((void*)Player, 0xFE, "dbbm", 168, 4, Amount, PlayerPack, Packetsize);
-				delete[] PlayerPack;
-				break;
+						if (GID != SufferingValley::GuildFirst && GID != SufferingValley::GuildSecond) {
+							CPlayer::Write((void*)Player, 0xFE, "dbb", 168, 5, 2);
+							return;
+						}
+
+						char* PlayerPack = new char[7000];
+						int Packetsize = 0;
+						Interface<ITools> Tools;
+						int Amount = 0;
+
+						int Guild = CPlayer::GetGuild(Player);
+
+						if (Guild)
+						{
+							int v3; // eax@2
+							int v6; // [sp+4h] [bp-10h]@2
+							int v7; // [sp+8h] [bp-Ch]@6
+							DWORD *v8; // [sp+Ch] [bp-8h]@3
+							int v9; // [sp+10h] [bp-4h]@1
+
+							CGuild::CriticalSectionEnter((volatile LONG*)0x004E0980);
+
+							Unnamed::nGetObject((Guild + 380), (int)&v9);
+							while (1)
+							{
+								v3 = Undefined::Check((int)((int)Guild + 380), (int)&v6);
+								if (!(unsigned __int8)Undefined::CheckValues(&v9, v3))
+									break;
+								v8 = *(DWORD **)(*(DWORD *)(Undefined::GetValue(&v9) + 4) + 32);
+								if (v8) {
+									IChar ITarget((void*)v8);
+									Tools->Compile(PlayerPack + Packetsize, "dddsb", ITarget.GetPID(), (ITarget.GetClass() << 16) | ITarget.GetSpecialty(), ITarget.GetLevel(), ITarget.GetName(), (SVParticipantsRed.count(ITarget.GetPID()) || SVParticipantsBlue.count(ITarget.GetPID())) ? 1 : 0);
+									Packetsize += 13 + strlen(ITarget.GetName()) + 1;
+									Amount++;
+								}
+								Undefined::sub_446090(&v9, (char*)&v7, 0);
+							}
+
+							CGuild::CriticalSectionLeave((volatile LONG*)0x004E0980);
+							CSkill::ObjectRelease((void*)Guild, (LONG)(Guild + 40));
+						}
+
+						CPlayer::Write((void*)Player, 0xFE, "dbbm", 168, 4, Amount, PlayerPack, Packetsize);
+						delete[] PlayerPack;
+						break;
 			}
 
 			case 4: {
-				int a3 = 0;
-				Check = CPacket::Read((char*)Check, (char*)pPos, "b", &a3);
-				if (a3) {
-					SVParticipant leader = SVParticipant();
-					leader.Name = IPlayer.GetName();
-					leader.Level = IPlayer.GetLevel();
-					leader.Specialty = (IPlayer.GetClass() << 16) | IPlayer.GetSpecialty();
+						int a3 = 0;
+						Check = CPacket::Read((char*)Check, (char*)pPos, "b", &a3);
+						if (a3) {
+							SVParticipant leader = SVParticipant();
+							leader.Name = IPlayer.GetName();
+							leader.Level = IPlayer.GetLevel();
+							leader.Specialty = (IPlayer.GetClass() << 16) | IPlayer.GetSpecialty();
 
-					if (GID == SufferingValley::GuildFirst) {
-						SVParticipantsRed.clear();
-						SVParticipantsRed.replaceInsert(IPlayer.GetPID(), leader);
-					}
-					else
-						if (GID == SufferingValley::GuildSecond) {
-							SVParticipantsBlue.clear();
-							SVParticipantsBlue.replaceInsert(IPlayer.GetPID(), leader);
-						}
-				}
-
-				for (int i = 0; i < a3; i++) {
-					int PID = 0;
-					Check = CPacket::Read((char*)Check, (char*)pPos, "d", &PID);
-					if (PID) {
-						TargetFind myTarget(0, 1, PID);
-						void *GetPlayer = myTarget.getTarget();
-
-						if (GetPlayer)
-						{
-							IChar IParticipant(GetPlayer);
-
-							if (IParticipant.IsOnline())
-							{
-								SVParticipant participant = SVParticipant();
-								participant.Name = IParticipant.GetName();
-								participant.Level = IParticipant.GetLevel();
-								participant.Specialty = (IParticipant.GetClass() << 16) | IParticipant.GetSpecialty();
-
-								if (GID == SufferingValley::GuildFirst)
-									SVParticipantsRed.replaceInsert(PID, participant);
-								else
-									if (GID == SufferingValley::GuildSecond)
-										SVParticipantsBlue.replaceInsert(PID, participant);
-
-								IParticipant.SystemMessage("You have been registered by your guild leader to play on Suffering Valley.", TEXTCOLOR_GREEN);
+							if (GID == SufferingValley::GuildFirst) {
+								SVParticipantsRed.clear();
+								SVParticipantsRed.replaceInsert(IPlayer.GetPID(), leader);
+							}
+							else
+							if (GID == SufferingValley::GuildSecond) {
+								SVParticipantsBlue.clear();
+								SVParticipantsBlue.replaceInsert(IPlayer.GetPID(), leader);
 							}
 						}
-					}
-				}
-				break;
+
+						for (int i = 0; i < a3; i++) {
+							int PID = 0;
+							Check = CPacket::Read((char*)Check, (char*)pPos, "d", &PID);
+							if (PID) {
+								TargetFind myTarget(0, 1, PID);
+								void *GetPlayer = myTarget.getTarget();
+
+								if (GetPlayer)
+								{
+									IChar IParticipant(GetPlayer);
+
+									if (IParticipant.IsOnline())
+									{
+										SVParticipant participant = SVParticipant();
+										participant.Name = IParticipant.GetName();
+										participant.Level = IParticipant.GetLevel();
+										participant.Specialty = (IParticipant.GetClass() << 16) | IParticipant.GetSpecialty();
+
+										if (GID == SufferingValley::GuildFirst)
+											SVParticipantsRed.replaceInsert(PID, participant);
+										else
+										if (GID == SufferingValley::GuildSecond)
+											SVParticipantsBlue.replaceInsert(PID, participant);
+
+										IParticipant.SystemMessage("You have been registered by your guild leader to play on Suffering Valley.", TEXTCOLOR_GREEN);
+									}
+								}
+							}
+						}
+						break;
 			}
-					//participant lists
+				//participant lists
 			case 5: {
-				char* PlayerPack = new char[7000];
-				int Packetsize = 0;
-				Interface<ITools> Tools;
-				int amount = 0;
-				for (auto x = SVParticipantsRed.begin(); x != SVParticipantsRed.end(); x++) {
-					std::string name = x->second.Name;
-					Tools->Compile(PlayerPack + Packetsize, "ddds", x->first, x->second.Specialty, x->second.Level, name.c_str());
-					Packetsize += 12 + name.length() + 1;
-					amount++;
-				}
+						char* PlayerPack = new char[7000];
+						int Packetsize = 0;
+						Interface<ITools> Tools;
+						int amount = 0;
+						for (auto x = SVParticipantsRed.begin(); x != SVParticipantsRed.end(); x++) {
+							std::string name = x->second.Name;
+							Tools->Compile(PlayerPack + Packetsize, "ddds", x->first, x->second.Specialty, x->second.Level, name.c_str());
+							Packetsize += 12 + name.length() + 1;
+							amount++;
+						}
 
-				for (auto x = SVParticipantsBlue.begin(); x != SVParticipantsBlue.end(); x++) {
-					std::string name = x->second.Name;
-					Tools->Compile(PlayerPack + Packetsize, "ddds", x->first, x->second.Specialty, x->second.Level, name.c_str());
-					Packetsize += 12 + name.length() + 1;
-					amount++;
-				}
+						for (auto x = SVParticipantsBlue.begin(); x != SVParticipantsBlue.end(); x++) {
+							std::string name = x->second.Name;
+							Tools->Compile(PlayerPack + Packetsize, "ddds", x->first, x->second.Specialty, x->second.Level, name.c_str());
+							Packetsize += 12 + name.length() + 1;
+							amount++;
+						}
 
-				CPlayer::Write((void*)Player, 0xFE, "dbbm", 168, 6, amount, PlayerPack, Packetsize);
-				delete[] PlayerPack;
-				break;
+						CPlayer::Write((void*)Player, 0xFE, "dbbm", 168, 6, amount, PlayerPack, Packetsize);
+						delete[] PlayerPack;
+						break;
 			}
 			}
 			return;
 		}
 
-		if (packet == 17)
+		if (packet == C2S_SendMsg)
 		{
 			char *msg;
 			CPacket::Read((char*)pPacket, (char*)pPos, "s", &msg, 129);
-			
+
 			if (!msg || !strlen(msg))
 				return;
 
@@ -6406,7 +6635,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						return;
 				}
 			}
-			
+
 			if (firstLetter == '%' && (TriangularBattle::Active || TriangularBattle::CDActive)) {
 				int Team = IPlayer.GetBuffValue(BuffNames::TriangularType);
 				if (Team) {
@@ -6466,7 +6695,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			}
 
 			if (chatDebug == 1) {
-				std::string Datoe = "./Debugger/Chat/CHAT_" + Time::GetDay() + "_" + Time::GetMonth() + "_" + Time::GetYear() + "_" + Time::GetHour() + ".txt";
+				std::string Datoe = "./Debugger/Chat/CHAT_" + Time::GetDay() + "_" + Time::GetMonth() + "_" + Time::GetYear() + "_" + Time::GetHour() + "." + Time::GetMinute() + ".txt";
 				std::fstream CHLOG;
 				CHLOG.open(Datoe, std::fstream::in | std::fstream::out | std::fstream::app);
 				CHLOG << Time::GetTime() << " " << IPlayer.GetName() << ": " << chat << std::endl;
@@ -6474,12 +6703,12 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			}
 		}
 
-		if (packet == 34 || packet == 44 || packet == 80 || packet == 85 || packet == 64)
+		if (packet == 34 || packet == 44 || packet == 80 || packet == 85 || packet == C2S_AddFriend)
 		{
 			if (IPlayer.IsBuff(285))
 				return;
 			else
-				IPlayer.Buff(285,2,0);
+				IPlayer.Buff(285, 2, 0);
 		}
 
 		if (packet == 173)
@@ -6496,7 +6725,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 		if (packet == 37 && IPlayer.IsBuff(166))
 			return;
-		
+
 		if (packet == 37 && (IPlayer.IsBuff(373) || IPlayer.IsBuff(374)))
 			return;
 
@@ -6540,7 +6769,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					return;
 				else
 					IPlayer.Buff(372, 2, 0);
-				
+
 				int Item = IPlayer.ItemPointerLock(IID);
 
 				if (Item && IID)
@@ -6562,7 +6791,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 			if (!Password || !Question || !Answer || !strlen(Password) || !strlen(Question) || !strlen(Answer))
 				return;
-			
+
 			int LockItem = IPlayer.ItemPointerLock(LockIID);
 
 			if (!LockItem)
@@ -6580,7 +6809,8 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			{
 				IPlayer.RemoveItem((int)ItemLock.GetOffset());
 				//CItem::RemoveItem((void*)Player, (int)ItemLock.GetOffset());
-			} else {
+			}
+			else {
 				return;
 			}
 
@@ -6590,16 +6820,17 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			if (xItem.Exists())
 			{
 				int CurrentInfo = *(DWORD *)(Itemx + 48) + 4194304;
-				CDBSocket::Write(21, "dddbb",xItem.GetIID(),IPlayer.GetID(),xItem.GetInfo(),0,0);
+				CDBSocket::Write(21, "dddbb", xItem.GetIID(), IPlayer.GetID(), xItem.GetInfo(), 0, 0);
 				*(DWORD *)(Itemx + 48) = CurrentInfo;
-				CDBSocket::Write(21, "dddbb",xItem.GetIID(),*(DWORD*)(Itemx + 28),CurrentInfo,8,7);
+				CDBSocket::Write(21, "dddbb", xItem.GetIID(), *(DWORD*)(Itemx + 28), CurrentInfo, 8, 7);
 				CItem::SendItemInfo((void *)Itemx, (int)IPlayer.GetOffset(), 92);
 				IPlayer.BoxMsg("You have successfully locked your item.");
-				CDBSocket::Write(88,"dsd",IPlayer.GetPID(),Password,xItem.GetIID());
+				CDBSocket::Write(88, "dsd", IPlayer.GetPID(), Password, xItem.GetIID());
 				itemLockLock.Enter();
 				ItemLockCheck[xItem.GetIID()] = Password;
 				itemLockLock.Leave();
-			} else {
+			}
+			else {
 				return;
 			}
 
@@ -6611,7 +6842,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			const char *Password;
 			int KeyIID = 0, IID = 0, KeyValue = 0, Value = 0, Recheckx = 0, Checkx = 0;
 			CPacket::Read((char*)pPacket, (char*)pPos, "dds", &KeyIID, &IID, &Password, 13);
-			
+
 			if (IID == KeyIID) return;
 
 			if (!Password || !strlen(Password))
@@ -6634,7 +6865,8 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			{
 				IPlayer.RemoveItem((int)KeyLock.GetOffset());
 				//CItem::RemoveItem((void*)Player, (int)KeyLock.GetOffset());
-			} else {
+			}
+			else {
 				return;
 			}
 
@@ -6650,16 +6882,17 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				}
 
 				int CurrentInfo = *(DWORD *)(Itemx + 48) - 4194304;
-				CDBSocket::Write(21, "dddbb",xItem.GetIID(),IPlayer.GetID(),xItem.GetInfo(),0,0);
+				CDBSocket::Write(21, "dddbb", xItem.GetIID(), IPlayer.GetID(), xItem.GetInfo(), 0, 0);
 				*(DWORD *)(Itemx + 48) = CurrentInfo;
-				CDBSocket::Write(21, "dddbb",xItem.GetIID(),*(DWORD*)(Itemx + 28),CurrentInfo,8,7);
+				CDBSocket::Write(21, "dddbb", xItem.GetIID(), *(DWORD*)(Itemx + 28), CurrentInfo, 8, 7);
 				CItem::SendItemInfo((void *)Itemx, (int)IPlayer.GetOffset(), 92);
 				IPlayer.BoxMsg("You completely unlocked your item. A Key is consumed.");
-				CDBSocket::Write(88,"dsd",IPlayer.GetPID(),"nopwd",xItem.GetIID());
+				CDBSocket::Write(88, "dsd", IPlayer.GetPID(), "nopwd", xItem.GetIID());
 				itemLockLock.Enter();
 				ItemLockCheck.erase(xItem.GetIID());
 				itemLockLock.Leave();
-			} else {
+			}
+			else {
 				return;
 			}
 
@@ -6724,7 +6957,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 		if (packet == 75 && IPlayer.GetClass() == 3)
 		{
 			int SkillID = 0;
-			CPacket::Read((char*)pPacket, (char*)pPos,"b", &SkillID);
+			CPacket::Read((char*)pPacket, (char*)pPos, "b", &SkillID);
 			int SkillPointer = IPlayer.GetSkillPointer(SkillID);
 
 			if (SkillPointer && SkillID < 90 && SkillID != 79 && SkillID != 37 && SkillID != 50 && SkillID != 70 && SkillID != 87 && SkillID != 88 && SkillID != 89 && (CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 362, 1) || CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 502, 1)))
@@ -6743,10 +6976,11 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 				IPlayer.AddSkillPoint(*(DWORD*)(SkillPointer + 8));
 				*(DWORD*)(SkillPointer + 8) = 0;
-				CPlayer::Write(IPlayer.GetOffset(),11,"bb",*(DWORD*)(SkillPointer + 4),0);
-				CDBSocket::Write(22,"dbbw",IPlayer.GetPID(),*(DWORD*)(SkillPointer + 4),*(DWORD*)(SkillPointer + 8),*(DWORD*)((int)IPlayer.GetOffset() + 548));
-				*(DWORD*)((int)IPlayer.GetOffset() + 4 * *(DWORD*)(SkillPointer +4) + 632) = 0;
-			} else {
+				CPlayer::Write(IPlayer.GetOffset(), 11, "bb", *(DWORD*)(SkillPointer + 4), 0);
+				CDBSocket::Write(22, "dbbw", IPlayer.GetPID(), *(DWORD*)(SkillPointer + 4), *(DWORD*)(SkillPointer + 8), *(DWORD*)((int)IPlayer.GetOffset() + 548));
+				*(DWORD*)((int)IPlayer.GetOffset() + 4 * *(DWORD*)(SkillPointer + 4) + 632) = 0;
+			}
+			else {
 				return;
 			}
 		}
@@ -6815,11 +7049,11 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			}
 		}
 
-		if (packet == 33)
+		if (packet == C2S_UseItem)
 		{
 			int IID = 0;
-			CPacket::Read((char*)pPacket, (char*)pPos,"d", &IID);
-			
+			CPacket::Read((char*)pPacket, (char*)pPos, "d", &IID);
+
 			int Item = IPlayer.ItemPointerLock(IID);
 
 			if (Item && IID)
@@ -6836,7 +7070,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 								IPlayer.SaveBuff(BuffNames::BeltCD, belt.Duration + 2 + belt.Cooldown);
 								IPlayer.IncreaseMaxHp(belt.HP);
 								IPlayer.IncreaseHp(belt.HP);
-								IPlayer.AddFxToBone(belt.Effect,0);
+								IPlayer.AddFxToBone(belt.Effect, 0);
 							}
 						}
 						else
@@ -6849,7 +7083,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				{
 					if (IPlayer.GetLevel() < VODConf)
 					{
-						IPlayer.SystemMessage("Your character must be level "+Int2String(VODConf)+" or above.",TEXTCOLOR_RED);
+						IPlayer.SystemMessage("Your character must be level " + Int2String(VODConf) + " or above.", TEXTCOLOR_RED);
 						return;
 					}
 
@@ -6863,6 +7097,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						IPlayer.Teleport(6, 360931, 187024);
 					else
 						return;
+					return;
 				}
 			}
 		}
@@ -6871,7 +7106,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 		{
 			int IID = 0;
 			CPacket::Read((char*)pPacket, (char*)pPos, "d", &IID);
-			
+
 			int Item = IPlayer.ItemPointerLock(IID);
 
 			if (Item && IID)
@@ -6893,7 +7128,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 		if (packet == 172)
 		{
-			int Str=0,Hp=0,Int=0,Wis=0,Agi=0;
+			int Str = 0, Hp = 0, Int = 0, Wis = 0, Agi = 0;
 			int LeftPacket = CPacket::Read((char*)pPacket, (char*)pPos, "bbbbb", &Str, &Hp, &Int, &Wis, &Agi);
 			int GetStr = IPlayer.GetStr(), GetHth = IPlayer.GetHth(), GetInt = IPlayer.GetInt(), GetWis = IPlayer.GetWis(), GetAgi = IPlayer.GetAgi();
 			int NeedStatPoint = 0;
@@ -6902,7 +7137,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			{
 				if (IPlayer.GetStr() + Str >= 255)
 				{
-					IPlayer.SystemMessage("Base stats can not be higher then 255!",TEXTCOLOR_RED);
+					IPlayer.SystemMessage("Base stats can not be higher then 255!", TEXTCOLOR_RED);
 					return;
 				}
 
@@ -6913,7 +7148,8 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						NeedStatPoint += _StatTable[GetStr];
 						GetStr++;
 					}
-				} else {
+				}
+				else {
 					for (int i = 0; i < Str; i++)
 					{
 						NeedStatPoint += StatTable[GetStr];
@@ -6926,7 +7162,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			{
 				if (IPlayer.GetHth() + Hp >= 255)
 				{
-					IPlayer.SystemMessage("Base stats can not be higher then 255!",TEXTCOLOR_RED);
+					IPlayer.SystemMessage("Base stats can not be higher then 255!", TEXTCOLOR_RED);
 					return;
 				}
 
@@ -6941,7 +7177,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			{
 				if (IPlayer.GetInt() + Int >= 255)
 				{
-					IPlayer.SystemMessage("Base stats can not be higher then 255!",TEXTCOLOR_RED);
+					IPlayer.SystemMessage("Base stats can not be higher then 255!", TEXTCOLOR_RED);
 					return;
 				}
 
@@ -6952,7 +7188,8 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						NeedStatPoint += _StatTable[GetInt];
 						GetInt++;
 					}
-				} else {
+				}
+				else {
 					for (int i = 0; i < Int; i++)
 					{
 						NeedStatPoint += StatTable[GetInt];
@@ -6965,7 +7202,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			{
 				if (IPlayer.GetWis() + Wis >= 255)
 				{
-					IPlayer.SystemMessage("Base stats can not be higher then 255!",TEXTCOLOR_RED);
+					IPlayer.SystemMessage("Base stats can not be higher then 255!", TEXTCOLOR_RED);
 					return;
 				}
 
@@ -6980,7 +7217,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			{
 				if (IPlayer.GetAgi() + Agi >= 255)
 				{
-					IPlayer.SystemMessage("Base stats can not be higher then 255!",TEXTCOLOR_RED);
+					IPlayer.SystemMessage("Base stats can not be higher then 255!", TEXTCOLOR_RED);
 					return;
 				}
 
@@ -6991,7 +7228,8 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						NeedStatPoint += _StatTable[GetAgi];
 						GetAgi++;
 					}
-				} else {
+				}
+				else {
 					for (int i = 0; i < Agi; i++)
 					{
 						NeedStatPoint += StatTable[GetAgi];
@@ -7008,14 +7246,14 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 			if (Str)
 			{
-				IPlayer.IncreaseStat(Str,0);
-				CDBSocket::Write(16,"dbwbb",IPlayer.GetPID(),23,IPlayer.GetStatPoint(),0,*(DWORD *)(Player + 4 * 0 + 64));
+				IPlayer.IncreaseStat(Str, 0);
+				CDBSocket::Write(16, "dbwbb", IPlayer.GetPID(), 23, IPlayer.GetStatPoint(), 0, *(DWORD *)(Player + 4 * 0 + 64));
 			}
 
 			if (Hp)
 			{
-				IPlayer.IncreaseStat(Hp,1);
-				CDBSocket::Write(16,"dbwbb",IPlayer.GetPID(),23,IPlayer.GetStatPoint(),1,*(DWORD *)(Player + 4 * 1 + 64));
+				IPlayer.IncreaseStat(Hp, 1);
+				CDBSocket::Write(16, "dbwbb", IPlayer.GetPID(), 23, IPlayer.GetStatPoint(), 1, *(DWORD *)(Player + 4 * 1 + 64));
 
 				if (IPlayer.GetClass() == 3)
 				{
@@ -7031,20 +7269,20 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 			if (Int)
 			{
-				IPlayer.IncreaseStat(Int,2);
-				CDBSocket::Write(16,"dbwbb",IPlayer.GetPID(),23,IPlayer.GetStatPoint(),2,*(DWORD *)(Player + 4 * 2 + 64));
+				IPlayer.IncreaseStat(Int, 2);
+				CDBSocket::Write(16, "dbwbb", IPlayer.GetPID(), 23, IPlayer.GetStatPoint(), 2, *(DWORD *)(Player + 4 * 2 + 64));
 			}
 
 			if (Wis)
 			{
-				IPlayer.IncreaseStat(Wis,3);
-				CDBSocket::Write(16,"dbwbb",IPlayer.GetPID(),23,IPlayer.GetStatPoint(),3,*(DWORD *)(Player + 4 * 3 + 64));
+				IPlayer.IncreaseStat(Wis, 3);
+				CDBSocket::Write(16, "dbwbb", IPlayer.GetPID(), 23, IPlayer.GetStatPoint(), 3, *(DWORD *)(Player + 4 * 3 + 64));
 			}
 
 			if (Agi)
 			{
-				IPlayer.IncreaseStat(Agi,4);
-				CDBSocket::Write(16,"dbwbb",IPlayer.GetPID(),23,IPlayer.GetStatPoint(),4,*(DWORD *)(Player + 4 * 4 + 64));
+				IPlayer.IncreaseStat(Agi, 4);
+				CDBSocket::Write(16, "dbwbb", IPlayer.GetPID(), 23, IPlayer.GetStatPoint(), 4, *(DWORD *)(Player + 4 * 4 + 64));
 			}
 
 			if (NeedStatPoint)
@@ -7056,19 +7294,19 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 		if (packet == 162)
 		{
 			int Type = 0, IID = 0, ItemIndex = 0, JewelCheck = 0, Argument = 0, JewelAmount = 0;
-			Interface<ITools> Tools; 
+			Interface<ITools> Tools;
 			CPacket::Read((char*)pPacket, (char*)pPos, "bddbwb", &Type, &IID, &ItemIndex, &JewelCheck, &Argument, &JewelAmount);
 			//Tools->ParseData((char*)pPacket,"bddbwb",&Type, &IID, &ItemIndex, &JewelCheck, &Argument, &JewelAmount);
 			//CPacket::xRead((char*)pPacket, "bddbwb", &Type, &IID, &ItemIndex, &JewelCheck, &Argument, &JewelAmount);
 			if (Type == 1 && IID && ItemIndex)
 			{
-				CPlayer::Write(IPlayer.GetOffset(),0xFF,"dd",240,1);
+				CPlayer::Write(IPlayer.GetOffset(), 0xFF, "dd", 240, 1);
 				return;
 			}
-			
+
 			int item = IPlayer.ItemPointerLock(IID);
 
-			if(ItemIndex < (-1 << 16))
+			if (ItemIndex < (-1 << 16))
 				CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddd", 240, 1);
 
 			if (!item)
@@ -7084,7 +7322,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 				if (IPlayer.RemoveItem(JewelIndex, (Multiply*JewelAmount)))
 					JewelCalculation = JewelAmount;
-				 else {
+				else {
 					return;
 				}
 			}
@@ -7094,88 +7332,98 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			{
 				int Type = 0, DssRate = CTools::Rate(1, 1000);
 
-				if (DssRate >= (550-(JewelCalculation*50)))
+				if (DssRate >= (550 - (JewelCalculation * 50)))
 				{
-					if (DssRate >= (750-(JewelCalculation*60)))
+					if (DssRate >= (750 - (JewelCalculation * 60)))
 					{
-						if (DssRate >= (850-(JewelCalculation*60)))
+						if (DssRate >= (850 - (JewelCalculation * 60)))
 						{
-							if (DssRate >= (950-(JewelCalculation*70)))
+							if (DssRate >= (950 - (JewelCalculation * 70)))
 							{
-								if (DssRate >= (970-(JewelCalculation*70)))
+								if (DssRate >= (970 - (JewelCalculation * 70)))
 								{
-									if (DssRate >= (980-(JewelCalculation*80)))
+									if (DssRate >= (980 - (JewelCalculation * 80)))
 									{
-										if (DssRate >= (990-(JewelCalculation*80)))
+										if (DssRate >= (990 - (JewelCalculation * 80)))
 										{
-											int Rate = CTools::Rate(36,40);
+											int Rate = CTools::Rate(36, 40);
 											SetType += Rate;
 											Type = 1;
 											std::string msg = (std::string)IPlayer.GetName();
 											msg = msg + " has been fused with the Spirit Of Insanity!";
 											if (fuseNotice)
 												CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 8);
-										} else {
-											int Rate = CTools::Rate(31,35);
+										}
+										else {
+											int Rate = CTools::Rate(31, 35);
 											SetType += Rate;
 											Type = 2;
 											std::string msg = (std::string)IPlayer.GetName();
 											msg = msg + " has been fused with the Spirit Of Thunder!";
 											if (fuseNotice)
 												CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 8);
-										}	
-									} else {
-										int Rate = CTools::Rate(26,30);
+										}
+									}
+									else {
+										int Rate = CTools::Rate(26, 30);
 										SetType += Rate;
 										Type = 3;
 									}
-								} else {
-									int Rate = CTools::Rate(21,25);
-									SetType += Rate;	
+								}
+								else {
+									int Rate = CTools::Rate(21, 25);
+									SetType += Rate;
 									Type = 4;
 								}
-							} else {
-								int Rate = CTools::Rate(16,20);
+							}
+							else {
+								int Rate = CTools::Rate(16, 20);
 								SetType += Rate;
 								Type = 5;
 							}
-						} else {
-							int Rate = CTools::Rate(11,15);
+						}
+						else {
+							int Rate = CTools::Rate(11, 15);
 							SetType += Rate;
 							Type = 6;
 						}
-					} else {
-						int Rate = CTools::Rate(6,10);
+					}
+					else {
+						int Rate = CTools::Rate(6, 10);
 						SetType += Rate;
 						Type = 7;
 					}
-				} else {
-					int Rate = CTools::Rate(1,5);
+				}
+				else {
+					int Rate = CTools::Rate(1, 5);
 					SetType += Rate;
 					Type = 8;
 				}
 
 				MainItem.SetSetGem(SetType);
-				CDBSocket::Write(87,"ddd",IPlayer.GetPID(),SetType,MainItem.GetIID());
+				CDBSocket::Write(87, "ddd", IPlayer.GetPID(), SetType, MainItem.GetIID());
 				CItem::SendItemInfo((void *)item, (int)IPlayer.GetOffset(), 92);
 				if (!(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)Checkx + 120))(Checkx, IPlayer.GetOffset(), 9, -1))
 					CPlayer::_OutOfInven((void*)Player, Checkx);
-				CPlayer::Write(IPlayer.GetOffset(),0xFF,"ddb",241,MainItem.GetIID(),Type);
+				CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddb", 241, MainItem.GetIID(), Type);
 				return;
 			}
 
-			if (ItemIndex == 2412 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2412,1))
+			if (ItemIndex == 2412 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2412, 1))
 			{
-				int Type = 0, DssRate = CTools::Rate(1,100);
+				int Type = 0, DssRate = CTools::Rate(1, 100);
 
-				if(DssRate >= 100-Insanity) {
+				if (DssRate >= 100 - Insanity) {
 					int Rate = CTools::Rate(36, 40);
 					SetType += Rate;
 					Type = 1;
 					std::string msg = (std::string)IPlayer.GetName();
 					msg = msg + " has been fused with the Spirit Of Insanity!";
-					if (fuseNotice)
+					if (fuseNotice){
 						CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 8);
+						ToNoticeWebhook(msg.c_str());
+
+					}
 				}
 				else if (DssRate >= 100 - Thunder) {
 					int Rate = CTools::Rate(31, 35);
@@ -7183,8 +7431,11 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					Type = 2;
 					std::string msg = (std::string)IPlayer.GetName();
 					msg = msg + " has been fused with the Spirit Of Thunder!";
-					if (fuseNotice)
+					if (fuseNotice){
 						CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 8);
+						ToNoticeWebhook(msg.c_str());
+
+					}
 				}
 				else if (DssRate >= 100 - Violent) {
 					int Rate = CTools::Rate(26, 30);
@@ -7209,11 +7460,11 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 				MainItem.SetSetGem(SetType);
 				CDBSocket::Write(87, "ddd", IPlayer.GetPID(), SetType, MainItem.GetIID());
-				CItem::SendItemInfo((void *)item, (int)IPlayer.GetOffset(), 92); 
+				CItem::SendItemInfo((void *)item, (int)IPlayer.GetOffset(), 92);
 				CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddb", 241, MainItem.GetIID(), Type);
 				return;
 			}
-			
+
 			if (ItemIndex >= 4411 && ItemIndex <= 4414 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, ItemIndex, 1))
 			{
 				int Type = 4;
@@ -7224,16 +7475,22 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					Type = 1;
 					std::string msg = (std::string)IPlayer.GetName();
 					msg = msg + " has been fused with the Spirit Of Insanity!";
-					if (fuseNotice)
+					if (fuseNotice){
 						CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 8);
+						ToNoticeWebhook(msg.c_str());
+
+					}
 				}
 				else if (ItemIndex == 4412) {
 					Rate = CTools::Rate(31, 35);
 					Type = 2;
 					std::string msg = (std::string)IPlayer.GetName();
 					msg = msg + " has been fused with the Spirit Of Thunder!";
-					if (fuseNotice)
+					if (fuseNotice){
 						CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), 8);
+						ToNoticeWebhook(msg.c_str());
+
+					}
 				}
 				else if (ItemIndex == 4413) {
 					Rate = CTools::Rate(26, 30);
@@ -7341,7 +7598,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				return;
 			}
 
-			if(IPlayer.GetClass() == 0 && ((SkillID >= 37 && SkillID <= 44) || (SkillID >= 87 && SkillID <= 89) || SkillID == 70 || SkillID == 71 || SkillID == 82))
+			if (IPlayer.GetClass() == 0 && ((SkillID >= 37 && SkillID <= 44) || (SkillID >= 87 && SkillID <= 89) || SkillID == 70 || SkillID == 71 || SkillID == 82))
 			{
 				int SkillPointer = IPlayer.GetSkillPointer(SkillID);
 
@@ -7447,7 +7704,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				return;
 			}
 
-			if (IPlayer.GetClass() == 3 &&  ((SkillID >= 0 && SkillID <= 37) || (SkillID >= 87 && SkillID <= 89) || SkillID == 70 || SkillID == 63))
+			if (IPlayer.GetClass() == 3 && ((SkillID >= 0 && SkillID <= 37) || (SkillID >= 87 && SkillID <= 89) || SkillID == 70 || SkillID == 63))
 			{
 				int SkillPointer = IPlayer.GetSkillPointer(SkillID);
 
@@ -7491,7 +7748,39 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 		if (packet == 255)
 		{
 			int TypeCheck = 0;
-			int Check = CPacket::Read((char*)pPacket, (char*)pPos,"d", &TypeCheck);
+			int Check = CPacket::Read((char*)pPacket, (char*)pPos, "d", &TypeCheck);
+
+			if (TypeCheck == 9)
+			{
+				int RQuestx = (185 << 16) | 1;
+				bool checkFlag = CPlayer::CheckQuestFlag(Player, RQuestx);
+				if (checkFlag) {
+					IPlayer.SystemMessage("You have already rewarded.", TEXTCOLOR_RED);
+					return;
+				}
+				else
+					CQuest::Start((185 << 16) | 1, (int)IPlayer.GetOffset());
+			}
+
+			if (TypeCheck == 8)
+			{
+				int SkillID = 0, compare4 = 0, compare3 = 0, Class = 0;
+				CPacket::Read((char*)Check, (char*)pPos, "dddd", &SkillID, &compare4, &compare3, &Class);
+				int nextExecutionTime = IPlayer.GetBuffValue(BuffNames::CDProtect + SkillID);
+
+				if (Class == 2 && SkillID == 16)
+					return;
+
+				if (IPlayer.GetClass() == Class && GetTickCount() >= nextExecutionTime)
+				{
+					JobSystem cooldownInfo = JobSystem();
+					int sekey = SkillID + (Class * 100);
+
+					cooldownInfo.compare4 = compare4;
+					cooldownInfo.compare3 = compare3;
+					Cooldowns[sekey] = cooldownInfo;
+				}
+			}
 
 			if (TypeCheck == 5)
 			{
@@ -7499,7 +7788,8 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				{
 					IPlayer.SetUnblob(0);
 					IPlayer.SystemMessage("Monster blob enabled.", TEXTCOLOR_INFOMSG);
-				} else {
+				}
+				else {
 					IPlayer.SetUnblob(1);
 					IPlayer.SystemMessage("Monster blob disabled.", TEXTCOLOR_INFOMSG);
 				}
@@ -7527,7 +7817,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 							IPlayer.SaveBuff(BuffNames::BeltCD, belt.Duration + 2 + belt.Cooldown);
 							IPlayer.IncreaseMaxHp(belt.HP);
 							IPlayer.IncreaseHp(belt.HP);
-							IPlayer.AddFxToBone(belt.Effect,0);
+							IPlayer.AddFxToBone(belt.Effect, 0);
 						}
 					}
 					else
@@ -7551,7 +7841,8 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			}
 		}
 
-		if (packet == 43)
+
+		if (packet == C2S_PrepareSkill)
 		{
 			unsigned __int8 AnimationID = 0; int ID = 0;
 			CPacket::Read((char*)pPacket, (char*)pPos, "bd", &AnimationID, &ID);
@@ -7559,9 +7850,6 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			if (IPlayer.IsValid() && IPlayer.IsBuff(349))
 			{
 				if (!(isBattleRiding(IPlayer.GetBuffValue(349) + 7856) && !RidingDisableSkill.count((IPlayer.GetClass() * 1000) + (int)AnimationID))) {
-
-					if (IPlayer.GetMap() == BanditsMap)
-						return;
 
 					IPlayer.DisableRiding();
 					return;
@@ -7580,13 +7868,14 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				IPlayer.UpdateBuff(BuffNames::SkillPrepID, BuffNames::BuffTime, AnimationID);
 			}
 
-			/*if (ID && ID != IPlayer.GetID() && ID != IPlayer.GetBuffValue(BuffNames::TargetAttack)) {
-				CConsole::Red("Skill Hack detected : PID %d Skill %d", IPlayer.GetPID(), AnimationID, ID);
-				//IPlayer.Kick();
-				return;
-			}*/
+			int sekey = AnimationID + (IPlayer.GetClass() * 100);
+			if (Cooldowns.count(sekey)) {
+				int Compare3 = Cooldowns[sekey].compare3;
+				IPlayer.UpdateBuff(BuffNames::DelayProtect + AnimationID, BuffNames::BuffTime, (GetTickCount() + Compare3) - 350);
+			}
 
-			if (IPlayer.IsOnline() && AnimationID >= 100 && AnimationID <= 120 && CChar::IsGState((int)IPlayer.GetOffset(),512))
+
+			if (IPlayer.IsOnline() && AnimationID >= 100 && AnimationID <= 120 && CChar::IsGState((int)IPlayer.GetOffset(), 512))
 			{
 				CChar::WriteInSight((void*)Player, 61, "dbbd", IPlayer.GetID(), 5, AnimationID, ID);
 				return;
@@ -7608,8 +7897,8 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					/*
 					if (CheckIceArrow.count(IPlayer.GetPID()) && CheckIceArrow.find(IPlayer.GetPID())->second.Cooldown > GetTickCount())
 					{
-						IPlayer.SystemMessage("Invalid skill cooldown time detected!", TEXTCOLOR_RED);
-						return;
+					IPlayer.SystemMessage("Invalid skill cooldown time detected!", TEXTCOLOR_RED);
+					return;
 					}
 					*/
 
@@ -7627,35 +7916,40 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 					if (IceArrowGrade == 1)
 					{
-						IPlayer.Buff(290,18,0);
-						IPlayer.Buff(295,18,0);
+						IPlayer.Buff(290, 18, 0);
+						IPlayer.Buff(295, 18, 0);
 						IPlayer.SendGStateExIceArrow(GState);
 						IPlayer.SendGStateExIceArrow(State << 32);
-					} else if (IceArrowGrade == 2)
+					}
+					else if (IceArrowGrade == 2)
 					{
-						IPlayer.Buff(291,18,0);
-						IPlayer.Buff(295,18,0);
-						IPlayer.SendGStateExIceArrow(GState*2);
+						IPlayer.Buff(291, 18, 0);
+						IPlayer.Buff(295, 18, 0);
+						IPlayer.SendGStateExIceArrow(GState * 2);
 						IPlayer.SendGStateExIceArrow(State << 32);
-					} else if (IceArrowGrade == 3)
+					}
+					else if (IceArrowGrade == 3)
 					{
-						IPlayer.Buff(292,18,0);
-						IPlayer.Buff(295,18,0);
-						IPlayer.SendGStateExIceArrow(GState*4);
+						IPlayer.Buff(292, 18, 0);
+						IPlayer.Buff(295, 18, 0);
+						IPlayer.SendGStateExIceArrow(GState * 4);
 						IPlayer.SendGStateExIceArrow(State << 32);
-					} else if (IceArrowGrade == 4)
+					}
+					else if (IceArrowGrade == 4)
 					{
-						IPlayer.Buff(293,18,0);
-						IPlayer.Buff(295,18,0);
-						IPlayer.SendGStateExIceArrow(GState*8);
+						IPlayer.Buff(293, 18, 0);
+						IPlayer.Buff(295, 18, 0);
+						IPlayer.SendGStateExIceArrow(GState * 8);
 						IPlayer.SendGStateExIceArrow(State << 32);
-					} else if (IceArrowGrade == 5)
+					}
+					else if (IceArrowGrade == 5)
 					{
-						IPlayer.Buff(294,18,0);
-						IPlayer.Buff(295,18,0);
-						IPlayer.SendGStateExIceArrow(GState*16);
+						IPlayer.Buff(294, 18, 0);
+						IPlayer.Buff(295, 18, 0);
+						IPlayer.SendGStateExIceArrow(GState * 16);
 						IPlayer.SendGStateExIceArrow(StateEx << 32);
-					} else {
+					}
+					else {
 						return;
 					}
 				}
@@ -7695,7 +7989,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 		{
 			char Type = 0; int Key = 0;
 			CPacket::Read((char*)pPacket, (char*)pPos, "bw", &Type, &Key);
-			int Rate = CTools::Rate(1,1000);
+			int Rate = CTools::Rate(1, 1000);
 
 			if (Type == 1 && Key)
 			{
@@ -7745,7 +8039,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					}
 				}
 
-				if (Key == 1 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2655,20) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,1000))
+				if (Key == 1 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2655, 20) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 1000))
 				{
 					if (Rate >= 550)
 					{
@@ -7753,21 +8047,24 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 900)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2655,0,20,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2656,0,5,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2655, 0, 20, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2657,0,5,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2656, 0, 5, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2658,0,2,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2657, 0, 5, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2658, 0, 2, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 2 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2656,5) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,1000))
+				if (Key == 2 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2656, 5) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 1000))
 				{
 					if (Rate >= 550)
 					{
@@ -7775,21 +8072,24 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 900)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2655,0,20,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2656,0,5,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2655, 0, 20, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2657,0,5,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2656, 0, 5, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2658,0,2,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2657, 0, 5, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2658, 0, 2, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 3 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2657,5) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,1000))
+				if (Key == 3 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2657, 5) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 1000))
 				{
 					if (Rate >= 550)
 					{
@@ -7797,21 +8097,24 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 900)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2655,0,20,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2656,0,5,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2655, 0, 20, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2657,0,5,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2656, 0, 5, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2658,0,2,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2657, 0, 5, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2658, 0, 2, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 4 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2659,20) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,5000))
+				if (Key == 4 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2659, 20) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 5000))
 				{
 					if (Rate >= 550)
 					{
@@ -7819,21 +8122,24 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 900)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2659,0,20,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2660,0,5,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2659, 0, 20, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2661,0,5,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2660, 0, 5, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2662,0,2,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2661, 0, 5, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2662, 0, 2, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 5 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2660,5) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,5000))
+				if (Key == 5 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2660, 5) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 5000))
 				{
 					if (Rate >= 550)
 					{
@@ -7841,21 +8147,24 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 900)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2659,0,20,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2660,0,5,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2659, 0, 20, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2661,0,5,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2660, 0, 5, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2662,0,2,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2661, 0, 5, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2662, 0, 2, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 6 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2661,5) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,5000))
+				if (Key == 6 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2661, 5) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 5000))
 				{
 					if (Rate >= 550)
 					{
@@ -7863,21 +8172,24 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 900)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2659,0,20,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2660,0,5,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2659, 0, 20, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2661,0,5,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2660, 0, 5, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2662,0,2,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2661, 0, 5, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2662, 0, 2, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 7 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2663,10) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,5000))
+				if (Key == 7 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2663, 10) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 5000))
 				{
 					if (Rate >= 550)
 					{
@@ -7885,21 +8197,24 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 900)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2663,0,10,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2664,0,5,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2663, 0, 10, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2665,0,5,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2664, 0, 5, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2666,0,2,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2665, 0, 5, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2666, 0, 2, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 8 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2664,5) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,5000))
+				if (Key == 8 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2664, 5) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 5000))
 				{
 					if (Rate >= 550)
 					{
@@ -7907,21 +8222,24 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 900)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2663,0,10,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2664,0,5,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2663, 0, 10, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2665,0,5,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2664, 0, 5, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2666,0,2,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2665, 0, 5, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2666, 0, 2, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 9 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2665,5) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,5000))
+				if (Key == 9 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2665, 5) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 5000))
 				{
 					if (Rate >= 550)
 					{
@@ -7929,21 +8247,24 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						{
 							if (Rate >= 900)
 							{
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2663,0,10,-1);
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2664,0,5,-1);
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2663, 0, 10, -1);
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2665,0,5,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2664, 0, 5, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2666,0,2,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2665, 0, 5, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2666, 0, 2, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 10 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2667,10) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,10000))
+				if (Key == 10 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2667, 10) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 10000))
 				{
 					if (Rate >= 550)
 					{
@@ -7953,24 +8274,28 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 							{
 								if (Rate >= 950)
 								{
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2667,0,10,-1);
-								} else {
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2668,0,5,-1);
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2667, 0, 10, -1);
 								}
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2669,0,5,-1);
+								else {
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2668, 0, 5, -1);
+								}
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2670,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2669, 0, 5, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2538,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2670, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2538, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 11 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2668,5) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,10000))
+				if (Key == 11 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2668, 5) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 10000))
 				{
 					if (Rate >= 550)
 					{
@@ -7980,24 +8305,28 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 							{
 								if (Rate >= 950)
 								{
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2667,0,10,-1);
-								} else {
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2668,0,5,-1);
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2667, 0, 10, -1);
 								}
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2669,0,5,-1);
+								else {
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2668, 0, 5, -1);
+								}
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2670,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2669, 0, 5, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2538,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2670, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2538, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 12 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2669,5) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,10000))
+				if (Key == 12 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2669, 5) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 10000))
 				{
 					if (Rate >= 550)
 					{
@@ -8007,24 +8336,28 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 							{
 								if (Rate >= 950)
 								{
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2667,0,10,-1);
-								} else {
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2668,0,5,-1);
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2667, 0, 10, -1);
 								}
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2669,0,5,-1);
+								else {
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2668, 0, 5, -1);
+								}
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2670,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2669, 0, 5, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2538,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2670, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2538, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 13 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2670,1) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,10000))
+				if (Key == 13 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2670, 1) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 10000))
 				{
 					if (Rate >= 550)
 					{
@@ -8034,24 +8367,28 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 							{
 								if (Rate >= 950)
 								{
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2667,0,10,-1);
-								} else {
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2668,0,5,-1);
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2667, 0, 10, -1);
 								}
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2669,0,5,-1);
+								else {
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2668, 0, 5, -1);
+								}
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2670,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2669, 0, 5, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2538,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2670, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2538, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 14 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2671,10) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,30000))
+				if (Key == 14 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2671, 10) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 30000))
 				{
 					if (Rate >= 550)
 					{
@@ -8061,24 +8398,28 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 							{
 								if (Rate >= 950)
 								{
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2671,0,10,-1);
-								} else {
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2672,0,5,-1);
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2671, 0, 10, -1);
 								}
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2673,0,1,-1);
+								else {
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2672, 0, 5, -1);
+								}
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2674,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2673, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2675,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2674, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2675, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 15 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2672,5) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,30000))
+				if (Key == 15 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2672, 5) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 30000))
 				{
 					if (Rate >= 550)
 					{
@@ -8088,24 +8429,28 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 							{
 								if (Rate >= 950)
 								{
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2671,0,10,-1);
-								} else {
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2672,0,5,-1);
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2671, 0, 10, -1);
 								}
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2673,0,1,-1);
+								else {
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2672, 0, 5, -1);
+								}
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2674,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2673, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2675,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2674, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2675, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 16 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2673,1) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,30000))
+				if (Key == 16 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2673, 1) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 30000))
 				{
 					if (Rate >= 550)
 					{
@@ -8115,24 +8460,28 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 							{
 								if (Rate >= 950)
 								{
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2671,0,10,-1);
-								} else {
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2672,0,5,-1);
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2671, 0, 10, -1);
 								}
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2673,0,1,-1);
+								else {
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2672, 0, 5, -1);
+								}
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2674,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2673, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2675,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2674, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2675, 0, 1, -1);
 					}
 
 					return;
 				}
 
-				if (Key == 17 && CPlayer::RemoveItem(IPlayer.GetOffset(),9,2674,1) && CPlayer::RemoveItem(IPlayer.GetOffset(),9,31,30000))
+				if (Key == 17 && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 2674, 1) && CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, 30000))
 				{
 					if (Rate >= 550)
 					{
@@ -8142,18 +8491,22 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 							{
 								if (Rate >= 950)
 								{
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2671,0,10,-1);
-								} else {
-									CItem::InsertItem((int)IPlayer.GetOffset(),27,2672,0,5,-1);
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2671, 0, 10, -1);
 								}
-							} else {
-								CItem::InsertItem((int)IPlayer.GetOffset(),27,2673,0,1,-1);
+								else {
+									CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2672, 0, 5, -1);
+								}
 							}
-						} else {
-							CItem::InsertItem((int)IPlayer.GetOffset(),27,2674,0,1,-1);
+							else {
+								CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2673, 0, 1, -1);
+							}
 						}
-					} else {
-						CItem::InsertItem((int)IPlayer.GetOffset(),27,2675,0,1,-1);
+						else {
+							CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2674, 0, 1, -1);
+						}
+					}
+					else {
+						CItem::InsertItem((int)IPlayer.GetOffset(), 27, 2675, 0, 1, -1);
 					}
 
 					return;
@@ -8166,7 +8519,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 		CPlayer::Process((void*)Player, packet, (void*)pPacket, pPos);
 
 		if (IPlayer.IsOnline() && packet == 18 && IPlayer.GetClass() == 4 && IPlayer.IsBuff(406))
-			CPlayer::Write(IPlayer.GetOffset(),148,"dI",IPlayer.GetID(),(__int64)0);
+			CPlayer::Write(IPlayer.GetOffset(), 148, "dI", IPlayer.GetID(), (__int64)0);
 
 		//new
 		if (IPlayer.IsOnline() && packet == 67 && CChar::IsGState(Player, 16) && !IPlayer.IsBuff(3959))

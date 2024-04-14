@@ -21,16 +21,17 @@ void __fastcall BlessingOfAgility(int Packet, void *edx, int Player, int Target,
 					{
 						if (CChar::GetRange((int)IPlayer.GetOffset() + 332, Members + 332) <= 300)
 						{
-							IMembers.Buff(48,1800,8*ISkill.GetGrade()+3);
-							IPlayer._ShowBattleAnimation(IMembers,ISkill.GetIndex());
+							IMembers.Buff(48, 1800, 8 * ISkill.GetGrade() + 3);
+							IPlayer._ShowBattleAnimation(IMembers, ISkill.GetIndex());
 						}
 					}
 				}
 				CIOObject::Release(Party);
 			}
-		} else {
-			ITarget.Buff(48,1800,8*ISkill.GetGrade()+3);
-			IPlayer._ShowBattleAnimation(ITarget,ISkill.GetIndex());
+		}
+		else {
+			ITarget.Buff(48, 1800, 8 * ISkill.GetGrade() + 3);
+			IPlayer._ShowBattleAnimation(ITarget, ISkill.GetIndex());
 		}
 	}
 }

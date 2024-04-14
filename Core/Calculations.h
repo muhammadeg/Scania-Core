@@ -1,5 +1,6 @@
 int __fastcall Calculations(void *pSkill, void *edx, int Player)
 {
+
 	int Value = CSkill::Calculations(pSkill,Player);
 	ISkill ISkill(pSkill);
 	IChar IPlayer((void*)Player);

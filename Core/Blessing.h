@@ -18,32 +18,32 @@ void __fastcall Blessing(IChar IPlayer, int pPacket, int pPos)
 			IChar Target(pTarget);
 
 			if (IPlayer.GetCurMp() < nMana) {
-				
+
 				return;
 			}
 
-			if(IPlayer.IsValid() && Target.IsValid())
+			if (IPlayer.IsValid() && Target.IsValid())
 			{
-				if (!IPlayer.IsInRange(Target,300)) {
-					
+				if (!IPlayer.IsInRange(Target, 300)) {
+
 					return;
 				}
 
-				if(IPlayer.GetID() != Target.GetID())
+				if (IPlayer.GetID() != Target.GetID())
 				{
-					Target.Buff(24,(nSkillGrade*3)+3,40);
-					Target.RemoveBuffIcon(0,0,703,34);
-					CChar::AddMState(Target.GetOffset(),0,2147483648);
+					Target.Buff(24, (nSkillGrade * 3) + 3, 40);
+					Target.RemoveBuffIcon(0, 0, 703, 34);
+					CChar::AddMState(Target.GetOffset(), 0, 2147483648);
 				}
 
-				IPlayer.Buff(24,(nSkillGrade*3)+3,40);
-				IPlayer.RemoveBuffIcon(0,0,703,34);
-				CChar::AddMState(IPlayer.GetOffset(),0,2147483648);
-				IPlayer._ShowBattleAnimation(Target,69);
+				IPlayer.Buff(24, (nSkillGrade * 3) + 3, 40);
+				IPlayer.RemoveBuffIcon(0, 0, 703, 34);
+				CChar::AddMState(IPlayer.GetOffset(), 0, 2147483648);
+				IPlayer._ShowBattleAnimation(Target, 69);
 				IPlayer.DecreaseMana(nMana);
 			}
 		}
-		
+
 	}
 }
 
@@ -66,14 +66,14 @@ void __fastcall GroupBlessing(IChar IPlayer, int pPacket, int pPos)
 			IChar Target(pTarget);
 			int Time = nSkillGrade + 1;
 			if (IPlayer.GetCurMp() < nMana) {
-				
+
 				return;
 			}
 
 			if (IPlayer.IsValid() && Target.IsValid())
 			{
 				if (!IPlayer.IsInRange(Target, 300)) {
-					
+
 					return;
 				}
 
@@ -92,9 +92,9 @@ void __fastcall GroupBlessing(IChar IPlayer, int pPacket, int pPos)
 							{
 								if (CChar::GetRange((int)IPlayer.GetOffset() + 332, Members + 332) <= 300)
 								{
-								//	IMembers.Buff(24, Time, 40);
+									//	IMembers.Buff(24, Time, 40);
 									IMembers.Buff(BuffNames::Blessing, Time, 1);
-								//	IMembers.RemoveBuffIcon(0, 0, 703, 34);
+									//	IMembers.RemoveBuffIcon(0, 0, 703, 34);
 									CChar::AddMState(IMembers.GetOffset(), 0, 2147483648);
 								}
 							}
@@ -103,14 +103,14 @@ void __fastcall GroupBlessing(IChar IPlayer, int pPacket, int pPos)
 					}
 				}
 				else {
-					IPlayer.SystemMessage("The target is not in a current party group.", TEXTCOLOR_RED); 
-					
+					IPlayer.SystemMessage("The target is not in a current party group.", TEXTCOLOR_RED);
+
 					return;
 				}
 				IPlayer._ShowBattleAnimation(Target, 69);
 				IPlayer.DecreaseMana(nMana);
 			}
 		}
-		
+
 	}
 }

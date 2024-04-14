@@ -1,5 +1,6 @@
 void __fastcall DropItemONPKDie(void *Player, void *edx)
 {
+
 	IChar IPlayer(Player);
 
 	if (IPlayer.IsOnline())
@@ -17,6 +18,7 @@ void __fastcall DropItemONPKDie(void *Player, void *edx)
 //new
 int __fastcall MoneyDrop(int Item, void *edx, int a5, int a6, int a7, int a8, int IsParty, int ID)
 {
+
 	if (IsParty) {
 		if (ChannelActivated) {
 			void *Party = (void *)CParty::FindParty(ID);
@@ -62,6 +64,7 @@ int __fastcall MoneyDrop(int Item, void *edx, int a5, int a6, int a7, int a8, in
 
 void __fastcall DropItem(DWORD a1, void *edx, int Item, int Chance, char a6, int a7, int a8, DWORD *a9, int a10)
 {
+
 	TargetFind myTarget(0, 0, a8);
 	int Player = (int)myTarget.getTarget();
 
@@ -71,10 +74,12 @@ void __fastcall DropItem(DWORD a1, void *edx, int Item, int Chance, char a6, int
 		Chance *= IPlayer.GetBuffValue(2129);
 
 	CItem::InitDrop(a1, Item, Chance, a6, a7, a8, a9, a10);
+
 }
 
 LONG __fastcall ItemDrop(int Item, void* edx, int a5, int a6, int a7, int a8, int IsParty, int ID)
 {
+
 	if (ChannelActivated && ID) {
 		if (IsParty) {
 			void *Party = (void *)CParty::FindParty(ID);

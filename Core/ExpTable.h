@@ -113,6 +113,18 @@ int __cdecl MyUpdateProperty(int Player, int Type, int InOut, signed __int64 Exp
 	if (Type == 25 && IPlayer.IsOnline() && InOut)
 	{
 
+		if (IPlayer.GetProperty(PlayerProperty::Reborn))
+		{
+			int CurrentReborn = IPlayer.GetProperty(PlayerProperty::Reborn);
+			if (RebornsPenalty.count(CurrentReborn)) {
+
+				RbPenalty rb = RebornsPenalty.find(CurrentReborn)->second;
+				if (rb.rbPenalty)
+				{
+					Exp = (Exp / rb.rbPenalty * 100);
+				}
+			}
+		}
 
 		if (!IPlayer.GetProperty(PlayerProperty::UnGap)) {
 			if (LevelGap.count(IPlayer.GetLevel()))
@@ -129,7 +141,7 @@ int __cdecl MyUpdateProperty(int Player, int Type, int InOut, signed __int64 Exp
 			Exp += (Exp / CJBEXP);
 
 		if (IPlayer.IsBuff(120))
-			Exp += (Exp / 10);
+			Exp += (Exp / 20);
 
 		if (IPlayer.IsBuff(298) && Exp > 100)
 			Exp += (Exp * 3) / 100;
@@ -169,16 +181,18 @@ int __cdecl MyUpdateProperty(int Player, int Type, int InOut, signed __int64 Exp
 			}
 		}
 
+		for (auto x = BuffMakerCheck.begin(); x != BuffMakerCheck.end(); x++) {
+			const BuffMaker& buff = x->second;
 
-		for (std::map<int, BuffMaker>::const_iterator it = BuffMakerCheck.begin(); it != BuffMakerCheck.end(); ++it) {
-			const BuffMaker& buff = it->second;
-			if (IPlayer.IsBuff(buff.BuffID) && buff.ExpALLOW == "true") {
+			if (IPlayer.IsBuff(buff.BuffID) && buff.ExpALLOW == "true")
 				Exp += (Exp * buff.amount) / 100;
-			}
 		}
 
 		if (IPlayer.IsBuff(BuffNames::F10Buff))
 			Exp += (Exp * F10EXPBuff) / 100;
+
+		if (IPlayer.GetLevel() == levellimit)
+			Exp = 0;
 		/*
 		if (IPlayer.IsBuff(BuffNames::expstone) && Exp > 100) {
 			int EXPValue = IPlayer.GetBuffValue(BuffNames::expstone);
@@ -190,24 +204,8 @@ int __cdecl MyUpdateProperty(int Player, int Type, int InOut, signed __int64 Exp
 		}
 		*/
 
-
-		if (IPlayer.GetProperty(PlayerProperty::Reborn))
-		{
-			int CurrentReborn = IPlayer.GetProperty(PlayerProperty::Reborn);
-			if (RebornsPenalty.count(CurrentReborn)) {
-
-				RbPenalty rb = RebornsPenalty.find(CurrentReborn)->second;
-				if (rb.rbPenalty)
-				{
-					Exp = (Exp / rb.rbPenalty * 100);
-				}
-			}
-
-		}
-
-		if (IPlayer.GetLevel() == levellimit)
-			Exp = 0;
-
+		if (EXPLimit && Exp > MaxEXP)
+			Exp = MaxEXP;
 	}
 
 	return CPlayer::UpdateProperty(Player, Type, InOut, Exp);
@@ -411,6 +409,7 @@ int __fastcall PartyEXP(int Party, void *edx, signed int *EXP, int Check, int Pl
 
 			if (stop) {
 				IPlayer.SystemMessage("Party EXP can not be gathered by/for players from different channels.", TEXTCOLOR_RED);
+		//		CPlayer::LeaveParty((int)IPlayer.GetOffset());
 				CSkill::ObjectRelease((void*)PTPlayer, PTPlayer + 352);
 				return 0;
 			}
@@ -444,7 +443,7 @@ int __fastcall InitMonsterDrop(int InitMonster, void *edx, int Monster, int IsPa
 		}
 		
 		IChar IMonster((void*)Monster);
-		if (PTLvl >= (IMonster.GetLevel() + 100))
+		if (PTLvl >= (IMonster.GetLevel() + 14))
 			return 0;
 
 	}
@@ -491,7 +490,6 @@ int __fastcall MonsterAllotEXP(int Monster, void *edx, int a2, int TankerID, int
 			}
 
 			if (PTLvl > 100) {
-				int MobLvl = IMonster.GetLevel();
 
 				if (IMonster.GetLevel() <= (PTLvl - 14)) {
 					return 0;
@@ -1583,7 +1581,7 @@ int __fastcall MovingScrollFix(int Player, void* edx, int Map, int XY,int Arg1, 
 	}
 
 	if (Map == EmokMap && IPlayer.IsOnline() && IPlayer.GetMap() != EmokMap) {
-		IPlayer.SystemMessage("Please use the Area NPC to port to Area.", TEXTCOLOR_RED);
+		IPlayer.SystemMessage("Please use the Emok NPC to port to Emok.", TEXTCOLOR_RED);
 		if (CItem::FindInitItem(511))
 			CItem::InsertItem(Player, 27, 511, 0, 1, -1);
 		else if(CItem::FindInitItem(512))
@@ -1700,6 +1698,7 @@ int __cdecl CallsRange(int Value, int Argument)
 
 int __fastcall PickCrashFix(void* Player, void* edx, int Argument, int Item) {
 	IItem IItem((void*)Item);
+	IChar IPlayer((void*)Player);
 
 	int InitItem = IItem.GetInitItem();
 
@@ -1710,6 +1709,63 @@ int __fastcall PickCrashFix(void* Player, void* edx, int Argument, int Item) {
 
 	if (!Index)
 		return 0;
+
+	int Check = CPlayer::_InsertItem(Player, Argument, Item);
+	//IPlayer.SystemMessage("you asdas", TEXTCOLOR_GREEN);
+
+	if (Check == 1) {
+		*(DWORD *)(Item + 40) = InitItem;
+		*(DWORD *)(*(DWORD *)(Item + 40) + 64) = Index;
+	}
+
+	return Check;
+}
+
+int __fastcall PartyPickCrashFix(void* Player, void* edx, int Argument, int Item) {
+	IItem IItem((void*)Item);
+	IChar IPlayer((void*)Player);
+
+	int InitItem = IItem.GetInitItem();
+
+	if (!InitItem)
+		return 0;
+
+	int Index = IItem.CheckIndex();
+
+	if (!Index)
+		return 0;
+
+	if (IPlayer.IsParty())
+	{
+		void *Party = (void *)CParty::FindParty(IPlayer.GetPartyID());
+		if (Party) {
+			if (ChannelActivated) {
+				int PTPlayer = CParty::GetRandomPlayer((void*)Party);
+				if (PTPlayer) {
+					IChar IPlayer((void*)PTPlayer);
+					int Channel = IPlayer.GetChannel();
+					bool stop = false;
+					for (int i = CParty::GetPlayerList((void*)Party); i; i = CBaseList::Pop((void*)i))
+					{
+						int PTMember = *(DWORD*)((void*)i);
+						IChar IMembers((void*)PTMember);
+						if (!stop && IMembers.GetOffset() != IPlayer.GetOffset() && IMembers.GetChannel() != Channel)
+							stop = true;
+					}
+
+					if (stop) {
+						IPlayer.SystemMessage("Party Drops can not be gathered by/for players from different channels.", TEXTCOLOR_RED);
+						CIOObject::Release(Party);
+						CSkill::ObjectRelease((void*)PTPlayer, PTPlayer + 352);
+						return 0;
+					}
+
+					CSkill::ObjectRelease((void*)PTPlayer, PTPlayer + 352);
+				}
+			}
+			CIOObject::Release(Party);
+		}
+	}
 
 	int Check = CPlayer::_InsertItem(Player, Argument, Item);
 
@@ -1847,25 +1903,6 @@ int __fastcall ReturnToVillage(int Player, void* edx, int Map, int XY, int Arg1,
 			return Check;
 		}
 
-		if (IPlayer.GetMap() == BanditsMap && Bandits::Active == true) {
-			int *GetSetXY = new int[2];
-			GetSetXY[0] = BanditsTX;
-			GetSetXY[1] = BanditsTY;
-			int FindItem = CPlayer::FindItem(IPlayer.GetOffset(), BanditsMaxDeathItem, 1);
-			int Check = CPlayer::Teleport(Player, BanditsMap, (int)GetSetXY, 0, 1);
-			delete[] GetSetXY;
-			int playerID = IPlayer.GetPID();
-			IPlayer.CancelBuff(BuffNames::RevivalCheck);
-			CPlayer::RemoveItem(IPlayer.GetOffset(), 9, BanditsIndex, 1);
-			CPlayer::RemoveItem(IPlayer.GetOffset(), 9, BanditsMaxDeathItem, 1);
-			if (!FindItem){	
-			IPlayer.SystemMessage("You have exceeded max death times. Good luck next time", TEXTCOLOR_RED);
-			IPlayer.Buff(104, 3600, 0);
-
-		}
-			return Check;
-
-		}
 
 		if (isPeaceEvilMode()) {
 			if (IPlayer.isSlytherin() && SlytherinDieX && SlytherinDieY) {
@@ -2012,7 +2049,7 @@ int __cdecl AuthSvrFix(char* Message) {
 
 	std::string Path = GetExePath() + "\\" + AuthSvr;
 
-	CConsole::Blue("[Core Auto-Recovery] Launching %s...", Path.c_str());
+	CConsole::Blue("[KalTechSolutions Auto-Recovery] Launching %s...", Path.c_str());
 
 	ShellExecute(NULL, "open", Path.c_str(), NULL, NULL, SW_SHOWDEFAULT);
 
@@ -2153,7 +2190,6 @@ void ExpMultiplier()
 	int GCoinTime = GoldenCoinT * 1000;
 	int DMGLevelCheck = 24;
 	signed int ResetLevelMax = 127;
-
 	/*
 	std::vector<TeleCoordinates> Tele_Scrolls = CreateTeleScrolls();
 	const uintptr_t* p_tele = reinterpret_cast<const uintptr_t*>(Tele_Scrolls.data());
@@ -2247,7 +2283,6 @@ void ExpMultiplier()
 	Memory->Set(0x0045d081, "\xff\x75\xf4\x90\x90", 5);
 	Memory->Hook(0x004918eb, SendExclusiveCreate);
 	Memory->Set(0x004918e4, "\xff\x75\x08\x90\x90", 5);
-
 	Memory->Copy((void*)0x0045CA7D, &iceStoneValue, 1);
 
 	Memory->Copy((void*)0x00463497, &ResetLevelMax, 1);
@@ -2258,6 +2293,8 @@ void ExpMultiplier()
 
 	Memory->Hook(0x46BC4C, StandardBuff);
 	Memory->Hook(0x4939A6, PickCrashFix);
+	Memory->Hook(0x44EB56, PartyPickCrashFix);
+	Memory->Hook(0x44EBA5, PartyPickCrashFix);
 
 	Memory->Hook(0x460386, AskPvP);
 	Memory->Hook(0x460546, OnAskPvP);

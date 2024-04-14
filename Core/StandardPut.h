@@ -14,9 +14,6 @@ int __fastcall StandardBroken(void* Item, void* edx, int Player, int Argument) {
 	if (isItemRiding(IItem.CheckIndex()) || UnBreak.count(IItem.CheckIndex()))
 		return 0;
 
-	IChar IPlayer((void*)Player);
-	IPlayer.CancelBuff(BuffNames::StandardOn);
-
 	return CItemStandard::Broken(Item, Player, Argument);
 }
 
@@ -71,8 +68,8 @@ void __fastcall StandardPutOff(void *Item, void *edx, int Player)
 	int BF1 = *(DWORD *)(Player + 512);
 	int BF2 = *(DWORD *)(Player + 1120);
 
-
-	IPlayer.CancelBuff(BuffNames::StandardOn);
+	if (IPlayer.IsOnline() && Removing.Exists() && isWings(Removing.CheckIndex()))
+		IPlayer.CancelBuff(BuffNames::StandardOn);
 
 	if (IPlayer.IsOnline() && Removing.Exists() && isItemRiding(Removing.CheckIndex())) {
 
@@ -157,19 +154,22 @@ void __fastcall StandardPutOn(int Item, void *edx, int Player)
 			return;
 		}
 	}
+	if (IPlayer.IsOnline() && isWings(IItem.CheckIndex())) {
 
+		if (IPlayer.IsBuff(BuffNames::StandardOn)){
+			IPlayer.SystemMessage("An item is already equipped.", TEXTCOLOR_RED);
+			return;
+		}
+	}
+				
 	int BF = *(DWORD *)(Player + 1116);
 	int BF1 = *(DWORD *)(Player + 512);
 	int BF2 = *(DWORD *)(Player + 1120);
 
-	if (IPlayer.IsBuff(BuffNames::StandardOn)){
-		IPlayer.SystemMessage("An item is already equipped.", TEXTCOLOR_RED);
-		return;
-	}
-
-	IPlayer.Buff(BuffNames::StandardOn, 604800, 1);
-
 	CItemStandard::PutOn(Item, Player);
+
+	if (CItem::IsState(Item, 1) && isWings(IItem.CheckIndex()))
+		IPlayer.UpdateBuff(BuffNames::StandardOn, BuffNames::BuffTime, Item);
 
 	if (CItem::IsState(Item, 1) && isItemRiding(IItem.CheckIndex())) {
 		IPlayer.UpdateBuff(BuffNames::RidingUsing, BuffNames::BuffTime, Item);

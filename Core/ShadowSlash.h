@@ -52,7 +52,7 @@ void __fastcall ShadowSlash(IChar IPlayer, int pPacket, int pPos)
 
 								IPlayer.OktayDamageArea(Object,nDmg,32);
 							}
-							else if (ShadowAOEPVE && Object.GetType() != 0){
+							else if (ShadowAOEPVE && Object.GetType() == 1){
 
 								Object.Buff(7, nSkillGrade, 0);
 								int nDmg = (IPlayer.GetAttack() * TSSMul) + (nSkillGrade * CTools::Rate(TSSMin, TSSMax));

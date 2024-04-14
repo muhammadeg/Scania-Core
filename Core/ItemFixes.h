@@ -3291,7 +3291,13 @@ void __fastcall ModsSendItemInfo(void *player, void *_edx, char* Inventory)
 	CIOBuffer::Free(Inv);
 }
 
-
+void crashDebug(int Type) {
+	std::string Dato = "./Debugger/CrashCheck/GET_" + Time::GetDay() + "_" + Time::GetMonth() + "_" + Time::GetYear() + "_" + Time::GetHour() + "." + Time::GetMinute() + ".txt";
+	std::fstream DGLOG;
+	DGLOG.open(Dato, std::fstream::in | std::fstream::out | std::fstream::app);
+	DGLOG << Time::GetTime() << " " << Type << std::endl;
+	DGLOG.close();
+}
 
 void __fastcall ModsSendUpdateItemInfo(void *player, void *_edx, char* Item)
 {

@@ -26,6 +26,21 @@ void ContinuesSkill(void *Pack)
 					IPlayer.BoxMsg(pollAsk.Question);
 				}
 
+				//if (NoticesEnabled && !PlayerRewardNotice.empty()) {
+				//	for (auto it = PlayerRewardNotice.begin(); it != PlayerRewardNotice.end(); ++it) {
+				//		std::string msg = it->message;
+
+				//		if (!msg.empty()) {
+				//			// Normal Notice
+				//			if (it->messageType == 1)
+				//				CPlayer::Write(IPlayer.GetOffset(), 0xFE, "dds", 178, it->textColor, msg.c_str());
+				//			else
+				//				CPlayer::Write(IPlayer.GetOffset(), 0xFF, "dsd", 247, msg.c_str(), it->textColor);
+
+				//		}
+				//	}
+				//}
+
 				if (IPlayer.isContinueSkill())
 				{
 					int RuptureContinueSkillPlayerSkillID = IPlayer.GetProperty(PlayerProperty::RuptureContinueSkillPlayerSkillID);
@@ -103,8 +118,10 @@ void ContinuesSkill(void *Pack)
 				}
 			}
 		}
+		//PlayerRewardNotice.clear();
 		CIOCriticalSection::Leave((void*)0x004e2078);
 		pollAsk.HTML = 0;
 		Sleep(120);
 	}
+
 }

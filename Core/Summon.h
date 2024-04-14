@@ -1,7 +1,7 @@
 volatile LONG areas = 0;
 void __cdecl Spawn(int index, int amount, int x, int y, int map) {
 	int GetMap = Undefined::MapCheck(map);
-	
+
 	if (GetMap) {
 		int* s_gen = new int[22];
 		int factor = 10;
@@ -82,11 +82,11 @@ int __cdecl Summon(int Player, int Map, int X, int Y, int Index, int Amount, int
 				*(DWORD *)(Monster + 320) = GetMap;
 				*(DWORD *)(Monster + 512) = Index;
 				*(DWORD *)(Monster + 476) = 1;
-				
+
 				CChar::SetXY(Monster, (int)GetSetXY);
 				delete[] GetSetXY;
 				(*(void(__thiscall **)(int, int))(*(DWORD *)Monster + 192))(Monster, Check);
-				
+
 				if (Disappear)
 					MonsterDisappear.replaceInsert((int)Monster, GetTickCount() + Disappear);
 
@@ -237,26 +237,130 @@ int __fastcall SummonAI(void *Monster, void *edx)
 
 		if (IMonster.GetMobIndex() == 384)
 			return 0;
+
+		if (IMonster.GetMobIndex() == PVPMobIndex)
+			return 0;
+
+		if (IMonster.GetMobIndex() == LMSMobIndex)
+			return 0;
 	}
 
 	return CMonsterMaguniMaster::AI(Monster);
 }
 
+int __fastcall MonsterDie(int Monster, void *edx, int TankerID, int Arg1, int Arg2, int Arg3)
+{
+	IChar IMonster((void*)Monster);
+	IChar IPlayer((void*)IMonster.GetMobTanker());
+
+	if (RMonstersBuff.count(IMonster.GetMobIndex()) && IPlayer.IsValid()){
+
+		double Grade = RMonstersBuff.find(IMonster.GetMobIndex())->second.buffgrade;
+		double Refine = RMonstersBuff.find(IMonster.GetMobIndex())->second.buffgrade;
+		if (Grade == 3) Grade = 2.75;
+		if (Refine == 3) Refine = 5.5;
+
+		if (IPlayer.IsParty())
+		{
+			void *Party = (void *)CParty::FindParty(IPlayer.GetPartyID());
+
+			if (Party)
+			{
+				for (int i = CParty::GetPlayerList(Party); i; i = CBaseList::Pop((void*)i))
+				{
+					IChar IMembers((void*)*(DWORD*)((void*)i));
+					if (IMembers.IsValid() && IMembers.IsInRange(IPlayer, 7))
+					{
+						if (Grade){
+							int buffOptions[] = { 46, 47, 48, 49, 50, 36, 37 };
+							int numOptions = sizeof(buffOptions) / sizeof(buffOptions[0]);
+							int randomIndex = rand() % numOptions;
+							int selectedBuff = buffOptions[randomIndex];
+
+							if (selectedBuff == 36) IMembers.Buff(selectedBuff, 1800, 8 * Refine + 16);
+							else if (selectedBuff == 37){
+								CChar::CancelAllBuff(IMembers.GetOffset(), 37);
+								int AddBuff = CBuff::CreateBuff(37, 1800, 30 * Grade + 5, 20 * Grade + 5);
+								(*(int(__thiscall **)(int, int))(*(DWORD *)(int)IMembers.GetOffset() + 180))((int)IMembers.GetOffset(), AddBuff);
+							}
+							else
+								IMembers.Buff(selectedBuff, 1800, 8 * Grade + 3);
+						}
+					}
+				}
+				CIOObject::Release(Party);
+			}
+		}
+		else {
+			if (Grade){
+				int buffOptions[] = { 46, 47, 48, 49, 50, 36, 37 };
+				int numOptions = sizeof(buffOptions) / sizeof(buffOptions[0]);
+				int randomIndex = rand() % numOptions;
+				int selectedBuff = buffOptions[randomIndex];
+
+				if (selectedBuff == 36) IPlayer.Buff(selectedBuff, 1800, 8 * Refine + 16);
+				else if (selectedBuff == 37){
+					CChar::CancelAllBuff(IPlayer.GetOffset(), 37);
+					int AddBuff = CBuff::CreateBuff(37, 1800, 30 * Grade + 5, 20 * Grade + 5);
+					(*(int(__thiscall **)(int, int))(*(DWORD *)(int)IPlayer.GetOffset() + 180))((int)IPlayer.GetOffset(), AddBuff);
+				}
+				else
+					IPlayer.Buff(selectedBuff, 1800, 8 * Grade + 3);
+			}
+		}
+	}
+
+	if (MonstersBuff.count(IMonster.GetMobIndex()) && IPlayer.IsValid())
+	{
+
+		double Buff = MonstersBuff.find(IMonster.GetMobIndex())->second.buffid;
+
+		int Grade = MonstersBuff.find(IMonster.GetMobIndex())->second.buffgrade;
+		double Refine = MonstersBuff.find(IMonster.GetMobIndex())->second.buffgrade;
+		if (Grade == 3) Grade = 2.75;
+		if (Refine == 3) Refine = 5.5;
+
+		if (Buff == 36) IPlayer.Buff(Buff, 1800, 8 * Refine + 3);
+		else IPlayer.Buff(Buff, 1800, 8 * Grade + 3);
+
+	}
+
+	return CMonsterReal::Die(Monster, TankerID, Arg1, Arg2, Arg3);
+}
 int __fastcall SummonDie(int Monster, void *edx, int TankerID, int Arg1, int Arg2, int Arg3)
 {
 
 	IChar IMonster((void*)Monster);
 
-	if (SinEvent::Active && ((IMonster.GetMapX() == SEMapX && IMonster.GetMapY() == SEMapY) || (IMonster.GetMapX() == SEMapX2 && IMonster.GetMapY() == SEMapY2))) {
+	if (SinEvent::Active && IMonster.GetMapX() == SEMapX && IMonster.GetMapY() == SEMapY) {
 		IChar IPlayer((void*)TankerID);
 		IPlayer.UpdateBuff(BuffNames::SinEventMobs, BuffNames::BuffTime, IPlayer.GetBuffValue(BuffNames::SinEventMobs) + SEPtsPerMob);
 	}
 
+	if (SGuard.count(IMonster.GetMobIndex()))
+		summonedGuardians.erase(IMonster.GetID());
+
+
+	if (Battlefield::Active && IMonster.GetMobIndex() == BFBoss)
+	{
+		IChar IPlayer((void*)TankerID);
+
+		if (IPlayer.IsBuff(160) || IPlayer.IsBuff(161))
+		{
+			std::string KillerName = IPlayer.GetName();
+
+			if (BFBossReward)
+				IPlayer.systemReward(BFBossReward);
+
+			Battlefield::slayerName = KillerName;
+
+		}
+	}
 	// Monsters Rewards
 	if (MonstersRewards.count(IMonster.GetMobIndex())) {
 		int RewardID = MonstersRewards.find(IMonster.GetMobIndex())->second.rewardid;
 		int PlayerChance = MonstersRewards.find(IMonster.GetMobIndex())->second.pickchance;
-		int Around = IMonster.GetObjectListAround(50);
+		int Around = IMonster.GetObjectListAround(MonstersRewards.find(IMonster.GetMobIndex())->second.Range);
 		int Size = 0;
 		int PlayersToPick = 0;
 		bool rewardAllPlayers = false;
@@ -322,7 +426,62 @@ int __fastcall SummonDie(int Monster, void *edx, int TankerID, int Arg1, int Arg
 	}
 	// Monsters Reward end
 
+	if (IMonster.GetMobIndex() == BFBoss)
+	{
+		IChar Tanker((void*)TankerID);
 
+
+		int Around = IMonster.GetObjectListAround(30);
+		while (Around)
+		{
+			IChar Object((void*)CBaseList::Offset((void*)Around));
+			if (Object.IsValid() && Object.GetType() == 0)
+			{
+				if (Object.IsBuff(160) || Object.IsBuff(161)) {
+					int LeftTime = Battlefield::Time;
+					POINT pt = *(POINT *)((int)Object.GetOffset() + 324);
+					if (PtInRect(&BFBossBuff, pt)){
+						Object.SaveBuff(BuffNames::BattlefieldBoss, LeftTime + 3600, 1, 14140, 14140);
+					}
+				}
+			}
+			Around = CBaseList::Pop((void*)Around);
+		}
+	}
+
+	if (IMonster.GetMobIndex() == PVPMobIndex)
+	{
+		IChar Tanker((void*)TankerID);
+		int ArenaBlue = Tanker.GetBuffValue(BuffNames::PTVsPTBlue);
+		int ArenaRed = Tanker.GetBuffValue(BuffNames::PTVsPTRed);
+		PartyBattle pBattleBlue = CurPartys.find(ArenaBlue)->second;
+		PartyBattle pBattleRed = CurPartys.find(ArenaRed)->second;
+
+		if (Tanker.IsBuff(BuffNames::PTVsPTBlue)){
+			if (GetPTSize(Tanker.GetPartyID()) == pBattleBlue.PartySize) {
+				Tanker.Scenario3_3Score((pBattleBlue.Time - GetTickCount()) / 1000, pBattleBlue.RedScore, pBattleBlue.BlueScore);
+				int NScore = pBattleBlue.BlueScore + PartyMobScore;
+				Tanker.Scenario3_3Score((pBattleBlue.Time - GetTickCount()) / 1000, pBattleBlue.RedScore, NScore);
+
+				if (IsPartyAlive(Tanker.GetPartyID(), 1))
+					CurPartys[ArenaBlue].BlueScore = NScore;
+			}
+		}
+		else if (Tanker.IsBuff(BuffNames::PTVsPTRed)){
+			if (GetPTSize(Tanker.GetPartyID()) == pBattleRed.PartySize) {
+				Tanker.Scenario3_3Score((pBattleRed.Time - GetTickCount()) / 1000, pBattleRed.RedScore, pBattleRed.BlueScore);
+				int NScore = pBattleRed.RedScore + PartyMobScore;
+				Tanker.Scenario3_3Score((pBattleRed.Time - GetTickCount()) / 1000, NScore, pBattleRed.BlueScore);
+
+				if (IsPartyAlive(Tanker.GetPartyID(), 0)){
+					CurPartys[ArenaRed].RedScore = NScore;
+
+				}
+			}
+
+		}
+
+	}
 
 	if (BossEXP::Active && Monster == BossEXP::Boss) {
 		std::string SysMsg(BossEXPFinalMsg);
@@ -356,12 +515,12 @@ int __fastcall SummonDie(int Monster, void *edx, int TankerID, int Arg1, int Arg
 						F10EXP mautExp = BossEXPs.find(Object.GetLevel())->second;
 
 						if (mautExp.Gap) {
-							for (int i = 0; i<mautExp.Mult; i++)
+							for (int i = 0; i < mautExp.Mult; i++)
 								(*(int(__cdecl **)(int, signed int, signed int, unsigned __int64, unsigned __int64))(*(DWORD *)Object.GetOffset() + 88))((int)Object.GetOffset(), 25, 1, (unsigned __int64)mautExp.Exp, HIDWORD(mautExp.Exp));
 						}
 						else
 						{
-							for (int i = 0; i<mautExp.Mult; i++)
+							for (int i = 0; i < mautExp.Mult; i++)
 								CPlayer::UpdateProperty((int)Object.GetOffset(), 25, 1, mautExp.Exp);
 						}
 
@@ -443,12 +602,12 @@ int __fastcall SummonDie(int Monster, void *edx, int TankerID, int Arg1, int Arg
 						F10EXP mautExp = MautEXPs.find(Object.GetLevel())->second;
 
 						if (mautExp.Gap) {
-							for (int i = 0; i<mautExp.Mult; i++)
+							for (int i = 0; i < mautExp.Mult; i++)
 								(*(int(__cdecl **)(int, signed int, signed int, unsigned __int64, unsigned __int64))(*(DWORD *)Object.GetOffset() + 88))((int)Object.GetOffset(), 25, 1, (unsigned __int64)mautExp.Exp, HIDWORD(mautExp.Exp));
 						}
 						else
 						{
-							for (int i = 0; i<mautExp.Mult; i++)
+							for (int i = 0; i < mautExp.Mult; i++)
 								CPlayer::UpdateProperty((int)Object.GetOffset(), 25, 1, mautExp.Exp);
 						}
 
@@ -558,7 +717,7 @@ int __fastcall SummonDie(int Monster, void *edx, int TankerID, int Arg1, int Arg
 	{
 		int Around = IMonster.GetObjectListAround(50);
 
-		while(Around)
+		while (Around)
 		{
 			IChar Object((void*)CBaseList::Offset((void*)Around));
 
@@ -567,12 +726,12 @@ int __fastcall SummonDie(int Monster, void *edx, int TankerID, int Arg1, int Arg
 					F10EXP f10Exp = F10EXPs.find(Object.GetLevel())->second;
 
 					if (f10Exp.Gap) {
-						for (int i = 0; i<f10Exp.Mult; i++)
+						for (int i = 0; i < f10Exp.Mult; i++)
 							(*(int(__cdecl **)(int, signed int, signed int, unsigned __int64, unsigned __int64))(*(DWORD *)Object.GetOffset() + 88))((int)Object.GetOffset(), 25, 1, (unsigned __int64)f10Exp.Exp, HIDWORD(f10Exp.Exp));
 					}
 					else
 					{
-						for (int i = 0; i<f10Exp.Mult; i++)
+						for (int i = 0; i < f10Exp.Mult; i++)
 							CPlayer::UpdateProperty((int)Object.GetOffset(), 25, 1, f10Exp.Exp);
 					}
 
@@ -610,7 +769,7 @@ int __fastcall SummonDie(int Monster, void *edx, int TankerID, int Arg1, int Arg
 				}
 
 				Object.CloseScreenTime();
-				if(F10Limit)
+				if (F10Limit)
 					rewardLimit(Object);
 			}
 			Around = CBaseList::Pop((void*)Around);
@@ -980,6 +1139,7 @@ int __fastcall SummonDie(int Monster, void *edx, int TankerID, int Arg1, int Arg
 		CChar::WriteInSight((void*)Monster, 0xFF, "dsd", 247, "Ghost of Dragon has been appeared.", 2);
 	}
 
+
 	if (IMonster.GetMobIndex() == 445)
 	{
 		Battlefield::RedScore += 25;
@@ -1032,7 +1192,7 @@ int __fastcall SummonDie(int Monster, void *edx, int TankerID, int Arg1, int Arg
 		CChar::WriteInSight((void*)Monster, 0xFF, "ddddd", 242, 28, 255, 255, 255);
 	}
 
-	return CMonsterMaguniMaster::Die(Monster,TankerID,Arg1,Arg2,Arg3);
+	return CMonsterMaguniMaster::Die(Monster, TankerID, Arg1, Arg2, Arg3);
 }
 
 
@@ -1047,8 +1207,8 @@ int __fastcall SummonTick(void *Monster, void *edx)
 			BossHunting::maxDmg = 0;
 		}
 
-	//	if (IMonster.GetMobIndex() == 573 && IMonster.GetCurHp() != IMonster.GetMaxHp())
-	//		IMonster.IncreaseHp(100000);
+		//	if (IMonster.GetMobIndex() == 573 && IMonster.GetCurHp() != IMonster.GetMaxHp())
+		//		IMonster.IncreaseHp(100000);
 
 		if (Raid::Active == true && IMonster.GetMobIndex() == Raid4 && Raid::Round == 4) {
 			if (Raid::Time == 850) {
@@ -1092,7 +1252,7 @@ int __fastcall SummonTick(void *Monster, void *edx)
 
 				if (Check == 3695)
 					Undefined::MonsterPath(*(void **)((int)Monster + 320), (int)Monster, 0, -1, 0, 1);
-				
+
 				if (Check == 3691)
 					CPlayer::WriteInMap(21, 0xFF, "dsd", 247, "I have a supernatural feeling that something invisible is trying to embody.", 1);
 
@@ -1116,7 +1276,7 @@ int __fastcall SummonTick(void *Monster, void *edx)
 
 				if (Check == 3664)
 					CPlayer::WriteInMap(21, 0xFF, "dsd", 247, "Since the first year of an era and thrown into confusion, so save the world finally.", 1);
-				
+
 				if (Check == 3660)
 					IMonster.AddFxToTarget("davi_M573_72", 1, 0, 0);
 
@@ -1140,7 +1300,7 @@ int __fastcall SummonTick(void *Monster, void *edx)
 
 				if (Check == 3653)
 					CChar::WriteInSight(IMonster.Offset, 63, "bddbb", 256, IMonster.GetID(), IMonster.GetID(), 1, 1);
-				
+
 				if (Check >= 3653 && Check <= 3656 && (!F10::Cheios || !F10::Dunamic))
 				{
 					if (!F10::Cheios)
@@ -1160,8 +1320,8 @@ int __fastcall SummonTick(void *Monster, void *edx)
 						if (Dunamic.IsValid())
 							Undefined::MonsterPath(*(void **)(F10::Dunamic + 320), F10::Dunamic, 0, -1, 0, 1);
 					}
-				}	
-				
+				}
+
 				if (Check == 3646)
 					Undefined::MonsterPath(*(void **)((int)Monster + 320), (int)Monster, 0, 120, 0, 1);
 
@@ -1179,7 +1339,7 @@ int __fastcall SummonTick(void *Monster, void *edx)
 
 				if (Check == 3635)
 					Undefined::MonsterPath(*(void **)((int)Monster + 320), (int)Monster, 0, -1, 0, 1);
-				
+
 				if (Check == 3634)
 				{
 					for (int x = 0; x < 10; x++)
@@ -1203,7 +1363,7 @@ int __fastcall SummonTick(void *Monster, void *edx)
 					F10::ShowTime = 3600;
 				}
 
-				
+
 
 				if ((Check == 300 || Check == 600 || Check == 900 || Check == 1200 || Check == 1500 || Check == 1800 || Check == 2100 || Check == 2400 || Check == 3000 || Check == 3300) && F10::Active == true)
 				{
@@ -1268,12 +1428,12 @@ int __fastcall SummonTick(void *Monster, void *edx)
 								F10EXP f10Exp = F10EXPs.find(Object.GetLevel())->second;
 
 								if (f10Exp.Gap) {
-									for(int i=0;i<f10Exp.Mult;i++)
+									for (int i = 0; i < f10Exp.Mult; i++)
 										(*(int(__cdecl **)(int, signed int, signed int, unsigned __int64, unsigned __int64))(*(DWORD *)Object.GetOffset() + 88))((int)Object.GetOffset(), 25, 1, (unsigned __int64)f10Exp.Exp, HIDWORD(f10Exp.Exp));
 								}
 								else
 								{
-									for (int i = 0; i<f10Exp.Mult; i++)
+									for (int i = 0; i < f10Exp.Mult; i++)
 										CPlayer::UpdateProperty((int)Object.GetOffset(), 25, 1, f10Exp.Exp);
 								}
 
@@ -1362,6 +1522,23 @@ int __fastcall SummonTick(void *Monster, void *edx)
 				F10::RegisterAmount = 0;
 				F10Registration.clear();
 				F10::Active = false;
+			}
+		}
+
+		if (SGuard.count(IMonster.GetMobIndex()) && summonedGuardians.find(IMonster.GetID()) == summonedGuardians.end())
+		{
+			int HPBelow = SGuard.find(IMonster.GetMobIndex())->second.hp;
+			int BossIndex = SGuard.find(IMonster.GetMobIndex())->second.boss;
+			int GuardIndex = SGuard.find(IMonster.GetMobIndex())->second.guard;
+			int GuardAmount = SGuard.find(IMonster.GetMobIndex())->second.amount;
+
+			if (HPBelow > 0 && IMonster.GetCurHp() <= (IMonster.GetMaxHp() * HPBelow / 100))
+			{
+				for (int i = 0; i < GuardAmount; i++){
+
+					Summon(0, IMonster.GetMap(), CTools::Rate(IMonster.GetX(), IMonster.GetX() + 550), CTools::Rate(IMonster.GetY(), IMonster.GetY() + 550), GuardIndex, 1, 0, 0, 0, 0);
+				}
+				summonedGuardians.insert(IMonster.GetID());
 			}
 		}
 
@@ -1553,6 +1730,18 @@ int __fastcall SummonTick(void *Monster, void *edx)
 			return CMonsterMaguniMaster::Tick(Monster);
 		}
 
+		if (LastManStand::Active == false && IMonster.GetMobIndex() == LMSMobIndex)
+		{
+			IMonster.MobDelete();
+			return CMonsterMaguniMaster::Tick(Monster);
+		}
+
+		if (Battlefield::Active == false && IMonster.GetMobIndex() == BFBoss)
+		{
+			IMonster.MobDelete();
+			return CMonsterMaguniMaster::Tick(Monster);
+		}
+
 		if (Scenario::Active == false && (IMonster.GetMobIndex() >= 352 && IMonster.GetMobIndex() <= 360))
 		{
 			IMonster.MobDelete();
@@ -1571,7 +1760,7 @@ int __fastcall SummonTick(void *Monster, void *edx)
 			return CMonsterMaguniMaster::Tick(Monster);
 		}
 
-		if (CaptureFlag::Active == false && (IMonster.GetMobIndex() == CPMob || IMonster.GetMobIndex() == CPGate || IMonster.GetMobIndex() == CaptureMonster)) {
+		if (CaptureFlag::Active == false /*&& IMonster.GetMap() == CaptureMap*/ && (IMonster.GetMobIndex() == CPMob || IMonster.GetMobIndex() == CPGate || IMonster.GetMobIndex() == CaptureMonster)) {
 			IMonster.MobDelete();
 			return CMonsterMaguniMaster::Tick(Monster);
 		}
@@ -1607,7 +1796,7 @@ int __fastcall SummonTick(void *Monster, void *edx)
 			return CMonsterMaguniMaster::Tick(Monster);
 		}
 
-		if (!BossEXP::Active && IMonster.GetMap() == BossEXPMap)
+		if (!BossEXP::Active && IMonster.GetMap() == BossEXPMap && IMonster.GetMobIndex() != 623)
 		{
 			IMonster.MobDelete();
 			return CMonsterMaguniMaster::Tick(Monster);
