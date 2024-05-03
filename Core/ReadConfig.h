@@ -20,7 +20,7 @@ int MysteryResetItem = 0, MysteryQuest = 0, MysteryEnable = 0;
 int MD5Check = 0, HellCooldown=0, testcmd=0,tmcd=0;
 int Shouts = 0, DefaultUnblob = 0, DefaultSkinView = 0;
 int BattlepassActive = 0, BattlepassQuest = 0, BattlepassIndex = 0;
-
+int MaxLoginAttemps = 2;
 int IPEnable = 0;
 int SkillTestAction = 0, SkillR1 = 0, SkillR2 = 0, SkillTimer = 0, SkillIndex = 0;
 int testK = 0;
@@ -440,6 +440,7 @@ void ReadConfig(bool command)
 	CJBRange = GetPrivateProfileIntA("CJBParty", "Range", 30, "./Configs/Protection.txt");
 
 	ScrollEM = GetPrivateProfileIntA("SavingScroll", "Active", 1, "./Configs/EventMaps.txt");
+	MaxLoginAttemps = GetPrivateProfileIntA("Login", "MaxAttempts", 2, "./Configs/Protection.txt");
 
 	PVPMobIndex = GetPrivateProfileIntA("PartyVsParty", "FlagIndex", 3377, "./Systems/PartyVsParty.txt");
 	PartyTime = GetPrivateProfileIntA("PartyVsParty", "FlagTime", 60, "./Systems/PartyVsParty.txt");
@@ -4539,7 +4540,49 @@ void ReadConfig(bool command)
 			fclose(filew);
 		}
 	}
-	
+
+
+	if (!command || (command && modifiedFiles.count("./Configs/PVEWeapon.txt"))) {
+		FILE *PVEFile = fopen("./Configs/PVEWeapon.txt", "r");
+		if (PVEFile != NULL)
+		{
+			PVEWeapon.clear();
+			char line[BUFSIZ];
+			while (fgets(line, sizeof line, PVEFile) != NULL)
+			{
+				int index = 0;
+
+				if (sscanf(line, "(PVEWeapon (Index %d))", &index) == 1)
+					PVEWeapon[index].index = index;
+			}
+			fclose(PVEFile);
+		}
+	}
+	if (!command || (command && modifiedFiles.count("./Configs/ItemEffects.txt"))) {
+		FILE *Effectsfile = fopen("./Configs/ItemEffects.txt", "r");
+		if (Effectsfile != NULL)
+		{
+			EquipEffects.clear();
+			char line[BUFSIZ];
+			while (fgets(line, sizeof line, Effectsfile) != NULL)
+			{
+				int index = 0, efTime = 0;
+				char EffectName[BUFSIZ];
+
+				if (sscanf(line, "(ItemEffect (Index %d) (Effect '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]') (Time %d))", &index, &EffectName, &efTime) == 3){
+					ItemsEffects Equipment = ItemsEffects();
+
+					Equipment.index = index;
+					Equipment.Effect = EffectName;
+					Equipment.effectTime = efTime;
+
+					EquipEffects[index] = Equipment;
+				}
+			}
+			fclose(Effectsfile);
+		}
+	}
+
 	if (!command || (command && modifiedFiles.count("./Configs/RealTime.txt"))) {
 		FILE *filen = fopen("./Configs/RealTime.txt", "r");
 		if (filen != NULL)
@@ -4679,6 +4722,7 @@ void ReadConfig(bool command)
 		{
 			Reborns.clear();
 			RebornsPenalty.clear();
+			NonRebornsPenalty.clear();
 			RebornsMaps.clear();
 			RebornGear.clear();
 			char line[BUFSIZ];
@@ -4710,6 +4754,13 @@ void ReadConfig(bool command)
 					RbPenalty rb = RbPenalty();
 					rb.rbPenalty = Penalty;
 					RebornsPenalty[ID] = rb;
+				}
+
+				if (sscanf(line, "(NonReborn (Increasement %d))", &Penalty) == 2)
+				{
+					RbPenalty rb = RbPenalty();
+					rb.rbPenalty = Penalty;
+					NonRebornsPenalty[1] = rb;
 				}
 
 				if (sscanf(line, "(RebornMap (Num %d)(Quest %d %d))", &ID, &QuestIndex, &QuestFlag) == 3)

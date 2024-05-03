@@ -216,7 +216,7 @@ signed int __fastcall DefenseChangePrefix(void *Item, void* edx, int Player, int
 				IPlayer.BoxMsg("Bead of Fire is already equipped.");
 				return 0;
 			}
-			else if (CItem::GetLevel((int)IItem.GetOffset()) < 46 || CItem::GetLevel((int)IItem.GetOffset()) > 100)
+			else if (CItem::GetLevel((int)IItem.GetOffset()) < 46 || CItem::GetLevel((int)IItem.GetOffset()) > 120)
 			{
 				IPlayer.BoxMsg("Bead of Fire can not be equipped on this armor.");
 				return 0;

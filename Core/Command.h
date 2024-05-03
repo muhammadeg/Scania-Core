@@ -893,7 +893,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 
 		if (cmd.substr(0, 8) == "/storage")
 		{
-			IPlayer.OpenHTML(89);
+			IPlayer.OpenHTML(175);
 			return;
 		}
 

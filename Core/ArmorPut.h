@@ -8,7 +8,12 @@ void __fastcall DefenseApplySpec(int Item, void *edx, int Player)
 		int def = IPlayer.GetDef();
 		CItemDefense::ApplySpec(Item,Player);
 		int check = IPlayer.GetDef() - (def + *((DWORD*)Item + 27));
-		
+
+		if (EquipEffects.count(IItem.CheckIndex())){
+			IPlayer.UpdateBuff(BuffNames::EffectsIID, BuffNames::BuffTime, IItem.GetIID());
+			IPlayer.UpdateBuff(BuffNames::ItemsEffects, BuffNames::BuffTime, IItem.CheckIndex());
+		}
+
 		if (IItem.GetType() == 3) {
 			if (isItemCostumeEffect(IItem.CheckIndex())) {
 				int Effect = CostumeEffects.find(IItem.CheckIndex())->second * 1000;
@@ -688,6 +693,13 @@ void __fastcall DefensePutOff(void *Item, void *edx, int Player)
 	IChar IPlayer((void*)Player);
 	if (IPlayer.IsOnline())
 	{
+		if (EquipEffects.count(aItem.CheckIndex())){
+			if (IPlayer.IsBuff(BuffNames::ItemsEffects)){
+				IPlayer.CancelBuff(BuffNames::EffectsIID);
+				IPlayer.CancelBuff(BuffNames::ItemsEffects);
+			}
+		}
+
 		if (!isItemSuit(aItem.CheckIndex()) && aItem.GetType() == 4)
 			IPlayer.UpdateBuff(BuffNames::ArmorWears, BuffNames::BuffTime, 0);
 

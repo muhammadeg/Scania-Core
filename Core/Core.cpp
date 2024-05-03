@@ -647,7 +647,10 @@ namespace BuffNames {
 		HonorEB = 61578,
 		BlessingTrigger = 61581,
 		BattlefieldBoss = 6760,
-		CastleWarBuffW = 6761
+		CastleWarBuffW = 6761,
+		ItemsEffects = 61583,
+		EffectsIID = 61584,
+		WeaponUp = 61585
 
 	};
 }
@@ -1013,6 +1016,19 @@ namespace DuelTournament
 	int FirstPlayer = 0;
 	int SecondPlayer = 0;
 }
+
+struct ItemsEffects
+{
+	int index;
+	int Class;
+	std::string Effect;
+	int effectTime;
+};
+struct PVEWeaponsS{
+	int index;
+};
+std::map<int, ItemsEffects> EquipEffects;
+std::map<int, PVEWeaponsS> PVEWeapon;
 
 enum PROPERTY_TYPE
 {
@@ -2586,6 +2602,7 @@ std::unordered_map<char, int> npcMap;
 std::map<int, ItemExchange> ItemExchanges;
 std::map<int, Reborn> Reborns;
 std::map<int, RbPenalty> RebornsPenalty;
+std::map<int, RbPenalty> NonRebornsPenalty;
 std::map<int, RbGear> RebornGear;
 std::map<int, RbQuest> RebornsMaps;
 std::map<int, int> FatalDmg;

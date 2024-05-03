@@ -10,8 +10,10 @@ void __fastcall WeaponApplySpec(int Item, void *edx, int Player)
 
 		int FirstDemonGongType = 0, SecondDemonGongType = 0, FirstDemonGongStat = 0, SecondDemonGongStat = 0, CustWeapon = 0;
 		int Show = *(WORD *)(*(DWORD *)(Item + 40) + 64);
-		if (!isItemCustomWeapon(Show))
+		if (!isItemCustomWeapon(Show)){
 			IPlayer.Buff(BuffNames::WeaponWear, BuffNames::BuffTime, Show);
+			IPlayer.Buff(BuffNames::WeaponUp, BuffNames::BuffTime, IItem.GetIID());
+		}
 		else {
 			IPlayer.Buff(BuffNames::custWeap, BuffNames::BuffTime, Show);
 			CustWeapon = 1;
@@ -763,9 +765,11 @@ void __fastcall WeaponPutOff(void *Item, void *edx, int Player)
 		}
 
 		IPlayer.CancelBuff(BuffNames::WeaponWear);
+		IPlayer.CancelBuff(BuffNames::WeaponUp);
+
 	}
 	int check = atk - (IPlayer.GetMaxPhyAttack() + (*(DWORD*)((int)Item + 100) * (2 * *(DWORD*)((int)Item + 100) + 7) / 9));
-	
+
 	if (IPlayer.GetBuffValue(BuffNames::ItemMixCheck + CustWeapon)) {
 		check = IPlayer.GetBuffValue(BuffNames::ItemMixCheck + CustWeapon);
 		IPlayer.UpdateBuff(BuffNames::ItemMixCheck + CustWeapon, BuffNames::BuffTime, 0);
@@ -777,7 +781,7 @@ void __fastcall WeaponPutOff(void *Item, void *edx, int Player)
 		ItemStat = GetItemStat.find(IItem.GetIID())->second;
 	itemStat.Leave();
 
-	if(PVEDamagePimp.count(IItem.PrefixID()))
+	if (PVEDamagePimp.count(IItem.PrefixID()))
 		IPlayer.UpdateBuff(BuffNames::PVEPimp, BuffNames::BuffTime, 0);
 
 	if (PVPDamagePimp.count(IItem.PrefixID()))

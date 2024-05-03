@@ -1214,6 +1214,7 @@ int __fastcall Tick(void *Player, void *edx)
 			}
 		}
 
+
 		if (NewcomerActive && !IPlayer.IsBuff(BuffNames::NewComer) && playerLvl <= NewcomerLevel){
 
 			IPlayer.Buff(BuffNames::NewComer, 86400, NewcomerValue);
@@ -1765,6 +1766,26 @@ int __fastcall Tick(void *Player, void *edx)
 				CancelBuff(IPlayer, playerBuffs, 397);
 				CancelBuff(IPlayer, playerBuffs, 396);
 				IPlayer.RemoveBuffIcon(0, 0, 9100, 1009);
+			}
+		}
+
+		if (playerBuffs.count(BuffNames::ItemsEffects))
+		{
+			int ItemXX = GetValue(playerBuffs, BuffNames::ItemsEffects);
+			int ItemIID = GetValue(playerBuffs, BuffNames::EffectsIID);
+
+			if (ItemIID) {
+				int Item = IPlayer.ItemPointerLock(ItemIID);
+
+				if (Item)
+				{
+					IItem Itemx((void*)Item);
+					int Timer = EquipEffects.find(ItemXX)->second.effectTime;
+					std::string effectName = EquipEffects.find(ItemXX)->second.Effect;
+
+					if (Timer && IPlayer.ScaniaTimer(Timer) && CItem::IsState(Item, 1))
+						IPlayer.AddFxToTarget(effectName.c_str(), 0, 0, 1);
+				}
 			}
 		}
 

@@ -126,6 +126,19 @@ int __cdecl MyUpdateProperty(int Player, int Type, int InOut, signed __int64 Exp
 			}
 		}
 
+		if (!IPlayer.GetProperty(PlayerProperty::Reborn))
+		{
+			int CurrentReborn = 1;
+			if (NonRebornsPenalty.count(CurrentReborn)) {
+
+				RbPenalty rb = NonRebornsPenalty.find(CurrentReborn)->second;
+				if (rb.rbPenalty)
+				{
+					Exp += (Exp * rb.rbPenalty) / 100;
+				}
+			}
+		}
+
 		if (!IPlayer.GetProperty(PlayerProperty::UnGap)) {
 			if (LevelGap.count(IPlayer.GetLevel()))
 				Exp = (Exp * LevelGap.find(IPlayer.GetLevel())->second) / 100;
@@ -1603,6 +1616,9 @@ void __cdecl SightGStateFix(void* Player, const char Type, const char* Format, i
 int __cdecl LoginAttemptsLimit(int Socket, char type, char format, char limit) {
 	if (limit == 2 || limit == 3)
 		limit = 2;
+
+	//if (limit >= MaxLoginAttemps)
+	//	limit = MaxLoginAttemps;
 
 	return CDBSocket::ProcessHtml(Socket, type, format, limit);
 }

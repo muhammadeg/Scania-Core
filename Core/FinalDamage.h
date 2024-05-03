@@ -176,6 +176,23 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 		if (CheckDamage && IPlayer.GetType() == 0 && ITarget.GetType() == 0 && IPlayer.IsBuff(25))
 			IPlayer.CancelBuff(25);
 
+		if (CheckDamage && IPlayer.GetType() == 0 && ITarget.GetType() == 0)
+		{
+			int ItemIID = IPlayer.GetBuffValue(BuffNames::WeaponUp);
+			int Item = IPlayer.ItemPointerLock(ItemIID);
+
+			if (Item){
+				IItem IItem((void*)Item);
+
+				if (IItem.Exists() && IItem.IsWeapon()){
+					if (PVEWeapon.count(IItem.CheckIndex()) && CItem::IsState((int)IItem.GetOffset(), 1)){
+						IPlayer.SystemMessage("You are not allowed to attack players using a PVE Weapon.", TEXTCOLOR_RED);
+						return 0;
+					}
+				}
+			}
+		}
+
 		if (CheckDamage && IPlayer.GetMap() != LawlessMap && IPlayer.GetType() == 0 && ITarget.GetType() == 0 && AssassinParty)
 		{
 			if (IPlayer.IsParty() && ITarget.IsParty() && (IPlayer.GetPartyID() == ITarget.GetPartyID()) && CChar::IsGState((int)IPlayer.Offset, 256))

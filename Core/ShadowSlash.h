@@ -42,7 +42,7 @@ void __fastcall ShadowSlash(IChar IPlayer, int pPacket, int pPos)
 
 						if (Object.IsValid() && IPlayer.IsValid() && IPlayer.GetOffset() != Object.GetOffset() && (*(int (__thiscall **)(int, int, DWORD))(*(DWORD *)IPlayer.GetOffset() + 176))((int)IPlayer.GetOffset(), (int)Object.GetOffset(), 0))
 						{
-							if ((!ShadowAOEPVE && !ShadowAOEPVP && Target.IsValid() && Target.GetX() <= max(IPlayer.GetX(), Object.GetX()) && Target.GetX() >= min(IPlayer.GetX(), Object.GetX()) && Target.GetY() <= max(IPlayer.GetY(), Object.GetY()) && Target.GetY() >= min(IPlayer.GetY(), Object.GetY())) || ShadowAOEPVE && ShadowAOEPVP)
+							if (((!ShadowAOEPVE || !ShadowAOEPVP) && Target.IsValid() && Target.GetX() <= max(IPlayer.GetX(), Object.GetX()) && Target.GetX() >= min(IPlayer.GetX(), Object.GetX()) && Target.GetY() <= max(IPlayer.GetY(), Object.GetY()) && Target.GetY() >= min(IPlayer.GetY(), Object.GetY())) || ShadowAOEPVE && ShadowAOEPVP)
 							{
 								Object.Buff(7, nSkillGrade, 0);
 								int nDmg = (IPlayer.GetAttack() * TSSMul) + (nSkillGrade * CTools::Rate(TSSMin,TSSMax));

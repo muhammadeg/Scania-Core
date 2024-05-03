@@ -154,6 +154,7 @@ void __fastcall StandardPutOn(int Item, void *edx, int Player)
 			return;
 		}
 	}
+
 	if (IPlayer.IsOnline() && isWings(IItem.CheckIndex())) {
 
 		if (IPlayer.IsBuff(BuffNames::StandardOn)){
