@@ -1205,44 +1205,6 @@ signed int __fastcall OrnamentChangePrefix(void *Item, void* _edx, int Player, i
 			return 0;
 		}
 
-		//if (TimeTalisman.count(NewPrefix))
-		//{
-		//	ConfigTimeTalisman t = TimeTalisman.find(NewPrefix)->second;
-
-		//	int TotalItems = t.items.size();
-		//	bool itemFound = false;
-		//	for (int i = 0; i < TotalItems; i++)
-		//	{
-		//		int Index = String2Int(t.items[i]);
-		//		if (IItem.CheckIndex() == Index)
-		//		{
-		//			if (!PetLifeCheck.count(IItem.GetIID()))
-		//			{
-		//				IPlayer.BoxMsg("Item has no time to extend.");
-		//				return 0;
-		//			}
-
-		//			int ExtendTime = t.time;
-		//			int RemainingTime = PetLifeCheck.findValue(IItem.GetIID()) - (int)time(0);
-		//			int TotalTime = ExtendTime + RemainingTime;
-		//			PetLifeCheck.replaceInsert(IItem.GetIID(), (int)time(0) + TotalTime);
-
-		//			CDBSocket::Write(89, "ddd", IPlayer.GetPID(), (int)time(0) + TotalTime, IItem.GetIID());
-		//			CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddd", 230, IItem.GetIID(), TotalTime);
-		//			*(DWORD*)((int)Item + 68) = GetTickCount() + (2000 * TotalTime);
-		//			*(DWORD*)((int)Item + 72) = 0;
-		//			itemFound = true;
-		//			IPlayer.SystemMessage("Time has successfully extended.", TEXTCOLOR_GREEN);
-
-		//			return 1;
-		//		}
-		//	}
-		//	if (!itemFound)
-		//	{
-		//		IPlayer.BoxMsg("Talisman can not be used on this item.");
-		//		return 0;
-		//	}
-		//}
 		AddPrefix = CItem::FindPrefix(NewPrefix);
 
 		if (!AddPrefix)

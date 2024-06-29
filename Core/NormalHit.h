@@ -40,7 +40,6 @@ int __fastcall NormalHit(void *Player, void *edx, int bType, int nTargetID)
 		if (Check > 500) return 0;
 	}
 
-
 	if (IPlayer.IsOnline() && IPlayer.GetType() == 0 && CChar::IsGState((int)IPlayer.GetOffset(),512) && IPlayer.IsBuff(327))
 		IPlayer.CancelBuff(327);
 

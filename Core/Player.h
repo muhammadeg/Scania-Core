@@ -717,6 +717,7 @@ void __fastcall MyGameStart(void *Player, void *edx)
 			if (IPlayer.IsOnline() && !IPlayer.GetAdmin() && maxAllowedSpeed)
 				IPlayer.CheckSpeed(maxAllowedSpeed);
 
+
 			// IP Restriction
 			if (HWIDRestrictions.count(IPlayer.GetPID()))
 			{
@@ -1214,6 +1215,8 @@ int __fastcall Tick(void *Player, void *edx)
 			}
 		}
 
+		if (IPlayer.IsBuff(82) && IPlayer.GetBuffRemain(82) <= 1)
+			IPlayer.CheckSpeed(maxAllowedSpeed);
 
 		if (NewcomerActive && !IPlayer.IsBuff(BuffNames::NewComer) && playerLvl <= NewcomerLevel){
 
@@ -1267,7 +1270,7 @@ int __fastcall Tick(void *Player, void *edx)
 				IPlayer.Teleport(IPlayer.GetMap(), IPlayer.GetX(), IPlayer.GetY());
 			}
 
-			if (CChar::IsGState((int)IPlayer.GetOffset(), 2)) {
+			if (IPlayer.isDead()) {
 				if (playerBuffs.count(BuffNames::RevivalCheck)) {
 					if (GetRemain(playerBuffs, BuffNames::RevivalCheck) <= 1) {
 						IPlayer.Teleport(IPlayer.GetMap(), LawlessSpawnX, LawlessSpawnY);
@@ -1286,9 +1289,9 @@ int __fastcall Tick(void *Player, void *edx)
 			}
 		}
 
-
+		//wtf;
 		//// Death Effect
-		//if (CChar::IsGState((int)IPlayer.GetOffset(), 2)) {
+		//if (IPlayer.isDead()) {
 		//	IPlayer.AddFxToTarget("davi_M630_71", 0, 0, 1);
 		//}
 
@@ -1415,7 +1418,7 @@ int __fastcall Tick(void *Player, void *edx)
 				IPlayer.SetRed();
 				if (GetPTSize(IPlayer.GetPartyID()) == pBattle.PartySize) {
 					IPlayer.Scenario3_3Score(TimeLeft, pBattle.RedScore, pBattle.BlueScore);
-					if (CChar::IsGState((int)IPlayer.GetOffset(), 2)) {
+					if (IPlayer.isDead()) {
 						if (playerBuffs.count(BuffNames::RevivalCheck)) {
 							int NScore = pBattle.BlueScore + 1;
 							IPlayer.Scenario3_3Score(TimeLeft, pBattle.RedScore, NScore);
@@ -1453,7 +1456,7 @@ int __fastcall Tick(void *Player, void *edx)
 				IPlayer.SetBlue();
 				if (GetPTSize(IPlayer.GetPartyID()) == pBattle.PartySize) {
 					IPlayer.Scenario3_3Score((pBattle.Time - GetTickCount()) / 1000, pBattle.RedScore, pBattle.BlueScore);
-					if (CChar::IsGState((int)IPlayer.GetOffset(), 2)) {
+					if (IPlayer.isDead()) {
 						if (playerBuffs.count(BuffNames::RevivalCheck)) {
 							int NScore = pBattle.RedScore + 1;
 							IPlayer.Scenario3_3Score((pBattle.Time - GetTickCount()) / 1000, NScore, pBattle.BlueScore);
@@ -1789,6 +1792,28 @@ int __fastcall Tick(void *Player, void *edx)
 			}
 		}
 
+		if (playerBuffs.count(BuffNames::WeaponsEffects))
+		{
+			int ItemXX = GetValue(playerBuffs, BuffNames::WeaponsEffects);
+			int ItemIID = GetValue(playerBuffs, BuffNames::WEffectIID);
+
+			if (ItemIID) {
+				int Item = IPlayer.ItemPointerLock(ItemIID);
+
+				if (Item)
+				{
+					IItem Itemx((void*)Item);
+					int Timer = EquipEffects.find(ItemXX)->second.effectTime;
+					std::string effectName = EquipEffects.find(ItemXX)->second.Effect;
+
+					if (Timer && IPlayer.ScaniaTimer(Timer) && CItem::IsState(Item, 1))
+						IPlayer.AddFxToTarget(effectName.c_str(), 0, 0, 1);
+
+					//	IPlayer.AddFxToBone(effectName.c_str(), 1);
+				}
+			}
+		}
+
 		if (CGuild::IsWarringPeriod() && CSMap::IsOnTile(*(void **)((int)IPlayer.Offset + 320), (int)IPlayer.Offset + 332, 1048576)) {
 			if (GetValue(playerBuffs, BuffNames::PetOwner)) {
 
@@ -1957,7 +1982,7 @@ int __fastcall Tick(void *Player, void *edx)
 			IPlayer.ScreenTime(Hunting::Time);
 		}
 
-		if ((GetTickCount() / 1000) % 3 == 0 && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && IPlayer.GetCurHp() < IPlayer.GetMaxHp() && !playerBuffs.count(3789)) {
+		if ((GetTickCount() / 1000) % 3 == 0 && !IPlayer.isDead() && IPlayer.GetCurHp() < IPlayer.GetMaxHp() && !playerBuffs.count(3789)) {
 			int Pet1 = GetValue(playerBuffs, BuffNames::PetOwner);
 			if (Pet1 && PetTime.count(Pet1)) {
 				ConfigPetTime pet = PetTime.find(Pet1)->second;
@@ -1980,14 +2005,14 @@ int __fastcall Tick(void *Player, void *edx)
 			}
 		}
 
-		if ((GetTickCount() / 1000) % 3 == 0 && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && playerBuffs.count(2126) && IPlayer.GetCurHp() < IPlayer.GetMaxHp() && !(playerBuffs.count(160) || playerBuffs.count(180) || playerBuffs.count(179) || playerBuffs.count(161) || playerBuffs.count(162) || playerBuffs.count(163) || playerBuffs.count(170) || playerBuffs.count(171) || playerBuffs.count(373) || playerBuffs.count(374) || playerBuffs.count(902) || playerBuffs.count(903) || playerBuffs.count(BuffNames::LMS)) && (int)*(DWORD**)0x004E0964 != 4) {
+		if ((GetTickCount() / 1000) % 3 == 0 && !IPlayer.isDead() && playerBuffs.count(2126) && IPlayer.GetCurHp() < IPlayer.GetMaxHp() && !(playerBuffs.count(160) || playerBuffs.count(180) || playerBuffs.count(179) || playerBuffs.count(161) || playerBuffs.count(162) || playerBuffs.count(163) || playerBuffs.count(170) || playerBuffs.count(171) || playerBuffs.count(373) || playerBuffs.count(374) || playerBuffs.count(902) || playerBuffs.count(903) || playerBuffs.count(BuffNames::LMS)) && (int)*(DWORD**)0x004E0964 != 4) {
 			if (!playerBuffs.count(987))
 				IPlayer.IncreaseHp(GetValue(playerBuffs, 2126));
 			else
 				CancelBuff(IPlayer, playerBuffs, 987);
 		}
 
-		if (CChar::IsGState((int)IPlayer.GetOffset(), 2) && (GetTickCount() / 1000) % 3 == 0 && playerBuffs.count(2127) && !(playerBuffs.count(160) || playerBuffs.count(180) || playerBuffs.count(179) || playerBuffs.count(161) || playerBuffs.count(162) || playerBuffs.count(163) || playerBuffs.count(170) || playerBuffs.count(171) || playerBuffs.count(373) || playerBuffs.count(374) || playerBuffs.count(902) || playerBuffs.count(903) || playerBuffs.count(BuffNames::LMS)) && (int)*(DWORD**)0x004E0964 != 4) {
+		if (IPlayer.isDead() && (GetTickCount() / 1000) % 3 == 0 && playerBuffs.count(2127) && !(playerBuffs.count(160) || playerBuffs.count(180) || playerBuffs.count(179) || playerBuffs.count(161) || playerBuffs.count(162) || playerBuffs.count(163) || playerBuffs.count(170) || playerBuffs.count(171) || playerBuffs.count(373) || playerBuffs.count(374) || playerBuffs.count(902) || playerBuffs.count(903) || playerBuffs.count(BuffNames::LMS)) && (int)*(DWORD**)0x004E0964 != 4) {
 			if (!playerBuffs.count(388))
 				IPlayer.Rb(6);
 			else
@@ -2090,7 +2115,7 @@ int __fastcall Tick(void *Player, void *edx)
 			IPlayer.DisableRiding();
 		}
 
-		if (CChar::IsGState((int)IPlayer.GetOffset(), 2) && playerBuffs.count(349))
+		if (IPlayer.isDead() && playerBuffs.count(349))
 			IPlayer.DisableRiding();
 
 		if (CSMap::IsOnTile(*(void **)((int)IPlayer.Offset + 320), (int)IPlayer.Offset + 332, 1048576) && playerBuffs.count(349))
@@ -2200,7 +2225,7 @@ int __fastcall Tick(void *Player, void *edx)
 			if (IPlayer.IsValid() && IPlayer.GetMap() != PLMap)
 				IPlayer.Teleport(PLMap, 308588 + CTools::Rate(-100, 100), 284483 + CTools::Rate(-100, 100));
 
-			if (CChar::IsGState((int)IPlayer.GetOffset(), 2))
+			if (IPlayer.isDead())
 			{
 				if (IPlayer.GetPID() == IPlayer.GetGID() && IPlayer.GetGID() == Protect32::GuildFirst && Protect32::Prayer == 1)
 				{
@@ -2248,7 +2273,7 @@ int __fastcall Tick(void *Player, void *edx)
 			if (IPlayer.IsValid() && IPlayer.GetMap() != PLMap)
 				IPlayer.Teleport(PLMap, 310264 + CTools::Rate(-100, 100), 284486 + CTools::Rate(-100, 100));
 
-			if (CChar::IsGState((int)IPlayer.GetOffset(), 2))
+			if (IPlayer.isDead())
 			{
 				if (IPlayer.GetPID() == IPlayer.GetGID() && IPlayer.GetGID() == Protect32::GuildSecond && Protect32::Prayer == 2)
 				{
@@ -2679,7 +2704,7 @@ int __fastcall Tick(void *Player, void *edx)
 			IPlayer.RemoveBuffIcon(0, 0, 2038, 224);
 		}
 
-		if (Hell::Active && CChar::IsGState((int)IPlayer.GetOffset(), 2) && playerBuffs.count(166))
+		if (Hell::Active && IPlayer.isDead() && playerBuffs.count(166))
 		{
 			if (Hell::Rebirth > 0)
 			{
@@ -2708,7 +2733,7 @@ int __fastcall Tick(void *Player, void *edx)
 
 		if (Hell::Active == true && IPlayer.GetMap() == HellMap && !playerBuffs.count(166))
 		{
-			if (CChar::IsGState((int)IPlayer.GetOffset(), 2))
+			if (IPlayer.isDead())
 				IPlayer.Revive();
 
 			Buff(IPlayer, playerBuffs, 167, HellCooldown, 0);
@@ -2723,7 +2748,7 @@ int __fastcall Tick(void *Player, void *edx)
 
 		if (Hell::Active && !IPlayer.IsParty() && playerBuffs.count(166))
 		{
-			if (CChar::IsGState((int)IPlayer.GetOffset(), 2))
+			if (IPlayer.isDead())
 				IPlayer.Revive();
 
 			CancelBuff(IPlayer, playerBuffs, 166);
@@ -2866,7 +2891,7 @@ int __fastcall Tick(void *Player, void *edx)
 
 		if ((GetTickCount() / 1000) % 3 == 0 && Hell::Active == false && (IPlayer.GetMap() == HellMap || playerBuffs.count(166)))
 		{
-			if (CChar::IsGState((int)IPlayer.GetOffset(), 2))
+			if (IPlayer.isDead())
 				IPlayer.Revive();
 
 			Buff(IPlayer, playerBuffs, 167, HellCooldown, 0);
@@ -2973,6 +2998,22 @@ int __fastcall Tick(void *Player, void *edx)
 		//	IPlayer.RemoveMinAttack(50);
 		//}
 
+		if (ReviveLvl && IPlayer.isDead() && playerLvl <= ReviveLvl){
+			if (IPlayer.IsBuff(BuffNames::RevivalCheck)) {
+				if (IPlayer.GetBuffRemain(BuffNames::RevivalCheck) <= 1) {
+					IPlayer.Revive();
+					IPlayer.Buff(24, 6, 40);
+					IPlayer.RemoveBuffIcon(0, 0, 703, 34);
+					CJBRefBuff(IPlayer.GetOffset(), ReviveBuff, ReviveSpeed);
+				}
+				else
+					IPlayer.SystemMessage("Reviving in " + Int2String(IPlayer.GetBuffRemain(BuffNames::RevivalCheck) - 1) + "...", TEXTCOLOR_DARKGREEN);
+			}
+			else {
+				IPlayer.Buff(BuffNames::RevivalCheck, ReviveCD, 0);
+			}
+		}
+
 		if (IPlayer.GetMap() == BFMap) {
 			POINT pt = *(POINT *)((int)Player + 324);
 			if (playerBuffs.count(160)) {
@@ -2992,7 +3033,7 @@ int __fastcall Tick(void *Player, void *edx)
 			if (!playerBuffs.count(104))
 				Buff(IPlayer, playerBuffs, 104, timeleft, 0);
 
-			if (CChar::IsGState((int)IPlayer.GetOffset(), 2))
+			if (IPlayer.isDead())
 				IPlayer.Rb(SEImmunityTime);
 
 			IPlayer.Scenario3_3Score(timeleft, GetValue(playerBuffs, BuffNames::SinEventPlayers) / SEPtsPerPlayer, GetValue(playerBuffs, BuffNames::SinEventMobs) / SEPtsPerMob);
@@ -3462,32 +3503,32 @@ int __fastcall Tick(void *Player, void *edx)
 			}
 		}
 
-		if (Scenario::Active && CChar::IsGState((int)IPlayer.GetOffset(), 2) && (GetTickCount() / 1000) % 5 == 0 && playerBuffs.count(162))
+		if (Scenario::Active && IPlayer.isDead() && (GetTickCount() / 1000) % 5 == 0 && playerBuffs.count(162))
 		{
 			IPlayer.Teleport(ScenarioMap, 284840, 351088);
 			IPlayer.Revive();
 		}
 
-		if (Scenario::Active && CChar::IsGState((int)IPlayer.GetOffset(), 2) && (GetTickCount() / 1000) % 5 == 0 && playerBuffs.count(163))
+		if (Scenario::Active && IPlayer.isDead() && (GetTickCount() / 1000) % 5 == 0 && playerBuffs.count(163))
 		{
 			IPlayer.Teleport(ScenarioMap, 288802, 350986);
 			IPlayer.Revive();
 		}
 
-		if (Battlefield::Active && CChar::IsGState((int)IPlayer.GetOffset(), 2) && playerBuffs.count(160))
+		if (Battlefield::Active && IPlayer.isDead() && playerBuffs.count(160))
 		{
 			Battlefield::BlueScore += 1;
 			IPlayer.Teleport(BFMap, (Battlefield::GoodVsEvil ? BFTeleRedXG : BFTeleRedX) + CTools::Rate(-BFRange, BFRange), (Battlefield::GoodVsEvil ? BFTeleRedYG : BFTeleRedY) + CTools::Rate(-BFRange, BFRange), (Battlefield::GoodVsEvil ? BFTeleRedZG : BFTeleRedZ));
 			if (BattlefieldBuffs)
-				CJBRefBuff(Player);
+				CJBRefBuff(Player, BattlefieldBuffs, BattlefieldSpeed);
 		}
 
-		if (Battlefield::Active && CChar::IsGState((int)IPlayer.GetOffset(), 2) && playerBuffs.count(161))
+		if (Battlefield::Active && IPlayer.isDead() && playerBuffs.count(161))
 		{
 			Battlefield::RedScore += 1;
 			IPlayer.Teleport(BFMap, (Battlefield::GoodVsEvil ? BFTeleBlueXG : BFTeleBlueX) + CTools::Rate(-BFRange, BFRange), (Battlefield::GoodVsEvil ? BFTeleBlueYG : BFTeleBlueY) + CTools::Rate(-BFRange, BFRange), (Battlefield::GoodVsEvil ? BFTeleBlueZG : BFTeleBlueZ));
 			if (BattlefieldBuffs)
-				CJBRefBuff(Player);
+				CJBRefBuff(Player, BattlefieldBuffs, BattlefieldSpeed);
 		}
 
 		if (CaptureFlag::Active && CaptureFlag::PlayerID == (int)Player) {
@@ -3499,7 +3540,7 @@ int __fastcall Tick(void *Player, void *edx)
 			}
 		}
 
-		if (CaptureFlag::Active && CChar::IsGState((int)IPlayer.GetOffset(), 2) && CaptureFlag::PlayerID == (int)Player) {
+		if (CaptureFlag::Active && IPlayer.isDead() && CaptureFlag::PlayerID == (int)Player) {
 			CaptureFlag::PlayerID = 0;
 			CaptureFlag::CurrentCapturers = 0;
 			CaptureFlag::MonsterOffset = 0;
@@ -3508,7 +3549,7 @@ int __fastcall Tick(void *Player, void *edx)
 			Summon((int)IPlayer.GetOffset(), CaptureMap, CPSummonX, CPSummonY, CaptureMonster, 1, 0, 0, 0, 0);
 		}
 
-		if (CaptureFlag::Active && CChar::IsGState((int)IPlayer.GetOffset(), 2) && playerBuffs.count(180))
+		if (CaptureFlag::Active && IPlayer.isDead() && playerBuffs.count(180))
 		{
 			if (CaptureFlag::PlayerID != (int)Player)
 				CaptureFlag::BlueScore += 1;
@@ -3516,7 +3557,7 @@ int __fastcall Tick(void *Player, void *edx)
 		}
 
 
-		if (CaptureFlag::Active && CChar::IsGState((int)IPlayer.GetOffset(), 2) && playerBuffs.count(179))
+		if (CaptureFlag::Active && IPlayer.isDead() && playerBuffs.count(179))
 		{
 			if (CaptureFlag::PlayerID != (int)Player)
 				CaptureFlag::RedScore += 1;
@@ -4133,7 +4174,7 @@ int __fastcall Tick(void *Player, void *edx)
 				{
 					ISkill xSkill((void*)pSkill);
 
-					if (xSkill.GetGrade() == 1)
+					if (xSkill.GetGrade() == 1 || BSOFSkyMax == 1)
 						IPlayer.SetBuffIcon(-2, -1, 1767, 220);
 					else
 						IPlayer.SetBuffIcon(-2, -1, 3559 + xSkill.GetGrade(), 398 + xSkill.GetGrade());
@@ -4145,7 +4186,7 @@ int __fastcall Tick(void *Player, void *edx)
 				{
 					ISkill xSkill((void*)pSkill);
 
-					if (xSkill.GetGrade() == 1)
+					if (xSkill.GetGrade() == 1 || BSOFSkyMax == 1)
 						IPlayer.SetBuffIcon(-2, -1, 1767, 220);
 					else
 						IPlayer.SetBuffIcon(-2, -1, 3559 + xSkill.GetGrade(), 398 + xSkill.GetGrade());
@@ -4161,7 +4202,7 @@ int __fastcall Tick(void *Player, void *edx)
 			{
 				ISkill xSkill((void*)pSkill);
 
-				if (xSkill.GetGrade() == 1)
+				if (xSkill.GetGrade() == 1 || BSOFSkyMax == 1)
 					IPlayer.SetBuffIcon(-2, -1, 1998, 221);
 				else
 					IPlayer.SetBuffIcon(-2, -1, 3565 + xSkill.GetGrade(), 404 + xSkill.GetGrade());
@@ -4552,7 +4593,7 @@ int __fastcall Tick(void *Player, void *edx)
 						IPlayer.CloseScreenTime();
 						IPlayer.SaveBuff(BuffNames::InstanceCD, questEvent.Cooldown);
 					}
-					else if (CChar::IsGState((int)IPlayer.GetOffset(), 2))
+					else if (IPlayer.isDead())
 						IPlayer.Rb(3);
 					else if (!questEvent.Maps.count(Map))
 						IPlayer.Teleport(0, questEvent.TX, questEvent.TY);

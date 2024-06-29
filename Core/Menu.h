@@ -158,7 +158,7 @@ LRESULT CALLBACK Proc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
 		}
 
 		case KXMENU_ReloadInitNPC: {
-									   isReloadingNPC = 1;
+									   InitNPCReload();
 									   break;
 		}
 

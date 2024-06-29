@@ -139,7 +139,13 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 				}
 			}
 		}
-		
+		//
+		//if (IPlayer.GetClass() != 1 && CheckDamage > (IPlayer.GetMaxPhyAttack() * 3))
+		//	return 0;
+
+		//if (IPlayer.GetClass() == 1 && CheckDamage > (IPlayer.GetMaxMagAttack() * 3))
+		//	return 0;
+
 		if (IPlayer.GetType() == 0 && !IPlayer.GetAdmin()) {
 			int range = 0;
 

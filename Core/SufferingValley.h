@@ -183,7 +183,7 @@ void SVPlayerTick(IChar IPlayer) {
 				if ((SufferingValley::Time - (int)time(0)) <= SVTime)
 					CPlayer::Write(IPlayer.GetOffset(), 0xFE, "dbddd", 168, 7, SufferingValley::Time - (int)time(0), SufferingValley::RedScore, SufferingValley::BlueScore);
 
-				if (CChar::IsGState((int)IPlayer.GetOffset(), 2)) {
+				if (IPlayer.isDead()) {
 					if (IPlayer.IsBuff(BuffNames::RevivalCheck)) {
 						int TimeLeft = IPlayer.GetBuffRemain(BuffNames::RevivalCheck);
 						if (TimeLeft <= 1) {

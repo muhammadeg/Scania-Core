@@ -1,6 +1,5 @@
 #define g_MonsterCount *(DWORD*)0x4E1810;
-#define g_NPCCount *(DWORD*)0x4E1A98
-
+#define g_NPCCount (DWORD*)0x4E1A98;
 struct mobReload {
 int Index;
 int Map;
@@ -142,9 +141,8 @@ void InitMonsterReload() {
 	reloadingM = 0;
 }
 
-
 void InitNPCReload() {
-	auto npcCount = g_NPCCount;
+	auto npcCount = *g_NPCCount;
 	auto npccurindex = 1;
 	do {
 		int NPC = CNPC::FindNPC((char)npccurindex);
@@ -154,7 +152,7 @@ void InitNPCReload() {
 			CIOObject::Release((void*)NPC);
 			CPlayer::WriteAll(57, "d", *(DWORD *)(NPC + 28));
 		}
-		npcCount = g_NPCCount;
+		npcCount = *g_NPCCount;
 		npccurindex++;
 	} while (npcCount > 0);
 	CNPC::InitClose();
@@ -184,10 +182,8 @@ void InitNPCReload() {
 	LoadConfig("Config\\InitNPC.txt");
 	CNPC::Start();
 	GetNPCList();
-	isReloadingNPC = 1;
+	ShowNPCList();
 }
-
-
 
 //InitItem.txt//
 void InitItemReload() {

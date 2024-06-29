@@ -1,3 +1,4 @@
+#define g_MaxUser *(DWORD*)0x4E2138
 
 std::string getUptime() {
 	time_t diff = difftime(time(NULL), uptimestart);
@@ -233,7 +234,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 		return;
 	}
 
-	if (IPlayer.IsOnline() && IPlayer.IsPVPValid() && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && !CChar::IsGState((int)IPlayer.GetOffset(), 256) && sscanf(command, "/arena %d", &portArena) == 1) {
+	if (IPlayer.IsOnline() && IPlayer.IsPVPValid() && !IPlayer.isDead() && !IPlayer.isAssassin() && sscanf(command, "/arena %d", &portArena) == 1) {
 		if (portArena > 0 && portArena < 9)
 			IPlayer.Teleport(0, PartyPortBack[0][portArena], PartyPortBack[1][portArena]);
 		else
@@ -377,11 +378,11 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 			return;
 		}
 
-		if (CChar::IsGState((int)IPlayer.GetOffset(), 256)) {
+		if (IPlayer.isAssassin()) {
 			IPlayer.SystemMessage("You can not move to channel system as assassin.", TEXTCOLOR_RED);
 			return;
 		}
-		if (CChar::IsGState((int)IPlayer.GetOffset(), 2)) {
+		if (IPlayer.isDead()) {
 			IPlayer.SystemMessage("You must use rebirth before switching channels.", TEXTCOLOR_RED);
 			return;
 		}
@@ -429,7 +430,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 		return;
 	}
 
-	if (IPlayer.IsOnline() && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && !CChar::IsGState((int)IPlayer.GetOffset(), 256) && cmd.substr(0, 8) == "/skinoff") {
+	if (IPlayer.IsOnline() && !IPlayer.isDead() && !IPlayer.isAssassin() && cmd.substr(0, 8) == "/skinoff") {
 		IPlayer.setSkinView(IPlayer.IsHide() ? -2 : 1);
 		IPlayer.SystemMessage("Skins appearance has been turned off.", TEXTCOLOR_RED);
 
@@ -449,7 +450,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 		return;
 	}
 
-	//if (IPlayer.IsOnline() && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && !CChar::IsGState((int)IPlayer.GetOffset(), 256) && cmd.substr(0, 6) == "/peton") {
+	//if (IPlayer.IsOnline() && !IPlayer.isDead() && !IPlayer.isAssassin() && cmd.substr(0, 6) == "/peton") {
 
 	//	IPlayer.SystemMessage("Pet appearance has been turned on.", TEXTCOLOR_GREEN);
 	//	IPlayer.CancelBuff(1626);
@@ -458,7 +459,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 	//	return;
 	//}
 
-	//if (IPlayer.IsOnline() && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && !CChar::IsGState((int)IPlayer.GetOffset(), 256) && cmd.substr(0, 7) == "/petoff") {
+	//if (IPlayer.IsOnline() && !IPlayer.isDead() && !IPlayer.isAssassin() && cmd.substr(0, 7) == "/petoff") {
 
 	//	IPlayer.SystemMessage("Pet appearance has been turned off.", TEXTCOLOR_GREEN);
 	//	IPlayer.Buff(1626, BuffNames::BuffTime, 1);
@@ -467,7 +468,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 	//	return;
 	//}
 
-	if (IPlayer.IsOnline() && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && !CChar::IsGState((int)IPlayer.GetOffset(), 256) && cmd.substr(0, 7) == "/skinon") {
+	if (IPlayer.IsOnline() && !IPlayer.isDead() && !IPlayer.isAssassin() && cmd.substr(0, 7) == "/skinon") {
 		IPlayer.setSkinView(IPlayer.IsHide() ? -1 : 0);
 		IPlayer.SystemMessage("Skins appearance has been turned on.", TEXTCOLOR_GREEN);
 
@@ -507,6 +508,47 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 	if (IPlayer.IsOnline() && cmd.substr(0, 10) == "/absorboff") {
 		IPlayer.SystemMessage("Absorb messages have been turned off.", TEXTCOLOR_GREEN);
 		CPlayer::Write((void*)Player, 0xFE, "dd", 183, 1);
+		return;
+	}
+
+	if (IPlayer.IsOnline() && cmd.substr(0, 7) == "/maskon") {
+		int Price = Maskon * 1000;
+		int FindItem = CPlayer::FindItem(IPlayer.GetOffset(), 31, Price);
+
+		if (FindItem && !IPlayer.IsBuff(104)){
+			IPlayer.Buff(104, 1800, 0);
+			CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, Price);
+		}
+		else if (IPlayer.IsBuff(104))
+			IPlayer.SystemMessage("Assassin mode is already enabled.", TEXTCOLOR_RED);
+		else
+			IPlayer.SystemMessage(Int2String(Maskon) + "K Zamogeons is needed to use this feature.", TEXTCOLOR_RED);
+
+
+		return;
+	}
+
+	if (IPlayer.IsOnline() && cmd.substr(0, 8) == "/maskoff") {
+
+		int lastHitTime = (GetTickCount() - *(DWORD *)((int)Player + 1464));
+		if (lastHitTime < 60000) {
+			IPlayer.SystemMessage("After " + Int2String((60000 - lastHitTime) / 1000) + " sec from the last battle, you may wear off mask.", TEXTCOLOR_RED);
+			return;
+		}
+
+		int Price = Maskoff * 1000;
+		int FindItem = CPlayer::FindItem(IPlayer.GetOffset(), 31, Price);
+
+		if (FindItem && IPlayer.IsBuff(104)){
+			IPlayer.CancelBuff(104);
+			CPlayer::RemoveItem(IPlayer.GetOffset(), 9, 31, Price);
+		}
+		else if (!IPlayer.IsBuff(104))
+			IPlayer.SystemMessage("Assassin mode is not enabled.", TEXTCOLOR_RED);
+		else
+			IPlayer.SystemMessage(Int2String(Maskoff) + "K Zamogeons is needed to use this feature.", TEXTCOLOR_RED);
+
+
 		return;
 	}
 
@@ -788,30 +830,26 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 
 	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 8 && sscanf(command, "/test %d", &k) == 1) {
 		//int playerSpeed = IPlayer.GetSpeed();
-		//int NPC = CNPC::FindNPC(k);
-		//CPlayer::Write(IPlayer.GetOffset(), 52, "dwbdddwId", *(DWORD *)(NPC + 28), k, *(DWORD *)(NPC + 452), IPlayer.GetX(), IPlayer.GetY(), IPlayer.GetZ(), *(DWORD *)(NPC + 348), (unsigned __int64)*(DWORD *)(NPC + 280), 0);
 
-		//		AddHouseReward(k);
 		//	CItem::CreateDropItem(k, kk);
-		//IPlayer.SendGStateEx(IPlayer.GetGStateEx() + k);
-		//	CChar::WriteInSight(IPlayer.GetOffset(), 148, "dI", IPlayer.GetID(), IPlayer.GetGStateEx() + k);
+/*
+		Interface<ITools> Tools;
 
-		//	(*(int(__cdecl **)(int, signed int, signed int, DWORD, DWORD))(*(DWORD *)(int)IPlayer.GetOffset() + 92))((int)IPlayer.GetOffset(), 28, 1, k, kk);
+		auto maxUser = g_MaxUser;
 
-	//	CPlayer::Write((void*)Player, 0xFF, "ds", 234, "You may use /leavechaos to leave the Chaos zone.");
-	//	Spawn(24, 1, IPlayer.GetX(), IPlayer.GetY(), IPlayer.GetMap());
-//		IPlayer.SystemMessage("Speed: " + Int2String(playerSpeed), TEXTCOLOR_GREEN);
-		//int Item = CPlayer::FindItem((void*)Player, 47, 1);
-		//if (Item){
-		//	IPlayer.SystemMessage("1: " + Int2String(*(DWORD *)((int)Item + k)), TEXTCOLOR_GREEN);
-		//	IPlayer.SystemMessage("2: " + Int2String(*(DWORD *)(*(DWORD *)((int)Item + 40) + k)), TEXTCOLOR_GREEN);
+		int maxUsersII = MSocket::GetMaxConnectionsCount();
+		IPlayer.SystemMessage(Int2String(maxUser), TEXTCOLOR_GREEN);
 
-		////	*(DWORD *)(*(DWORD *)((int)Item + 40) + 116);
-		//}
+		IPlayer.SystemMessage(Int2String(maxUsersII), TEXTCOLOR_RED);
+*/
+		IPlayer.SystemMessage("Current Speed: " + Int2String(IPlayer.GetSpeed()), TEXTCOLOR_RED);
 
-		IPlayer.SystemMessage(Int2String(GetTickCount()), TEXTCOLOR_GREEN);
+		CPlayer::Write(IPlayer.GetOffset(), 0xFE, "ddd", 186, IPlayer.GetID(), k);
+
 		return;
 	}
+
+
 	if (IPlayer.IsOnline() && cmd.substr(0, 11) == "/leavechaos")
 	{
 		if (IPlayer.GetMap() == 16)
@@ -879,13 +917,13 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 	}
 
 	if (IPlayer.IsOnline() && CPlayer::FindItem(IPlayer.GetOffset(), 9372, 1)) {
-		if (IPlayer.IsPVPValid() && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && !CChar::IsGState((int)IPlayer.GetOffset(), 256) && cmd.substr(0, 5) == "/fort")
+		if (IPlayer.IsPVPValid() && !IPlayer.isDead() && !IPlayer.isAssassin() && cmd.substr(0, 5) == "/fort")
 		{
 			IPlayer.Teleport(0, 267542, 242672);
 			return;
 		}
 
-		if (IPlayer.IsPVPValid() && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && !CChar::IsGState((int)IPlayer.GetOffset(), 256) && cmd.substr(0, 5) == "/naro")
+		if (IPlayer.IsPVPValid() && !IPlayer.isDead() && !IPlayer.isAssassin() && cmd.substr(0, 5) == "/naro")
 		{
 			IPlayer.Teleport(0, 258042, 259367);
 			return;
@@ -912,37 +950,37 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 	}
 
 	if (IPlayer.GetAdmin() >= 3) {
-		if (IPlayer.IsOnline() && IPlayer.IsPVPValid() && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && !CChar::IsGState((int)IPlayer.GetOffset(), 256) && cmd.substr(0, 5) == "/naro")
+		if (IPlayer.IsOnline() && IPlayer.IsPVPValid() && !IPlayer.isDead() && !IPlayer.isAssassin() && cmd.substr(0, 5) == "/naro")
 		{
 			IPlayer.Teleport(0, 258042, 259367);
 			return;
 		}
 
-		if (IPlayer.IsOnline() && IPlayer.IsPVPValid() && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && !CChar::IsGState((int)IPlayer.GetOffset(), 256) && cmd.substr(0, 6) == "/cargo")
+		if (IPlayer.IsOnline() && IPlayer.IsPVPValid() && !IPlayer.isDead() && !IPlayer.isAssassin() && cmd.substr(0, 6) == "/cargo")
 		{
 			IPlayer.Teleport(0, 265073, 262622);
 			return;
 		}
 
-		if (IPlayer.IsOnline() && IPlayer.IsPVPValid() && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && !CChar::IsGState((int)IPlayer.GetOffset(), 256) && cmd.substr(0, 5) == "/fort")
+		if (IPlayer.IsOnline() && IPlayer.IsPVPValid() && !IPlayer.isDead() && !IPlayer.isAssassin() && cmd.substr(0, 5) == "/fort")
 		{
 			IPlayer.Teleport(0, 267542, 242672);
 			return;
 		}
 
-		if (IPlayer.IsOnline() && IPlayer.IsPVPValid() && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && !CChar::IsGState((int)IPlayer.GetOffset(), 256) && cmd.substr(0, 5) == "/mine")
+		if (IPlayer.IsOnline() && IPlayer.IsPVPValid() && !IPlayer.isDead() && !IPlayer.isAssassin() && cmd.substr(0, 5) == "/mine")
 		{
 			IPlayer.Teleport(0, 266056, 284973);
 			return;
 		}
 
-		if (IPlayer.IsOnline() && IPlayer.IsPVPValid() && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && !CChar::IsGState((int)IPlayer.GetOffset(), 256) && cmd.substr(0, 5) == "/bird")
+		if (IPlayer.IsOnline() && IPlayer.IsPVPValid() && !IPlayer.isDead() && !IPlayer.isAssassin() && cmd.substr(0, 5) == "/bird")
 		{
 			IPlayer.Teleport(0, 255764, 288738);
 			return;
 		}
 
-		if (IPlayer.IsOnline() && IPlayer.IsPVPValid() && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && !CChar::IsGState((int)IPlayer.GetOffset(), 256) && cmd.substr(0, 4) == "/cop")
+		if (IPlayer.IsOnline() && IPlayer.IsPVPValid() && !IPlayer.isDead() && !IPlayer.isAssassin() && cmd.substr(0, 4) == "/cop")
 		{
 			IPlayer.Teleport(0, 232922, 294650);
 			return;
@@ -1538,7 +1576,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 			*(DWORD**)0x004E0964 = (DWORD*)4;
 			WarBegin(SetCwTime);
 			CPlayer::WriteAll(0xFF, "dsd", 247, thisServerName + " Castle War has started.", 5);
-			ToNoticeWebhook(thisServerName + "Castle War has started.");
+			ToNoticeWebhook(thisServerName + " Castle War has started.");
 		}
 
 		return;
@@ -1695,7 +1733,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 3 && cmd.substr(0, 10) == "/reloadnpc")
 	{
 		try{
-			isReloadingNPC = 1;
+			InitNPCReload();
 			IPlayer.SystemMessage("InitNPC.txt has been reloaded.", TEXTCOLOR_GREEN);
 			return;
 		}
@@ -2280,6 +2318,18 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 			F10Registration.clear();
 			F10::Active = false;
 			CPlayer::WriteAll(0xFF, "dsd", 247, "F10 ended.", 2);
+
+			CIOCriticalSection::Enter((void*)0x4e2078);
+			CIOCriticalSection::Enter((void*)0x4e2098);
+			CLink::MoveTo((void*)0x4e200c, (int)0x4e2004);
+			CIOCriticalSection::Leave((void*)0x4e2098);
+			for (DWORD i = *(DWORD*)0x4E2004; i != 0x4E2004; i = *(DWORD*)i)
+			{
+				IChar Online((void*)(i - 428));
+				if (Online.IsOnline() && Online.IsBuff(165) && Online.GetMap() == 21)
+					Online.CloseScreenTime();
+			}
+			CIOCriticalSection::Leave((void*)0x4e2078);
 			return;
 		}
 	}

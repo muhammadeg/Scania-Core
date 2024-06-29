@@ -390,7 +390,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			int z = 0;
 			CPacket::Read((char*)pPacket, (char*)pPos, "bd", &type, &z);
 
-			if ((type >= 0 && type <= 2) && !z && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && !CChar::IsGState((int)IPlayer.GetOffset(), 256)) {
+			if ((type >= 0 && type <= 2) && !z && !IPlayer.isDead() && !IPlayer.isAssassin()) {
 				IPlayer.Teleport(IPlayer.GetMap(), IPlayer.GetX(), IPlayer.GetY());
 				return;
 			}
@@ -1366,6 +1366,15 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 					InterlockedIncrement(&auctionItemsNum);
 					CPlayer::Write((void*)Player, 0xFE, "db", 206, 1);
+
+					int messageType = 2;
+					RewardMessage reward;
+					std::string msg = "[" + std::string(IPlayer.GetName()) + "] has just listed a new item in the Auction House!";
+					reward.message = msg;
+					reward.textColor = NOTICECOLOR_YELLOW;
+					reward.messageType = messageType;
+					ToNoticeWebhook(msg);
+					PlayerRewardNotice.push_back(reward);
 					return;
 				}
 			}
@@ -3299,7 +3308,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 		if ((packet == 94 || packet == C2S_MOVE) && !ScaniaLicense)
 			return;
 
-		if (IPlayer.GetBuffValue(BuffNames::AFKTime) && IPlayer.GetMap() == BFMap && packet == 20)
+		if (IPlayer.GetMap() == BFMap && IPlayer.GetBuffValue(BuffNames::AFKTime) && packet == 20)
 			IPlayer.CancelBuff(BuffNames::AFKTime);
 
 		//if (packet == 94)
@@ -3962,7 +3971,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				CDBSocket::Write(125, "ddd", 5, IPlayer.GetPID(), QuestID);
 			}
 
-			if (MissionQuests.count(QuestID)){
+			if (MAbandonCheck.count(QuestID)){
 				IPlayer.SystemMessage("You can not abandon Auto Missions quest.", TEXTCOLOR_RED);
 				return;
 			}
@@ -7768,7 +7777,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				CPacket::Read((char*)Check, (char*)pPos, "dddd", &SkillID, &compare4, &compare3, &Class);
 				int nextExecutionTime = IPlayer.GetBuffValue(BuffNames::CDProtect + SkillID);
 
-				if (Class == 2 && SkillID == 16)
+				if ((Class == 2 && SkillID == 16) || (Class == 0 && SkillID == 38))
 					return;
 
 				if (IPlayer.GetClass() == Class && GetTickCount() >= nextExecutionTime)

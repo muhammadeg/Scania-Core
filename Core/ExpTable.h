@@ -481,7 +481,6 @@ int __fastcall MonsterAllotEXP(int Monster, void *edx, int a2, int TankerID, int
 
 		}
 
-
 		if (IPlayer.IsParty())
 		{
 			int PTLvl = 0;
@@ -2206,6 +2205,8 @@ void ExpMultiplier()
 	int GCoinTime = GoldenCoinT * 1000;
 	int DMGLevelCheck = 24;
 	signed int ResetLevelMax = 127;
+
+
 	/*
 	std::vector<TeleCoordinates> Tele_Scrolls = CreateTeleScrolls();
 	const uintptr_t* p_tele = reinterpret_cast<const uintptr_t*>(Tele_Scrolls.data());

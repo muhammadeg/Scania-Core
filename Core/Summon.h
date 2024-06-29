@@ -1098,12 +1098,7 @@ int __fastcall SummonDie(int Monster, void *edx, int TankerID, int Arg1, int Arg
 	}
 
 	if (IMonster.GetMobIndex() == 572)
-	{
-		F10::Ilyer = Summon(0, 21, 117332, 36840, 573, 1, 0, 15000, 3616000, 0);
 		F10::KillCount += 1;
-		CPlayer::WriteInMap(21, 0xFF, "dsd", 247, "Aghhhh! You thought it's over? HAHAHA! It's my turn now.", 1);
-
-	}
 
 	if (IMonster.GetMobIndex() == 566)
 		F10::KillCount += 1;
@@ -1320,6 +1315,12 @@ int __fastcall SummonTick(void *Monster, void *edx)
 						if (Dunamic.IsValid())
 							Undefined::MonsterPath(*(void **)(F10::Dunamic + 320), F10::Dunamic, 0, -1, 0, 1);
 					}
+				}
+
+				if (F10::KillCount == 2 && !F10::Ilyer){
+
+					F10::Ilyer = Summon(0, 21, 117332, 36840, 573, 1, 0, 15000, 3616000, 0);
+					CPlayer::WriteInMap(21, 0xFF, "dsd", 247, "Aghhhh! You thought it's over? HAHAHA! It's my turn now.", 1);
 				}
 
 				if (Check == 3646)

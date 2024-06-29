@@ -169,46 +169,6 @@ signed int __fastcall DefenseChangePrefix(void *Item, void* edx, int Player, int
 			return 1;
 		}
 
-		//if (TimeTalisman.count(NewPrefix))
-		//{
-		//	ConfigTimeTalisman t = TimeTalisman.find(NewPrefix)->second;
-
-		//	int TotalItems = t.items.size();
-		//	bool itemFound = false;
-		//	for (int i = 0; i < TotalItems; i++)
-		//	{
-		//		int Index = String2Int(t.items[i]);
-		//		if (IItem.CheckIndex() == Index)
-		//		{
-		//			if (!PetLifeCheck.count(IItem.GetIID()))
-		//			{
-		//				IPlayer.BoxMsg("Item has no time to extend.");
-		//				return 0;
-		//			}
-
-		//			int ExtendTime = t.time;
-		//			int RemainingTime = PetLifeCheck.findValue(IItem.GetIID()) - (int)time(0);
-		//			int TotalTime = ExtendTime + RemainingTime;
-
-		//			PetLifeCheck.replaceInsert(IItem.GetIID(), (int)time(0) + TotalTime);
-
-		//			CDBSocket::Write(89, "ddd", IPlayer.GetPID(), (int)time(0) + TotalTime, IItem.GetIID());
-		//			CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddd", 230, IItem.GetIID(), TotalTime);
-		//			*(DWORD*)((int)Item + 68) = GetTickCount() + (2000 * TotalTime);
-		//			*(DWORD*)((int)Item + 72) = 0;
-		//			itemFound = true;
-		//			IPlayer.SystemMessage("Time has successfully extended.", TEXTCOLOR_GREEN);
-
-		//			return 1;
-		//		}
-		//	}
-		//	if (!itemFound)
-		//	{
-		//		IPlayer.BoxMsg("Talisman can not be used on this item.");
-		//		return 0;
-		//	}
-		//}
-
 		if (NewPrefix == BofConfigRead)
 		{
 			if (CurrentInfo & 2097152)
@@ -227,18 +187,20 @@ signed int __fastcall DefenseChangePrefix(void *Item, void* edx, int Player, int
 				CDBSocket::Write(21, "dddbb", IItem.GetIID(), IPlayer.GetID(), 2097152 + CurrentInfo, 8, 7);
 				CItem::SendItemInfo(IItem.GetOffset(), (int)IPlayer.GetOffset(), 92);
 				IPlayer.BoxMsg("Equipping the Bead of Fire has succeeded.");
-				std::string msg = (std::string)IPlayer.GetName();
-				msg = msg + " has enchanted with Bead of Fire";
-				int textColor = NOTICECOLOR_WHITE; // Default color
-				int messageType = 2; // Default messageType
+				if (BofNotices){
+					std::string msg = (std::string)IPlayer.GetName();
+					msg = msg + " has enchanted with Bead of Fire";
+					int textColor = NOTICECOLOR_WHITE; // Default color
+					int messageType = 2; // Default messageType
 
-				RewardMessage reward;
-				reward.message = msg;
-				reward.textColor = textColor;
-				reward.messageType = messageType;
+					RewardMessage reward;
+					reward.message = msg;
+					reward.textColor = textColor;
+					reward.messageType = messageType;
 
-				PlayerRewardNotice.push_back(reward);
-				ToNoticeWebhook(msg.c_str());
+					PlayerRewardNotice.push_back(reward);
+					ToNoticeWebhook(msg.c_str());
+				}
 				return 1;
 			}
 		}

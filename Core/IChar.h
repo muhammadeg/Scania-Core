@@ -2,6 +2,7 @@
 #include <windows.h>
 #include "Sha256.h"
 #include <map>
+extern int maxAllowedSpeed;
 
 class IChar
 {
@@ -284,6 +285,8 @@ public:
 	bool IsRiding9();
 	bool IChar::StatsCheck(BYTE *StatTable,BYTE *_StatTable,int GetStr, int GetHth, int GetWis, int GetInt, int GetAgi);
 	bool IsCorrect();
+	bool isDead();
+	bool isAssassin();
 	int MaxInventorySize();
 	int hasFirstPet();
 	int hasSecondPet();
@@ -349,7 +352,6 @@ public:
 	int InsertDeletedItem(int IID);
 	void SetLevel(int Level);
 	void ResetLevel(int Level);
-
 	void ChangeName(std::string NewName);
 	void SetName(std::string NewName);
 

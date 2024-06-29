@@ -7,11 +7,6 @@ struct PlayerBuffs
 	int Remain;
 }; 
 
-struct PlayerRewardNotices
-{
-	std::string message;
-};
-
 int GetLevelDiff();
 bool isPlayerInPVP(void* Player);
 void PortToStart(void* Player);
@@ -552,7 +547,16 @@ namespace CDBSocket
 	static LPVOID (__cdecl *MemoryMalloc)(size_t size) = (LPVOID (__cdecl*)(size_t))0x00401000;
 	static int (__cdecl *Write)(unsigned char Type, const char* Format, ...) = (int (__cdecl*)(unsigned char, const char*, ...))0x0040DC80;
 	static int (__thiscall *Process)(void *Socket, const char* Data) = (int (__thiscall*)(void*, const char*))0x00494930;
-	static int (__cdecl *ProcessHtml)(int a1, char a2, char a3, ...) = (int (__cdecl*)(int,char,char,...))0x004948C0;
+	static int (__cdecl *ProcessHtml)(int a1, char a2, char a3, ...) = (int (__cdecl*)(int,char,char,...))0x004948C0; //Write
+}
+
+namespace MSocket // main socket packet
+{
+	static auto AcceptConnection = (int(__thiscall*)(void* in_addr))0x00494450;
+	static auto OnClose = (int(__thiscall*)(DWORD pSocket))0x00494700;
+	static auto GetCurConnectionsCount = (int(__cdecl*)())0x0047E700;
+	static auto GetMaxConnectionsCount = (int(__cdecl*)())0x0047E710;
+
 }
 
 namespace CParty

@@ -21,6 +21,11 @@ void __fastcall WeaponApplySpec(int Item, void *edx, int Player)
 		int check = IPlayer.GetMaxPhyAttack() - (atk + (*(DWORD*)(Item + 100) * (2 * *(DWORD*)(Item + 100) + 7) / 9));
 		IPlayer.UpdateBuff(BuffNames::ItemMixCheck + CustWeapon, BuffNames::BuffTime, check);
 
+		if (EquipEffects.count(IItem.CheckIndex())){
+			IPlayer.UpdateBuff(BuffNames::WEffectIID, BuffNames::BuffTime, IItem.GetIID());
+			IPlayer.UpdateBuff(BuffNames::WeaponsEffects, BuffNames::BuffTime, IItem.CheckIndex());
+		}
+
 		int ItemStat = 0;
 		itemStat.Enter();
 		if (GetItemStat.count(IItem.GetIID()))
@@ -766,8 +771,19 @@ void __fastcall WeaponPutOff(void *Item, void *edx, int Player)
 
 		IPlayer.CancelBuff(BuffNames::WeaponWear);
 		IPlayer.CancelBuff(BuffNames::WeaponUp);
-
 	}
+
+	if (EquipEffects.count(IItem.CheckIndex())){
+		int ItemXX = IPlayer.GetBuffValue(BuffNames::WeaponsEffects);
+		int ItemIID = IPlayer.GetBuffValue(BuffNames::WEffectIID);
+		if (ItemIID) {
+			std::string effectName = EquipEffects.find(ItemXX)->second.Effect;
+			IPlayer.RemoveFxBone(effectName.c_str());
+		}
+		IPlayer.CancelBuff(BuffNames::WeaponsEffects);
+		IPlayer.CancelBuff(BuffNames::WEffectIID);
+	}
+
 	int check = atk - (IPlayer.GetMaxPhyAttack() + (*(DWORD*)((int)Item + 100) * (2 * *(DWORD*)((int)Item + 100) + 7) / 9));
 
 	if (IPlayer.GetBuffValue(BuffNames::ItemMixCheck + CustWeapon)) {

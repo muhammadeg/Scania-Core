@@ -1641,7 +1641,7 @@ signed int __fastcall WeaponChangePrefix(void *Item, void *edx, int Player, int 
 					CItem::SendItemInfo((void*)ImpItem, (int)IPlayer.GetOffset(), 92);
 					CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddddd", 242, 10, 0, 128, 255);
 
-					if (!msg.empty() && IPlayer.IsValid()) {
+					if (!msg.empty() && IPlayer.IsValid() && ImperialNotices) {
 						int textColor = NOTICECOLOR_YELLOW; // Default color
 						int messageType = 2; // Default messageType
 						RewardMessage reward;

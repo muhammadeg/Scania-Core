@@ -9,7 +9,7 @@ void ProcessNPCList(bool showNPC) {
 		IChar INPC((void*)NPC);
 		if (NPC) {
 			if (showNPC)
-				CPlayer::WriteAll(52, "dwbdddwId", *(DWORD *)(NPC + 28), *(DWORD*)((int)NPC + 448), *(DWORD *)(NPC + 452), INPC.GetX(), INPC.GetY(), INPC.GetZ(), *(DWORD *)(NPC + 348), (unsigned __int64)*(DWORD *)(NPC + 280), 0);
+				CPlayer::WriteAll(52, "dwbdddwId", *(DWORD *)(NPC + 28), *(DWORD*)(NPC + 448), *(DWORD *)(NPC + 452), INPC.GetX(), INPC.GetY(), INPC.GetZ(), *(DWORD *)(NPC + 348), (unsigned __int64)*(DWORD *)(NPC + 280), 0);
 			else
 				CPlayer::WriteAll(57, "d", *(DWORD *)(NPC + 28));
 		}

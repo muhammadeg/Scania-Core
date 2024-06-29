@@ -41,6 +41,8 @@ void __fastcall ExecuteSkill(void *pSkill, void* edx, signed int SkillID, int pP
 	int SkillPointerCheck = IPlayer.GetSkillPointer(SkillID);
 	DWORD CdTime = 0, CooldownCheck = 0, DelayTime = 0;
 
+	if (IPlayer.GetClass() == 2 && SkillID == 31)
+		IPlayer.CheckSpeed(maxAllowedSpeed + 200);
 
 	IPlayer.Buff(313, 3, 0);
 
@@ -70,26 +72,23 @@ void __fastcall ExecuteSkill(void *pSkill, void* edx, signed int SkillID, int pP
 		int nextExecutionTime = IPlayer.GetBuffValue(BuffNames::CDProtect + SkillID);
 		int nextPrepareTime = IPlayer.GetBuffValue(BuffNames::DelayProtect + SkillID);
 
-		if (Compare3 > 0)
-		{
-			if (GetTickCount() < nextExecutionTime + (Compare3 - 100)) {
+		if (IPlayer.GetClass() != 3 && !IPlayer.IsBuff(329)){
+			if (Compare3 && GetTickCount() < nextExecutionTime + (Compare3 - 100)) {
 				IPlayer.SystemMessage("invalid skill cooldown time..", TEXTCOLOR_RED);
+				return;
+			}
+
+			if (GetTickCount() < nextExecutionTime) {
+				IPlayer.SystemMessage("invalid skill cooldown time.", TEXTCOLOR_RED);
+				return;
+
+			}
+			else if (GetTickCount() < nextPrepareTime) {
+				IPlayer.SystemMessage("invalid skill casting time.", TEXTCOLOR_RED);
 				return;
 
 			}
 		}
-
-		if (GetTickCount() < nextExecutionTime) {
-			IPlayer.SystemMessage("invalid skill cooldown time.", TEXTCOLOR_RED);
-			return;
-
-		}
-		else if (GetTickCount() < nextPrepareTime) {
-			IPlayer.SystemMessage("invalid skill casting time.", TEXTCOLOR_RED);
-			return;
-
-		}
-
 		IPlayer.UpdateBuff(BuffNames::CDProtect + SkillID, BuffNames::BuffTime, (GetTickCount() + Compare4) - 140);
 	}
 
@@ -162,7 +161,7 @@ void __fastcall ExecuteSkill(void *pSkill, void* edx, signed int SkillID, int pP
 					CHLOG.close();
 				}
 
-			//	CConsole::Red("Invalid Skill range detected (PID : %d SkillID : %d Class : %d)", IPlayer.GetPID(), SkillID, IPlayer.GetClass());
+				//	CConsole::Red("Invalid Skill range detected (PID : %d SkillID : %d Class : %d)", IPlayer.GetPID(), SkillID, IPlayer.GetClass());
 				if (RangeKick)
 					IPlayer.Kick();
 

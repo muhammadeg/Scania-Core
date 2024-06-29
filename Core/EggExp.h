@@ -36,7 +36,6 @@ int __fastcall UpdateExp(int PlayerEgg ,void *edx, int Player, int Check)
 	int Pet2 = IPlayer.GetBuffValue(BuffNames::PetOwner2);
 	int Pet3 = IPlayer.GetBuffValue(BuffNames::PetOwner3);
 
-
 	if (Pet1)
 	{
 		int ExtraExp = PetTime.find(Pet1)->second.Egg;
@@ -75,7 +74,6 @@ int __fastcall UpdateExp(int PlayerEgg ,void *edx, int Player, int Check)
 	{
 		if (*(DWORD *)(PlayerEgg + 100) == 179)
 		{
-
 			if (IPlayer.IsBuff(119) && IPlayer.IsBuff(120))
 				*(DWORD *)(PlayerEgg + 96) += (ExpTime + ((ExpTime * 4) / 10)) - 10;
 			else if (IPlayer.IsBuff(120))

@@ -182,7 +182,7 @@ void TBPlayerTick(IChar IPlayer) {
 				if (IPlayer.GetMap() != TBMap)
 					PortTBPlayer(IPlayer, Type);
 
-				if (CChar::IsGState((int)IPlayer.GetOffset(), 2)) {
+				if (IPlayer.isDead()) {
 					if (IPlayer.IsBuff(BuffNames::RevivalCheck)) {
 						int TimeLeft = IPlayer.GetBuffRemain(BuffNames::RevivalCheck);
 						if (TimeLeft <= 1) {

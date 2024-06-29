@@ -29,6 +29,10 @@ int __fastcall CancelAllBuffs(void* Monster, void* edx) {
 		UpdateAutoMission((void*)IMonster.GetMobTanker(), (void*)Monster);
 		UpdateDailyDuty((void*)IMonster.GetMobTanker(), (void*)Monster);
 
+		//if (EXPMultipliers.count(IMonster.GetMobIndex())){
+
+		//}
+
 		if (MQuest.count(IMonster.GetMobIndex())) {
 			int SpawnedMobQuest = IMonster.GetBuffValue(BuffNames::SpawnedMobQuest);
 			if (SpawnedMobQuest && SummonedQuest.count(SpawnedMobQuest)) {

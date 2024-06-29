@@ -1137,83 +1137,83 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 	}
 
 
-	/*
-		if (IPlayer.IsOnline() && Item.CheckIndex() == 2366)
-		{
+
+	if (IPlayer.IsOnline() && Item.CheckIndex() == 2366)
+	{
 		if (!IPlayer.IsBuff(272)) {
-		IPlayer.Buff(272, 1800, 0);
-		IPlayer.Buff(261, 1810, 0);
-		IPlayer.SetBuffIcon(1800000, 0, 3645, 430);
-		IPlayer.IncreaseMaxHp(1450);
-		(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+			IPlayer.Buff(272, 1800, 0);
+			IPlayer.Buff(261, 1810, 0);
+			IPlayer.SetBuffIcon(1800000, 0, 3645, 430);
+			IPlayer.IncreaseMaxHp(1450);
+			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
 		}
 		return Item.GetAmount();
-		}
+	}
 
-		if (IPlayer.IsOnline() && Item.CheckIndex() == 2367)
-		{
+	if (IPlayer.IsOnline() && Item.CheckIndex() == 2367)
+	{
 		if (!IPlayer.IsBuff(262)) {
-		IPlayer.Buff(262, 1800, 0);
-		IPlayer.Buff(263, 1810, 0);
-		IPlayer.SetBuffIcon(1800000, 0, 3646, 431);
-		IPlayer.IncreaseMaxMp(900);
-		(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+			IPlayer.Buff(262, 1800, 0);
+			IPlayer.Buff(263, 1810, 0);
+			IPlayer.SetBuffIcon(1800000, 0, 3646, 431);
+			IPlayer.IncreaseMaxMp(900);
+			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
 		}
 		return Item.GetAmount();
-		}
+	}
 
-		if (IPlayer.IsOnline() && Item.CheckIndex() == 2076)
-		{
+	if (IPlayer.IsOnline() && Item.CheckIndex() == 2076)
+	{
 		if (!IPlayer.IsBuff(264)) {
-		IPlayer.Buff(264, 3600, 0);
-		IPlayer.Buff(265, 3610, 0);
-		IPlayer.SetBuffIcon(3600000, 0, 3601, 415);
-		IPlayer.IncreaseMaxHp(500);
-		IPlayer.IncreaseMaxMp(500);
-		(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+			IPlayer.Buff(264, 3600, 0);
+			IPlayer.Buff(265, 3610, 0);
+			IPlayer.SetBuffIcon(3600000, 0, 3601, 415);
+			IPlayer.IncreaseMaxHp(500);
+			IPlayer.IncreaseMaxMp(500);
+			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
 		}
 		return Item.GetAmount();
-		}
+	}
 
-		if (IPlayer.IsOnline() && Item.CheckIndex() == 2079)
-		{
+	if (IPlayer.IsOnline() && Item.CheckIndex() == 2079)
+	{
 		if (!IPlayer.IsBuff(266)) {
-		IPlayer.Buff(266, 3600, 0);
-		IPlayer.Buff(267, 3610, 0);
-		IPlayer.SetBuffIcon(3600000, 0, 3604, 418);
-		IPlayer.AddMaxAttack(75);
-		IPlayer.AddMinAttack(50);
-		IPlayer.AddEva(10);
-		(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+			IPlayer.Buff(266, 3600, 0);
+			IPlayer.Buff(267, 3610, 0);
+			IPlayer.SetBuffIcon(3600000, 0, 3604, 418);
+			IPlayer.AddMaxAttack(75);
+			IPlayer.AddMinAttack(50);
+			IPlayer.AddEva(10);
+			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
 		}
 		return Item.GetAmount();
-		}
+	}
 
-		if (IPlayer.IsOnline() && Item.CheckIndex() == 2078)
-		{
+	if (IPlayer.IsOnline() && Item.CheckIndex() == 2078)
+	{
 		if (!IPlayer.IsBuff(268)) {
-		IPlayer.Buff(268, 3600, 0);
-		IPlayer.Buff(269, 3610, 0);
-		IPlayer.SetBuffIcon(3600000, 0, 3603, 417);
-		IPlayer.AddMaxAttack(100);
-		(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+			IPlayer.Buff(268, 3600, 0);
+			IPlayer.Buff(269, 3610, 0);
+			IPlayer.SetBuffIcon(3600000, 0, 3603, 417);
+			IPlayer.AddMaxAttack(100);
+			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
 		}
 		return Item.GetAmount();
-		}
+	}
 
-		if (IPlayer.IsOnline() && Item.CheckIndex() == 2077)
-		{
+	if (IPlayer.IsOnline() && Item.CheckIndex() == 2077)
+	{
 		if (!IPlayer.IsBuff(270)) {
-		IPlayer.Buff(270, 3600, 0);
-		IPlayer.Buff(271, 3610, 0);
-		IPlayer.SetBuffIcon(3600000, 0, 3602, 416);
-		IPlayer.AddMinAttack(75);
-		IPlayer.AddOTP(10);
-		(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+			IPlayer.Buff(270, 3600, 0);
+			IPlayer.Buff(271, 3610, 0);
+			IPlayer.SetBuffIcon(3600000, 0, 3602, 416);
+			IPlayer.AddMinAttack(75);
+			IPlayer.AddOTP(10);
+			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
 		}
 		return Item.GetAmount();
-		}
-		*/
+	}
+
 	if (IPlayer.IsOnline() && EmokCerts.count(Item.CheckIndex()))
 	{
 		int BRemain = IPlayer.GetBuffRemain(156);
@@ -1393,15 +1393,15 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 		return Item.GetAmount();
 	}
 
-	if (IPlayer.IsOnline() && TimeTalisman.count(Item.CheckIndex()))
+	if (IPlayer.IsOnline() && NormalPetTalisman.count(Item.CheckIndex()))
 	{
-		ConfigTimeTalisman t = TimeTalisman.find(Item.CheckIndex())->second;
+		ConfigTimeTalisman t = NormalPetTalisman.find(Item.CheckIndex())->second;
 
 		bool itemFound = false;
 
-		if (IPlayer.GetBuffValue(BuffNames::PetOwner3)) {
+		if (IPlayer.GetBuffValue(BuffNames::PetOwner)) {
 
-			int PetItem = IPlayer.GetBuffValue(BuffNames::PetIID3);
+			int PetItem = IPlayer.GetBuffValue(BuffNames::PetIID);
 
 			if (!PetLifeCheck.count(PetItem))
 			{
@@ -1435,7 +1435,141 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 
 		if (!itemFound)
 		{
-			IPlayer.BoxMsg("Please equip Limited Pet before using extension.");
+			IPlayer.BoxMsg("Please equip Normal Pet before using extension.");
+			return Item.GetAmount();
+		}
+
+		(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+		return Item.GetAmount();
+	}
+
+	if (IPlayer.IsOnline() && MonsterPetTalisman.count(Item.CheckIndex()))
+	{
+		ConfigTimeTalisman t = MonsterPetTalisman.find(Item.CheckIndex())->second;
+
+		bool itemFound = false;
+
+		if (IPlayer.GetBuffValue(BuffNames::PetOwner2)) {
+
+			int PetItem = IPlayer.GetBuffValue(BuffNames::PetIID2);
+
+			if (!PetLifeCheck.count(PetItem))
+			{
+				IPlayer.BoxMsg("Pet has no time to extend.");
+				return Item.GetAmount();
+			}
+
+			if (PetItem) {
+				int ItemP = IPlayer.ItemPointerLock(PetItem);
+
+				if (ItemP)
+				{
+					IItem Itemx((void*)ItemP);
+
+					if (CItem::IsState(ItemP, 1)){
+						int ExtendTime = t.time;
+						int RemainingTime = PetLifeCheck.findValue(Itemx.GetIID()) - (int)time(0);
+						int TotalTime = ExtendTime + RemainingTime;
+						PetLifeCheck.replaceInsert(Itemx.GetIID(), (int)time(0) + TotalTime);
+
+						CDBSocket::Write(89, "ddd", IPlayer.GetPID(), (int)time(0) + TotalTime, Itemx.GetIID());
+						CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddd", 230, Itemx.GetIID(), TotalTime);
+						*(DWORD*)((int)Itemx.GetOffset() + 68) = GetTickCount() + (2000 * TotalTime);
+						*(DWORD*)((int)Itemx.GetOffset() + 72) = 0;
+						itemFound = true;
+						IPlayer.SystemMessage("Time has successfully extended.", TEXTCOLOR_GREEN);
+					}
+				}
+			}
+		}
+
+		if (!itemFound)
+		{
+			IPlayer.BoxMsg("Please equip Monster Pet before using extension.");
+			return Item.GetAmount();
+		}
+
+		(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+		return Item.GetAmount();
+	}
+
+	if (IPlayer.IsOnline() && CostumeTalisman.count(Item.CheckIndex()))
+	{
+		ConfigTimeTalisman t = CostumeTalisman.find(Item.CheckIndex())->second;
+		bool itemFound = false;
+
+		if (IPlayer.GetBuffValue(BuffNames::SuitsUsing)) {
+
+			int CostumeItemIndex = IPlayer.GetBuffValue(BuffNames::SuitsUsing);
+			int CostumeItem = CPlayer::FindItem(IPlayer.GetOffset(), CostumeItemIndex, 1);
+			IItem Costumex((void*)CostumeItem);
+
+			if (CostumeItem && CItem::IsState(CostumeItem, 1)){
+				if (!PetLifeCheck.count(Costumex.GetIID()))
+				{
+					IPlayer.BoxMsg("Costume Suit has no time to extend.");
+					return Item.GetAmount();
+				}
+
+				int ExtendTime = t.time;
+				int RemainingTime = PetLifeCheck.findValue(Costumex.GetIID()) - (int)time(0);
+				int TotalTime = ExtendTime + RemainingTime;
+				PetLifeCheck.replaceInsert(Costumex.GetIID(), (int)time(0) + TotalTime);
+
+				CDBSocket::Write(89, "ddd", IPlayer.GetPID(), (int)time(0) + TotalTime, Costumex.GetIID());
+				CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddd", 230, Costumex.GetIID(), TotalTime);
+				*(DWORD*)((int)Costumex.GetOffset() + 68) = GetTickCount() + (2000 * TotalTime);
+				*(DWORD*)((int)Costumex.GetOffset() + 72) = 0;
+				itemFound = true;
+				IPlayer.SystemMessage("Time has successfully extended.", TEXTCOLOR_GREEN);
+			}
+		}
+
+		if (!itemFound)
+		{
+			IPlayer.BoxMsg("Please equip Costume Suit before using extension.");
+			return Item.GetAmount();
+		}
+
+		(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+		return Item.GetAmount();
+	}
+
+	if (IPlayer.IsOnline() && SkinTalisman.count(Item.CheckIndex()))
+	{
+		ConfigTimeTalisman t = SkinTalisman.find(Item.CheckIndex())->second;
+		bool itemFound = false;
+
+		if (IPlayer.GetBuffValue(BuffNames::custWeap)) {
+
+			int CostumeItemIndex = IPlayer.GetBuffValue(BuffNames::custWeap);
+			int CostumeItem = CPlayer::FindItem(IPlayer.GetOffset(), CostumeItemIndex, 1);
+			IItem Costumex((void*)CostumeItem);
+
+			if (CostumeItem && CItem::IsState(CostumeItem, 1)){
+				if (!PetLifeCheck.count(Costumex.GetIID()))
+				{
+					IPlayer.BoxMsg("Costume Skin has no time to extend.");
+					return Item.GetAmount();
+				}
+
+				int ExtendTime = t.time;
+				int RemainingTime = PetLifeCheck.findValue(Costumex.GetIID()) - (int)time(0);
+				int TotalTime = ExtendTime + RemainingTime;
+				PetLifeCheck.replaceInsert(Costumex.GetIID(), (int)time(0) + TotalTime);
+
+				CDBSocket::Write(89, "ddd", IPlayer.GetPID(), (int)time(0) + TotalTime, Costumex.GetIID());
+				CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddd", 230, Costumex.GetIID(), TotalTime);
+				*(DWORD*)((int)Costumex.GetOffset() + 68) = GetTickCount() + (2000 * TotalTime);
+				*(DWORD*)((int)Costumex.GetOffset() + 72) = 0;
+				itemFound = true;
+				IPlayer.SystemMessage("Time has successfully extended.", TEXTCOLOR_GREEN);
+			}
+		}
+
+		if (!itemFound)
+		{
+			IPlayer.BoxMsg("Please equip Costume Skin before using extension.");
 			return Item.GetAmount();
 		}
 

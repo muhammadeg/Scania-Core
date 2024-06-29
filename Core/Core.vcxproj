@@ -44,7 +44,7 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
     <OutDir>..\Release</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -69,6 +69,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;CORE_EXPORTS;CURL_STATICLIB;SQLITE_THREADSAFE=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -79,33 +81,20 @@
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <GenerateMapFile>true</GenerateMapFile>
-      <MapFileName>..\Release\Core.map</MapFileName>
-      <MapExports>true</MapExports>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <GenerateMapFile>false</GenerateMapFile>
+      <MapFileName>
+      </MapFileName>
+      <MapExports>false</MapExports>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AmplificationOfBlood.h" />
-    <ClInclude Include="AnkleAmputate.h" />
-    <ClInclude Include="ArmorBreaker.h" />
+    <ClInclude Include="Archer.h" />
     <ClInclude Include="ArmorPut.h" />
-    <ClInclude Include="ArrowExplosion.h" />
-    <ClInclude Include="ArrowRain.h" />
-    <ClInclude Include="ArrowsOfTheMaster.h" />
-    <ClInclude Include="Assault.h" />
     <ClInclude Include="AutoLearn.h" />
     <ClInclude Include="base64.h" />
     <ClInclude Include="Behead.h" />
-    <ClInclude Include="Blessing.h" />
-    <ClInclude Include="BlessingOfAgility.h" />
-    <ClInclude Include="BlessingOfCriticalHit.h" />
-    <ClInclude Include="BlessingOfHealth.h" />
-    <ClInclude Include="BlessingOfIntelligence.h" />
-    <ClInclude Include="BlessingOfStrength.h" />
-    <ClInclude Include="BloodSuction.h" />
-    <ClInclude Include="Bombing.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="BuyItemEx.h" />
     <ClInclude Include="Calculations.h" />
@@ -117,137 +106,76 @@
     <ClInclude Include="CDBProcess.h" />
     <ClInclude Include="Channel.h" />
     <ClInclude Include="Cleaner.h" />
-    <ClInclude Include="Collapse.h" />
-    <ClInclude Include="CombativeSpirit.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="ConcurrentMap.h" />
-    <ClInclude Include="Confusion.h" />
     <ClInclude Include="ContinuesSkill.h" />
-    <ClInclude Include="CounterDamage.h" />
+    <ClInclude Include="CProtection.h" />
     <ClInclude Include="CreateBuff.h" />
-    <ClInclude Include="CriticalDiffusion.h" />
     <ClInclude Include="CriticalLock.h" />
     <ClInclude Include="CriticalSection.h" />
-    <ClInclude Include="CriticalStrike.h" />
     <ClInclude Include="CutDownExp.h" />
+    <ClInclude Include="Declarations.h" />
     <ClInclude Include="DefenseChangePrefix.h" />
-    <ClInclude Include="DefenseImprovement.h" />
-    <ClInclude Include="DestroyingArmor.h" />
-    <ClInclude Include="DirectoryReader.h" />
     <ClInclude Include="dirent.h" />
-    <ClInclude Include="Doggebi.h" />
-    <ClInclude Include="DrainBlood.h" />
     <ClInclude Include="DropItem.h" />
-    <ClInclude Include="DualShadow.h" />
     <ClInclude Include="Duel.h" />
     <ClInclude Include="EagleStat.h" />
+    <ClInclude Include="Egg.h" />
     <ClInclude Include="EggExp.h" />
     <ClInclude Include="EggSkill.h" />
-    <ClInclude Include="EggThunderbolt.h" />
-    <ClInclude Include="Entangling.h" />
-    <ClInclude Include="ExecutiveDirector.h" />
-    <ClInclude Include="ExplodingSpirit.h" />
     <ClInclude Include="Exports.h" />
     <ClInclude Include="ExpTable.h" />
-    <ClInclude Include="FatalWound.h" />
-    <ClInclude Include="FinalBlow.h" />
     <ClInclude Include="FinalDamage.h" />
-    <ClInclude Include="Fireball.h" />
-    <ClInclude Include="FlameInjection.h" />
     <ClInclude Include="Functions.h" />
-    <ClInclude Include="Gangshin4th.h" />
     <ClInclude Include="GetBuff.h" />
-    <ClInclude Include="GhostFlash.h" />
-    <ClInclude Include="GhostKnife.h" />
-    <ClInclude Include="GhostWindow.h" />
-    <ClInclude Include="Guild.h" />
     <ClInclude Include="Hardware.h" />
-    <ClInclude Include="Hiding.h" />
-    <ClInclude Include="HighClassHiding.h" />
     <ClInclude Include="IBuff.h" />
-    <ClInclude Include="IceArrow.h" />
     <ClInclude Include="IChar.h" />
-    <ClInclude Include="Icicle.h" />
     <ClInclude Include="IItem.h" />
-    <ClInclude Include="Incapacitation.h" />
     <ClInclude Include="Interface.h" />
     <ClInclude Include="IQuest.h" />
     <ClInclude Include="ISkill.h" />
     <ClInclude Include="ItemFixes.h" />
     <ClInclude Include="ItemType.h" />
     <ClInclude Include="ItemUse.h" />
-    <ClInclude Include="JeungjangKing.h" />
-    <ClInclude Include="JeungjangKingOfTaein.h" />
-    <ClInclude Include="JigukKing.h" />
-    <ClInclude Include="JigukKingOfTaein.h" />
+    <ClInclude Include="Knight.h" />
     <ClInclude Include="Lawless.h" />
     <ClInclude Include="LevelUp.h" />
-    <ClInclude Include="LifeAbsorption.h" />
-    <ClInclude Include="LightningArrow.h" />
-    <ClInclude Include="LightningSlash.h" />
     <ClInclude Include="Lisans.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="Lock.h" />
-    <ClInclude Include="MagicalExplosion.h" />
+    <ClInclude Include="Mage.h" />
     <ClInclude Include="MapData.h" />
-    <ClInclude Include="MassiveFire.h" />
     <ClInclude Include="MD5.h" />
     <ClInclude Include="Memory.h" />
-    <ClInclude Include="MentalBreakdown.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Mix.h" />
     <ClInclude Include="MonsterBlob.h" />
-    <ClInclude Include="MudRoom.h" />
     <ClInclude Include="MyFunctions.h" />
     <ClInclude Include="NormalHit.h" />
     <ClInclude Include="NPC.h" />
-    <ClInclude Include="OneHitStrike.h" />
     <ClInclude Include="OnLoadPlayer.h" />
     <ClInclude Include="Ornament.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="PasswordDecode.h" />
-    <ClInclude Include="PerfectDefense.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="PowerfulWideningWound.h" />
     <ClInclude Include="Process.h" />
     <ClInclude Include="ProcessMsg.h" />
-    <ClInclude Include="ProvocationOfBlow.h" />
-    <ClInclude Include="Punishment.h" />
     <ClInclude Include="Quest.h" />
     <ClInclude Include="ReadConfig.h" />
-    <ClInclude Include="RefiningWeapon.h" />
     <ClInclude Include="RefreshBuff.h" />
     <ClInclude Include="Registration.h" />
-    <ClInclude Include="ReleasingTheEnergy.h" />
     <ClInclude Include="Reload.h" />
-    <ClInclude Include="RemoteLisans.h" />
     <ClInclude Include="ResetContinueSkill.h" />
-    <ClInclude Include="Revival.h" />
-    <ClInclude Include="RevolveAttack.h" />
-    <ClInclude Include="RisingKing4th.h" />
-    <ClInclude Include="Rupture.h" />
     <ClInclude Include="SaveAllProperty.h" />
     <ClInclude Include="SendMail.h" />
     <ClInclude Include="Sha256.h" />
-    <ClInclude Include="ShadowSlash.h" />
+    <ClInclude Include="Shaman.h" />
     <ClInclude Include="SkillCalculation.h" />
-    <ClInclude Include="ShinRhoe.h" />
-    <ClInclude Include="ShoutOfDefense.h" />
-    <ClInclude Include="ShoutOfFightingSpirit.h" />
-    <ClInclude Include="SixSouls.h" />
     <ClInclude Include="Skill.h" />
     <ClInclude Include="SkillCheck.h" />
     <ClInclude Include="SkillPointer.h" />
     <ClInclude Include="SkillUpgradeCheck.h" />
-    <ClInclude Include="SoulBlow.h" />
-    <ClInclude Include="SoulShield.h" />
-    <ClInclude Include="SpearOfPain.h" />
-    <ClInclude Include="SpeedUp.h" />
-    <ClInclude Include="SpinAttack.h" />
-    <ClInclude Include="SpinBlade.h" />
-    <ClInclude Include="SpinSlash.h" />
-    <ClInclude Include="SpiritOfTheArrows.h" />
-    <ClInclude Include="SpiritWave.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="StandardPut.h" />
     <ClInclude Include="Start.h" />
@@ -255,37 +183,19 @@
     <ClInclude Include="StoneOfBirth.h" />
     <ClInclude Include="StoneOfChance.h" />
     <ClInclude Include="Storage.h" />
-    <ClInclude Include="Strangle.h" />
-    <ClInclude Include="StrikeOfGod.h" />
-    <ClInclude Include="Stun.h" />
     <ClInclude Include="SufferingValley.h" />
-    <ClInclude Include="SuicidalBlow.h" />
     <ClInclude Include="Summon.h" />
-    <ClInclude Include="SwordDance.h" />
     <ClInclude Include="TargetFind.h" />
-    <ClInclude Include="TheBoomOfEarth.h" />
-    <ClInclude Include="TherapeuticTouch.h" />
-    <ClInclude Include="TheSoulsPenance.h" />
-    <ClInclude Include="TheWaveOfEarth.h" />
-    <ClInclude Include="Thunderbolt.h" />
+    <ClInclude Include="Thief.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Tools.h" />
     <ClInclude Include="Trade.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="TriangularBattle.h" />
-    <ClInclude Include="TwinBladeStrike.h" />
-    <ClInclude Include="VirulentArrow.h" />
-    <ClInclude Include="VitalStrike.h" />
     <ClInclude Include="WalkOnTheAir.h" />
-    <ClInclude Include="Wave.h" />
-    <ClInclude Include="WaveOfEmperor.h" />
     <ClInclude Include="WeaponChangePrefix.h" />
     <ClInclude Include="WeaponPut.h" />
-    <ClInclude Include="WhirlwindFeather.h" />
-    <ClInclude Include="WrathOfHeaven.h" />
-    <ClInclude Include="XEATools.h" />
-    <ClInclude Include="ZilPoong.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
@@ -311,6 +221,7 @@
     <ClCompile Include="IQuest.cpp" />
     <ClCompile Include="ISkill.cpp" />
     <ClCompile Include="Memory.cpp" />
+    <ClCompile Include="ReadConfig.cpp" />
     <ClCompile Include="sha256.cpp" />
     <ClCompile Include="shell.c" />
     <ClCompile Include="sqlite3.c" />

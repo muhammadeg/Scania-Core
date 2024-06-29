@@ -127,18 +127,21 @@ bool LearnBlessingSonOfSky(IChar IPlayer, void* SkillPointer, bool Item) {
 			ISkill xSkill((void*)pSkill);
 			int CheckGrade = 0;
 
-			if (IPlayer.GetLevel() >= 100)
+			if (IPlayer.GetLevel() >= 100 && (!BSOFSkyMax || BSOFSkyMax >= 7))
 				CheckGrade = 7;
-			else if (IPlayer.GetLevel() >= 95)
+			else if (IPlayer.GetLevel() >= 95 && (!BSOFSkyMax || BSOFSkyMax >= 6))
 				CheckGrade = 6;
-			else if (IPlayer.GetLevel() >= 90)
+			else if (IPlayer.GetLevel() >= 90 && (!BSOFSkyMax || BSOFSkyMax >= 5))
 				CheckGrade = 5;
-			else if (IPlayer.GetLevel() >= 85)
+			else if (IPlayer.GetLevel() >= 85 && (!BSOFSkyMax || BSOFSkyMax >= 4))
 				CheckGrade = 4;
-			else if (IPlayer.GetLevel() >= 80)
+			else if (IPlayer.GetLevel() >= 80 && (!BSOFSkyMax || BSOFSkyMax >= 3))
 				CheckGrade = 3;
-			else if (IPlayer.GetLevel() >= 75)
+			else if (IPlayer.GetLevel() >= 75 && (!BSOFSkyMax || BSOFSkyMax >= 2))
 				CheckGrade = 2;
+
+			if (BSOFSkyMax == 1)
+				CheckGrade = BSOFSkyMax;
 
 			for (int i = 0; i <= CheckGrade; i++)
 			{
@@ -166,18 +169,21 @@ bool LearnBlessingSonOfSky(IChar IPlayer, void* SkillPointer, bool Item) {
 			ISkill xSkill((void*)pSkill);
 			int CheckGrade = 0;
 
-			if (IPlayer.GetLevel() >= 100)
+			if (IPlayer.GetLevel() >= 100 && (!BSOFSkyMax || BSOFSkyMax >= 7))
 				CheckGrade = 7;
-			else if (IPlayer.GetLevel() >= 95)
+			else if (IPlayer.GetLevel() >= 95 && (!BSOFSkyMax || BSOFSkyMax >= 6))
 				CheckGrade = 6;
-			else if (IPlayer.GetLevel() >= 90)
+			else if (IPlayer.GetLevel() >= 90 && (!BSOFSkyMax || BSOFSkyMax >= 5))
 				CheckGrade = 5;
-			else if (IPlayer.GetLevel() >= 85)
+			else if (IPlayer.GetLevel() >= 85 && (!BSOFSkyMax || BSOFSkyMax >= 4))
 				CheckGrade = 4;
-			else if (IPlayer.GetLevel() >= 80)
+			else if (IPlayer.GetLevel() >= 80 && (!BSOFSkyMax || BSOFSkyMax >= 3))
 				CheckGrade = 3;
-			else if (IPlayer.GetLevel() >= 75)
+			else if (IPlayer.GetLevel() >= 75 && (!BSOFSkyMax || BSOFSkyMax >= 2))
 				CheckGrade = 2;
+
+			if (BSOFSkyMax == 1)
+				CheckGrade = BSOFSkyMax;
 
 			for (int i = 0; i <= CheckGrade; i++)
 			{
@@ -205,18 +211,21 @@ bool LearnBlessingSonOfSky(IChar IPlayer, void* SkillPointer, bool Item) {
 			ISkill xSkill((void*)pSkill);
 			int CheckGrade = 0;
 
-			if (IPlayer.GetLevel() >= 100)
+			if (IPlayer.GetLevel() >= 100 && (!BSOFSkyMax || BSOFSkyMax >= 7))
 				CheckGrade = 7;
-			else if (IPlayer.GetLevel() >= 95)
+			else if (IPlayer.GetLevel() >= 95 && (!BSOFSkyMax || BSOFSkyMax >= 6))
 				CheckGrade = 6;
-			else if (IPlayer.GetLevel() >= 90)
+			else if (IPlayer.GetLevel() >= 90 && (!BSOFSkyMax || BSOFSkyMax >= 5))
 				CheckGrade = 5;
-			else if (IPlayer.GetLevel() >= 85)
+			else if (IPlayer.GetLevel() >= 85 && (!BSOFSkyMax || BSOFSkyMax >= 4))
 				CheckGrade = 4;
-			else if (IPlayer.GetLevel() >= 80)
+			else if (IPlayer.GetLevel() >= 80 && (!BSOFSkyMax || BSOFSkyMax >= 3))
 				CheckGrade = 3;
-			else if (IPlayer.GetLevel() >= 75)
+			else if (IPlayer.GetLevel() >= 75 && (!BSOFSkyMax || BSOFSkyMax >= 2))
 				CheckGrade = 2;
+
+			if (BSOFSkyMax == 1)
+				CheckGrade = BSOFSkyMax;
 
 			for (int i = 0; i <= CheckGrade; i++)
 			{
@@ -244,18 +253,21 @@ bool LearnBlessingSonOfSky(IChar IPlayer, void* SkillPointer, bool Item) {
 			ISkill xSkill((void*)pSkill);
 			int CheckGrade = 0;
 
-			if (IPlayer.GetLevel() >= 100)
+			if (IPlayer.GetLevel() >= 100 && (!BSOFSkyMax || BSOFSkyMax >= 7))
 				CheckGrade = 7;
-			else if (IPlayer.GetLevel() >= 95)
+			else if (IPlayer.GetLevel() >= 95 && (!BSOFSkyMax || BSOFSkyMax >= 6))
 				CheckGrade = 6;
-			else if (IPlayer.GetLevel() >= 90)
+			else if (IPlayer.GetLevel() >= 90 && (!BSOFSkyMax || BSOFSkyMax >= 5))
 				CheckGrade = 5;
-			else if (IPlayer.GetLevel() >= 85)
+			else if (IPlayer.GetLevel() >= 85 && (!BSOFSkyMax || BSOFSkyMax >= 4))
 				CheckGrade = 4;
-			else if (IPlayer.GetLevel() >= 80)
+			else if (IPlayer.GetLevel() >= 80 && (!BSOFSkyMax || BSOFSkyMax >= 3))
 				CheckGrade = 3;
-			else if (IPlayer.GetLevel() >= 75)
+			else if (IPlayer.GetLevel() >= 75 && (!BSOFSkyMax || BSOFSkyMax >= 2))
 				CheckGrade = 2;
+
+			if (BSOFSkyMax == 1)
+				CheckGrade = BSOFSkyMax;
 
 			for (int i = 0; i <= CheckGrade; i++)
 			{

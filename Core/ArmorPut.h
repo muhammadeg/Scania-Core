@@ -31,7 +31,6 @@ void __fastcall DefenseApplySpec(int Item, void *edx, int Player)
 				IPlayer.UpdateBuff(BuffNames::ArmorWears, BuffNames::BuffTime, Show);
 			else
 				IPlayer.UpdateBuff(BuffNames::SuitsUsing, BuffNames::BuffTime, Show);
-			
 		}
 
 		itemStat.Enter();

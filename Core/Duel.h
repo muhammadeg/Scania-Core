@@ -20,6 +20,14 @@ void __fastcall PKKill(void *Player, void *edx, int Playerr)
 
 	CPlayer::PKKill(Player, Playerr);
 
+	if (AssaCheck)
+		ToAssassinWebhook("Player " + std::string(Killer.GetName()) + " has killed " + std::string(Killed.GetName()));
+	
+	if (AssaCheck){
+		Killer.SetHonor(0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+		Killed.SetHonor(0, 0, 1, 0, 0, 0, 0, 0, 0, 0);
+	}
+
 	if (PKKillActive && AssaCheck && abs(Killer.GetLevel() - Killed.GetLevel()) <= PKLvlDiff) {
 		int Rate = CTools::Rate(1, 1000);
 		if ((AssassinKiller && Rate <= PKKillChance) || (PlayerKilled && Rate <= PKKillPlayerChance)) {

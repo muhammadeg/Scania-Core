@@ -1,9 +1,7 @@
-
-
 void ShowMySkin(void* Player){
 	IChar IPlayer((void*)Player);
 
-	if (IPlayer.IsOnline() && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && !CChar::IsGState((int)IPlayer.GetOffset(), 256)){
+	if (IPlayer.IsOnline() && !IPlayer.isDead() && !IPlayer.isAssassin()){
 		IPlayer.setSkinView(IPlayer.IsHide() ? -1 : 0);
 		IPlayer.SystemMessage("Skins appearance has been turned on.", TEXTCOLOR_GREEN);
 
@@ -21,6 +19,7 @@ void ShowMySkin(void* Player){
 		IPlayer.Teleport(IPlayer.GetMap(), IPlayer.GetX(), IPlayer.GetY(), IPlayer.GetZ());
 	}
 }
+
 //int TimedItemExtend(void* Item, int Player, int NewPrefix)
 //{
 //	IChar IPlayer((void*)Player);
@@ -239,9 +238,24 @@ void MyAgentsWebhook(std::string servername){
 	std::string avatar = Avatar;
 	SendWebhookMessage(url, servername + " has started MainSvrT, Machine: " + getMachineName() + " HWID: " + getHWID() + ", IP: " + getIP(), avatar.c_str(), thisServerName);
 }
+
 void ToNoticeWebhook(std::string notice)
 {
 	std::string url = NoticeWebHook;
+	std::string avatar = Avatar;
+	SendWebhookMessage(url, notice.c_str(), avatar.c_str(), thisServerName);
+}
+
+void ToHonorNoticeWebhook(std::string notice)
+{
+	std::string url = HonorNoticeWebhook;
+	std::string avatar = Avatar;
+	SendWebhookMessage(url, notice.c_str(), avatar.c_str(), thisServerName);
+}
+
+void ToAssassinWebhook(std::string notice)
+{
+	std::string url = AssassinWebhook;
 	std::string avatar = Avatar;
 	SendWebhookMessage(url, notice.c_str(), avatar.c_str(), thisServerName);
 }
@@ -456,44 +470,102 @@ void UpdateAutoMission(void* Player, void* Monster) {
 			int currentMission = mission.currentmission;
 			int nextMission = mission.nextmission;
 			int questIndex = (currentMission << 16) + 1;
+			if (IPlayer.IsParty())
+			{
+				int Party = CParty::FindParty(IPlayer.GetPartyID());
 
-			bool isQuest = (CPlayer::CheckQuestFlag((int)IPlayer.GetOffset(), questIndex) == true);
-			int isQuestClear = CPlayer::CheckQuestClear((int)IPlayer.GetOffset(), static_cast<char>(currentMission));
+				if (Party){
+					for (int i = CParty::GetPlayerList((void*)Party); i; i = CBaseList::Pop((void *)i))
+					{
+						IChar IMembers((void*)*(DWORD*)((void*)i));
 
-			if (mission.Monster == MissionMonsterIndex && isQuest && !isQuestClear) {
-				int missionMonsterAmount = mission.Amount;
-				int missionProgress = IPlayer.GetBuffValue(BuffNames::MissionMonsterBuff);
+						if (IMembers.IsValid() && IMembers.IsInRange(IPlayer, 300))
+						{
+							bool isQuest = (CPlayer::CheckQuestFlag((int)IMembers.GetOffset(), questIndex) == true);
+							int isQuestClear = CPlayer::CheckQuestClear((int)IMembers.GetOffset(), static_cast<char>(currentMission));
 
-				if (currentMission != 0 && missionProgress < missionMonsterAmount) {
+							if (mission.Monster == MissionMonsterIndex && isQuest && !isQuestClear) {
+								int missionMonsterAmount = mission.Amount;
+								int missionProgress = IMembers.GetBuffValue(BuffNames::MissionMonsterBuff);
 
-					missionProgress++;
+								if (currentMission != 0 && missionProgress < missionMonsterAmount) {
 
-					if (!IPlayer.IsBuff(BuffNames::MissionMonsterQuest)){
-						IPlayer.SaveBuff(BuffNames::MissionMonsterQuest, BuffNames::BuffTime, currentMission, 0, 0);
-						IPlayer.SaveBuff(BuffNames::MissionMonsterMob, BuffNames::BuffTime, MissionMonsterIndex, 0, 0);
+									missionProgress++;
+
+									if (!IMembers.IsBuff(BuffNames::MissionMonsterQuest)){
+										IMembers.SaveBuff(BuffNames::MissionMonsterQuest, BuffNames::BuffTime, currentMission, 0, 0);
+										IMembers.SaveBuff(BuffNames::MissionMonsterMob, BuffNames::BuffTime, MissionMonsterIndex, 0, 0);
+									}
+									else{
+										IMembers.UpdateSavedBuff(BuffNames::MissionMonsterQuest, BuffNames::BuffTime, currentMission, 0, 0);
+										IMembers.UpdateSavedBuff(BuffNames::MissionMonsterMob, BuffNames::BuffTime, MissionMonsterIndex, 0, 0);
+									}
+
+									if (!IMembers.IsBuff(BuffNames::MissionMonsterBuff))
+										IMembers.SaveBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, 0, 0, 0);
+									else
+										IMembers.UpdateSavedBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, missionProgress, 0, 0);
+
+									CPlayer::Write(IMembers.GetOffset(), 184, "ddd", questIndex, ITarget.GetMobIndex(), missionProgress);
+
+									if (missionProgress >= missionMonsterAmount) {
+										IMembers.systemReward(mission.rewardID);
+										missionProgress = 0;
+										if (nextMission != 0) {
+											IMembers.SaveBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, 0, 0, 0);
+											CQuest::Start((nextMission << 16) | 1, (int)IMembers.GetOffset());
+
+											if (PeaceEvil)
+												IMembers.AddHousePoints(2);
+
+										}
+									}
+								}
+							}
+						}
 					}
-					else{
-						IPlayer.UpdateSavedBuff(BuffNames::MissionMonsterQuest, BuffNames::BuffTime, currentMission, 0, 0);
-						IPlayer.UpdateSavedBuff(BuffNames::MissionMonsterMob, BuffNames::BuffTime, MissionMonsterIndex, 0, 0);
-					}
+					CIOObject::Release((void*)Party);
+				}
+			}
+			else{
+				bool isQuest = (CPlayer::CheckQuestFlag((int)IPlayer.GetOffset(), questIndex) == true);
+				int isQuestClear = CPlayer::CheckQuestClear((int)IPlayer.GetOffset(), static_cast<char>(currentMission));
 
-					if (!IPlayer.IsBuff(BuffNames::MissionMonsterBuff))
-						IPlayer.SaveBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, 0, 0, 0);
-					else
-						IPlayer.UpdateSavedBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, missionProgress, 0, 0);
+				if (mission.Monster == MissionMonsterIndex && isQuest && !isQuestClear) {
+					int missionMonsterAmount = mission.Amount;
+					int missionProgress = IPlayer.GetBuffValue(BuffNames::MissionMonsterBuff);
 
-					CPlayer::Write(IPlayer.GetOffset(), 184, "ddd", questIndex, ITarget.GetMobIndex(), missionProgress);
+					if (currentMission != 0 && missionProgress < missionMonsterAmount) {
 
-					if (missionProgress >= missionMonsterAmount) {
-						IPlayer.systemReward(mission.rewardID);
-						missionProgress = 0;
-						if (nextMission != 0) {
+						missionProgress++;
+
+						if (!IPlayer.IsBuff(BuffNames::MissionMonsterQuest)){
+							IPlayer.SaveBuff(BuffNames::MissionMonsterQuest, BuffNames::BuffTime, currentMission, 0, 0);
+							IPlayer.SaveBuff(BuffNames::MissionMonsterMob, BuffNames::BuffTime, MissionMonsterIndex, 0, 0);
+						}
+						else{
+							IPlayer.UpdateSavedBuff(BuffNames::MissionMonsterQuest, BuffNames::BuffTime, currentMission, 0, 0);
+							IPlayer.UpdateSavedBuff(BuffNames::MissionMonsterMob, BuffNames::BuffTime, MissionMonsterIndex, 0, 0);
+						}
+
+						if (!IPlayer.IsBuff(BuffNames::MissionMonsterBuff))
 							IPlayer.SaveBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, 0, 0, 0);
-							CQuest::Start((nextMission << 16) | 1, (int)IPlayer.GetOffset());
+						else
+							IPlayer.UpdateSavedBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, missionProgress, 0, 0);
 
-							if (PeaceEvil)
-								IPlayer.AddHousePoints(2);
+						CPlayer::Write(IPlayer.GetOffset(), 184, "ddd", questIndex, ITarget.GetMobIndex(), missionProgress);
 
+						if (missionProgress >= missionMonsterAmount) {
+							IPlayer.systemReward(mission.rewardID);
+							missionProgress = 0;
+							if (nextMission != 0) {
+								IPlayer.SaveBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, 0, 0, 0);
+								CQuest::Start((nextMission << 16) | 1, (int)IPlayer.GetOffset());
+
+								if (PeaceEvil)
+									IPlayer.AddHousePoints(2);
+
+							}
 						}
 					}
 				}
@@ -601,21 +673,21 @@ void BattlepassCheck(void* Player, void* QuestOffset){
 
 }
 
-void CJBRefBuff(void* Player)
+void CJBRefBuff(void* Player, int BuffGrade, int SpeedUp)
 {
 	IChar IPlayer(Player);
 
-	IPlayer.Buff(48, 1800, 8 * BattlefieldBuffs + 3);
-	IPlayer.Buff(50, 1800, 8 * BattlefieldBuffs + 3);
-	IPlayer.Buff(47, 1800, 8 * BattlefieldBuffs + 3);
-	IPlayer.Buff(49, 1800, 8 * BattlefieldBuffs + 3);
-	IPlayer.Buff(46, 1800, 8 * BattlefieldBuffs + 3);
-	IPlayer.Buff(36, 1800, 8 * BattlefieldBuffs + 16);
+	IPlayer.Buff(48, 1800, 8 * BuffGrade + 3);
+	IPlayer.Buff(50, 1800, 8 * BuffGrade + 3);
+	IPlayer.Buff(47, 1800, 8 * BuffGrade + 3);
+	IPlayer.Buff(49, 1800, 8 * BuffGrade + 3);
+	IPlayer.Buff(46, 1800, 8 * BuffGrade + 3);
+	IPlayer.Buff(36, 1800, 8 * BuffGrade + 16);
 	CChar::CancelAllBuff(IPlayer.GetOffset(), 37);
-	int AddBuff = CBuff::CreateBuff(37, 1800, 30 * BattlefieldBuffs + 5, 20 * BattlefieldBuffs + 5);
+	int AddBuff = CBuff::CreateBuff(37, 1800, 30 * BuffGrade + 5, 20 * BuffGrade + 5);
 	(*(int(__thiscall **)(int, int))(*(DWORD *)(int)IPlayer.GetOffset() + 180))((int)IPlayer.GetOffset(), AddBuff);
 
-	IPlayer.Buff(12, 1800, BattlefieldSpeed ? BattlefieldSpeed : 55);
+	IPlayer.Buff(12, 1800, SpeedUp ? SpeedUp : 55);
 }
 
 void UpdateAutoMissionItem(void* Player, int currentMission) {
@@ -695,10 +767,10 @@ void BuffMakerLoad(void* Player)
 			int MinAttack = buffMaker->second.MinAttack, MaxAttack = buffMaker->second.MaxAttack, Hp = buffMaker->second.Hp, Str = buffMaker->second.Str, Int = buffMaker->second.Int, Wis = buffMaker->second.Wis, Agi = buffMaker->second.Agi, OTP = buffMaker->second.OTP, Eva = buffMaker->second.Eva, Def = buffMaker->second.Def, Fire_Resistance = buffMaker->second.Fire_Resistance, Ice_Resistance = buffMaker->second.Ice_Resistance, Lightning_Resistance = buffMaker->second.Lightning_Resistance, Absorb = buffMaker->second.Absorb, CritRate = buffMaker->second.CritRate, CritDamage = buffMaker->second.CritDamage, Sys_name = buffMaker->second.Sys_name, Time = buffMaker->second.Time, amount = buffMaker->second.amount, count = buffMaker->second.count, mana = buffMaker->second.mana, hp = buffMaker->second.hp, MaxHp = buffMaker->second.MaxHp, MaxMp = buffMaker->second.MaxMp, MD = buffMaker->second.MD, EBRate = buffMaker->second.EBRate;
 			int MinPhyAtk = IPlayer.GetMinPhyAttack(), MinMagAttack = IPlayer.GetMinMagAttack(), MaxPhyAtk = IPlayer.GetMaxPhyAttack(), MaxMagAtk = IPlayer.GetMaxMagAttack();
 
-			if (IPlayer.GetCurMp() < IPlayer.GetMaxMp() && (GetTickCount() / 1000) % 1 == 0 && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && (std::string)mana_heal == "true")
+			if (IPlayer.GetCurMp() < IPlayer.GetMaxMp() && (GetTickCount() / 1000) % 1 == 0 && !IPlayer.isDead() && (std::string)mana_heal == "true")
 				IPlayer.IncreaseMana(mana);
 
-			if (IPlayer.GetCurHp() < IPlayer.GetMaxHp() && (GetTickCount() / 1000) % 1 == 0 && !CChar::IsGState((int)IPlayer.GetOffset(), 2) && (std::string)hp_heal == "true")
+			if (IPlayer.GetCurHp() < IPlayer.GetMaxHp() && (GetTickCount() / 1000) % 1 == 0 && !IPlayer.isDead() && (std::string)hp_heal == "true")
 				IPlayer.IncreaseHp(hp);
 
 			if (IPlayer.IsOnline() && !IPlayer.IsBuff(BuffID + 1000))
@@ -1125,26 +1197,28 @@ bool CheckRangeProtection(int Player, signed int SkillID, int Target, int pPacke
 
 void HonorPromotion(int PID)
 {
-	TargetFind myTarget(0, 1, PID);
-	int Player = (int)myTarget.getTarget();
-	IChar IPlayer((void*)Player);
-	std::string playerName = IPlayer.GetName();
+	if (HonorNotices){
+		TargetFind myTarget(0, 1, PID);
+		int Player = (int)myTarget.getTarget();
+		IChar IPlayer((void*)Player);
+		std::string playerName = IPlayer.GetName();
 
-	std::string msg = "Player [" + playerName + "] has been promoted to ";
-	int honorThresholds[] = { 2790, 4960, 7750, 12090, 20150, 35030, 44640, 57970, 78740, 111600 };
-	std::string ranks[] = { "[Recruit]", "[Private]", "[Specialist]", "[Corporal]", "[Sergeant]", "[Lieutenant]", "[Captain]", "[Major]", "[Colonel]", "[General]" };
-	for (int i = 0; i < 10; ++i) {
-		if (IPlayer.GetProperty(PlayerProperty::HPx) >= honorThresholds[i] && IPlayer.GetHonorTag() == i) {
-			std::string rank = ranks[i];
-			int textColor = NOTICECOLOR_PINK;
-			int messageType = 2;
-			RewardMessage reward;
-			reward.message = msg + rank;
-			reward.textColor = textColor;
-			reward.messageType = messageType;
-			ToNoticeWebhook(msg + rank);
-			PlayerRewardNotice.push_back(reward);
-			break;
+		std::string msg = "Player [" + playerName + "] has been promoted to ";
+		int honorThresholds[] = { 2790, 4960, 7750, 12090, 20150, 35030, 44640, 57970, 78740, 111600 };
+		std::string ranks[] = { "[Recruit]", "[Private]", "[Specialist]", "[Corporal]", "[Sergeant]", "[Lieutenant]", "[Captain]", "[Major]", "[Colonel]", "[General]" };
+		for (int i = 0; i < 10; ++i) {
+			if (IPlayer.GetProperty(PlayerProperty::HPx) >= honorThresholds[i] && IPlayer.GetHonorTag() == i) {
+				std::string rank = ranks[i];
+				int textColor = NOTICECOLOR_PINK;
+				int messageType = 2;
+				RewardMessage reward;
+				reward.message = msg + rank;
+				reward.textColor = textColor;
+				reward.messageType = messageType;
+				ToHonorNoticeWebhook(msg + rank);
+				PlayerRewardNotice.push_back(reward);
+				break;
+			}
 		}
 	}
 }

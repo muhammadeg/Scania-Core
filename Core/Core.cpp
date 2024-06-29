@@ -39,10 +39,13 @@
 #include "ConcurrentMap.h"
 #include "ConcurrentSet.h"
 #include "ConcurrentVector.h"
+#include "CProtection.h"
 #include "SystemRegistration.h"
 #include "RegistrationMap.h"
 #include <tlhelp32.h>
 #include <dbghelp.h> // Include this header for symbols-related functions
+#include "Declarations.h"
+
 #pragma comment(lib, "Dbghelp.lib")
 #pragma pack(1)
 HINSTANCE hL = 0;
@@ -650,7 +653,9 @@ namespace BuffNames {
 		CastleWarBuffW = 6761,
 		ItemsEffects = 61583,
 		EffectsIID = 61584,
-		WeaponUp = 61585
+		WeaponUp = 61585,
+		WeaponsEffects = 61586,
+		WEffectIID = 61587
 
 	};
 }
@@ -1858,12 +1863,6 @@ struct MonsterDailyDuty {
 	int Index;
 	int Amount;
 };
-struct ChanceItem {
-	int Index;
-	int Amount;
-	int Chance;
-};
-
 struct ItemStruct {
 	int Index;
 	int Amount;
@@ -1919,15 +1918,6 @@ struct RidingCollection {
 	std::vector<int> Indexes;
 	int Stat;
 	int Rate;
-};
-
-struct SwapItem {
-	int Index;
-	int Chance;
-	SwapItem(int nIndex, int nChance) {
-		Index = nIndex;
-		Chance = nChance;
-	}
 };
 
 struct SwapMaterial {
@@ -2514,16 +2504,19 @@ struct RewardMessage {
 	int textColor;
 	int messageType; // Added messageType member
 };
+struct SMultiple {
+	int Multiple;
+};
+
 static int ShamanBuffs[] = { 401, 403, 407, 409, 413 };
 unsigned __int64 _ExpTable[312]; // Definition of the global variable
 Poll pollAsk;
 time_t uptimestart; 
 int GuildWinnerCW = 0, AllyWinnerCW = 0, WarEndTime = 0;
-int CryptKey = 0, NoticesEnabled = 0;
+int CryptKey = 0;
 std::string ConfigCheckDB1, ConfigCheckDB2;
 int firstDig = 0;
 int BofConfigRead = 0, dgConfigRead = 0, insanityRead = 0, qigongRead = 0, ImpConfigRead = 0, ScaniaLicense = 0, NailKill = 0, Bof2ConfigRead = 0, Imp2ConfigRead = 0;
-time_t notices,timeReloading;
 volatile LONG OnlinePlayers = 0;
 volatile LONG PlayerLevelNotice = 0;
 volatile LONG MonsterReloaded = 0;
@@ -2564,6 +2557,8 @@ std::map<int, int> HighGradeImperial;
 std::unordered_map<int, std::pair<std::string, int>> EmoteSystem;
 //std::unordered_map<int, std::string> EmoteSystem;
 std::unordered_map<int, MissionInfo> MissionQuests;
+std::unordered_map<int, MissionInfo> MAbandonCheck;
+
 std::unordered_map<int, MissionInfo> MissionQuestsItem;
 
 std::unordered_map<int, DailyDuty> DutyQuest;
@@ -2600,6 +2595,8 @@ std::map<std::string, ShoutData> CustomHouse;
 std::unordered_map<int, int> PlayerMissionProgress;
 std::unordered_map<char, int> npcMap;
 std::map<int, ItemExchange> ItemExchanges;
+std::map<int, SMultiple> EXPMultipliers;
+	
 std::map<int, Reborn> Reborns;
 std::map<int, RbPenalty> RebornsPenalty;
 std::map<int, RbPenalty> NonRebornsPenalty;
@@ -2831,6 +2828,7 @@ std::map<std::string, int> AutoNoticesRGB;
 
 ConcurrentMap<int, int> PetLifeCheck;
 ConcurrentMap<int, int> PetLifeExtend;
+std::set<int> SocketCheck;
 
 ConcurrentMap<std::string,std::string> Read2ndPwd;
 std::set<int> UnBlob;
@@ -2876,7 +2874,11 @@ std::map<int, int> PVEDamagePimp;
 std::map<int, int> PVPDamagePimp;
 std::map<int,std::string> ItemLockCheck;
 std::map<int, ConfigPetTime> PetTime;
-std::map<int, ConfigTimeTalisman> TimeTalisman;
+std::map<int, ConfigTimeTalisman> NormalPetTalisman;
+std::map<int, ConfigTimeTalisman> MonsterPetTalisman;
+std::map<int, ConfigTimeTalisman> CostumeTalisman;
+std::map<int, ConfigTimeTalisman> SkinTalisman;
+
 std::map<int, int> SoulPocketEffect;
 std::map<int, SuitStat> SuitStats;
 std::map<int, SkillLearn> SkillChecks;
@@ -2910,7 +2912,6 @@ SystemRegistration<int> LastManRegistration;
 #include "Interface.h"
 #include "Time.h"
 #include "NPC.h"
-#include "DirectoryReader.h"
 #include "Lisans.h"
 #include "ReadConfig.h"
 #include "StatPointValue.h"
@@ -2936,20 +2937,12 @@ SystemRegistration<int> LastManRegistration;
 #include "CBaseDelete.h"
 #include "Hardware.h"
 #include "MyFunctions.h"
-#include "BlessingOfHealth.h"
-#include "BlessingOfStrength.h"
-#include "BlessingOfAgility.h"
-#include "BlessingOfIntelligence.h"
-#include "BlessingOfCriticalHit.h"
-#include "RefiningWeapon.h"
-#include "DefenseImprovement.h"
-#include "SpeedUp.h"
+#include "Mage.h"
 #include "RefreshBuff.h"
 #include "Mix.h"
 #include "Reload.h"
 #include "Channel.h"
 #include "Lawless.h"
-#include "Guild.h"
 #include "ExpTable.h"
 #include "EagleStat.h"
 #include "StoneOfBirth.h"
@@ -2982,96 +2975,13 @@ SystemRegistration<int> LastManRegistration;
 #include "Trade.h"
 #include "Quest.h"
 #include "ItemUse.h"
-#include "PowerfulWideningWound.h"
-#include "PerfectDefense.h"
-#include "ProvocationOfBlow.h"
-#include "SpinSlash.h"
-#include "SwordDance.h"
-#include "TherapeuticTouch.h"
-#include "Blessing.h"
-#include "Fireball.h"
-#include "IceArrow.h"
-#include "Icicle.h"
-#include "Thunderbolt.h"
-#include "VirulentArrow.h"
-#include "ArrowExplosion.h"
-#include "ArrowRain.h"
-#include "CombativeSpirit.h"
-#include "RevolveAttack.h"
-#include "BloodSuction.h"
-#include "EggThunderbolt.h"
-#include "LifeAbsorption.h"
-#include "LightningArrow.h"
-#include "FlameInjection.h"
-#include "CounterDamage.h"
-#include "WhirlwindFeather.h"
-#include "HighClassHiding.h"
-#include "ShinRhoe.h"
-#include "ZilPoong.h"
-#include "Hiding.h"
+#include "Knight.h"
+#include "Egg.h"
+#include "Archer.h"
+#include "Thief.h"
 #include "Behead.h"
-#include "WrathOfHeaven.h"
-#include "LightningSlash.h"
-#include "ShadowSlash.h"
-#include "SpinBlade.h"
-#include "TwinBladeStrike.h"
-#include "ArmorBreaker.h"
-#include "SpinAttack.h"
-#include "SuicidalBlow.h"
-#include "FinalBlow.h"
-#include "Assault.h"
-#include "VitalStrike.h"
-#include "AnkleAmputate.h"
-#include "Rupture.h"
-#include "FatalWound.h"
-#include "Confusion.h"
-#include "Stun.h"
-#include "Strangle.h"
-#include "DualShadow.h"
-#include "ShoutOfDefense.h"
-#include "TheBoomOfEarth.h"
-#include "ShoutOfFightingSpirit.h"
-#include "TheWaveOfEarth.h"
 #include "WalkOnTheAir.h"
-#include "OneHitStrike.h"
-#include "ArrowsOfTheMaster.h"
-#include "MassiveFire.h"
-#include "SpiritOfTheArrows.h"
-#include "Punishment.h"
-#include "CriticalStrike.h"
-#include "CriticalDiffusion.h"
-#include "StrikeOfGod.h"
-#include "DestroyingArmor.h"
-#include "Bombing.h"
-#include "Incapacitation.h"
-#include "ReleasingTheEnergy.h"
-#include "GhostKnife.h"
-#include "GhostFlash.h"
-#include "SoulShield.h"
-#include "Wave.h"
-#include "GhostWindow.h"
-#include "MudRoom.h"
-#include "ExecutiveDirector.h"
-#include "TheSoulsPenance.h"
-#include "JigukKing.h"
-#include "JeungjangKing.h"
-#include "AmplificationOfBlood.h"
-#include "WaveOfEmperor.h"
-#include "Entangling.h"
-#include "SpearOfPain.h"
-#include "JigukKingOfTaein.h"
-#include "JeungjangKingOfTaein.h"
-#include "SoulBlow.h"
-#include "DrainBlood.h"
-#include "MagicalExplosion.h"
-#include "MentalBreakdown.h"
-#include "Collapse.h"
-#include "SixSouls.h"
-#include "ExplodingSpirit.h"
-#include "SpiritWave.h"
-#include "Doggebi.h"
-#include "RisingKing4th.h"
-#include "Gangshin4th.h"
+#include "Shaman.h"
 #include "SkillCalculation.h"
 #include "Skill.h"
 #include "EggSkill.h"
@@ -3080,7 +2990,6 @@ SystemRegistration<int> LastManRegistration;
 #include "WeaponPut.h"
 #include "DefenseChangePrefix.h"
 #include "WeaponChangePrefix.h"
-#include "Revival.h"
 #include "CutDownExp.h"
 #include "Calls.h"
 #include "Transform.h"
@@ -3275,7 +3184,6 @@ SystemRegistration<int> LastManRegistration;
 //	return EXCEPTION_CONTINUE_SEARCH;
 //}
 
-
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
 	switch (ul_reason_for_call)
@@ -3308,6 +3216,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 			{
 				//DetourAttach(&(PVOID&)CIOCriticalSection::Enter, CIOCriticalSectionEnter);
 				//DetourAttach(&(PVOID&)CIOSocket::Enter, CIOSocketEnter);
+				DetourAttach(&(PVOID&)MSocket::AcceptConnection, AcceptConnection);
+				DetourAttach(&(PVOID&)MSocket::OnClose, OnCloseSocket);
+
 				DetourAttach(&(PVOID&)CIOObject::_Release, ObjectRelease);
 				DetourAttach(&(PVOID&)CIOBuffer::Release, CIOBufferRelease);
 				DetourAttach(&(PVOID&)CIOObject::_AddRef, ObjectRef);
@@ -3465,6 +3376,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 			DetourDetach(&(PVOID&)CIOObject::_Release, ObjectRelease);
 			DetourDetach(&(PVOID&)CIOBuffer::Release, CIOBufferRelease);
 			DetourDetach(&(PVOID&)CIOObject::_AddRef, ObjectRef);
+
+			DetourDetach(&(PVOID&)MSocket::AcceptConnection, AcceptConnection);
+			DetourDetach(&(PVOID&)MSocket::OnClose, OnCloseSocket);
+
 			//DetourDetach(&(PVOID&)CParty::DistrbuteItem, PartyDistrbute);
 			DetourDetach(&(PVOID&)CIOSocket::Create, CIOSocketCreate);
 			DetourDetach(&(PVOID&)CIOSocket::CIOSocket__Close, CIOSocketClose);

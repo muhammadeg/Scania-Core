@@ -502,7 +502,7 @@ void WorldCupTick() {
 				PlayerWonFight(IPlayer, playerFight);
 			else
 			{
-				if (CChar::IsGState((int)IPlayer.GetOffset(), 2))
+				if (IPlayer.isDead())
 					PlayerWonFight(IPlayer2, playerFight);
 
 				else if (!WorldCup::Time) {

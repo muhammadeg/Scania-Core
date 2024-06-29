@@ -13,6 +13,8 @@ typedef signed __int64     QWORD;
 #pragma warning (disable : 4244)
 #pragma warning (disable : 4018)
 int tries = 150;
+int maxAllowedSpeed = GetPrivateProfileIntA("SpeedHack", "Value", 100, "./Configs/Protection.txt");
+
 std::string Int2Str(int value)
 {
 	std::stringstream ss;
@@ -2533,14 +2535,8 @@ void IChar::CloseWindow(std::string WindowName)
 }
 
 void IChar::CheckSpeed(int maxSpeed){
-	int playerSpeed = this->GetSpeed();
-	if (this->IsOnline() && !this->GetAdmin() && playerSpeed >= maxSpeed){
-		this->SystemMessage("Speed hack detected", RGB(255, 0, 0));
-		this->Kick();
-	}
-	else if (this->IsOnline() && !this->GetAdmin()){
+	if (this->IsOnline())
 		CPlayer::Write(this->GetOffset(), 0xFF, "dd", 217, maxSpeed);
-	}
 }
 
 void IChar::Revive()
@@ -2838,6 +2834,10 @@ void IChar::EnableRiding(int Type)
 		{
 			this->Buff(347, 1296000, 0);
 			this->IncreaseMovingSpeed(75);
+			if (this->IsBuff(82))
+				this->CheckSpeed(maxAllowedSpeed + 275);
+			else
+				this->CheckSpeed(maxAllowedSpeed + 75);
 		}
 
 		if (!CChar::IsGState((int)this->Offset, 0x4000))
@@ -2856,6 +2856,10 @@ void IChar::DisableRiding()
 		{
 			this->CancelBuff(347);
 			this->DecreaseMovingSpeed(75);
+			if (this->IsBuff(82))
+				this->CheckSpeed(maxAllowedSpeed + 200);
+			else
+				this->CheckSpeed(maxAllowedSpeed);
 		}
 
 		int Satiety = this->GetBuffValue(1519);
@@ -3148,6 +3152,20 @@ bool IChar::IsCorrect(){
 	}
 	else
 		return true;
+}
+
+bool IChar::isDead(){
+	if (CChar::IsGState((int)this->GetOffset(), 2))
+		return true;
+	else
+		return false;
+}
+
+bool IChar::isAssassin(){
+	if (CChar::IsGState((int)this->GetOffset(), 256))
+		return true;
+	else
+		return false;
 }
 
 int IChar::hasFirstPet() {
@@ -3883,6 +3901,7 @@ void IChar::ResetLevel(int Level) {
 		CPlayer::Write(this->Offset, 66, "bsbwwwwwwddwwwwwbIwwwwwwbbbbbd", *(DWORD *)(a1 + 464), *CPlayer::Name, *(DWORD *)(a1 + 536), *(DWORD *)(a1 + 468), v52, v51, v50, v49, v48, v47, v46, v45, v44, v43, v42, v41, v40, v39, v38, v37, v36, v35, v34, v33, v32, v31, v30, v29, v28, v27, v26);
 	}
 }
+
 void IChar::SetLevel(int Level) {
 	if (this->IsOnline()) {
 		int a1 = (int)this->Offset;

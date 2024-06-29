@@ -1,388 +1,355 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "dirent.h"
-int maximum(int a, int b) {
-	return (a > b) ? a : b;
-}
-int ScrollTimeCheck = 0, isReloadingNPC = 0;
-char ConfigCheck[50], ConfigClient[50], ConfigEngine[50], ConfigEpk[50], AntiKsCheck[50], SinCheck[50], PlayerCheck[50], Active2ndPwd[50], ThiefActiveCheck[50],ShamanActiveCheck[50], ShopRewardCheck[50];
-char ServerName[50], AuthSvr[50], VoteAPIKey[50];
-char BossEXPName[50], BossEXPFinalMsg[BUFSIZ];
-char BFName[50], LMSName[50], DKName[50], PLName[50], TBName[50], SVName[50], DTName[50], CTFName[50], LotteryName[50], LottoName[50], F10Name[50], MautName[50], HuntingSysName[50], WCName[50];
-char ShoutsWebhook[BUFSIZ], LevelWebhook[BUFSIZ], BofWebhook[BUFSIZ], NoticeWebHook[BUFSIZ], Avatar[BUFSIZ], StarterWebhook[BUFSIZ], RebornWebhook[BUFSIZ];
-int CurGroup=1, WorldCupTime=195;
-std::string ConfigCheckDB3 = "Hell", ConfigCheckDB4 = "Hell";
-char key1 = '255', key2 = '255', key3 = '255', key4 = '255', key5 = '255', key6 = '255', key7 = '255';
-int ConfigMix = 0, ConfigImp = 0, ConfigDBCheck = 0;
-int EggExpTime = 0, EggExpKill = 0, ConfigMaxDamage = 0, ConfigMaxMagAtk = 0, ConfigMaxPhyAtk = 0;
-int EmokQuestIndex = 0, EmokX = 0, EmokY = 0, EmokMap = 0, EmokCert = 0;
-int MysteryResetItem = 0, MysteryQuest = 0, MysteryEnable = 0;
-int MD5Check = 0, HellCooldown=0, testcmd=0,tmcd=0;
-int Shouts = 0, DefaultUnblob = 0, DefaultSkinView = 0;
-int BattlepassActive = 0, BattlepassQuest = 0, BattlepassIndex = 0;
-int MaxLoginAttemps = 2;
-int IPEnable = 0;
-int SkillTestAction = 0, SkillR1 = 0, SkillR2 = 0, SkillTimer = 0, SkillIndex = 0;
-int testK = 0;
-std::set<int> disabledNPCIndices;
-volatile LONG summonPets = 0;
-volatile LONG CreatePacket = 0;
-volatile LONG LastIP = 0;
-int MautMap = 0, MautQuest = 0, MautQuestEnd = 0, MautRIndex = 0, MautRPrefix = 0, MautRAmount = 0, MautChance = 0, MautX = 0, MautY = 0, MautSpawnX = 0, MautSpawnY = 0, MautLevel = 0;
-int BossEXPChance = 0;
-int maxxStatPoints = 254;
-long long int StoreSoldCheck = 0, StoreCheckQuest = 0;
-int NewcomerValue = 0, NewcomerLevel = 0, NewcomerActive = 0, NewcomerSys = 0;
-int Snow = 0;
-int tradePVP = 0;
-int RaidRoundCounter = 0;
-double DelaySpam = 0;
-int FireStormVThief = 0;
-int PacketProtection = 0, AFKRange = 0;
-unsigned __int64 LotteryCheck = 0;
-int itemin=0,itemam=0,itempr=0;
-int JewelIndex = 0;
-int Gun = 0;
-int EmoteQuest = 0, EmoteCooldown = 0, EmoteItem = 0;
-int SendItemIndex = 0;
-int VODConf = 0;
-int KillerHPPL = 0, KillerRPPL = 0, KilledHPPL = 0, KilledRPPL = 0, KillerHPBF = 0, KillerRPBF = 0, KilledHPBF = 0, KilledRPBF = 0, KillerHPGVG = 0, KillerRPGVG = 0, KilledHPGVG = 0, KilledRPGVG = 0;
-int OriginalLowest = 0, OriginalLow = 0, OriginalNormal = 0, OriginalHard = 0, OriginalHardest = 0;
-int VoteQuest=0,VoteID=0;
-int CaptureQuest=0, CaptureMap=0, CaptureReward=0, CaptureRewardAmount=0, CaptureMonster=0;
-int DNPCQ = 0, DNPCRQ = 0, DNPCDL = 0, DNPCIA = 0, DNPCDU = 0, DNPCII = 0, DNPCDD = 0, DNPCDC = 0;
-int FishLowest = 0, FishLow = 0, FishNormal = 0, FishHard = 0, FishHardest = 0;
-int KnightManaCirculation = 0, Knight, KPWWReduce = 0, KPWWMul = 0, KPWWMin = 0, KPWWMax = 0;
-int KPOBReduce = 0, KPOBMul = 0, KPOBRange = 0, KPOBMin = 0, KPOBMax = 0;
-int KSSReduce = 0, KSSMul = 0, KSSMin = 0, KSSMax = 0, KSSDBMin = 0, KSSDBMax = 0;
-int KSDReduce = 0, KSDMul = 0, KSDMin = 0, KSDMax = 0;
-int MageManaCirculation = 0, MRIAmount = 0, ArcherManaCirculation = 0;
-int MSDReduce = 0, MSDMul = 0, MSDMin = 0, MSDMax = 0;
-int MFBReduce = 0, MFBMul = 0, MFBMin = 0, MFBMax = 0;
-int MIAReduce = 0, MIAMul = 0, MIAMin = 0, MIAMax = 0;
-int MIcicleReduce = 0, MIcicleMul = 0, MIcicleMin = 0, MIcicleMax = 0;
-int MTBReduce = 0, MTBMul = 0, MTBMin = 0, MTBMax = 0;
-int AVAReduce = 0, AVAMul = 0, AVAMin = 0, AVAMax = 0, AVAPoisonMin = 0, AVAPoisonMax = 0;;
-int AAEReduce = 0, AAEMul = 0, AAEMin = 0, AAEMax = 0;
-int AARReduce = 0, AARMul = 0, AARMin = 0, AARMax = 0;
-int EBSMul = 0, EBSReduce = 0, ERAReduce = 0, ERAMul = 0, ETBReduce = 0, ETBMul = 0;
-int ALAReduce = 0, ALAMul = 0;
-int ACSReduce = 0, ACSMul = 0, ACSMin = 0, ACSMax = 0, ACAOE = 0, ACPVPAOE = 0, ACAOERange = 0;
-int MLAReduce = 0, MLAMul = 0, MLAMin = 0, MLAMax = 0;
-int MFIReduce = 0, MFIMul = 0, MFIMin = 0, MFIMax = 0;
-int MMIReduce = 0, MMIMul = 0, MMIMin = 0, MMIMax = 0;
-int TEShinReduce = 0, TEShinMul = 0, TEZilReduce = 0, TEZilMul = 0, TEWhirReduce = 0, TEWhirMul = 0;
-int TWOHReduce = 0, TWOHMul = 0, TWOHMin = 0, TWOHMax = 0;
-int TSBReduce = 0, TSBMul = 0, TSBMin = 0, TSBMax = 0;
-int TSSReduce = 0, TSSMul = 0, TSSMin = 0, TSSMax = 0;
-int TLSReduce = 0, TLSMul = 0, TLSMin = 0, TLSMax = 0;
-int TDOKReduce = 0, TDOKMul = 0, TDOKMin = 0, TDOKMax = 0;
-int TCOReduce = 0, TCOMin = 0, TCOMax = 0, MageFakeDamage = 0;
-int TCAReduce = 0, TCAMin = 0, TCAMax = 0;
-int TTBSReduce = 0, TTBSMul = 0, TTBSMin = 0, TTBSMax = 0;
-int TSAReduce = 0, TSAMul = 0, TSAMin = 0, TSAMax = 0;
-int TSuBReduce = 0, TSuBMul = 0, TSuBMin = 0, TSuBMax = 0;
-int TFBReduce = 0, TFBMul = 0, TFBMin = 0, TFBMax = 0;
-int TAssReduce = 0, TAssMul = 0, TAssMin = 0, TAssMax = 0;
-int TVSReduce = 0, TVSMul = 0, TVSMin = 0, TVSMax = 0;
-int TRupReduce = 0, TRupMul = 0, TRupMin = 0, TRupMax = 0;
-int TFWReduce = 0, TFWMul = 0, TFWMin = 0, TFWMax = 0;
-int TStranReduce = 0, TStranMul = 0, TStranMin = 0, TStranMax = 0;
-int TStunReduce = 0, TStunMul = 0, TStunMin = 0, TStunMax = 0;
-int BFMap = 0, BFQuest = 0, ScenarioMap = 0, ScenarioQuest = 0, DonationCoin = 0, F10Quest = 0, BFTime = 0, ScenarioTime = 0, F10Level = 0;
-int GVETime = 0;
-int DTQuest = 0, DTLimit = 0, ConfigPVPMaxDmg = 100000;
-int BFRange = 0, BFBoss = 0, BFBossX = 0, BFBossY = 0, BFBossTime = 0, BFBossReward = 0, BFBossBuffX1 = 0, BFBossBuffY1 = 0, BFBossBuffX2 = 0, BFBossBuffY2 = 0;
+extern int maximum(int a, int b);
+
+extern int ScrollTimeCheck;
+extern int ReloadingMobs;
+extern char ConfigCheck[50], ConfigClient[50], ConfigEngine[50], ConfigEpk[50], AntiKsCheck[50], SinCheck[50], PlayerCheck[50], Active2ndPwd[50], ThiefActiveCheck[50],ShamanActiveCheck[50], ShopRewardCheck[50];
+extern char ServerName[50], AuthSvr[50], VoteAPIKey[50];
+extern char BossEXPName[50], BossEXPFinalMsg[BUFSIZ];
+extern char BFName[50], LMSName[50], DKName[50], PLName[50], TBName[50], SVName[50], DTName[50], CTFName[50], LotteryName[50], LottoName[50], F10Name[50], MautName[50], HuntingSysName[50], WCName[50];
+extern char ShoutsWebhook[BUFSIZ], LevelWebhook[BUFSIZ], BofWebhook[BUFSIZ], NoticeWebHook[BUFSIZ], Avatar[BUFSIZ], StarterWebhook[BUFSIZ], RebornWebhook[BUFSIZ], AssassinWebhook[BUFSIZ], HonorNoticeWebhook[BUFSIZ];
+extern int CurGroup, WorldCupTime;
+extern std::string ConfigCheckDB3, ConfigCheckDB4;
+extern char key1, key2, key3, key4, key5, key6, key7;
+extern int ConfigMix, ConfigImp, ConfigDBCheck;
+extern int EggExpTime, EggExpKill, ConfigMaxDamage, ConfigMaxMagAtk, ConfigMaxPhyAtk;
+extern int EmokQuestIndex, EmokX, EmokY, EmokMap, EmokCert;
+extern int MysteryResetItem, MysteryQuest, MysteryEnable;
+extern int MD5Check, HellCooldown, testcmd,tmcd;
+extern int Shouts, DefaultUnblob, DefaultSkinView;
+extern int BattlepassActive, BattlepassQuest, BattlepassIndex;
+extern int MaxLoginAttemps;
+extern int IPEnable;
+extern int SkillTestAction, SkillR1, SkillR2, SkillTimer, SkillIndex;
+extern int testK;
+extern std::set<int> disabledNPCIndices;
+extern volatile LONG summonPets;
+extern volatile LONG CreatePacket;
+extern volatile LONG LastIP;
+extern int MautMap, MautQuest, MautQuestEnd, MautRIndex, MautRPrefix, MautRAmount, MautChance, MautX, MautY, MautSpawnX, MautSpawnY, MautLevel;
+extern int BossEXPChance;
+extern int maxxStatPoints;
+extern long long int StoreSoldCheck, StoreCheckQuest;
+extern int NewcomerValue, NewcomerLevel, NewcomerActive, NewcomerSys;
+extern int Snow;
+extern int tradePVP;
+extern int RaidRoundCounter;
+extern double DelaySpam;
+extern int FireStormVThief;
+extern int PacketProtection, AFKRange;
+extern unsigned __int64 LotteryCheck;
+extern int itemin,itemam,itempr;
+extern int JewelIndex;
+extern int Gun;
+extern int EmoteQuest, EmoteCooldown, EmoteItem;
+extern int SendItemIndex;
+extern int VODConf;
+extern int KillerHPPL, KillerRPPL, KilledHPPL, KilledRPPL, KillerHPBF, KillerRPBF, KilledHPBF, KilledRPBF, KillerHPGVG, KillerRPGVG, KilledHPGVG, KilledRPGVG;
+extern int OriginalLowest, OriginalLow, OriginalNormal, OriginalHard, OriginalHardest;
+extern int VoteQuest,VoteID;
+extern int CaptureQuest, CaptureMap, CaptureReward, CaptureRewardAmount, CaptureMonster;
+extern int DNPCQ, DNPCRQ, DNPCDL, DNPCIA, DNPCDU, DNPCII, DNPCDD, DNPCDC;
+extern int FishLowest, FishLow, FishNormal, FishHard, FishHardest;
+extern int KnightManaCirculation, Knight, KPWWReduce, KPWWMul, KPWWMin, KPWWMax;
+extern int KPOBReduce, KPOBMul, KPOBRange, KPOBMin, KPOBMax;
+extern int KSSReduce, KSSMul, KSSMin, KSSMax, KSSDBMin, KSSDBMax;
+extern int KSDReduce, KSDMul, KSDMin, KSDMax;
+extern int MageManaCirculation, MRIAmount, ArcherManaCirculation;
+extern int MSDReduce, MSDMul, MSDMin, MSDMax;
+extern int MFBReduce, MFBMul, MFBMin, MFBMax;
+extern int MIAReduce, MIAMul, MIAMin, MIAMax;
+extern int MIcicleReduce, MIcicleMul, MIcicleMin, MIcicleMax;
+extern int MTBReduce, MTBMul, MTBMin, MTBMax;
+extern int AVAReduce, AVAMul, AVAMin, AVAMax, AVAPoisonMin, AVAPoisonMax;;
+extern int AAEReduce, AAEMul, AAEMin, AAEMax;
+extern int AARReduce, AARMul, AARMin, AARMax;
+extern int EBSMul, EBSReduce, ERAReduce, ERAMul, ETBReduce, ETBMul;
+extern int ALAReduce, ALAMul;
+extern int ACSReduce, ACSMul, ACSMin, ACSMax, ACAOE, ACPVPAOE, ACAOERange;
+extern int MLAReduce, MLAMul, MLAMin, MLAMax;
+extern int MFIReduce, MFIMul, MFIMin, MFIMax;
+extern int MMIReduce, MMIMul, MMIMin, MMIMax;
+extern int TEShinReduce, TEShinMul, TEZilReduce, TEZilMul, TEWhirReduce, TEWhirMul;
+extern int TWOHReduce, TWOHMul, TWOHMin, TWOHMax;
+extern int TSBReduce, TSBMul, TSBMin, TSBMax;
+extern int TSSReduce, TSSMul, TSSMin, TSSMax;
+extern int TLSReduce, TLSMul, TLSMin, TLSMax;
+extern int TDOKReduce, TDOKMul, TDOKMin, TDOKMax;
+extern int TCOReduce, TCOMin, TCOMax, MageFakeDamage;
+extern int TCAReduce, TCAMin, TCAMax;
+extern int TTBSReduce, TTBSMul, TTBSMin, TTBSMax;
+extern int TSAReduce, TSAMul, TSAMin, TSAMax;
+extern int TSuBReduce, TSuBMul, TSuBMin, TSuBMax;
+extern int TFBReduce, TFBMul, TFBMin, TFBMax;
+extern int TAssReduce, TAssMul, TAssMin, TAssMax;
+extern int TVSReduce, TVSMul, TVSMin, TVSMax;
+extern int TRupReduce, TRupMul, TRupMin, TRupMax;
+extern int TFWReduce, TFWMul, TFWMin, TFWMax;
+extern int TStranReduce, TStranMul, TStranMin, TStranMax;
+extern int TStunReduce, TStunMul, TStunMin, TStunMax;
+extern int BFMap, BFQuest, ScenarioMap, ScenarioQuest, DonationCoin, F10Quest, BFTime, ScenarioTime, F10Level;
+extern int GVETime;
+extern int DTQuest, DTLimit, ConfigPVPMaxDmg;
+extern int BFRange, BFBoss, BFBossX, BFBossY, BFBossTime, BFBossReward, BFBossBuffX1, BFBossBuffY1, BFBossBuffX2, BFBossBuffY2;
 //REWARDS
-int WinnerBF = 0, LoserBF = 0, DrawBF = 0;
-int WinnerDK = 0, LoserDK = 0, DrawDK = 0;
-int WinnerCapture = 0, LoserCapture = 0, DrawCapture = 0;
-int WinnerPL = 0, LoserPL = 0;
-int WinnerDuel = 0, LoserDuelRound = 0, WinnerDuelRound = 0;
-int amount = 0;
-int WinnerLMS = 0, LoserLMS = 0;
-int WinnerHell = 0;
-int VoteReward = 0;
-int BossHuntReward = 0;
-int ExtensionTime = 0;
-int ScenarioQuestR = 0, ScenarioQuestB = 0;
-int COKQuest=0,COKLimit=0,COKR=0,COKA=0;
-unsigned __int64 Hashes = 0;
-bool MessageExecuted = false;
-unsigned __int64 F10Exp1 = 1, F10Exp2 = 1, F10Exp3 = 1, F10Exp4 = 1, F10Exp5 = 1, F10Exp6 = 1, F10Exp7 = 1, F10Exp8 = 0;
-unsigned __int64 MautExp1 = 1, MautExp2 = 1, MautExp3 = 1, MautExp4 = 1, MautExp5 = 1, MautExp6 = 1, MautExp7 = 1, MautExp8 = 0;
-int HellQuest = 0, HellMap = 0, HellX = 0, HellY = 0, HellReturnX = 0, HellReturnY = 0, HellSummonX = 0, HellSummonY = 0;
-int F10BuffEnable = 0, F10BuffSys = 0, F10Agi = 0, F10Hth = 0, F10Int = 0, F10Wis = 0, F10Str = 0, F10Min = 0, F10Max = 0, F10EXPBuff = 0;
-int CaptureDuration = 0,HaninChance=0, HaninChange=0;
-int FilterCheck = 0;
-int SDAOE = 0, SDLOWAOE = 0;
-int F10Multiply = 0, MautMultiply = 0;
-int SDPVPAOE = 0;
-int SDRange = 0;
-int GZLvl = 0;
-int HTime = 0, jailtime = 0;;
-int betType = 0,betAmount=0, ReplyLottoQuest=0;
-int RaidQuest=0,RaidHonor=0,RaidRP=0,RaidMap=0;
-int Raid1=0,Raid2=0,Raid3=0,Raid4=0,Raid5=0,Raid6=0,Raid7=0,Raid8=0,Raid9=0,RaidReward1=0,RaidAmount1=0,RaidReward2=0,RaidAmount2=0;
-int RaidReward3=0,RaidAmount3=0,RaidReward5=0,RaidAmount5=0,RaidReward7=0,RaidAmount7=0,RaidReward8=0,RaidAmount8=0,RaidReward9=0,RaidAmount9=0,RaidReward6=0,RaidAmount6=0,RaidReward4=0,RaidAmount4=0;
-char RaidTime[50] = "", CaptureTime[50] = "";
-int RaidItem=0,RaidItemAmount=0,RaidLevel=0;
-int RaidMini1=0,RaidMiniAmount1=0,RaidMini2=0,RaidMiniAmount2=0,RaidMini3=0,RaidMiniAmount3=0,RaidMini4=0,RaidMiniAmount4=0;
-int packetDebugger = 0, chatDebug = 0, skillDebug = 0, commandDebug = 0, questDebug = 0, loginDebug = 0, rangeDebug = 0;
-int HWIDBlock = 0, EXPLimit=0, MaxEXP=0;
-int GOBOTP = 0, SOFSMIN=0, SOFSMAX=0, LMSReward = 0, LMSAmount = 0, BFReward=0, BFAmount=0, GVGReward=0,GVGAmount=0,PReward=0,PAmount=0;
-int DReward=0,DAmount=0, FishScale=0;
-int PacketTime = 0, PacketLimit = 0, PacketActive = 0, PacketInBetween = 0;
-int betAct = 0,betGeon = 0,betDona = 0, betCoin = 0, betSuicide = 0, betSurrender = 0;
-int LotAct = 0,LotQuest = 0, LotRQuest = 0, LotIndex = 0, LotAmount = 0, HRQuest = 0;
-int LotLevelMin = 0, LotLevelMax = 0;
-int levellimit=0;
-int PVPArenaTiming = 0;
-int LottoAct = 0, LottoQuest = 0, LottoIndex = 0, LottoAmount = 0, LottoReward = 0, LottoRAmount = 0, LottoLevelMin = 0, LottoLevelMax = 0;
-int BossIndex = 0,BossRewardIndex=0,BossRewardAmount=0;
-int BFRewardPts=0,BFHonorPts=0,ScenarioRewardPts=0,ScenarioHonorPts=0,ProtectHonorPts=0,ProtectRewardPts=0,DuelRewardPts=0,DuelHonorPts=0,CaptureHonorPts=0,CaptureRewardPts=0,LMSRewardPts=0,LMSHonorPts=0;
-int KVK = 0, KVA = 0, KVM = 0, KVT = 0, KVS = 0, AVK = 0, AVA = 0, AVM = 0, AVT = 0, AVS = 0, MVK = 0, MVA = 0, MVM = 0, MVT = 0, MVS = 0, TVK = 0, TVA = 0, TVM = 0, TVT = 0, TVS = 0, SVK = 0, SVA = 0, SVM = 0, SVT = 0, SVS = 0;
-int FatalDamagePVP = 0, FatalDamagePVE = 0;
-char boxnotice[BUFSIZ], moveto[BUFSIZ], portuser[BUFSIZ], bet[BUFSIZ], ignoredPlayer[BUFSIZ], unignoredPlayer[BUFSIZ], block[BUFSIZ], unblock[BUFSIZ], hardblock[BUFSIZ], newnotice[BUFSIZ], donatename[BUFSIZ], duelname[BUFSIZ], mutename[BUFSIZ],jailname[BUFSIZ], ipname[BUFSIZ], nameugog[BUFSIZ], buffnameplayer[BUFSIZ], unjailname[BUFSIZ], unmutename[BUFSIZ], guildinvitename[BUFSIZ], honorupName[BUFSIZ], rewardupName[BUFSIZ], bypassName[BUFSIZ];
-int blocktime = 0;
-int newnoticetype = 0, senditemindx = 0, buffid = 0, bufftime = 0, buffvalue = 0, geonamount = 0, speedvalue = 0, maskups = 0, killmobs = 0, summonindex = 1, summonamount = 1, donateamount = 1, senditemprefix = 0, cwtotaltime = 0, mutetime = 0;
-const char *MyReLisansCheckChar = "nothing"; std::string MyReLisansCheckStr = "nothing";
-int ShopRewardTime = 0;
-int ShopFortCheck = 0;
-int shopPlayers = 0;
-char ShopRewardIndex[512], ShopRewardAmount[512], ShopRewardLvl[512];
-char ExpEventStart[50] = "Hell", ExpEventEnd[50] = "Hell", ActiveExpEvent[50] = "Hell";
-char Honor1[50] = "Empty", Honor2[50] = "Empty", Honor3[50] = "Empty", Honor4[50] = "Empty", Honor5[50] = "Empty", Honor6[50] = "Empty", Honor7[50] = "Empty", Honor8[50] = "Empty", Honor9[50] = "Empty", Honor10[50] = "Empty";
-int Honor1Sys = 0, Honor2Sys = 0, Honor3Sys = 0, Honor4Sys = 0, Honor5Sys = 0, Honor6Sys = 0, Honor7Sys = 0, Honor8Sys = 0, Honor9Sys = 0, Honor10Sys = 0, Honor1Stats = 0, Honor2Stats = 0, Honor3Stats = 0, Honor4Stats = 0, Honor5Stats = 0, Honor6Stats = 0, Honor7Stats = 0, Honor8Stats = 0, Honor9Stats = 0, Honor10Stats = 0, Honor1PVE = 0, Honor2PVE = 0, Honor3PVE = 0, Honor4PVE = 0, Honor5PVE = 0, Honor6PVE = 0, Honor7PVE = 0, Honor8PVE = 0, Honor9PVE = 0, Honor10PVE = 0;
-int Honor1PVP = 0, Honor2PVP = 0, Honor3PVP = 0, Honor4PVP = 0, Honor5PVP = 0, Honor6PVP = 0, Honor7PVP = 0, Honor8PVP = 0, Honor9PVP = 0, Honor10PVP = 0;
-int Honor1Fatal = 0, Honor2Fatal = 0, Honor3Fatal = 0, Honor4Fatal = 0, Honor5Fatal = 0, Honor6Fatal = 0, Honor7Fatal = 0, Honor8Fatal = 0, Honor9Fatal = 0, Honor10Fatal = 0;
-int Honor1EB = 0, Honor2EB = 0, Honor3EB = 0, Honor4EB = 0, Honor5EB = 0, Honor6EB = 0, Honor7EB = 0, Honor8EB = 0, Honor9EB = 0, Honor10EB = 0;
-int DutyTotalAmount = 0;
-int HonorTimer = 0;
-int LMSLimit = 0, LMSQuest = 0, LMSMap = 0, LMSX = 0, LMSY = 0;
-int LMSMobIndex = 0, LMSMobX = 0, LMSMobY = 0, LMSRange = 0;
-int PLQuest = 0, PLMap = 0, PLRNPC = 0, PLBNPC = 0;
-int NWOEMul = 0, NWOEMin = 0, NWOEMax = 0, NWOEReduce = 0;
-int NOHSMul = 0, NOHSMin = 0, NOHSMax = 0, NOHSReduce = 0;
-int NAOTMMul = 0, NAOTMMin = 0, NAOTMMax = 0, NAOTMReduce = 0;
-int NMFMul = 0, NMFMin = 0, NMFMax = 0, NMFReduce = 0;
-int NSOTAMul = 0, NSOTAMin = 0, NSOTAMax = 0, NSOTAReduce = 0;
-int NMPMul = 0, NMPMin = 0, NMPMax = 0, NMPReduce = 0;
-int NCSMul = 0, NCSMin = 0, NCSMax = 0, NCSReduce = 0;
-int NSOGMul = 0, NSOGMin = 0, NSOGMax = 0, NSOGReduce = 0;
-int NDAMul = 0, NDAMin = 0, NDAMax = 0, NDAReduce = 0;
-int NBOMMul = 0, NBOMMin = 0, NBOMMax = 0, NBOMReduce = 0;
-int ENPCQ = 0, ENPCRQ = 0, ENPCDL = 0, ENPCIA = 0, ENPCDU = 0, ENPCII = 0, ENPCDD = 0, ENPCDC = 0;
-char HGST[50] = ""; int HGXC = 0, HGYC = 0, HGMapI = 0, HGMobI = 0,  HGEA = 0;
-char CWTCC[50] = ""; int CWTCD = 0, CWTCSH = 0, CWTCEH = 0;
-int ShopJewelIndex = 0, ShopGoldIndex = 0, ShopSilverIndex = 0;
-int SHMGK = 0, SHMGF = 0, SHMW = 0, SHMGW = 0, SHMED = 0, SHMTSP = 0, SHMAOB = 0, SHMWOE = 0, SHMSOP = 0, SHMSP = 0, SHMDB = 0;
-int SHMME = 0, SHMC = 0, SHMSS = 0, SHMES = 0, SHMSW = 0, SHMD = 0, SHMRK = 0;
-int Insanity = 0, Thunder = 0, Violent = 0, Storm = 0, Ancient = 0, Perfo = 0;
-int ReplyWC = 0, WCWinQuest=0;
-int maxAllowedSpeed = 0;
-int off = 0,pla=0;
-int FOESkillsActive = 0;
-int Tries = 0;
-int Restri = 0, TrackerActive = 0;
-int BFTeleRedX = 0, BFTeleRedY = 0, BFTeleRedZ = 0, BFTeleBlueX = 0, BFTeleBlueY = 0, BFTeleBlueZ = 0, BFRedSafeX1 = 0, BFRedSafeX2 = 0, BFRedSafeY1 = 0, BFRedSafeY2 = 0, BFBlueSafeX1 = 0, BFBlueSafeX2 = 0, BFBlueSafeY1 = 0, BFBlueSafeY2 = 0;
-int CPTeleRedX = 0, CPTeleRedY = 0, CPTeleBlueX = 0, CPTeleBlueY = 0, CPRedSafeX1 = 0, CPRedSafeX2 = 0, CPBlueSafeX1 = 0, CPBlueSafeX2 = 0;
-int RedStoneX = 0, RedStoneY = 0, BlueStoneX = 0, BlueStoneY = 0;
-int PVPMobIndex = 0, PartyTime = 0, PartyMobScore = 0, PartyReviveCD = 0;
-RECT rectBlueSafe = RECT(), rectRedSafe = RECT();
-int BFTeleRedXG = 0, BFTeleRedYG = 0, BFTeleRedZG = 0, BFTeleBlueXG = 0, BFTeleBlueYG = 0, BFTeleBlueZG = 0, BFRedSafeX1G = 0, BFRedSafeX2G = 0, BFRedSafeY1G = 0, BFRedSafeY2G = 0, BFBlueSafeX1G = 0, BFBlueSafeX2G = 0, BFBlueSafeY1G = 0, BFBlueSafeY2G = 0;
-int CPTeleRedXG = 0, CPTeleRedYG = 0, CPTeleBlueXG = 0, CPTeleBlueYG = 0, CPRedSafeX1G = 0, CPRedSafeX2G = 0, CPBlueSafeX1G = 0, CPBlueSafeX2G = 0;
-int RedStoneXG = 0, RedStoneYG = 0, BlueStoneXG = 0, BlueStoneYG = 0;
-RECT rectBlueSafeG = RECT(), rectRedSafeG = RECT();
-RECT BFBossBuff = RECT();
+extern int WinnerBF, LoserBF, DrawBF;
+extern int WinnerDK, LoserDK, DrawDK;
+extern int WinnerCapture, LoserCapture, DrawCapture;
+extern int WinnerPL, LoserPL;
+extern int WinnerDuel, LoserDuelRound, WinnerDuelRound;
+extern int amount;
+extern int WinnerLMS, LoserLMS;
+extern int WinnerHell;
+extern int VoteReward;
+extern int BossHuntReward;
+extern int ExtensionTime;
+extern int ScenarioQuestR, ScenarioQuestB;
+extern int COKQuest,COKLimit,COKR,COKA;
+extern unsigned __int64 Hashes;
+extern bool MessageExecuted;
+extern unsigned __int64 F10Exp1, F10Exp2, F10Exp3, F10Exp4, F10Exp5, F10Exp6, F10Exp7, F10Exp8;
+extern unsigned __int64 MautExp1, MautExp2, MautExp3, MautExp4, MautExp5, MautExp6, MautExp7, MautExp8;
+extern int HellQuest, HellMap, HellX, HellY, HellReturnX, HellReturnY, HellSummonX, HellSummonY;
+extern int F10BuffEnable, F10BuffSys, F10Agi, F10Hth, F10Int, F10Wis, F10Str, F10Min, F10Max, F10EXPBuff;
+extern int CaptureDuration,HaninChance, HaninChange;
+extern int FilterCheck;
+extern int SDAOE, SDLOWAOE;
+extern int F10Multiply, MautMultiply;
+extern int SDPVPAOE;
+extern int SDRange;
+extern int GZLvl, ReviveLvl, ReviveCD, ReviveBuff, ReviveSpeed;
+extern int Maskon, Maskoff;
+extern int HTime, jailtime;;
+extern int betType,betAmount, ReplyLottoQuest;
+extern int RaidQuest,RaidHonor,RaidRP,RaidMap;
+extern int Raid1,Raid2,Raid3,Raid4,Raid5,Raid6,Raid7,Raid8,Raid9,RaidReward1,RaidAmount1,RaidReward2,RaidAmount2;
+extern int RaidReward3,RaidAmount3,RaidReward5,RaidAmount5,RaidReward7,RaidAmount7,RaidReward8,RaidAmount8,RaidReward9,RaidAmount9,RaidReward6,RaidAmount6,RaidReward4,RaidAmount4;
+extern char RaidTime[50], CaptureTime[50];
+extern int RaidItem,RaidItemAmount,RaidLevel;
+extern int RaidMini1,RaidMiniAmount1,RaidMini2,RaidMiniAmount2,RaidMini3,RaidMiniAmount3,RaidMini4,RaidMiniAmount4;
+extern int packetDebugger, chatDebug, skillDebug, commandDebug, questDebug, loginDebug, rangeDebug, attackDebug;
+extern int HWIDBlock, EXPLimit, MaxEXP;
+extern int GOBOTP, SOFSMIN, SOFSMAX, LMSReward, LMSAmount, BFReward, BFAmount, GVGReward,GVGAmount,PReward,PAmount;
+extern int DReward,DAmount, FishScale;
+extern int PacketTime, PacketLimit, PacketActive, PacketInBetween;
+extern int betAct,betGeon,betDona, betCoin, betSuicide, betSurrender;
+extern int LotAct,LotQuest, LotRQuest, LotIndex, LotAmount, HRQuest;
+extern int LotLevelMin, LotLevelMax;
+extern int levellimit;
+extern int PVPArenaTiming;
+extern int LottoAct, LottoQuest, LottoIndex, LottoAmount, LottoReward, LottoRAmount, LottoLevelMin, LottoLevelMax;
+extern int BossIndex,BossRewardIndex,BossRewardAmount;
+extern int BFRewardPts,BFHonorPts,ScenarioRewardPts,ScenarioHonorPts,ProtectHonorPts,ProtectRewardPts,DuelRewardPts,DuelHonorPts,CaptureHonorPts,CaptureRewardPts,LMSRewardPts,LMSHonorPts;
+extern int KVK, KVA, KVM, KVT, KVS, AVK, AVA, AVM, AVT, AVS, MVK, MVA, MVM, MVT, MVS, TVK, TVA, TVM, TVT, TVS, SVK, SVA, SVM, SVT, SVS;
+extern int FatalDamagePVP, FatalDamagePVE;
+extern char boxnotice[BUFSIZ], moveto[BUFSIZ], portuser[BUFSIZ], bet[BUFSIZ], ignoredPlayer[BUFSIZ], unignoredPlayer[BUFSIZ], block[BUFSIZ], unblock[BUFSIZ], hardblock[BUFSIZ], newnotice[BUFSIZ], donatename[BUFSIZ], duelname[BUFSIZ], mutename[BUFSIZ],jailname[BUFSIZ], ipname[BUFSIZ], nameugog[BUFSIZ], buffnameplayer[BUFSIZ], unjailname[BUFSIZ], unmutename[BUFSIZ], guildinvitename[BUFSIZ], honorupName[BUFSIZ], rewardupName[BUFSIZ], bypassName[BUFSIZ];
+extern int blocktime;
+extern int newnoticetype, senditemindx, buffid, bufftime, buffvalue, geonamount, speedvalue, maskups, killmobs, summonindex, summonamount, donateamount, senditemprefix, cwtotaltime, mutetime;
+extern const char *MyReLisansCheckChar; extern std::string MyReLisansCheckStr;
+extern int ShopRewardTime;
+extern int ShopFortCheck;
+extern int shopPlayers;
+extern char ShopRewardIndex[512], ShopRewardAmount[512], ShopRewardLvl[512];
+extern char ExpEventStart[50], ExpEventEnd[50], ActiveExpEvent[50];
+extern char Honor1[50], Honor2[50], Honor3[50], Honor4[50], Honor5[50], Honor6[50], Honor7[50], Honor8[50], Honor9[50], Honor10[50];
+extern int Honor1Sys, Honor2Sys, Honor3Sys, Honor4Sys, Honor5Sys, Honor6Sys, Honor7Sys, Honor8Sys, Honor9Sys, Honor10Sys, Honor1Stats, Honor2Stats, Honor3Stats, Honor4Stats, Honor5Stats, Honor6Stats, Honor7Stats, Honor8Stats, Honor9Stats, Honor10Stats, Honor1PVE, Honor2PVE, Honor3PVE, Honor4PVE, Honor5PVE, Honor6PVE, Honor7PVE, Honor8PVE, Honor9PVE, Honor10PVE;
+extern int Honor1PVP, Honor2PVP, Honor3PVP, Honor4PVP, Honor5PVP, Honor6PVP, Honor7PVP, Honor8PVP, Honor9PVP, Honor10PVP;
+extern int Honor1Fatal, Honor2Fatal, Honor3Fatal, Honor4Fatal, Honor5Fatal, Honor6Fatal, Honor7Fatal, Honor8Fatal, Honor9Fatal, Honor10Fatal;
+extern int Honor1EB, Honor2EB, Honor3EB, Honor4EB, Honor5EB, Honor6EB, Honor7EB, Honor8EB, Honor9EB, Honor10EB;
+extern int DutyTotalAmount;
+extern int HonorTimer;
+extern int LMSLimit, LMSQuest, LMSMap, LMSX, LMSY;
+extern int LMSMobIndex, LMSMobX, LMSMobY, LMSRange;
+extern int PLQuest, PLMap, PLRNPC, PLBNPC;
+extern int NWOEMul, NWOEMin, NWOEMax, NWOEReduce;
+extern int NOHSMul, NOHSMin, NOHSMax, NOHSReduce;
+extern int NAOTMMul, NAOTMMin, NAOTMMax, NAOTMReduce;
+extern int NMFMul, NMFMin, NMFMax, NMFReduce;
+extern int NSOTAMul, NSOTAMin, NSOTAMax, NSOTAReduce;
+extern int NMPMul, NMPMin, NMPMax, NMPReduce;
+extern int NCSMul, NCSMin, NCSMax, NCSReduce;
+extern int NSOGMul, NSOGMin, NSOGMax, NSOGReduce;
+extern int NDAMul, NDAMin, NDAMax, NDAReduce;
+extern int NBOMMul, NBOMMin, NBOMMax, NBOMReduce;
+extern int ENPCQ, ENPCRQ, ENPCDL, ENPCIA, ENPCDU, ENPCII, ENPCDD, ENPCDC;
+extern char HGST[50]; extern int HGXC, HGYC, HGMapI, HGMobI,  HGEA;
+extern char CWTCC[50]; extern int CWTCD, CWTCSH, CWTCEH;
+extern int ShopJewelIndex, ShopGoldIndex, ShopSilverIndex;
+extern int SHMGK, SHMGF, SHMW, SHMGW, SHMED, SHMTSP, SHMAOB, SHMWOE, SHMSOP, SHMSP, SHMDB;
+extern int SHMME, SHMC, SHMSS, SHMES, SHMSW, SHMD, SHMRK;
+extern int Insanity, Thunder, Violent, Storm, Ancient, Perfo;
+extern int ReplyWC, WCWinQuest;
+extern int off,pla;
+extern int FOESkillsActive;
+extern int Tries;
+extern int Restri, TrackerActive;
+extern int BFTeleRedX, BFTeleRedY, BFTeleRedZ, BFTeleBlueX, BFTeleBlueY, BFTeleBlueZ, BFRedSafeX1, BFRedSafeX2, BFRedSafeY1, BFRedSafeY2, BFBlueSafeX1, BFBlueSafeX2, BFBlueSafeY1, BFBlueSafeY2;
+extern int CPTeleRedX, CPTeleRedY, CPTeleBlueX, CPTeleBlueY, CPRedSafeX1, CPRedSafeX2, CPBlueSafeX1, CPBlueSafeX2;
+extern int RedStoneX, RedStoneY, BlueStoneX, BlueStoneY;
+extern int PVPMobIndex, PartyTime, PartyMobScore, PartyReviveCD;
+extern RECT rectBlueSafe, rectRedSafe;
+extern int BFTeleRedXG, BFTeleRedYG, BFTeleRedZG, BFTeleBlueXG, BFTeleBlueYG, BFTeleBlueZG, BFRedSafeX1G, BFRedSafeX2G, BFRedSafeY1G, BFRedSafeY2G, BFBlueSafeX1G, BFBlueSafeX2G, BFBlueSafeY1G, BFBlueSafeY2G;
+extern int CPTeleRedXG, CPTeleRedYG, CPTeleBlueXG, CPTeleBlueYG, CPRedSafeX1G, CPRedSafeX2G, CPBlueSafeX1G, CPBlueSafeX2G;
+extern int RedStoneXG, RedStoneYG, BlueStoneXG, BlueStoneYG;
+extern RECT rectBlueSafeG, rectRedSafeG;
+extern RECT BFBossBuff;
 
-int CPSummonX = 0, CPSummonY = 0, RedCPSummonX = 0, RedCPSummonY = 0, BlueCPSummonX = 0, BlueCPSummonY = 0;
-int CPQuestR = 0, CPQuestB = 0;
+extern int CPSummonX, CPSummonY, RedCPSummonX, RedCPSummonY, BlueCPSummonX, BlueCPSummonY;
+extern int CPQuestR, CPQuestB;
 
-int CPHP = 0; char CPBuffEffect[50];
-int CPPoints = 0, CPSeconds = 0, CPMaxScore = 0;
-int CPGate = 0, CPMob = 0, CPMobAmount = 0;
-int CPGateRX = 0, CPGateRY = 0, CPGateBX = 0, CPGateBY = 0, CPMobRedX = 0, CPMobRedY = 0, CPMobBlueX = 0, CPMobBlueY = 0;
-int DailyLoginLimit = 0, DailyLoginBound = 0, DailyLogin = 0, IPCheck = 0, DailyRewardQuest = 0;
+extern int CPHP; extern char CPBuffEffect[50];
+extern int CPPoints, CPSeconds, CPMaxScore;
+extern int CPGate, CPMob, CPMobAmount;
+extern int CPGateRX, CPGateRY, CPGateBX, CPGateBY, CPMobRedX, CPMobRedY, CPMobBlueX, CPMobBlueY;
+extern int DailyLoginLimit, DailyLoginBound, DailyLogin, IPCheck, DailyRewardQuest;
 //new
-int FishLimit = 0, ShoppingLimit = 0;
-int F10Chance = 0;
-int NirvanaEnable = 0, NirvanaQuest = 0;
-int TrainingHit = 0, FreeTime = 0, TrainingPrice = 0;
-int namePadIndex = 0, namePadPrice = 0, namePadDuration = 0;
-int ShadowAOEPVE = 0, ShadowRange = 0, ShadowAOEPVP; 
-int EFakePlayers = 0;
-int AuctionLimit = 0;
-int GuildLimit = 0;
-int SQCheck = 0, maxAmountQ = 0;
-int DuelDuration = 0;
-int MinMacro = 0, MaxMacro = 0, MacroStartTime = 0;
+extern int FishLimit, ShoppingLimit;
+extern int F10Chance;
+extern int NirvanaEnable, NirvanaQuest;
+extern int TrainingHit, FreeTime, TrainingPrice;
+extern int namePadIndex, namePadPrice, namePadDuration;
+extern int ShadowAOEPVE, ShadowRange, ShadowAOEPVP; 
+extern int EFakePlayers;
+extern int AuctionLimit;
+extern int GuildLimit;
+extern int SQCheck, maxAmountQ;
+extern int DuelDuration;
+extern int MinMacro, MaxMacro, MacroStartTime;
 
 // NEW MYSTERY SKILLS
-int MystPAtkQ = 0, MystMAtkQ = 0, MystHPQ = 0, MystDefQ = 0, MystOTPQ = 0, MystEVAQ = 0;
-int MystPAtkS = 0, MystMAtkS = 0, MystHPS = 0, MystDefS = 0, MystOTPS = 0, MystEVAS = 0;
-int MystLevel = 0, MystLevelMax = 0, NewMystEnable = 0, NewMystReset = 0;
-int GuildEXPGrade4 = 0;
-int GuildEXPGrade3 = 0;
-int GuildEXPGrade2 = 0;
-int GuildColors = 0, LeaderColor = 0, SubLeaderColor = 0, ChiefColor = 0;
-int iceStoneMax = 0, iceStoneValue = 0;
-char IceStoneEffect[BUFSIZ] = "", LightningStoneEffect[BUFSIZ] = "";
-int AuthTimer = 0;
-int MemberFull1 = 0;
-int MemberFull2 = 0;
-int MemberFull3 = 0;
-int MemberFull4 = 0;
-int TempMemberFull = 0;
-int AllyMemberFull = 0;
-int MaxTimeAlly = 0;
-int ChannelActivated = 0;
-int EmokLvl = 0, BattlefieldLevel = 0, BattlefieldAFK = 0, BFAFKActive = 0, BFHWID = 0, LMSHWID = 0, PVPHWID = 0, BattlefieldBuffs = 0;
-int BattlefieldSpeed = 0;
+extern int MystPAtkQ, MystMAtkQ, MystHPQ, MystDefQ, MystOTPQ, MystEVAQ;
+extern int MystPAtkS, MystMAtkS, MystHPS, MystDefS, MystOTPS, MystEVAS;
+extern int MystLevel, MystLevelMax, NewMystEnable, NewMystReset;
+extern int GuildEXPGrade4;
+extern int GuildEXPGrade3;
+extern int GuildEXPGrade2;
+extern int GuildColors, LeaderColor, SubLeaderColor, ChiefColor;
+extern int iceStoneMax, iceStoneValue;
+extern char IceStoneEffect[BUFSIZ], LightningStoneEffect[BUFSIZ];
+extern int AuthTimer;
+extern int MemberFull1;
+extern int MemberFull2;
+extern int MemberFull3;
+extern int MemberFull4;
+extern int TempMemberFull;
+extern int AllyMemberFull;
+extern int MaxTimeAlly;
+extern int ChannelActivated;
+extern int EmokLvl, BattlefieldLevel, BattlefieldAFK, BFAFKActive, BFHWID, LMSHWID, PVPHWID, BattlefieldBuffs;
+extern int BattlefieldSpeed;
 
-int MLMMax = 0;
-int MLMStudentLevel = 0;
-int MLMTeacherLevel = 0;
-int MLMLevel1Reward = 0;
-int MLMMoneyReward = 0;
-int RewardHWID = 0;
-int ShopLevelLimit = 0;
-int TradeLevelLimit = 0;
-int ExpansionIndex = 0, ExpansionAmount = 0;
-int ImmortalEffect, ImmortalSBKey, ImmortalSBName = 0, ImmortalPVP = 0;
-int PKKillActive = 0, PKKillPlayer = 0, PKKillChance = 0, PKKillPlayerChance = 0, PKLvlDiff = 0;
-int PeaceEvil = 0, PEStartHTML = 0, SlytherinQuest = 0, GryffindorQuest = 0, SlytherinColor = 0, GryffindorColor = 0, SlytherinGCIndex = 0, GryffindorGCIndex = 0, TimerEP = 0, AmountEP = 0, PELoginHTML = 0, PECSlytherin = 0, PECGryffindor = 0, PECHufflepuff = 0, PECRavenclaw = 0;
-int RavenQuest = 0, RavenColor = 0, RavenGCIndex = 0;
-int HuffleQuest = 0, HuffleColor = 0, HuffleGCIndex = 0;
+extern int MLMMax;
+extern int MLMStudentLevel;
+extern int MLMTeacherLevel;
+extern int MLMLevel1Reward;
+extern int MLMMoneyReward;
+extern int RewardHWID;
+extern int ShopLevelLimit;
+extern int TradeLevelLimit;
+extern int ExpansionIndex, ExpansionAmount;
+extern int ImmortalEffect, ImmortalSBKey, ImmortalSBName, ImmortalPVP;
+extern int PKKillActive, PKKillPlayer, PKKillChance, PKKillPlayerChance, PKLvlDiff;
+extern int PeaceEvil, PEStartHTML, SlytherinQuest, GryffindorQuest, SlytherinColor, GryffindorColor, SlytherinGCIndex, GryffindorGCIndex, TimerEP, AmountEP, PELoginHTML, PECSlytherin, PECGryffindor, PECHufflepuff, PECRavenclaw;
+extern int RavenQuest, RavenColor, RavenGCIndex;
+extern int HuffleQuest, HuffleColor, HuffleGCIndex;
 //HonorTags
-int Slytherin0 = 0, Slytherin1 = 0, Slytherin2 = 0, Slytherin3 = 0, Slytherin4 = 0, Slytherin5 = 0, Slytherin6 = 0, Slytherin7 = 0, Slytherin8 = 0, Slytherin9 = 0, Slytherin10 = 0;
-int Gryffindor0 = 0, Gryffindor1 = 0, Gryffindor2 = 0, Gryffindor3 = 0, Gryffindor4 = 0, Gryffindor5 = 0, Gryffindor6 = 0, Gryffindor7 = 0, Gryffindor8 = 0, Gryffindor9 = 0, Gryffindor10 = 0;
-int Ravenclaw0 = 0, Ravenclaw1 = 0, Ravenclaw2 = 0, Ravenclaw3 = 0, Ravenclaw4 = 0, Ravenclaw5 = 0, Ravenclaw6 = 0, Ravenclaw7 = 0, Ravenclaw8 = 0, Ravenclaw9 = 0, Ravenclaw10 = 0;
-int Hufflepuff0 = 0, Hufflepuff1 = 0, Hufflepuff2 = 0, Hufflepuff3 = 0, Hufflepuff4 = 0, Hufflepuff5 = 0, Hufflepuff6 = 0, Hufflepuff7 = 0, Hufflepuff8 = 0, Hufflepuff9 = 0, Hufflepuff10 = 0;
-int HouseReward = 0, HouseRewardTime = 0, HouseRewardAmount = 0;
+extern int Slytherin0, Slytherin1, Slytherin2, Slytherin3, Slytherin4, Slytherin5, Slytherin6, Slytherin7, Slytherin8, Slytherin9, Slytherin10;
+extern int Gryffindor0, Gryffindor1, Gryffindor2, Gryffindor3, Gryffindor4, Gryffindor5, Gryffindor6, Gryffindor7, Gryffindor8, Gryffindor9, Gryffindor10;
+extern int Ravenclaw0, Ravenclaw1, Ravenclaw2, Ravenclaw3, Ravenclaw4, Ravenclaw5, Ravenclaw6, Ravenclaw7, Ravenclaw8, Ravenclaw9, Ravenclaw10;
+extern int Hufflepuff0, Hufflepuff1, Hufflepuff2, Hufflepuff3, Hufflepuff4, Hufflepuff5, Hufflepuff6, Hufflepuff7, Hufflepuff8, Hufflepuff9, Hufflepuff10;
+extern int HouseReward, HouseRewardTime, HouseRewardAmount;
 //HTEnd
-char SlytherinLoginMSG[512], GryffindorLoginMSG[512], RavenclawLoginMSG[512], HufflepuffLoginMSG[512];
-int AQuestBackX = 0, AQuestBackY = 0, ACooldown = 0;
-const char* ErrorMsg = "An error has occured, please try again.";
-int StBroken = 0;
-int STBuffEnabled = 0;
-int ShopBound = 0;
-int TastyLvl = 0;
-int ScrollOfInv = 0, ScrollOfMovingPL = 0;
-int EggPercentage, EggSBName = 0, EggSBKey = 0;
-int EggBuff = 0, EggValue = 0;
-int DamagePercentage, DamageSBName = 0, DamageSBKey = 0;
-int thirdCheck = 0, thirdCheck2 = 0 , fuseNotice = 0, F10Limit = 0, MautLimit = 0, InstanceLimit = 0;
-int BossEXPLimit = 0;
-int JailMap = 0;
-int CwRewardGuild = 0, CwRewardAlly = 0, CwRewardOther = 0;
-int RaidDonateQuest = 0, RaidDonateQFlag = 0;
-int RaidStartQuest = 0, RaidStartQFlag = 0;
-int RaidReplyQuest = 0, RaidReplyQFlag = 0;
-int RaidGuildMap = 0, RaidGuildIndex = 0;
-int RaidMinimumAmount = 0, RaidMaximumAmount = 0;
-int RaidGuildTime = 0;
-int SpinSlashRange = 0;
-int MaxAttempts = 0;
-int DBOutput = 0;
-int GoldenCoinA = 0, GoldenCoinT = 0, GoldenCoinI = 0;
-int AntiKSTime = 0;
-int DQBound = 0;
-int AssassinLimit = 0, AssassinParty = 0;
-int PartyEXPMax = 0;
-int CBuffRange = 0, CRangeCheck = 0;
-int AETime = 0;
-int OBPVPEnable = 0, OBActive = 0;
-int LawlessMap = 0;
-int LawlessMKill = 0, LawlessPKill = 0;
-int ARRange = 0, MRange = 0, KRange = 0, TRange = 0, SRange = 0, RangeKick = 0;
-int CWRLimit = 0;
-bool ShamanDisabled = false, ThiefDisabled = false;
-int LawlessSpawnX = 0, LawlessSpawnY = 0, LawlessReviveCD = 0;
-int TBPlayersMin = 0, TBPlayersMax = 0, TBMin = 0, TBMax = 0;
-int TBBackX = 0, TBBackY = 0, TBBackZ = 0, EmblemSet = 0, EmblemPull = 0, EmblemExpire = 0;
-int TBReward0 = 0, TBReward1 = 0, TBReward2 = 0, TBReward3 = 0;
-int TestVV = 0, AutoMissionQuest = 0;
-int TBMap = 0, TBRedX = 0, TBRedY = 0, TBRedZ = 0, TBBlueX = 0, TBBlueY = 0, TBBlueZ = 0, TBYellowX = 0, TBYellowY = 0, TBYellowZ = 0, TBBuffEach = 0, TBTime = 0, TBCooldown = 0;
-int SVMap = 0, SVReplyQuest = 0, SVRegisterDefault = 0, SVTime = 0, SVWinnerReward = 0, SVLoserReward = 0, SVDrawReward = 0, SVPtMob = 0, SVPtPlayer = 0;
-int RupPVPAoe = 0, RupRange = 0, RupAOE = 0;
-int PSActive = 0, PSHonor = 0, PSReward = 0, PSLimit = 0, KrPSsysReward = 0, KdPSsysReward = 0;
-int BSOFSky = 0;
-int PVPLvLDiffDmg = 0;
-int MiningPCLimit = 0, MiningAreaLimit = 0;
-int SlytherinDieX = 0, SlytherinDieY = 0, SlytherinDieZ = 0, GryffindorDieX = 0, GryffindorDieY = 0, GryffindorDieZ = 0, RavenDieX = 0, RavenDieY = 0, RavenDieZ = 0, HuffleDieX = 0, HuffleDieY = 0, HuffleDieZ = 0;
-int DQuestGap = 0;
-int ManaCostActive = 0;
-int TransmigrationLimit = 0;
-int SEMapX = 0, SEMapY = 0, SERewardWinner = 0, SERewardLoser = 0, SEPtsPerMob = 0, SEPtsPerPlayer = 0, SEMinimumPoints = 0, SEDefaultTime = 0, SESpawnCycle = 0, SEImmunityTime = 0;
-int BoundAllow = 0;
-int ScrollEM = 0;
-int RebornQuest = 0, RebornActive = 0, RebornGZ = 0;
-int MageDifference = 0;
-int PDMul = 0, PDPVP = 0, BlessPVP = 0;
-int PPSys = 0, PPSysB = 0, PPEXP = 0, CJBEXP = 0, CJBSYS = 0, CJBSYSB = 0, CJBEXPActive = 0, CJBRange = 0, PPActive = 0;
-int itemIndex = 0;
-int EVGoodReward = 0, EVGoodLoser = 0, EVGoodDraw = 0;
-int PetBound = 0, TimedItemBound = 0;
-int BossEXPQuest = 0, BossEXPRange = 0, BossEXPTime = 0, BossEXPPrepare = 0, BossEXPMap = 0, BossEXPMob = 0, BossEXPMX = 0, BossEXPMY = 0, BossEXPPX = 0, BossEXPPY = 0;
-int t1 = 0, t2 = 0, t3 = 0, t4 = 0, t5 = 0, t6 = 0, t7 = 0, t8 = 0, t9 = 0, t10 = 0, t11 = 0, t12 = 0, t13 = 0, t14 = 0, t15 = 0, t16 = 0, t17 = 0, t18 = 0, t19 = 0, t20 = 0, t21 = 0, t22 = 0, t23 = 0;
-bool sortByChance(const ChanceItem &a, const ChanceItem &b)
-{
-	return a.Chance < b.Chance;
-}
-bool sortSwapChance(const SwapItem &a, const SwapItem &b)
-{
-	return a.Chance < b.Chance;
-}
-bool sortByKey(const int &a, const int &b)
-{
-	return a < b;
-}
-
-int GetLevelDiff() {
-	return MageDifference;
-}
-
+extern char SlytherinLoginMSG[512], GryffindorLoginMSG[512], RavenclawLoginMSG[512], HufflepuffLoginMSG[512];
+extern int AQuestBackX, AQuestBackY, ACooldown;
+extern const char* ErrorMsg;
+extern int StBroken;
+extern int STBuffEnabled;
+extern int ShopBound;
+extern int TastyLvl;
+extern int ScrollOfInv, ScrollOfMovingPL;
+extern int EggPercentage, EggSBName, EggSBKey;
+extern int EggBuff, EggValue;
+extern int DamagePercentage, DamageSBName, DamageSBKey;
+extern int thirdCheck, thirdCheck2 , fuseNotice, F10Limit, MautLimit, InstanceLimit;
+extern int BossEXPLimit;
+extern int JailMap;
+extern int CwRewardGuild, CwRewardAlly, CwRewardOther;
+extern int RaidDonateQuest, RaidDonateQFlag;
+extern int RaidStartQuest, RaidStartQFlag;
+extern int RaidReplyQuest, RaidReplyQFlag;
+extern int RaidGuildMap, RaidGuildIndex;
+extern int RaidMinimumAmount, RaidMaximumAmount;
+extern int RaidGuildTime;
+extern int SpinSlashRange;
+extern int MaxAttempts;
+extern int DBOutput;
+extern int GoldenCoinA, GoldenCoinT, GoldenCoinI;
+extern int AntiKSTime;
+extern int DQBound;
+extern int AssassinLimit, AssassinParty;
+extern int PartyEXPMax;
+extern int CBuffRange, CRangeCheck;
+extern int AETime;
+extern int OBPVPEnable, OBActive;
+extern int LawlessMap;
+extern int LawlessMKill, LawlessPKill;
+extern int ARRange, MRange, KRange, TRange, SRange, RangeKick;
+extern int CWRLimit;
+extern bool ShamanDisabled, ThiefDisabled;
+extern int LawlessSpawnX, LawlessSpawnY, LawlessReviveCD;
+extern int TBPlayersMin, TBPlayersMax, TBMin, TBMax;
+extern int TBBackX, TBBackY, TBBackZ, EmblemSet, EmblemPull, EmblemExpire;
+extern int TBReward0, TBReward1, TBReward2, TBReward3;
+extern int TestVV, AutoMissionQuest;
+extern int TBMap, TBRedX, TBRedY, TBRedZ, TBBlueX, TBBlueY, TBBlueZ, TBYellowX, TBYellowY, TBYellowZ, TBBuffEach, TBTime, TBCooldown;
+extern int SVMap, SVReplyQuest, SVRegisterDefault, SVTime, SVWinnerReward, SVLoserReward, SVDrawReward, SVPtMob, SVPtPlayer;
+extern int RupPVPAoe, RupRange, RupAOE;
+extern int PSActive, PSHonor, PSReward, PSLimit, KrPSsysReward, KdPSsysReward;
+extern int BSOFSky, BSOFSkyMax;
+extern int PVPLvLDiffDmg;
+extern int MiningPCLimit, MiningAreaLimit;
+extern int SlytherinDieX, SlytherinDieY, SlytherinDieZ, GryffindorDieX, GryffindorDieY, GryffindorDieZ, RavenDieX, RavenDieY, RavenDieZ, HuffleDieX, HuffleDieY, HuffleDieZ;
+extern int DQuestGap;
+extern int ManaCostActive;
+extern int TransmigrationLimit;
+extern int SEMapX, SEMapY, SERewardWinner, SERewardLoser, SEPtsPerMob, SEPtsPerPlayer, SEMinimumPoints, SEDefaultTime, SESpawnCycle, SEImmunityTime;
+extern int BoundAllow;
+extern int ScrollEM;
+extern int RebornQuest, RebornActive, RebornGZ;
+extern int MageDifference;
+extern int PDMul, PDPVP, BlessPVP;
+extern int PPSys, PPSysB, PPEXP, CJBEXP, CJBSYS, CJBSYSB, CJBEXPActive, CJBRange, PPActive;
+extern int itemIndex;
+extern int EVGoodReward, EVGoodLoser, EVGoodDraw;
+extern int PetBound, TimedItemBound;
+extern int BossEXPQuest, BossEXPRange, BossEXPTime, BossEXPPrepare, BossEXPMap, BossEXPMob, BossEXPMX, BossEXPMY, BossEXPPX, BossEXPPY;
+extern int t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20, t21, t22, t23;
+extern int HonorNotices = 0, ImperialNotices = 0, BofNotices = 0;
+extern bool sortByChance(const ChanceItem &a, const ChanceItem &b);
+extern bool sortSwapChance(const SwapItem &a, const SwapItem &b);
+extern bool sortByKey(const int &a, const int &b);
+extern int GetLevelDiff();
+extern time_t notices, timeReloading;
 //endnew
-std::set<std::string> modifiedFiles;
-void readDir(std::string dirName)
-{
-	DIR *directory = opendir(dirName.c_str());
-	struct dirent *dirEntry = readdir(directory);
-	dirEntry = readdir(directory);
-	struct stat buff;
-	while (dirEntry = readdir(directory)) {
-		std::string fileName = dirName + "/" + dirEntry->d_name;
-		if (dirEntry->d_type == 16384)
-			readDir(fileName);
-		else if (dirEntry->d_type == 32768) {
-			stat(fileName.c_str(), &buff);
-			if(buff.st_mtime > timeReloading)
-				modifiedFiles.insert(fileName);
-		}
-	}
+extern std::set<std::string> modifiedFiles;
+extern void readDir(std::string dirName);
 
-	closedir(directory);
-}
+extern int IntTime(int day, int hour, int minute, int second);
 
-int IntTime(int day, int hour, int minute, int second) {
-	return (day * 1000000) + (hour * 10000) + (minute * 100) + second;
-}
-
-int GetTBMap() {
-	return TBMap;
-}
-
-void logLastExecutedCode(const std::string& message) {
-	std::string Dato = "./Debugger/CrashCheck/Debugger.txt";
-
-	std::ofstream DGLOG(Dato, std::ofstream::app);
-
-	if (DGLOG.is_open()) {
-		DGLOG << Time::GetDay() << "_" << Time::GetMonth() << "_" << Time::GetTime() << "(Message: " << message << ")" << endl;
-		DGLOG.flush();  // Flush the stream
-	}
-}
+extern int GetTBMap();
+//
+//void logLastExecutedCode(const std::string& message) {
+//	std::string Dato = "./Debugger/CrashCheck/Debugger.txt";
+//
+//	std::ofstream DGLOG(Dato, std::ofstream::app);
+//
+//	if (DGLOG.is_open()) {
+//		DGLOG << Time::GetDay() << "_" << Time::GetMonth() << "_" << Time::GetTime() << "(Message: " << message << ")" << endl;
+//		DGLOG.flush();  // Flush the stream
+//	}
+//}
 
 void ReadConfig(bool command)
 {
@@ -410,11 +377,22 @@ void ReadConfig(bool command)
 	BattlepassIndex = GetPrivateProfileIntA("Battlepass", "PremiumToken", 0, "./Configs/Battlepass.txt");
 
 	StoreCheckQuest = GetPrivateProfileIntA("Store", "ReplyQuest", 0, "./Configs/Protection.txt");
-	NewcomerValue = GetPrivateProfileIntA("Newcomer", "PVE", 15, "./Configs/Protection.txt");
-	NewcomerLevel = GetPrivateProfileIntA("Newcomer", "MaxLvl", 50, "./Configs/Protection.txt");
-	NewcomerActive = GetPrivateProfileIntA("Newcomer", "Active", 1, "./Configs/Protection.txt");
-	NewcomerSys = GetPrivateProfileIntA("Newcomer", "Syskey", 0, "./Configs/Protection.txt");
-	NoticesEnabled = GetPrivateProfileIntA("CustomNotices", "Enable", 0, "./Configs/Protection.txt");
+
+	NewcomerValue = GetPrivateProfileIntA("Newcomer", "PVE", 15, "./Configs/Newcomer.txt");
+	NewcomerLevel = GetPrivateProfileIntA("Newcomer", "MaxLvl", 50, "./Configs/Newcomer.txt");
+	NewcomerActive = GetPrivateProfileIntA("Newcomer", "Active", 1, "./Configs/Newcomer.txt");
+	NewcomerSys = GetPrivateProfileIntA("Newcomer", "Syskey", 0, "./Configs/Newcomer.txt");
+	ReviveLvl = GetPrivateProfileIntA("Revive", "MaxLvl", 50, "./Configs/Newcomer.txt");
+	ReviveCD = GetPrivateProfileIntA("Revive", "Cooldown", 10, "./Configs/Newcomer.txt");
+	ReviveBuff = GetPrivateProfileIntA("Revive", "BuffGrade", 1, "./Configs/Newcomer.txt");
+	ReviveSpeed = GetPrivateProfileIntA("Revive", "SpeedValue", 50, "./Configs/Newcomer.txt");
+
+	Maskon = GetPrivateProfileIntA("MaskUp", "EnablePrice", 200, "./Configs/PKKill.txt");
+	Maskoff = GetPrivateProfileIntA("MaskUp", "DisablePrice", 50, "./Configs/PKKill.txt");
+
+	HonorNotices = GetPrivateProfileIntA("CustomNotices", "Honor", 0, "./Configs/Protection.txt");
+	BofNotices = GetPrivateProfileIntA("CustomNotices", "BeadOfFire", 0, "./Configs/Protection.txt");
+	ImperialNotices = GetPrivateProfileIntA("CustomNotices", "Imperial", 0, "./Configs/Protection.txt");
 
 	ARRange = GetPrivateProfileIntA("RangeProtection", "Archer", 9, "./Configs/Range.txt");
 	MRange = GetPrivateProfileIntA("RangeProtection", "Mage", 8, "./Configs/Range.txt");
@@ -521,14 +499,23 @@ void ReadConfig(bool command)
 	GetPrivateProfileStringA("Webhook", "Shouts", "https://discord.com/api/webhooks/1193728182982025286/y0YEGdScsfyJKEWHdTWWcEO1UU9xxBYr9fNoVHOtbdUYsl00IWxtasBvDphjqY7zKvtq", ShoutsWebhook, 512, "./Configs/Discord.txt");
 	GetPrivateProfileStringA("Webhook", "Level", "https://discord.com/api/webhooks/1193728182982025286/y0YEGdScsfyJKEWHdTWWcEO1UU9xxBYr9fNoVHOtbdUYsl00IWxtasBvDphjqY7zKvtq", LevelWebhook, 512, "./Configs/Discord.txt");
 	GetPrivateProfileStringA("Webhook", "Notice", "https://discord.com/api/webhooks/1193728182982025286/y0YEGdScsfyJKEWHdTWWcEO1UU9xxBYr9fNoVHOtbdUYsl00IWxtasBvDphjqY7zKvtq", NoticeWebHook, 512, "./Configs/Discord.txt");
+	GetPrivateProfileStringA("Webhook", "HonorNotice", "https://discord.com/api/webhooks/1193728182982025286/y0YEGdScsfyJKEWHdTWWcEO1UU9xxBYr9fNoVHOtbdUYsl00IWxtasBvDphjqY7zKvtq", HonorNoticeWebhook, 512, "./Configs/Discord.txt");
+
+	GetPrivateProfileStringA("Webhook", "Assassin", "https://discord.com/api/webhooks/1193728182982025286/y0YEGdScsfyJKEWHdTWWcEO1UU9xxBYr9fNoVHOtbdUYsl00IWxtasBvDphjqY7zKvtq", AssassinWebhook, 512, "./Configs/Discord.txt");
+
 	GetPrivateProfileStringA("Webhook", "Enchant", "https://discord.com/api/webhooks/1193728182982025286/y0YEGdScsfyJKEWHdTWWcEO1UU9xxBYr9fNoVHOtbdUYsl00IWxtasBvDphjqY7zKvtq", BofWebhook, 512, "./Configs/Discord.txt");
 	GetPrivateProfileStringA("Webhook", "Starter", "https://discord.com/api/webhooks/1193728182982025286/y0YEGdScsfyJKEWHdTWWcEO1UU9xxBYr9fNoVHOtbdUYsl00IWxtasBvDphjqY7zKvtq", StarterWebhook, 512, "./Configs/Discord.txt");
 	GetPrivateProfileStringA("Webhook", "Reborn", "https://discord.com/api/webhooks/1193728182982025286/y0YEGdScsfyJKEWHdTWWcEO1UU9xxBYr9fNoVHOtbdUYsl00IWxtasBvDphjqY7zKvtq", RebornWebhook, 512, "./Configs/Discord.txt");
 
 	GetPrivateProfileStringA("Avatar", "URL", "https://cdn.discordapp.com/attachments/1048039559360958465/1197387263571673119/Kal_Online_Logo.png?ex=65bb14ca&is=65a89fca&hm=4701133d38b57a71fec995b1e36d72f56829d71be89b1cd7ca878f726736d9dd&", Avatar, 512, "./Configs/Discord.txt");
 
+	MAX_CONNECTIONS_PER_IP = GetPrivateProfileIntA("FilterIP", "MaxConnection", 15, "./Configs/Protection.txt");
+	CONNECTION_DELAY = GetPrivateProfileIntA("FilterIP", "DelayTime", 5000, "./Configs/Protection.txt");
+
 	TestVV = GetPrivateProfileIntA("Test", "Value", 0, "./Configs/Test.txt");
 	BSOFSky = GetPrivateProfileIntA("BlessingSonOfTheSky", "ItemIndex", 0, "./Configs/Protection.txt");
+	BSOFSkyMax = GetPrivateProfileIntA("BlessingSonOfTheSky", "MaxGrade", 0, "./Configs/Protection.txt");
+
 	NirvanaEnable = GetPrivateProfileIntA("Nirvana", "Enable", 0, "./Configs/Protection.txt");
 	NirvanaQuest = GetPrivateProfileIntA("Nirvana", "Quest", 0, "./Configs/Protection.txt");
 	EmoteQuest = GetPrivateProfileIntA("EmoteSystem", "QuestIndex", 0, "./Configs/EmoteSystem.txt");
@@ -1046,6 +1033,7 @@ void ReadConfig(bool command)
 	skillDebug = GetPrivateProfileIntA("Debugger", "Skills", 0, "./Configs/Protection.txt");
 	rangeDebug = GetPrivateProfileIntA("Debugger", "Range", 0, "./Configs/Protection.txt");
 	loginDebug = GetPrivateProfileIntA("Debugger", "Logins", 0, "./Configs/Protection.txt");
+	attackDebug = GetPrivateProfileIntA("Debugger", "Attack", 0, "./Configs/Protection.txt");
 	HWIDBlock = GetPrivateProfileIntA("HWIDBlock", "ExtraBlock", 0, "./Configs/Protection.txt");
 	EXPLimit = GetPrivateProfileIntA("MaxEXP", "Active", 0, "./Configs/Protection.txt");
 	MaxEXP = GetPrivateProfileIntA("MaxEXP", "EXP", 2147483647, "./Configs/Protection.txt");
@@ -1078,7 +1066,6 @@ void ReadConfig(bool command)
 	ShopJewelIndex = GetPrivateProfileIntA("ItemShopIndex", "Jewel", 0, "./Configs/ItemShop.txt");
 	ShopGoldIndex = GetPrivateProfileIntA("ItemShopIndex", "GoldKC", 0, "./Configs/ItemShop.txt");
 	ShopSilverIndex = GetPrivateProfileIntA("ItemShopIndex", "SilverKC", 0, "./Configs/ItemShop.txt");
-	maxAllowedSpeed = GetPrivateProfileIntA("SpeedHack", "Value", 100, "./Configs/Protection.txt");
 	ConfigPVPMaxDmg = GetPrivateProfileIntA("PVPMaxDamage", "Damage", 100000, "./Configs/Protection.txt");
 	CWTCEH = GetPrivateProfileIntA("CastleWar", "EndHour", 0, "./Configs/Protection.txt");
 	CWTCSH = GetPrivateProfileIntA("CastleWar", "StartHour", 0, "./Configs/Protection.txt");
@@ -1845,6 +1832,7 @@ void ReadConfig(bool command)
 					mission.rewardID = reward;
 
 					MissionQuests[monsterIndex] = mission;
+					MAbandonCheck[index] = mission;
 				}
 				else if (sscanf(line, "(MissionItem (CurrentMission %d)(NextMission %d)(Teleport %d %d %d)(ItemIndex %[0-9/,])(ItemAmount %[0-9/,])(Reward %d))",
 					&index, &nextmission, &teleportMap, &teleportX, &teleportY, &MissionItems, &MissionAmounts, &reward) == 8) {
@@ -2438,13 +2426,43 @@ void ReadConfig(bool command)
 			while (fgets(line, sizeof line, filewe) != NULL)
 			{
 				int timeindex = 0, extime = 0;
-				if (sscanf(line, "(timetalisman (index %d)(time %d))", &timeindex, &extime) == 2)
+				if (sscanf(line, "(NormalPetExtend (index %d)(time %d))", &timeindex, &extime) == 2)
 				{
 					ConfigTimeTalisman talis = ConfigTimeTalisman();
 
 					talis.itemindex = timeindex;
 					talis.time = extime;
-					TimeTalisman[timeindex] = talis;
+					NormalPetTalisman[timeindex] = talis;
+				}
+
+				int mPetTimeIndex = 0, mPetExtime = 0;
+				if (sscanf(line, "(MonsterPetExtend (index %d)(time %d))", &mPetTimeIndex, &mPetExtime) == 2)
+				{
+					ConfigTimeTalisman talis = ConfigTimeTalisman();
+
+					talis.itemindex = mPetTimeIndex;
+					talis.time = mPetExtime;
+					MonsterPetTalisman[mPetTimeIndex] = talis;
+				}
+
+				int CostumeTimeIndex = 0, CostumeExtime = 0;
+				if (sscanf(line, "(CostumeExtend (index %d)(time %d))", &CostumeTimeIndex, &CostumeExtime) == 2)
+				{
+					ConfigTimeTalisman talis = ConfigTimeTalisman();
+
+					talis.itemindex = CostumeTimeIndex;
+					talis.time = CostumeExtime;
+					CostumeTalisman[CostumeTimeIndex] = talis;
+				}
+
+				int SkinTimeIndex = 0, SkinExtime = 0;
+				if (sscanf(line, "(SkinExtend (index %d)(time %d))", &SkinTimeIndex, &SkinExtime) == 2)
+				{
+					ConfigTimeTalisman talis = ConfigTimeTalisman();
+
+					talis.itemindex = SkinTimeIndex;
+					talis.time = SkinExtime;
+					SkinTalisman[SkinTimeIndex] = talis;
 				}
 
 				int ItemIndex = 0, HTMLPage = 0, Remove = 0, Time = 0, Prevent = 0, AddIcon = 0;
@@ -3252,6 +3270,26 @@ void ReadConfig(bool command)
 				}
 			}
 			fclose(filetx);
+		}
+	}
+
+	if (!command || (command && modifiedFiles.count("./Configs/EXPMultiplier.txt"))) {
+		FILE *falmulti = fopen("./Configs/EXPMultiplier.txt", "r");
+		if (falmulti != NULL)
+		{
+			EXPMultipliers.clear();
+			char line[BUFSIZ];
+			while (fgets(line, sizeof line, falmulti) != NULL)
+			{
+				int mobIndex = 0, mMultiple = 0;
+				if (sscanf(line, "(Multiplier (Index %d)(Multiply %d))", &mobIndex, &mMultiple) == 2){
+					SMultiple Mmob = SMultiple();
+					Mmob.Multiple = mMultiple;
+
+					EXPMultipliers[mobIndex] = Mmob;
+				}
+			}
+			fclose(falmulti);
 		}
 	}
 
@@ -4493,6 +4531,7 @@ void ReadConfig(bool command)
 		FILE *filew = fopen("./Configs/OldSkillDamage.txt", "r");
 		if (filew != NULL)
 		{
+			ConfigCalculations.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filew) != NULL)
 			{
@@ -6333,8 +6372,6 @@ void CleanLoadConfig() {
 	SGuard.clear();
 	BuffDisableCheck.clear();
 	BuffRemoveCheck.clear();
-	MissionQuestsItem.clear();
-	MissionQuests.clear();
 	BufferCheck.clear();
 	BuffMakerCheck.clear();
 	BofConfigRead = 0;
@@ -6343,7 +6380,10 @@ void CleanLoadConfig() {
 	HighGradeBof.clear();
 	BattlepassReward.clear();
 	HighGradeImperial.clear();
-	TimeTalisman.clear();
+	NormalPetTalisman.clear();
+	MonsterPetTalisman.clear();
+	CostumeTalisman.clear();
+	SkinTalisman.clear();
 	Rewards.clear();
 	DutyQuest.clear();
 	DutyMonsterQuests.clear();

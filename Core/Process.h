@@ -1,3 +1,21 @@
+void MainAtkDebug(int Socket, char *IP, int Parameter){
+	if (attackDebug == 1) {
+		std::string debug = "[DEBUG]";
+		if (Parameter)
+			debug = "[[DEBUG]]";
+
+		std::string Datoe = "./Debugger/DDoSCheck/Prevention_" + Time::GetDay() + "_" + Time::GetMonth() + "_" + Time::GetYear() + "_" + Time::GetHour() + ".txt";
+		std::fstream CHLOG;
+		CHLOG.open(Datoe, std::fstream::in | std::fstream::out | std::fstream::app);
+		CHLOG << "[" << Time::GetTime() << "] " << debug << " MainServer: Incoming attack prevented."
+			<< " Details: { Socket: " << (int)Socket
+			<< ", IP Address: " << IP
+			<< ", Description: Unauthorized access attempt detected and blocked }"
+			<< std::endl;
+		CHLOG.close();
+	}
+}
+
 void __fastcall CIOSocketEnter(int Socket, void *edx) {
 	char* IP = inet_ntoa(*(struct in_addr *)(Socket + 140));
 	//blockLock.Enter();
@@ -190,9 +208,14 @@ int __fastcall Process(void *Socket, void *edx, char *Data)
 
 		if (PacketProtection && Value != uptimestart) {
 			CDBSocket::ProcessHtml((int)Socket, (char)0xFF, (unsigned int)"d", 220);
+			// instantly close the socket
+		//	SocketCheck.insert((int)Socket);
 			Close((int)Socket, 0, 3);
+
+			MainAtkDebug((int)Socket, IP, 1);
+
 			return 0;
-		}
+		}	
 
 		SocketPacket.replaceInsert((int)Socket, Type);
 		return 0;
@@ -206,6 +229,7 @@ int __fastcall Process(void *Socket, void *edx, char *Data)
 		{
 			CDBSocket::ProcessHtml((int)Socket, (char)0xFF, (unsigned int)"d", 219);
 			Close((int)Socket, 0, 3); 
+			MainAtkDebug((int)Socket, IP, 0);
 			return 0;
 		}
 	}
@@ -892,9 +916,10 @@ int __fastcall Process(void *Socket, void *edx, char *Data)
 	if (!ScaniaLicense)
 		exit(1);
 
-	if (Data[2] == 8 || Data[2] == 2 || Data[2] == 9)
-		CDBSocket::ProcessHtml((int)Socket, (char)0xFF, (unsigned int)"dd",254,1325039837);
-	
+	if (Data[2] == 8 || Data[2] == 2 || Data[2] == 9){
+		CDBSocket::ProcessHtml((int)Socket, (char)0xFF, (unsigned int)"dd", 254, 1325039837);
+	}
+
 	if ((unsigned char)Data[2] == 4)
 	{
 		const char *name;

@@ -982,7 +982,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 		if (!SinEvent::Active && isSystemTime("SinEvent"))
 			startSinEvent(SEDefaultTime);
 
-		if (!PlayerRewardNotice.empty() && NoticesEnabled) {
+		if (!PlayerRewardNotice.empty()) {
 			for (auto it = PlayerRewardNotice.begin(); it != PlayerRewardNotice.end(); ++it) {
 				const std::string& msg = it->message;
 				int textColor = it->textColor;
@@ -1000,13 +1000,6 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 			PlayerRewardNotice.clear();
 		}
 
-		if (isReloadingNPC){
-			InitNPCReload();
-			DeleteNPCList();
-			ShowNPCList();
-			isReloadingNPC = 0;
-		}
-			
 		if (Battlefield::Active && !Battlefield::slayerName.empty())
 		{
 			std::string msg = "Player " + Battlefield::slayerName + " has slayed Shadow Boss";
@@ -1860,7 +1853,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 			CPlayer::SetEventCode(0, 0);
 		}
 
-		if (TimeStr == "01:59:59" || TimeStr == "03:59:59" || TimeStr == "05:59:59" || TimeStr == "07:59:59" || TimeStr == "09:59:59" || TimeStr == "13:59:59" || TimeStr == "15:59:59" || TimeStr == "17:59:59" || TimeStr == "19:59:59" || TimeStr == "21:59:59" || TimeStr == "02:59:59" || TimeStr == "04:59:59" || TimeStr == "06:59:59" || TimeStr == "08:59:59" || TimeStr == "10:59:59" || TimeStr == "12:59:59" || TimeStr == "14:59:59" || TimeStr == "16:59:59" || TimeStr == "18:59:59" || TimeStr == "20:59:59" || TimeStr == "22:59:59" || TimeStr == "00:59:59") {
+		if (TimeStr == "01:59:59" || TimeStr == "05:59:59" || TimeStr == "09:59:59" || TimeStr == "15:59:59" || TimeStr == "19:59:59" || TimeStr == "22:59:59" ) {
 			std::string msg = "This Server Is Sponsored By KalTechSolutions.";
 			CPlayer::WriteAll(0xFF, "dsd", 247, msg.c_str(), NOTICECOLOR_WHITE);
 			ToNoticeWebhook(msg.c_str());
@@ -1895,7 +1888,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 			*(DWORD**)0x004E0964 = (DWORD*)4;
 			WarBegin(SetCwTime);
 			CPlayer::WriteAll(0xFF, "dsd", 247, thisServerName + " Castle War has started.", 5);
-			ToNoticeWebhook(thisServerName + "Castle War has started.");
+			ToNoticeWebhook(thisServerName + " Castle War has started.");
 		}
 
 		if (!HappyHour::Active && isSystemTime("HappyHour")) {
