@@ -18,14 +18,14 @@
     <EnableLogging>True</EnableLogging>
   </KeysGenerator>
   <Input>
-    <FileName>C:\Pvpers Kal\Core\Release\Core.dll</FileName>
+    <FileName>D:\Scania Developments\Core - Local\Release\Core.dll</FileName>
     <ProductName/>
     <VersionInfo/>
     <ProductInfoFromResources>True</ProductInfoFromResources>
   </Input>
   <Output>
     <SameAsInputFile>True</SameAsInputFile>
-    <FileName>C:\Pvpers Kal\Core\Release\Core.dll</FileName>
+    <FileName>D:\Scania Developments\Core - Local\Release\Core.dll</FileName>
     <DoNotBackup>True</DoNotBackup>
   </Output>
   <AdvanceInput>

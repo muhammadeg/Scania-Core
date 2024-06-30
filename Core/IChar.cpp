@@ -2535,7 +2535,7 @@ void IChar::CloseWindow(std::string WindowName)
 }
 
 void IChar::CheckSpeed(int maxSpeed){
-	if (this->IsOnline())
+	if (this->IsOnline() && !this->GetAdmin())
 		CPlayer::Write(this->GetOffset(), 0xFF, "dd", 217, maxSpeed);
 }
 

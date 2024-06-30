@@ -217,6 +217,14 @@ int __cdecl MyUpdateProperty(int Player, int Type, int InOut, signed __int64 Exp
 		}
 		*/
 
+		if (AreaCertMap.count(IPlayer.GetMap())) {
+			Certificates area = AreaCertMap.find(IPlayer.GetMap())->second;
+			int buffID = ((area.itemIndex * 2) + area.Map);
+			int areaExp = area.Exp;
+			if (IPlayer.IsBuff(buffID) && areaExp) 
+				Exp += (Exp * areaExp) / 100;
+		}
+
 		if (EXPLimit && Exp > MaxEXP)
 			Exp = MaxEXP;
 	}

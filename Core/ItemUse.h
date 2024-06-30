@@ -138,6 +138,33 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 
 	}
 
+	if (IPlayer.IsOnline() && AreaCert.count(Item.CheckIndex())) {
+
+		Certificates area = AreaCert.find(Item.CheckIndex())->second;
+		int buffID = ((Item.CheckIndex() * 2) + area.Map);
+		int Time = area.Time;
+		int Exp = area.Exp;
+		int sbKey = area.SBKey;
+		int sbMsg = area.SBMsg;
+		int timeInMin = Time / 60;
+
+		if (!IPlayer.IsBuff(buffID)) {
+			IPlayer.SaveBuff(buffID, Time, Exp, sbMsg, sbKey);
+			IPlayer.SystemMessage("Area Certificate applied for " + Int2String(timeInMin) + " minutes.", TEXTCOLOR_DARKGREEN);
+
+			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), 9, -1);
+			return Item.GetAmount();
+		}
+		else {
+			IPlayer.UpdateSavedBuff(buffID, Time, Exp, sbMsg, sbKey);
+			IPlayer.SystemMessage("Area Certificate extended by " + Int2String(timeInMin) + " minutes.", TEXTCOLOR_DARKGREEN);
+
+			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), 9, -1);
+			return Item.GetAmount();
+		}
+		return Item.GetAmount();
+	}
+
 	if (IPlayer.IsOnline() && BuffMakerCheck.count(Item.CheckIndex()))
 	{
 		BuffMaker buffMaker = BuffMakerCheck.find(Item.CheckIndex())->second;

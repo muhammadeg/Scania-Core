@@ -714,7 +714,7 @@ void __fastcall MyGameStart(void *Player, void *edx)
 			if (HonorP > 0 || PeaceEvil == 1)
 				CChar::WriteInSight(IPlayer.GetOffset(), 255, "dddd", 244, IPlayer.GetID(), (HonorP > 0) ? HonorP : 1, HonorMessageSys(IPlayer.GetOffset(), HonorP));
 
-			if (IPlayer.IsOnline() && !IPlayer.GetAdmin() && maxAllowedSpeed)
+			if (IPlayer.IsOnline() && maxAllowedSpeed)
 				IPlayer.CheckSpeed(maxAllowedSpeed);
 
 
@@ -1217,6 +1217,16 @@ int __fastcall Tick(void *Player, void *edx)
 
 		if (IPlayer.IsBuff(82) && IPlayer.GetBuffRemain(82) <= 1)
 			IPlayer.CheckSpeed(maxAllowedSpeed);
+
+		if (AreaCertMap.count(playerMap)) {
+			Certificates area = AreaCertMap.find(playerMap)->second;
+			int buffID = ((area.itemIndex * 2) + area.Map);
+
+			if (!playerBuffs.count(buffID)) {
+				IPlayer.PortToVillage();
+				IPlayer.SystemMessage("Area Certificate expired. Renew to rejoin.", TEXTCOLOR_RED);
+			}
+		}
 
 		if (NewcomerActive && !IPlayer.IsBuff(BuffNames::NewComer) && playerLvl <= NewcomerLevel){
 

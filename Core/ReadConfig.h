@@ -1793,8 +1793,8 @@ void ReadConfig(bool command)
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filekd) != NULL) {
 				int map = 0, exp = 0, item = 0, time = 0;
-				AreaExpItem newArea;
 				if (sscanf(line, "(Area (map %d)(exp %d)(item %d)(time %d))", &map, &exp, &item, &time) == 4) {
+					AreaExpItem newArea;
 					newArea.type = 2;
 					newArea.map = map;
 					newArea.item = item;
@@ -1808,8 +1808,30 @@ void ReadConfig(bool command)
 		}
 	}
 
+	if (!command || (command && modifiedFiles.count("./Configs/Certificates.txt"))) {
+		FILE* filecert = fopen("./Configs/Certificates.txt", "r");
+		if (filecert != NULL) {
+			AreaCert.clear();
+			char line[BUFSIZ];
+			while (fgets(line, sizeof line, filecert) != NULL) {
+				int itemIndex = 0, map = 0, time = 0, exp = 0, sbKey = 0, sbMsg = 0;
+				if (sscanf(line, "(MapCert (Index %d)(Map %d)(Time %d)(Exp %d)(SBKey %d)(SBMsg %d))", &itemIndex, &map, &time, &exp, &sbKey, &sbMsg) == 6) {
+					Certificates Cert = Certificates();
+					Cert.itemIndex = itemIndex;
+					Cert.Map = map;
+					Cert.Time = time;
+					Cert.Exp = exp;
+					Cert.SBKey = sbKey;
+					Cert.SBMsg = sbMsg;
 
+					AreaCert[itemIndex] = Cert;
+					AreaCertMap[map] = Cert;
 
+				}
+			}
+			fclose(filecert);
+		}
+	}
 
 	if (!command || (command && modifiedFiles.count("./Configs/Missions.txt"))) {
 		FILE* Missions = fopen("./Configs/Missions.txt", "r");

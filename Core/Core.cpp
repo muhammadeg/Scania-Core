@@ -1463,6 +1463,14 @@ struct AreaExpItem
 	int time;
 };
 
+struct Certificates {
+	int itemIndex;
+	int Map;
+	int Time;
+	int Exp;
+	int SBKey;
+	int SBMsg;
+};
 
 struct DailyDuty {
 	int quest;
@@ -2552,6 +2560,9 @@ Lock rewardLock = Lock();
 std::map<int, SkillRangeConfig> CheckRangeConfig;
 
 std::map<int, AreaExpItem> AreasExpItems; // declare a vector to hold the areas
+std::map<int, Certificates> AreaCert;
+std::map<int, Certificates> AreaCertMap;
+
 std::map<int, int> HighGradeBof;
 std::map<int, int> HighGradeImperial;
 std::unordered_map<int, std::pair<std::string, int>> EmoteSystem;
