@@ -2834,10 +2834,12 @@ void IChar::EnableRiding(int Type)
 		{
 			this->Buff(347, 1296000, 0);
 			this->IncreaseMovingSpeed(75);
-			if (this->IsBuff(82))
-				this->CheckSpeed(maxAllowedSpeed + 275);
-			else
-				this->CheckSpeed(maxAllowedSpeed + 75);
+			if (!this->GetAdmin()) {
+				if (this->IsBuff(82))
+					this->CheckSpeed(maxAllowedSpeed + 275);
+				else
+					this->CheckSpeed(maxAllowedSpeed + 75);
+			}
 		}
 
 		if (!CChar::IsGState((int)this->Offset, 0x4000))
@@ -2856,10 +2858,12 @@ void IChar::DisableRiding()
 		{
 			this->CancelBuff(347);
 			this->DecreaseMovingSpeed(75);
-			if (this->IsBuff(82))
-				this->CheckSpeed(maxAllowedSpeed + 200);
-			else
-				this->CheckSpeed(maxAllowedSpeed);
+			if (!this->GetAdmin()) {
+				if (this->IsBuff(82))
+					this->CheckSpeed(maxAllowedSpeed + 200);
+				else
+					this->CheckSpeed(maxAllowedSpeed);
+			}
 		}
 
 		int Satiety = this->GetBuffValue(1519);

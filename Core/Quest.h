@@ -651,6 +651,11 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			//ShowMySkin((void*)PlayerOffset);
 			IPlayer.SetLevel(rb.ResetLevel);
 
+			if (rb.sbKey && rb.sbMsg) {
+				int rbBuffID = (rb.sbKey + rb.sbMsg) * 15;
+				IPlayer.SaveBuff(rbBuffID, BuffNames::BuffTime, NextReborn, rb.sbMsg, rb.sbKey);
+			}
+
 			if (rb.NamePad) {
 				IPlayer.UpdateBuff(BuffNames::NamePad, BuffNames::BuffTime, rb.NamePad);
 				CChar::WriteInSight(IPlayer.GetOffset(), 0xFE, "ddd", 209, IPlayer.GetID(), rb.NamePad);

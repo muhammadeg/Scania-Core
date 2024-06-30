@@ -1793,8 +1793,8 @@ void ReadConfig(bool command)
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filekd) != NULL) {
 				int map = 0, exp = 0, item = 0, time = 0;
+				AreaExpItem newArea;
 				if (sscanf(line, "(Area (map %d)(exp %d)(item %d)(time %d))", &map, &exp, &item, &time) == 4) {
-					AreaExpItem newArea;
 					newArea.type = 2;
 					newArea.map = map;
 					newArea.item = item;
@@ -1808,30 +1808,8 @@ void ReadConfig(bool command)
 		}
 	}
 
-	if (!command || (command && modifiedFiles.count("./Configs/Certificates.txt"))) {
-		FILE* filecert = fopen("./Configs/Certificates.txt", "r");
-		if (filecert != NULL) {
-			AreaCert.clear();
-			char line[BUFSIZ];
-			while (fgets(line, sizeof line, filecert) != NULL) {
-				int itemIndex = 0, map = 0, time = 0, exp = 0, sbKey = 0, sbMsg = 0;
-				if (sscanf(line, "(MapCert (Index %d)(Map %d)(Time %d)(Exp %d)(SBKey %d)(SBMsg %d))", &itemIndex, &map, &time, &exp, &sbKey, &sbMsg) == 6) {
-					Certificates Cert = Certificates();
-					Cert.itemIndex = itemIndex;
-					Cert.Map = map;
-					Cert.Time = time;
-					Cert.Exp = exp;
-					Cert.SBKey = sbKey;
-					Cert.SBMsg = sbMsg;
 
-					AreaCert[itemIndex] = Cert;
-					AreaCertMap[map] = Cert;
 
-				}
-			}
-			fclose(filecert);
-		}
-	}
 
 	if (!command || (command && modifiedFiles.count("./Configs/Missions.txt"))) {
 		FILE* Missions = fopen("./Configs/Missions.txt", "r");
@@ -3389,7 +3367,30 @@ void ReadConfig(bool command)
 		}
 		std::sort(LawlessEXP.begin(), LawlessEXP.end(), sortByKey);
 	}
+	if (!command || (command && modifiedFiles.count("./Configs/Certificates.txt"))) {
+		FILE* filecert = fopen("./Configs/Certificates.txt", "r");
+		if (filecert != NULL) {
+			AreaCert.clear();
+			char line[BUFSIZ];
+			while (fgets(line, sizeof line, filecert) != NULL) {
+				int itemIndex = 0, map = 0, time = 0, exp = 0, sbKey = 0, sbMsg = 0;
+				if (sscanf(line, "(MapCert (Index %d)(Map %d)(Time %d)(Exp %d)(SBKey %d)(SBMsg %d))", &itemIndex, &map, &time, &exp, &sbKey, &sbMsg) == 6) {
+					Certificates Cert = Certificates();
+					Cert.itemIndex = itemIndex;
+					Cert.Map = map;
+					Cert.Time = time;
+					Cert.Exp = exp;
+					Cert.SBKey = sbKey;
+					Cert.SBMsg = sbMsg;
 
+					AreaCert[itemIndex] = Cert;
+					AreaCertMap[map] = Cert;
+
+				}
+			}
+			fclose(filecert);
+		}
+	}
 	if (!command || (command && modifiedFiles.count("./Configs/ItemCombine.txt"))) {
 		FILE *filetx = fopen("./Configs/ItemCombine.txt", "r");
 		if (filetx != NULL)
@@ -4790,9 +4791,10 @@ void ReadConfig(bool command)
 			while (fgets(line, sizeof line, fileo) != NULL)
 			{
 				int ID = 0, NamePad = 0, MinLvl = 0, ResetLevel = 0, RewardID = 0, Penalty = 0, QuestIndex = 0, QuestFlag = 0;
+				int sbKey = 0, sbMsg = 0;
 				int RebornLvl = 0, RebornGrade = 0;
 				char tag[10];
-				if (sscanf(line, "(Reborn (Num %d)(NameTag '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(NamePad %d)(MinLvl %d)(ResetLvl %d)(RewardID %d))", &ID, &tag, &NamePad, &MinLvl, &ResetLevel, &RewardID) == 6)
+				if (sscanf(line, "(Reborn (Num %d)(NameTag '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(NamePad %d)(MinLvl %d)(ResetLvl %d)(RewardID %d)(SBKey %d)(SBMsg %d))", &ID, &tag, &NamePad, &MinLvl, &ResetLevel, &RewardID, &sbKey, &sbMsg) >= 6)
 				{
 					Reborn rb = Reborn();
 					rb.NamePad = NamePad;
@@ -4800,6 +4802,8 @@ void ReadConfig(bool command)
 					rb.ResetLevel = ResetLevel;
 					rb.RewardID = RewardID;
 					rb.NameTag = tag;
+					rb.sbKey = sbKey;
+					rb.sbMsg = sbMsg;
 					Reborns[ID] = rb;
 				}
 

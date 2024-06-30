@@ -41,7 +41,7 @@ void __fastcall ExecuteSkill(void *pSkill, void* edx, signed int SkillID, int pP
 	int SkillPointerCheck = IPlayer.GetSkillPointer(SkillID);
 	DWORD CdTime = 0, CooldownCheck = 0, DelayTime = 0;
 
-	if (IPlayer.GetClass() == 2 && SkillID == 31)
+	if (!IPlayer.GetAdmin() && IPlayer.GetClass() == 2 && SkillID == 31)
 		IPlayer.CheckSpeed(maxAllowedSpeed + 200);
 
 	IPlayer.Buff(313, 3, 0);

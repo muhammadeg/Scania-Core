@@ -1,103 +1,103 @@
-﻿  Memory.cpp
-d:\scania developments\core - local\core\interface.h(57): error C2027: use of undefined type 'type_info'
-  c:\program files (x86)\microsoft visual studio 14.0\vc\include\eh.h(49): note: see declaration of 'type_info'
-  d:\scania developments\core - local\core\interface.h(57): note: while compiling class template member function 'Interface<IMemory>::Interface(void)'
-  d:\scania developments\core - local\core\memory.cpp(143): note: see reference to function template instantiation 'Interface<IMemory>::Interface(void)' being compiled
-  d:\scania developments\core - local\core\memory.cpp(7): note: see reference to class template instantiation 'Interface<IMemory>' being compiled
-d:\scania developments\core - local\core\interface.h(57): error C2228: left of '.hash_code' must have class/struct/union
+﻿  Tools.cpp
+  sha256.cpp
+  ReadConfig.cpp
+  Memory.cpp
+  ISkill.cpp
+  IQuest.cpp
+  Interface.cpp
+  IItem.cpp
+  IChar.cpp
+  IBuff.cpp
   Core.cpp
-d:\scania developments\core - local\core\targetfind.h(24): warning C4302: 'type cast': truncation from 'const char *' to 'char'
-c:\program files (x86)\windows kits\8.1\include\um\dbghelp.h(1544): warning C4091: 'typedef ': ignored on left of '' when no variable is declared
-c:\program files (x86)\windows kits\8.1\include\um\dbghelp.h(3190): warning C4091: 'typedef ': ignored on left of '' when no variable is declared
-d:\scania developments\core - local\core\core.cpp(1648): error C2556: 'int round(double)': overloaded function differs only by return type from 'double round(double)'
-  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\math.h(521): note: see declaration of 'round'
-d:\scania developments\core - local\core\core.cpp(1648): error C2371: 'round': redefinition; different basic types
-  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\math.h(521): note: see declaration of 'round'
-d:\scania developments\core - local\core\core.cpp(1648): error C2491: 'round': definition of dllimport function not allowed
-d:\scania developments\core - local\core\exports.h(5): error C2664: 'HMODULE LoadLibraryW(LPCWSTR)': cannot convert argument 1 from 'const char [15]' to 'LPCWSTR'
-  d:\scania developments\core - local\core\exports.h(5): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\time.h(92): warning C4477: 'sscanf_s' : format string '%s' requires an argument of type 'char *', but variadic argument 7 has type 'const char *'
-  d:\scania developments\core - local\core\time.h(92): note: this argument is used by a conversion specifier
-d:\scania developments\core - local\core\time.h(92): warning C4473: 'sscanf_s' : not enough arguments passed for format string
-  d:\scania developments\core - local\core\time.h(92): note: placeholders and their parameters expect 8 variadic arguments, but 7 were provided
-  d:\scania developments\core - local\core\time.h(92): note: the missing variadic argument 8 is required by format string '%s'
-  d:\scania developments\core - local\core\time.h(92): note: this argument is used as a buffer size
-d:\scania developments\core - local\core\lisans.h(34): error C2679: binary '=': no operator found which takes a right-hand operand of type 'WCHAR [39]' (or there is no acceptable conversion)
-  c:\program files (x86)\microsoft visual studio 14.0\vc\include\xstring(1043): note: could be 'std::basic_string<char,std::char_traits<char>,std::allocator<char>> &std::basic_string<char,std::char_traits<char>,std::allocator<char>>::operator =(_Elem)'
+d:\scania developments\core - local\core\exports.h(5): error C2664: 'LoadLibraryW' : cannot convert parameter 1 from 'const char [15]' to 'LPCWSTR'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\lisans.h(34): error C2679: binary '=' : no operator found which takes a right-hand operand of type 'WCHAR [39]' (or there is no acceptable conversion)
+          c:\program files (x86)\microsoft visual studio 10.0\vc\include\xstring(707): could be 'std::basic_string<_Elem,_Traits,_Ax> &std::basic_string<_Elem,_Traits,_Ax>::operator =(std::basic_string<_Elem,_Traits,_Ax> &&)'
           with
           [
-              _Elem=char
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Ax=std::allocator<char>
           ]
-  c:\program files (x86)\microsoft visual studio 14.0\vc\include\xstring(1038): note: or       'std::basic_string<char,std::char_traits<char>,std::allocator<char>> &std::basic_string<char,std::char_traits<char>,std::allocator<char>>::operator =(const _Elem *)'
+          c:\program files (x86)\microsoft visual studio 10.0\vc\include\xstring(762): or       'std::basic_string<_Elem,_Traits,_Ax> &std::basic_string<_Elem,_Traits,_Ax>::operator =(const std::basic_string<_Elem,_Traits,_Ax> &)'
           with
           [
-              _Elem=char
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Ax=std::allocator<char>
           ]
-  c:\program files (x86)\microsoft visual studio 14.0\vc\include\xstring(1022): note: or       'std::basic_string<char,std::char_traits<char>,std::allocator<char>> &std::basic_string<char,std::char_traits<char>,std::allocator<char>>::operator =(const std::basic_string<char,std::char_traits<char>,std::allocator<char>> &)'
-  c:\program files (x86)\microsoft visual studio 14.0\vc\include\xstring(983): note: or       'std::basic_string<char,std::char_traits<char>,std::allocator<char>> &std::basic_string<char,std::char_traits<char>,std::allocator<char>>::operator =(std::initializer_list<_Elem>)'
+          c:\program files (x86)\microsoft visual studio 10.0\vc\include\xstring(767): or       'std::basic_string<_Elem,_Traits,_Ax> &std::basic_string<_Elem,_Traits,_Ax>::operator =(const _Elem *)'
           with
           [
-              _Elem=char
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Ax=std::allocator<char>
           ]
-  c:\program files (x86)\microsoft visual studio 14.0\vc\include\xstring(925): note: or       'std::basic_string<char,std::char_traits<char>,std::allocator<char>> &std::basic_string<char,std::char_traits<char>,std::allocator<char>>::operator =(std::basic_string<char,std::char_traits<char>,std::allocator<char>> &&) noexcept(<expr>)'
-  d:\scania developments\core - local\core\lisans.h(34): note: while trying to match the argument list '(std::string, WCHAR [39])'
-d:\scania developments\core - local\core\readconfig.h(6423): error C2664: 'SQLRETURN SQLConnectW(SQLHDBC,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\readconfig.h(6423): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\readconfig.h(6440): error C2664: 'SQLRETURN SQLConnectW(SQLHDBC,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\readconfig.h(6440): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\process.h(981): error C2664: 'SQLRETURN SQLConnectW(SQLHDBC,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\process.h(981): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\process.h(995): error C2664: 'SQLRETURN SQLExecDirectW(SQLHSTMT,SQLWCHAR *,SQLINTEGER)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\process.h(995): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\summon.h(378): error C2264: 'round': error in function definition or declaration; function not called
-d:\scania developments\core - local\core\hardware.h(6): error C2664: 'BOOL GetComputerNameW(LPWSTR,LPDWORD)': cannot convert argument 1 from 'char [1024]' to 'LPWSTR'
-  d:\scania developments\core - local\core\hardware.h(6): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\hardware.h(13): error C2664: 'BOOL GetVolumeInformationW(LPCWSTR,LPWSTR,DWORD,LPDWORD,LPDWORD,LPDWORD,LPWSTR,DWORD)': cannot convert argument 1 from 'const char [4]' to 'LPCWSTR'
-  d:\scania developments\core - local\core\hardware.h(13): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\exptable.h(2018): error C2664: 'DWORD GetModuleFileNameW(HMODULE,LPWSTR,DWORD)': cannot convert argument 2 from 'char [260]' to 'LPWSTR'
-  d:\scania developments\core - local\core\exptable.h(2018): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\exptable.h(2077): error C2664: 'HINSTANCE ShellExecuteW(HWND,LPCWSTR,LPCWSTR,LPCWSTR,LPCWSTR,INT)': cannot convert argument 2 from 'const char [5]' to 'LPCWSTR'
-  d:\scania developments\core - local\core\exptable.h(2077): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\command.h(2797): error C2664: 'SQLRETURN SQLConnectW(SQLHDBC,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\command.h(2797): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\command.h(2811): error C2664: 'SQLRETURN SQLExecDirectW(SQLHSTMT,SQLWCHAR *,SQLINTEGER)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\command.h(2811): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\command.h(2836): error C2664: 'SQLRETURN SQLConnectW(SQLHDBC,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\command.h(2836): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\command.h(2850): error C2664: 'SQLRETURN SQLExecDirectW(SQLHSTMT,SQLWCHAR *,SQLINTEGER)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\command.h(2850): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\command.h(2975): error C2664: 'SQLRETURN SQLConnectW(SQLHDBC,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\command.h(2975): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\command.h(2989): error C2664: 'SQLRETURN SQLExecDirectW(SQLHSTMT,SQLWCHAR *,SQLINTEGER)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\command.h(2989): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\command.h(3014): error C2664: 'SQLRETURN SQLConnectW(SQLHDBC,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\command.h(3014): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\command.h(3028): error C2664: 'SQLRETURN SQLExecDirectW(SQLHSTMT,SQLWCHAR *,SQLINTEGER)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\command.h(3028): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\command.h(3072): error C2664: 'SQLRETURN SQLConnectW(SQLHDBC,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\command.h(3072): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\command.h(3086): error C2664: 'SQLRETURN SQLExecDirectW(SQLHSTMT,SQLWCHAR *,SQLINTEGER)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\command.h(3086): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\command.h(3112): error C2664: 'SQLRETURN SQLConnectW(SQLHDBC,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\command.h(3112): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\command.h(3126): error C2664: 'SQLRETURN SQLExecDirectW(SQLHSTMT,SQLWCHAR *,SQLINTEGER)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\command.h(3126): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\loader.h(6): error C2664: 'BOOL CreateDirectoryW(LPCWSTR,LPSECURITY_ATTRIBUTES)': cannot convert argument 1 from 'const char *' to 'LPCWSTR'
-  d:\scania developments\core - local\core\loader.h(6): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\loader.h(8): error C2664: 'HANDLE FindFirstFileW(LPCWSTR,LPWIN32_FIND_DATAW)': cannot convert argument 1 from 'const char *' to 'LPCWSTR'
-  d:\scania developments\core - local\core\loader.h(8): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\loader.h(16): error C2440: 'type cast': cannot convert from 'WCHAR [260]' to 'std::string'
-  d:\scania developments\core - local\core\loader.h(16): note: No constructor could take the source type, or constructor overload resolution was ambiguous
-d:\scania developments\core - local\core\loader.h(17): error C2664: 'HMODULE LoadLibraryW(LPCWSTR)': cannot convert argument 1 from 'const char *' to 'LPCWSTR'
-  d:\scania developments\core - local\core\loader.h(17): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\start.h(130): error C2664: 'SQLRETURN SQLConnectW(SQLHDBC,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\start.h(130): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\start.h(144): error C2664: 'SQLRETURN SQLExecDirectW(SQLHSTMT,SQLWCHAR *,SQLINTEGER)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\start.h(144): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\start.h(245): error C2664: 'SQLRETURN SQLConnectW(SQLHDBC,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT,SQLWCHAR *,SQLSMALLINT)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\start.h(245): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\start.h(259): error C2664: 'SQLRETURN SQLExecDirectW(SQLHSTMT,SQLWCHAR *,SQLINTEGER)': cannot convert argument 2 from 'unsigned char *' to 'SQLWCHAR *'
-  d:\scania developments\core - local\core\start.h(259): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-d:\scania developments\core - local\core\menu.h(62): error C2664: 'BOOL AppendMenuW(HMENU,UINT,UINT_PTR,LPCWSTR)': cannot convert argument 4 from 'const char *' to 'LPCWSTR'
-  d:\scania developments\core - local\core\menu.h(62): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+          c:\program files (x86)\microsoft visual studio 10.0\vc\include\xstring(772): or       'std::basic_string<_Elem,_Traits,_Ax> &std::basic_string<_Elem,_Traits,_Ax>::operator =(_Elem)'
+          with
+          [
+              _Elem=char,
+              _Traits=std::char_traits<char>,
+              _Ax=std::allocator<char>
+          ]
+          while trying to match the argument list '(std::string, WCHAR [39])'
+d:\scania developments\core - local\core\readconfig.h(6401): error C2664: 'SQLConnectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\readconfig.h(6418): error C2664: 'SQLConnectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\process.h(981): error C2664: 'SQLConnectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\process.h(995): error C2664: 'SQLExecDirectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\hardware.h(6): error C2664: 'GetComputerNameW' : cannot convert parameter 1 from 'char [1024]' to 'LPWSTR'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\hardware.h(13): error C2664: 'GetVolumeInformationW' : cannot convert parameter 1 from 'const char [4]' to 'LPCWSTR'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\exptable.h(2010): error C2664: 'GetModuleFileNameW' : cannot convert parameter 2 from 'char [260]' to 'LPWSTR'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\exptable.h(2069): error C2664: 'ShellExecuteW' : cannot convert parameter 2 from 'const char [5]' to 'LPCWSTR'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\command.h(2797): error C2664: 'SQLConnectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\command.h(2811): error C2664: 'SQLExecDirectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\command.h(2836): error C2664: 'SQLConnectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\command.h(2850): error C2664: 'SQLExecDirectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\command.h(2975): error C2664: 'SQLConnectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\command.h(2989): error C2664: 'SQLExecDirectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\command.h(3014): error C2664: 'SQLConnectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\command.h(3028): error C2664: 'SQLExecDirectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\command.h(3072): error C2664: 'SQLConnectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\command.h(3086): error C2664: 'SQLExecDirectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\command.h(3112): error C2664: 'SQLConnectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\command.h(3126): error C2664: 'SQLExecDirectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\loader.h(6): error C2664: 'CreateDirectoryW' : cannot convert parameter 1 from 'const char *' to 'LPCWSTR'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\loader.h(8): error C2664: 'FindFirstFileW' : cannot convert parameter 1 from 'const char *' to 'LPCWSTR'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\loader.h(16): error C2440: 'type cast' : cannot convert from 'WCHAR [260]' to 'std::string'
+          No constructor could take the source type, or constructor overload resolution was ambiguous
+d:\scania developments\core - local\core\loader.h(17): error C2664: 'LoadLibraryW' : cannot convert parameter 1 from 'const char *' to 'LPCWSTR'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\start.h(130): error C2664: 'SQLConnectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\start.h(144): error C2664: 'SQLExecDirectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\start.h(245): error C2664: 'SQLConnectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\start.h(259): error C2664: 'SQLExecDirectW' : cannot convert parameter 2 from 'unsigned char *' to 'SQLWCHAR *'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+d:\scania developments\core - local\core\menu.h(62): error C2664: 'AppendMenuW' : cannot convert parameter 4 from 'const char *' to 'LPCWSTR'
+          Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+  base64.cpp
   Generating Code...

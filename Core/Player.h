@@ -714,7 +714,7 @@ void __fastcall MyGameStart(void *Player, void *edx)
 			if (HonorP > 0 || PeaceEvil == 1)
 				CChar::WriteInSight(IPlayer.GetOffset(), 255, "dddd", 244, IPlayer.GetID(), (HonorP > 0) ? HonorP : 1, HonorMessageSys(IPlayer.GetOffset(), HonorP));
 
-			if (IPlayer.IsOnline() && maxAllowedSpeed)
+			if (IPlayer.IsOnline() && !IPlayer.GetAdmin() && maxAllowedSpeed)
 				IPlayer.CheckSpeed(maxAllowedSpeed);
 
 
@@ -1215,7 +1215,7 @@ int __fastcall Tick(void *Player, void *edx)
 			}
 		}
 
-		if (IPlayer.IsBuff(82) && IPlayer.GetBuffRemain(82) <= 1)
+		if (IPlayer.IsBuff(82) && !IPlayer.GetAdmin() && IPlayer.GetBuffRemain(82) <= 1)
 			IPlayer.CheckSpeed(maxAllowedSpeed);
 
 		if (AreaCertMap.count(playerMap)) {
@@ -1225,6 +1225,17 @@ int __fastcall Tick(void *Player, void *edx)
 			if (!playerBuffs.count(buffID)) {
 				IPlayer.PortToVillage();
 				IPlayer.SystemMessage("Area Certificate expired. Renew to rejoin.", TEXTCOLOR_RED);
+			}
+		}
+
+		if (Reborns.count(IPlayer.GetProperty(PlayerProperty::Reborn))) {
+			Reborn rb = Reborns.find(IPlayer.GetProperty(PlayerProperty::Reborn))->second;
+
+			if (rb.sbMsg && rb.sbKey) {
+				int rbBuffID = (rb.sbKey + rb.sbMsg) * 15;
+
+				if (playerBuffs.count(rbBuffID) && GetRemain(playerBuffs, rbBuffID) < 10) 
+					IPlayer.UpdateSavedBuff(rbBuffID, BuffNames::BuffTime, 0, rb.sbMsg, rb.sbKey);
 			}
 		}
 
