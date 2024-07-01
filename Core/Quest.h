@@ -653,7 +653,7 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 
 			if (rb.sbKey && rb.sbMsg) {
 				int rbBuffID = (rb.sbKey + rb.sbMsg) * 15;
-				IPlayer.SaveBuff(rbBuffID, BuffNames::BuffTime, NextReborn, rb.sbMsg, rb.sbKey);
+				IPlayer.SaveBuff(rbBuffID, BuffNames::BuffTime);
 			}
 
 			if (rb.NamePad) {

@@ -40,17 +40,17 @@ void SwitchTable()
 {
 	DWORD* ExpPtr = (DWORD*)_ExpTable;
 	DWORD Exptr2;
-	DWORD ExpAdr1[] = {0x004592A6,0x004592BE,0x0046337A,0x0046440F,0x00415649,0x0041566F,0x004156B8,0x00415737};
-	DWORD ExpAdr2[] = {0x00459289,0x004592CB,0x00463387,0x00464407,0x00415650,0x00415667,0x004156B0,0x0041572F};
+	DWORD ExpAdr1[] = { 0x004592A6,0x004592BE,0x0046337A,0x0046440F,0x00415649,0x0041566F,0x004156B8,0x00415737 };
+	DWORD ExpAdr2[] = { 0x00459289,0x004592CB,0x00463387,0x00464407,0x00415650,0x00415667,0x004156B0,0x0041572F };
 
-	for(int i = 0;i<sizeof(ExpAdr1)/4;i++)
-		MemoryCopy((void*)ExpAdr1[i], (void*) &ExpPtr, 4);
+	for (int i = 0; i < sizeof(ExpAdr1) / 4; i++)
+		MemoryCopy((void*)ExpAdr1[i], (void*)&ExpPtr, 4);
 
-	MemoryCopy((void*)&Exptr2,(void*)0x00415737,4);
+	MemoryCopy((void*)&Exptr2, (void*)0x00415737, 4);
 	Exptr2 += 0x04;
 
-	for(int i = 0;i<sizeof(ExpAdr2)/4;i++)
-		MemoryCopy((void*)ExpAdr2[i], (void*) &Exptr2, 4);
+	for (int i = 0; i < sizeof(ExpAdr2) / 4; i++)
+		MemoryCopy((void*)ExpAdr2[i], (void*)&Exptr2, 4);
 }
 
 int __fastcall PerfectCureFix(int Skill, void* edx, int Argument, int Object) {
@@ -59,7 +59,7 @@ int __fastcall PerfectCureFix(int Skill, void* edx, int Argument, int Object) {
 		*((DWORD *)Skill + 11) = 1;
 		return ((35 + (20 * (ISkill.GetGrade() - 1))) * CChar::GetMaxHp(Object) / 100);
 	}
-	
+
 	return CChar::PerfectCure(Skill, Argument, Object);
 }
 
@@ -80,7 +80,7 @@ int __fastcall BuffTimer(int Player, void* edx, int Argument) {
 		IPlayer.SetRefreshCheck(GetTickCount() + 995);
 	}
 
-	return CChar::IsGState(Player,Argument);
+	return CChar::IsGState(Player, Argument);
 }
 
 int __cdecl MyUpdateProperty(int Player, int Type, int InOut, signed __int64 Exp)
@@ -88,6 +88,7 @@ int __cdecl MyUpdateProperty(int Player, int Type, int InOut, signed __int64 Exp
 	IChar IPlayer((void*)Player);
 	IChar IMonster;
 	Interface<ITools>Tools;
+	int playerID = IPlayer.GetID();
 
 	if (IPlayer.IsOnline() && Type == 8)
 	{
@@ -146,9 +147,19 @@ int __cdecl MyUpdateProperty(int Player, int Type, int InOut, signed __int64 Exp
 
 		if (IPlayer.GetMap() == LawlessMap)
 			Exp += (Exp * (10 * IPlayer.GetBuffValue(BuffNames::LawlessEXP))) / 100;
-		
+
 		if (IPlayer.IsBuff(258))
 			Exp += (Exp / PPEXP);
+
+		if (playerPartySizes.count(playerID)) {
+			int PartySize = playerPartySizes[playerID];
+
+			if (My_PerfectParty.count(PartySize)) {
+				PerfectParty pP = My_PerfectParty.find(PartySize)->second;
+				Exp += (Exp * pP.Exp) / 100;
+				IPlayer.SystemMessage("EXP Increased by: " + Int2String(pP.Exp) + "% Party Size: " + Int2String(PartySize), TEXTCOLOR_YELLOW);
+			}
+		}
 
 		if (IPlayer.IsBuff(BuffNames::CJBEXP))
 			Exp += (Exp / CJBEXP);
@@ -304,7 +315,7 @@ int _SoulPocketDamage(void* Player, int Damage) {
 
 
 
-void CheckForDailyQuest(void* Player , void* Monster) {
+void CheckForDailyQuest(void* Player, void* Monster) {
 	IChar IPlayer(Player);
 	IChar ITarget(Monster);
 
@@ -336,7 +347,7 @@ void __cdecl MyStatStr(int Player, unsigned char Packet, char *Format, unsigned 
 {
 	IChar IPlayer((void*)Player);
 	CPlayer::Write(IPlayer.GetOffset(), 69, "bwwww", 0, IPlayer.GetStr(), CChar::GetHit(Player), CChar::GetMinAttack(Player), CChar::GetMaxAttack(Player));
-	CPlayer::Write(IPlayer.GetOffset(), 69, "bwwww", 43, (CChar::GetStr(Player) - IPlayer.GetStr()), CChar::GetHit(Player), CChar::GetMinAttack(Player), CChar::GetMaxAttack(Player));		
+	CPlayer::Write(IPlayer.GetOffset(), 69, "bwwww", 43, (CChar::GetStr(Player) - IPlayer.GetStr()), CChar::GetHit(Player), CChar::GetMinAttack(Player), CChar::GetMaxAttack(Player));
 }
 
 void __cdecl MyStatHth(int Player, unsigned char Packet, char *Format, unsigned char Type, unsigned short Str, unsigned short Otp, unsigned short MinAtk, unsigned short MaxAtk)
@@ -355,7 +366,7 @@ void __cdecl MyStatInt(int Player, unsigned char Packet, char* Format, unsigned 
 
 void __cdecl MyStatWis(int Player, unsigned char Packet, char* Format, unsigned char statType, unsigned short points, unsigned short curWisdom, unsigned short maxWisdom, unsigned short curse)
 {
-	IChar IPlayer((void*)Player); 
+	IChar IPlayer((void*)Player);
 	CPlayer::Write(IPlayer.GetOffset(), 69, "bwwwwww", 3, IPlayer.GetWis(), IPlayer.GetCurMp(), CChar::GetMaxMp(Player), CChar::GetMinMagic(Player), CChar::GetMaxMagic(Player), CChar::GetResist(IPlayer.GetOffset(), 3));
 	CPlayer::Write(IPlayer.GetOffset(), 69, "bwwwwww", 46, (CChar::GetWis(Player) - IPlayer.GetWis()), IPlayer.GetCurMp(), CChar::GetMaxMp(Player), CChar::GetMinMagic(Player), CChar::GetMaxMagic(Player), CChar::GetResist(IPlayer.GetOffset(), 3));
 }
@@ -364,7 +375,7 @@ void __cdecl MyStatAgi(int Player, unsigned char Type, char* format, unsigned ch
 {
 	IChar IPlayer((void*)Player);
 	CPlayer::Write(IPlayer.GetOffset(), 69, "bwwwwww", 4, IPlayer.GetAgi(), CChar::GetHit(Player), CChar::GetDodge(Player), CChar::GetDodge(Player), CChar::GetMinAttack(Player), CChar::GetMaxAttack(Player));
-	CPlayer::Write(IPlayer.GetOffset(), 69, "bwwwwww", 47, (CChar::GetDex(Player) - IPlayer.GetAgi()), CChar::GetHit(Player), CChar::GetDodge(Player), CChar::GetDodge(Player), CChar::GetMinAttack(Player), CChar::GetMaxAttack(Player));		
+	CPlayer::Write(IPlayer.GetOffset(), 69, "bwwwwww", 47, (CChar::GetDex(Player) - IPlayer.GetAgi()), CChar::GetHit(Player), CChar::GetDodge(Player), CChar::GetDodge(Player), CChar::GetMinAttack(Player), CChar::GetMaxAttack(Player));
 }
 
 void __cdecl MyStatCurHp1(int Player, unsigned char Type, char* format, unsigned char statType, unsigned short hp)
@@ -430,7 +441,7 @@ int __fastcall PartyEXP(int Party, void *edx, signed int *EXP, int Check, int Pl
 
 			if (stop) {
 				IPlayer.SystemMessage("Party EXP can not be gathered by/for players from different channels.", TEXTCOLOR_RED);
-		//		CPlayer::LeaveParty((int)IPlayer.GetOffset());
+				//		CPlayer::LeaveParty((int)IPlayer.GetOffset());
 				CSkill::ObjectRelease((void*)PTPlayer, PTPlayer + 352);
 				return 0;
 			}
@@ -444,7 +455,7 @@ int __fastcall PartyEXP(int Party, void *edx, signed int *EXP, int Check, int Pl
 	while (IntEXP > PartyEXPMax) {
 		signed int NewEXP = PartyEXPMax;
 		CParty::AllotExp(Party, &NewEXP, Check, PlayerX);
-		
+
 		IntEXP -= PartyEXPMax;
 	}
 	*/
@@ -462,13 +473,13 @@ int __fastcall InitMonsterDrop(int InitMonster, void *edx, int Monster, int IsPa
 			PTLvl = *(DWORD *)((int)Party + 24);
 			CIOObject::Release(Party);
 		}
-		
+
 		IChar IMonster((void*)Monster);
 		if (PTLvl >= (IMonster.GetLevel() + 14))
 			return 0;
 
 	}
-	
+
 	return CInitMonster::DropItem(InitMonster, Monster, IsParty, ID, a5, a6);
 }
 
@@ -482,7 +493,7 @@ int __fastcall MonsterAllotEXP(int Monster, void *edx, int a2, int TankerID, int
 	if (IPlayer.IsOnline()) {
 		int Level = IPlayer.GetLevel();
 		if (Level > 100) {
-		 if (IMonster.GetLevel() <= (Level - 14))
+			if (IMonster.GetLevel() <= (Level - 14))
 			{
 				return 0;
 			}
@@ -514,12 +525,12 @@ int __fastcall MonsterAllotEXP(int Monster, void *edx, int a2, int TankerID, int
 				if (IMonster.GetLevel() <= (PTLvl - 14)) {
 					return 0;
 				}
-				
+
 			}
 		}
 		else
-		if (IPlayer.GetMap() == LawlessMap)
-			UpdateLawless((int)IPlayer.GetOffset(), LawlessMKill);
+			if (IPlayer.GetMap() == LawlessMap)
+				UpdateLawless((int)IPlayer.GetOffset(), LawlessMKill);
 	}
 
 	int Index = IMonster.GetMobIndex();
@@ -544,8 +555,8 @@ int __fastcall MonsterAllotEXP(int Monster, void *edx, int a2, int TankerID, int
 				IPlayer.SetProperty(PlayerProperty::UnGap, 1);
 		}
 	}
-	
-	
+
+
 	if (UnGap.count(Index)) {
 		if (IPlayer.IsValid()) {
 			if (IPlayer.IsParty())
@@ -577,14 +588,14 @@ int __fastcall SubState(int Itemx, void *edx, int Type)
 		TargetFind myTarget(0, 1, *(DWORD*)(Itemx + 32));
 		int xPlayer = (int)myTarget.getTarget();
 		IChar Player((void*)xPlayer);
-		
+
 		if (Player.IsOnline()) {
 
 			if (!isItemSuit(Item.CheckIndex()) && Item.GetType() == 4)
-				Player.UpdateBuff(BuffNames::ArmorWears,BuffNames::BuffTime,0);
+				Player.UpdateBuff(BuffNames::ArmorWears, BuffNames::BuffTime, 0);
 
 			if (isItemSuit(Item.CheckIndex()))
-				Player.UpdateBuff(BuffNames::SuitsUsing,BuffNames::BuffTime,0);
+				Player.UpdateBuff(BuffNames::SuitsUsing, BuffNames::BuffTime, 0);
 
 			if (Item.CheckIndex() >= 2986 && Item.CheckIndex() <= 3009)
 			{
@@ -592,34 +603,34 @@ int __fastcall SubState(int Itemx, void *edx, int Type)
 				if (!GetCurrentGrade)
 					return 0;
 
-				if (Item.CheckIndex() == 2986) Player.UpdateBuff(BuffNames::TrigramHP,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 2994) Player.UpdateBuff(BuffNames::TrigramHP,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 3002) Player.UpdateBuff(BuffNames::TrigramHP,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 2987) Player.UpdateBuff(BuffNames::TrigramMP,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 2995) Player.UpdateBuff(BuffNames::TrigramMP,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 3003) Player.UpdateBuff(BuffNames::TrigramMP,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 2988) Player.UpdateBuff(BuffNames::TrigramAtk,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 2996) Player.UpdateBuff(BuffNames::TrigramAtk,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 3004) Player.UpdateBuff(BuffNames::TrigramAtk,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 2989) Player.UpdateBuff(BuffNames::TrigramStr,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 2997) Player.UpdateBuff(BuffNames::TrigramStr,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 3005) Player.UpdateBuff(BuffNames::TrigramStr,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 2990) Player.UpdateBuff(BuffNames::TrigramAgi,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 2998) Player.UpdateBuff(BuffNames::TrigramAgi,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 3006) Player.UpdateBuff(BuffNames::TrigramAgi,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 2991) Player.UpdateBuff(BuffNames::TrigramInt,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 2999) Player.UpdateBuff(BuffNames::TrigramInt,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 3007) Player.UpdateBuff(BuffNames::TrigramInt,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 2992) Player.UpdateBuff(BuffNames::TrigramWis,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 3000) Player.UpdateBuff(BuffNames::TrigramWis,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 3008) Player.UpdateBuff(BuffNames::TrigramWis,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 2993) Player.UpdateBuff(BuffNames::TrigramHth,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 3001) Player.UpdateBuff(BuffNames::TrigramHth,BuffNames::BuffTime,0);
-				else if (Item.CheckIndex() == 3009) Player.UpdateBuff(BuffNames::TrigramHth,BuffNames::BuffTime,0);
+				if (Item.CheckIndex() == 2986) Player.UpdateBuff(BuffNames::TrigramHP, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 2994) Player.UpdateBuff(BuffNames::TrigramHP, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 3002) Player.UpdateBuff(BuffNames::TrigramHP, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 2987) Player.UpdateBuff(BuffNames::TrigramMP, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 2995) Player.UpdateBuff(BuffNames::TrigramMP, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 3003) Player.UpdateBuff(BuffNames::TrigramMP, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 2988) Player.UpdateBuff(BuffNames::TrigramAtk, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 2996) Player.UpdateBuff(BuffNames::TrigramAtk, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 3004) Player.UpdateBuff(BuffNames::TrigramAtk, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 2989) Player.UpdateBuff(BuffNames::TrigramStr, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 2997) Player.UpdateBuff(BuffNames::TrigramStr, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 3005) Player.UpdateBuff(BuffNames::TrigramStr, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 2990) Player.UpdateBuff(BuffNames::TrigramAgi, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 2998) Player.UpdateBuff(BuffNames::TrigramAgi, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 3006) Player.UpdateBuff(BuffNames::TrigramAgi, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 2991) Player.UpdateBuff(BuffNames::TrigramInt, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 2999) Player.UpdateBuff(BuffNames::TrigramInt, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 3007) Player.UpdateBuff(BuffNames::TrigramInt, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 2992) Player.UpdateBuff(BuffNames::TrigramWis, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 3000) Player.UpdateBuff(BuffNames::TrigramWis, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 3008) Player.UpdateBuff(BuffNames::TrigramWis, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 2993) Player.UpdateBuff(BuffNames::TrigramHth, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 3001) Player.UpdateBuff(BuffNames::TrigramHth, BuffNames::BuffTime, 0);
+				else if (Item.CheckIndex() == 3009) Player.UpdateBuff(BuffNames::TrigramHth, BuffNames::BuffTime, 0);
 			}
 
 			if (Item.CheckIndex() >= 3381 && Item.CheckIndex() <= 3383 && Player.GetBuffValue(BuffNames::MirrorBuff))
-				Player.UpdateBuff(BuffNames::MirrorBuff,BuffNames::BuffTime,0);
+				Player.UpdateBuff(BuffNames::MirrorBuff, BuffNames::BuffTime, 0);
 
 			if (Item.CheckIndex() >= 3384 && Item.CheckIndex() <= 3386 && Player.GetBuffValue(BuffNames::MirrorBuff))
 			{
@@ -637,15 +648,15 @@ int __fastcall SubState(int Itemx, void *edx, int Type)
 					if (Player.GetBuffValue(BuffNames::Essence3) == Item.GetIID())
 					{
 						*(DWORD*)(*(DWORD*)((int)Itemx + 40) + 72) = -97;
-						Player.UpdateBuff(BuffNames::Essence3,BuffNames::BuffTime,0);
+						Player.UpdateBuff(BuffNames::Essence3, BuffNames::BuffTime, 0);
 					}
 					else if (Player.GetBuffValue(BuffNames::Essence2) == Item.GetIID()) {
 						*(DWORD*)(*(DWORD*)((int)Itemx + 40) + 72) = -96;
-						Player.UpdateBuff(BuffNames::Essence2,BuffNames::BuffTime,0);
+						Player.UpdateBuff(BuffNames::Essence2, BuffNames::BuffTime, 0);
 					}
 					else if (Player.GetBuffValue(BuffNames::Essence1) == Item.GetIID()) {
 						*(DWORD*)(*(DWORD*)((int)Itemx + 40) + 72) = -95;
-						Player.UpdateBuff(BuffNames::Essence1,BuffNames::BuffTime,0);
+						Player.UpdateBuff(BuffNames::Essence1, BuffNames::BuffTime, 0);
 					}
 				}
 
@@ -654,19 +665,19 @@ int __fastcall SubState(int Itemx, void *edx, int Type)
 					if (Player.GetBuffValue(BuffNames::Essence4) == Item.GetIID())
 					{
 						*(DWORD*)(*(DWORD*)((int)Itemx + 40) + 72) = -98;
-						Player.UpdateBuff(BuffNames::Essence4,BuffNames::BuffTime,0);
+						Player.UpdateBuff(BuffNames::Essence4, BuffNames::BuffTime, 0);
 					}
 					else if (Player.GetBuffValue(BuffNames::Essence3) == Item.GetIID()) {
 						*(DWORD*)(*(DWORD*)((int)Itemx + 40) + 72) = -97;
-						Player.UpdateBuff(BuffNames::Essence3,BuffNames::BuffTime,0);
+						Player.UpdateBuff(BuffNames::Essence3, BuffNames::BuffTime, 0);
 					}
 					else if (Player.GetBuffValue(BuffNames::Essence2) == Item.GetIID()) {
 						*(DWORD*)(*(DWORD*)((int)Itemx + 40) + 72) = -96;
-						Player.UpdateBuff(BuffNames::Essence2,BuffNames::BuffTime,0);
+						Player.UpdateBuff(BuffNames::Essence2, BuffNames::BuffTime, 0);
 					}
 					else if (Player.GetBuffValue(BuffNames::Essence1) == Item.GetIID()) {
 						*(DWORD*)(*(DWORD*)((int)Itemx + 40) + 72) = -95;
-						Player.UpdateBuff(BuffNames::Essence1,BuffNames::BuffTime,0);
+						Player.UpdateBuff(BuffNames::Essence1, BuffNames::BuffTime, 0);
 					}
 				}
 
@@ -675,23 +686,23 @@ int __fastcall SubState(int Itemx, void *edx, int Type)
 					if (Player.GetBuffValue(BuffNames::Essence5) == Item.GetIID())
 					{
 						*(DWORD*)(*(DWORD*)((int)Itemx + 40) + 72) = -99;
-						Player.UpdateBuff(BuffNames::Essence5,BuffNames::BuffTime,0);
+						Player.UpdateBuff(BuffNames::Essence5, BuffNames::BuffTime, 0);
 					}
 					else if (Player.GetBuffValue(BuffNames::Essence4) == Item.GetIID()) {
 						*(DWORD*)(*(DWORD*)((int)Itemx + 40) + 72) = -98;
-						Player.UpdateBuff(BuffNames::Essence4,BuffNames::BuffTime,0);
+						Player.UpdateBuff(BuffNames::Essence4, BuffNames::BuffTime, 0);
 					}
 					else if (Player.GetBuffValue(BuffNames::Essence3) == Item.GetIID()) {
 						*(DWORD*)(*(DWORD*)((int)Itemx + 40) + 72) = -97;
-						Player.UpdateBuff(BuffNames::Essence3,BuffNames::BuffTime,0);
+						Player.UpdateBuff(BuffNames::Essence3, BuffNames::BuffTime, 0);
 					}
 					else if (Player.GetBuffValue(BuffNames::Essence2) == Item.GetIID()) {
 						*(DWORD*)(*(DWORD*)((int)Itemx + 40) + 72) = -96;
-						Player.UpdateBuff(BuffNames::Essence2,BuffNames::BuffTime,0);
+						Player.UpdateBuff(BuffNames::Essence2, BuffNames::BuffTime, 0);
 					}
 					else if (Player.GetBuffValue(BuffNames::Essence1) == Item.GetIID()) {
 						*(DWORD*)(*(DWORD*)((int)Itemx + 40) + 72) = -95;
-						Player.UpdateBuff(BuffNames::Essence1,BuffNames::BuffTime,0);
+						Player.UpdateBuff(BuffNames::Essence1, BuffNames::BuffTime, 0);
 					}
 				}
 			}
@@ -748,9 +759,9 @@ int __fastcall MirrorFix(int Player, void *edx, int Type)
 	IChar IPlayer((void*)Player);
 
 	if (Type == 1 || Type == -3 || Type == 4 || Type == -97 || Type == -98 || Type == -99 || Type == -100 || Type == -101 || Type == -102 || Type == -108 || Type == 20 || Type == 2 || Type == -114)
-	 return 0;
+		return 0;
 
- return CPlayer::IsWState(Player,Type);
+	return CPlayer::IsWState(Player, Type);
 }
 
 int __fastcall ShortsCheck(int xItem, void *edx, int Type)
@@ -761,7 +772,7 @@ int __fastcall ShortsCheck(int xItem, void *edx, int Type)
 	int xPlayer = (int)myTarget.getTarget();
 
 	IChar IPlayer((void*)xPlayer);
-	
+
 	if (Item.GetType() == 4 && IPlayer.GetBuffValue(BuffNames::ArmorWears) && !IPlayer.GetBuffValue(BuffNames::SuitsUsing))
 		return 0;
 	if (Item.GetType() == 4 && !IPlayer.GetBuffValue(BuffNames::ArmorWears) && IPlayer.GetBuffValue(BuffNames::SuitsUsing))
@@ -805,7 +816,7 @@ int __fastcall CustomWeaponsFix(int Player, void *edx, int Type)
 {
 	IChar IPlayer((void*)Player);
 
-	if (IPlayer.IsOnline() && Type == 0 && !IPlayer.IsBuff(2034) && CPlayer::IsWState(Player,Type)) {
+	if (IPlayer.IsOnline() && Type == 0 && !IPlayer.IsBuff(2034) && CPlayer::IsWState(Player, Type)) {
 		IPlayer.Buff(2034, BuffNames::BuffTime, 0);
 		return 0;
 	}
@@ -822,8 +833,8 @@ int __fastcall CustomWeapFix(int Item, void *edx, int Argument)
 
 	TargetFind myTarget(0, 1, *(DWORD*)(Item + 32));
 	int xPlayer = (int)myTarget.getTarget();
-	IChar IPlayer((void*)xPlayer); 
-	
+	IChar IPlayer((void*)xPlayer);
+
 	if (IPlayer.IsOnline() && isItemCustomWeapon(IItem.CheckIndex()) && !IPlayer.IsBuff(BuffNames::custWeap) && CItem::IsState(Item, 1)) {
 		int Old = *(DWORD *)(xPlayer + 156);
 		CPlayer::AddWState((int)IPlayer.GetOffset(), IItem.GetType());
@@ -832,11 +843,11 @@ int __fastcall CustomWeapFix(int Item, void *edx, int Argument)
 		int Show = *(WORD *)(*(DWORD *)(Item + 40) + 64);
 		IPlayer.UpdateBuff(BuffNames::custWeap, BuffNames::BuffTime, Show);
 		IPlayer.Buff(2034, BuffNames::BuffTime, 0);
-		
+
 		return 0;
 	}
 
-	
+
 	return CItem::IsState(Item, Argument);
 }
 
@@ -854,12 +865,12 @@ int __fastcall ArmorRiding(int Item, void *edx, int Argument)
 		CPlayer::AddWState((int)IPlayer.GetOffset(), IItem.GetType());
 		(*(void(__thiscall **)(int, int))(*(DWORD *)Item + 104))(Item, (int)IPlayer.GetOffset());
 		int old = IPlayer.GetBuffValue(2035);
-		IPlayer.UpdateBuff(2035, BuffNames::BuffTime, old+1);
-		
+		IPlayer.UpdateBuff(2035, BuffNames::BuffTime, old + 1);
+
 		return 0;
 	}
 
-	
+
 	return CItem::IsState(Item, Argument);
 }
 
@@ -875,7 +886,7 @@ void __cdecl ServerStatus(int StatusWindow, int Type, const char* Text, int Size
 	CScreen::Add(StatusWindow, 1, " %s", getUptime().c_str());
 	CScreen::Add(StatusWindow, 1, " %s", getSysUpTime().c_str());
 
-	
+
 	CScreen::Add(StatusWindow, 1, " Online Players: %d", InterlockedExchangeAdd(&OnlinePlayers, 0));
 	CScreen::Add(StatusWindow, 1, " Fake Shops: %d", EFakePlayers);
 	CScreen::Add(StatusWindow, 1, " Active Channels: %d", ChannelActivated);
@@ -901,7 +912,7 @@ void __cdecl ServerStatus(int StatusWindow, int Type, const char* Text, int Size
 	CScreen::Add(StatusWindow, 0, " Hunting Guild: %s", HuntingName.c_str());
 }
 
-bool aisEssensed(IChar IPlayer, int IID){
+bool aisEssensed(IChar IPlayer, int IID) {
 	return ((IPlayer.GetBuffValue(BuffNames::Essence1) == IID) || (IPlayer.GetBuffValue(BuffNames::Essence2) == IID) || (IPlayer.GetBuffValue(BuffNames::Essence3) == IID) || (IPlayer.GetBuffValue(BuffNames::Essence4) == IID) || (IPlayer.GetBuffValue(BuffNames::Essence5) == IID));
 }
 
@@ -916,7 +927,7 @@ int __fastcall MirrorFixa(int Item, void *edx, int Argument)
 	int xPlayer = (int)myTarget.getTarget();
 
 	IChar IPlayer((void*)xPlayer);
-	
+
 	if (isPet(IItem.CheckIndex()) && IPlayer.IsOnline() && CItem::IsState(Item, 1)) {
 
 		if ((isNormalPet(IItem.CheckIndex()) && IPlayer.GetBuffValue(BuffNames::PetOwner)) || (isMonsterPet(IItem.CheckIndex()) && IPlayer.GetBuffValue(BuffNames::PetOwner2)) || (isPremiumPet(IItem.CheckIndex()) && IPlayer.GetBuffValue(BuffNames::PetOwner3)))
@@ -940,8 +951,8 @@ int __fastcall MirrorFixa(int Item, void *edx, int Argument)
 		IPlayer.Buff(3705, BuffNames::BuffTime, 0);
 		return 0;
 	}
-	
-	return CItem::IsState(Item,Argument);
+
+	return CItem::IsState(Item, Argument);
 }
 
 int __fastcall SuitsFixe(int xItem, void *edx, int Argument)
@@ -984,7 +995,7 @@ int __fastcall IsNormal(int Player, void *edx)
 				return 0;
 		}
 
-		if (IPlayer.GetClass() < 5 && CChar::IsGState((int)IPlayer.GetOffset(),512))
+		if (IPlayer.GetClass() < 5 && CChar::IsGState((int)IPlayer.GetOffset(), 512))
 		{
 			if (IPlayer.IsBuff(327))
 				return 0;
@@ -1088,10 +1099,10 @@ int __cdecl OpenPortalFix(int Player)
 
 	if (IPlayer.isRidingMode())
 	{
-		IPlayer.SystemMessage("You can not use portal while riding.",TEXTCOLOR_RED);
+		IPlayer.SystemMessage("You can not use portal while riding.", TEXTCOLOR_RED);
 		return 0;
 	}
-	
+
 	return CPortal::OpenPortal(Player);
 }
 
@@ -1101,10 +1112,10 @@ int __fastcall MyForPortalCheck(void *Value, void *edx, int Player)
 	if (IPlayer.IsOnline() && (*(DWORD*)((int)Value + 4) & 65536))
 	{
 		CChar::Unlock(IPlayer.GetOffset());
-		IPlayer.Buff(331,3,0);
+		IPlayer.Buff(331, 3, 0);
 		CChar::Lock(IPlayer.GetOffset());
 	}
-	return Undefined::ForPortalCheck(Value,Player);
+	return Undefined::ForPortalCheck(Value, Player);
 }
 
 int __fastcall RidingFix(void *Argument, void *edx)
@@ -1116,7 +1127,7 @@ int __fastcall RidingFix(void *Argument, void *edx)
 	TargetFind myTarget(0, 1, *(DWORD*)(Itemx + 32));
 	int xPlayer = (int)myTarget.getTarget();
 	IChar IPlayer((void*)xPlayer);
-	
+
 	if (IPlayer.IsOnline())
 	{
 		if (IPlayer.IsOnline() && isItemRiding(Item.CheckIndex()) && IPlayer.GetBuffValue(BuffNames::RidingUsing) != Itemx) {
@@ -1157,7 +1168,7 @@ int __fastcall RidingFix(void *Argument, void *edx)
 			{
 				if (!IPlayer.isPortalMode() && isBattleRiding(Item.CheckIndex())) {
 					int Satiety = IPlayer.GetBuffValue(BuffNames::Satiety);
-					if (Satiety>=5)
+					if (Satiety >= 5)
 						IPlayer.AddHp(ceil(((double)Satiety / 5)));
 				}
 
@@ -1212,7 +1223,7 @@ int __cdecl PetPickRange(int Check, int Val)
 {
 	int result = CChar::GetRange(Check, Val);
 	IChar IPlayer((void*)(Check - 332));
-	
+
 	if (result > 64 && IPlayer.GetType() == 0 && IPlayer.IsValid()) {
 		int Range = IPlayer.GetPickRange();
 
@@ -1237,22 +1248,22 @@ void __cdecl SendBState2(void* Player, const char Type, const char* Format, int 
 }
 
 int __cdecl ArmorShowFix(void* Player, BYTE bType, const char* Format, int id, int t, unsigned short item) {
-	
+
 	return CChar::WriteInSight(Player, bType, Format, id, t, item);
 }
 
-int __cdecl FishingItem(int Index,int Prefix, int Value, int Argument){
-	if(Index==237 && OriginalLowest) Index = OriginalLowest;
-	if(Index==239 && OriginalLow) Index = OriginalLow;
-	if(Index==240 && OriginalNormal) Index = OriginalNormal;
-	if(Index==444 && OriginalHard) Index = OriginalHard;
-	if(Index==241 && OriginalHardest) Index = OriginalHardest;
+int __cdecl FishingItem(int Index, int Prefix, int Value, int Argument) {
+	if (Index == 237 && OriginalLowest) Index = OriginalLowest;
+	if (Index == 239 && OriginalLow) Index = OriginalLow;
+	if (Index == 240 && OriginalNormal) Index = OriginalNormal;
+	if (Index == 444 && OriginalHard) Index = OriginalHard;
+	if (Index == 241 && OriginalHardest) Index = OriginalHardest;
 
 	if (!FishingList.empty()) {
 		int Chance = CTools::Rate(1, 1000);
 		Index = 0;
 		Value = 0;
-		for(auto x = FishingList.begin();x!=FishingList.end();x++){
+		for (auto x = FishingList.begin(); x != FishingList.end(); x++) {
 			std::vector<ChanceItem> fs = x->second;
 			int ItemC = CTools::Rate(0, fs.size() - 1);
 			ChanceItem f = fs[ItemC];
@@ -1271,7 +1282,7 @@ int __cdecl FishingItem(int Index,int Prefix, int Value, int Argument){
 		}
 	}
 
-	return CItem::CreateItem(Index,Prefix,Value,Argument);
+	return CItem::CreateItem(Index, Prefix, Value, Argument);
 }
 
 int __fastcall MyInventoryCheck(int Player, void *edx)
@@ -1279,7 +1290,7 @@ int __fastcall MyInventoryCheck(int Player, void *edx)
 	return GetInventorySize(Player, 0);
 }
 
-void PetAttack(IChar Attacker,IChar ITarget,IChar IPlayer) {
+void PetAttack(IChar Attacker, IChar ITarget, IChar IPlayer) {
 	int DMG = CChar::GetAttack(Attacker.GetOffset());
 	if (Attacker.CheckHit(ITarget, DMG)) {
 		int NormalDamage = 0, DamageArgument = 0, EBDamage = 0, Check = 0, TypeKind = 0, GetType = 0;
@@ -1288,7 +1299,7 @@ void PetAttack(IChar Attacker,IChar ITarget,IChar IPlayer) {
 		Check = (*(int(__thiscall**)(LONG, void*, unsigned int, int*, int*, int*, DWORD))(*(DWORD*)ITarget.GetOffset() + 72))((int)ITarget.GetOffset(), IPlayer.GetOffset(), DMG, &NormalDamage, &DamageArgument, &EBDamage, 0);
 		GetType = Check | 2 * DamageArgument | 4 * TypeKind;
 
-		if(NormalDamage)
+		if (NormalDamage)
 			IPlayer.SystemMessage("Your attacking pet gave " + Int2String(NormalDamage) + " Extra damage.", TEXTCOLOR_PINK);
 
 		CPlayer::Write(IPlayer.GetOffset(), 0xFE, "dddddbd", 189, IPlayer.GetID(), ITarget.GetID(), NormalDamage, EBDamage, GetType, 0);
@@ -1331,7 +1342,7 @@ int __cdecl AttackMsg(void* Player, const char Type, const char* Format, int id1
 				ConfigPetTime pet = PetTime.count(IPlayer.GetBuffValue(BuffNames::PetOwner)) ? PetTime.find(IPlayer.GetBuffValue(BuffNames::PetOwner))->second : ConfigPetTime();
 				if (pet.Monster != Index) {
 					pet = PetTime.count(IPlayer.GetBuffValue(BuffNames::PetOwner2)) ? PetTime.find(IPlayer.GetBuffValue(BuffNames::PetOwner2))->second : ConfigPetTime();
-					if(pet.Monster != Index)
+					if (pet.Monster != Index)
 						pet = PetTime.count(IPlayer.GetBuffValue(BuffNames::PetOwner3)) ? PetTime.find(IPlayer.GetBuffValue(BuffNames::PetOwner3))->second : ConfigPetTime();
 				}
 
@@ -1355,7 +1366,7 @@ int __cdecl AttackMsg(void* Player, const char Type, const char* Format, int id1
 						Attacker.AddFxToTarget("effect_ef081", 1, 0, 0);
 						Attacker.AddFxToTarget("effect_ef082", 1, 0, 0);
 						srand(time(0));
-						std::random_shuffle(pet.effects.begin(),pet.effects.end());
+						std::random_shuffle(pet.effects.begin(), pet.effects.end());
 						ITarget.AddFxToTarget(pet.effects.front(), 1, 0, 0);
 						*(DWORD *)((int)Player + 472) = GetTickCount() + pet.AOEDelay;
 						Attacker.UnAttack(pet.AOEDelay);
@@ -1371,7 +1382,7 @@ int __cdecl AttackMsg(void* Player, const char Type, const char* Format, int id1
 }
 
 int __cdecl SkillMSG(void* Player, const char Type, const char* Format, char TargetType, char SkillID, int PlayerID, int TargetID, int Damage, unsigned short GetType2) {
-	
+
 	int SPDmg = 0;
 	if (Damage > 1) {
 		SPDmg = SoulPocketDamage(Player, Damage);
@@ -1383,12 +1394,12 @@ int __cdecl SkillMSG(void* Player, const char Type, const char* Format, char Tar
 
 void __cdecl PlayerSkillMSG(void* Player, const char Type, const char* Format, char TargetType, char SkillID, int PlayerID, int TargetID, int Damage, unsigned short GetType2) {
 	int SPDmg = 0;
-	
+
 	if (Damage > 1) {
 		SPDmg = _SoulPocketDamage(Player, Damage);
 		Damage = Damage - SPDmg;
-	}	
-	
+	}
+
 	/*IChar Attacker(Player);
 	if (Attacker.IsOnline()) {
 		int Around = Attacker.GetObjectListAround(15);
@@ -1408,15 +1419,15 @@ void __cdecl PlayerSkillMSG(void* Player, const char Type, const char* Format, c
 }
 
 int __cdecl EBSkillMSG(void* Player, const char Type, const char* Format, char SkillID, int PlayerID, int TargetID, char r1, char r2, unsigned short Damage, unsigned short GetType2, char Last) {
-	int SPDmg = 0; 
+	int SPDmg = 0;
 
 	if (Damage > 1) {
 		SPDmg = SoulPocketDamage(Player, Damage);
 		Damage = Damage - SPDmg;
 	}
-	
+
 	/*IChar Attacker(Player);
-	
+
 	if (Attacker.IsOnline()) {
 		int Around = Attacker.GetObjectListAround(15);
 
@@ -1431,12 +1442,12 @@ int __cdecl EBSkillMSG(void* Player, const char Type, const char* Format, char S
 		}
 	}*/
 
-	return CChar::WriteInSight(Player, 63, "bddbbwwbd", SkillID, PlayerID, TargetID, r1, r2,Damage, GetType2,Last, SPDmg);
+	return CChar::WriteInSight(Player, 63, "bddbbwwbd", SkillID, PlayerID, TargetID, r1, r2, Damage, GetType2, Last, SPDmg);
 }
 
-int __cdecl MailShowFix(void* Socket,  const char* Format, char id1, char id2) {
-	
-	return CIOBuffer::PacketBuilder(Socket, "bd", id1, id2+1);
+int __cdecl MailShowFix(void* Socket, const char* Format, char id1, char id2) {
+
+	return CIOBuffer::PacketBuilder(Socket, "bd", id1, id2 + 1);
 }
 
 void __cdecl SendShopMsg(void* Player, const char Type, const char* Format, int iid, int a6) {
@@ -1460,7 +1471,8 @@ void __cdecl SendShopMsg2(void* Player, const char Type, const char* Format, int
 		int Shopped = IPlayer.GetBuffValue(2019);
 		if (Shopped)
 			CPlayer::Write(Player, 90, "ddbd", iid, amount, 26, Shopped);
-	}else
+	}
+	else
 		CPlayer::Write(Player, Type, Format, iid, amount, a6);
 }
 
@@ -1480,7 +1492,7 @@ void *__fastcall CIOCriticalSectionEnter(struct _RTL_CRITICAL_SECTION *a1)
 		{
 			v4 = lpCriticalSection[1].DebugInfo;
 			v5 = lpCriticalSection[1].LockCount;
-			if(lpCriticalSection->LockCount != 0)
+			if (lpCriticalSection->LockCount != 0)
 				EnterCriticalSection(lpCriticalSection);
 		}
 		v8 = *(DWORD *)(vars0 + 4);
@@ -1491,7 +1503,7 @@ void *__fastcall CIOCriticalSectionEnter(struct _RTL_CRITICAL_SECTION *a1)
 	return result;
 }
 
-int __cdecl FriendCheck(int Type,const char* Format, int PID, char Choice, const char* Name ) {
+int __cdecl FriendCheck(int Type, const char* Format, int PID, char Choice, const char* Name) {
 	if (FakeNames.count(Name)) {
 		TargetFind myTarget(0, 1, PID);
 		int Player = (int)myTarget.getTarget();
@@ -1499,7 +1511,7 @@ int __cdecl FriendCheck(int Type,const char* Format, int PID, char Choice, const
 			int FPID = FakeNames.findValue(Name);
 			CDBSocket::Write(29, "dbds", PID, 0, FPID, Name);
 			CPlayer::Write((void*)Player, 18, "bdsbdb", 0, FPID, Name, (EFakePlayers * -1) <= FPID ? true : false, (EFakePlayers * -1) <= FPID ? 1 : 0, 0);
-			
+
 		}
 		return 0;
 	}
@@ -1512,7 +1524,7 @@ int __cdecl QuestFix(int Type, const char* Format, int PID, unsigned short Quest
 }
 
 int __fastcall GoldenCoin(void* Player, void* edx, int Argument, int Item) {
-	
+
 	/*IChar IPlayer(Player);
 	int Amount = 1;
 	int Level = IPlayer.GetLevel();
@@ -1559,7 +1571,7 @@ char* __cdecl WarSetup(char* Dest, const char* Source) {
 void ServerStartedMessage() {
 	DrawMainMenu("Tools");
 
-	CConsole::Black("%s has started %s at : %s",ServerName, Time::GetDayName().c_str(), Time::GetTime().c_str());
+	CConsole::Black("%s has started %s at : %s", ServerName, Time::GetDayName().c_str(), Time::GetTime().c_str());
 
 }
 
@@ -1588,9 +1600,9 @@ int __cdecl MLMCreateMoney(int Index, int Prefix, int Amount, int Argument) {
 	return CItem::CreateItem(Index, Prefix, Amount, Argument);
 }
 
-int __fastcall MovingScrollFix(int Player, void* edx, int Map, int XY,int Arg1, int Arg2) {
+int __fastcall MovingScrollFix(int Player, void* edx, int Map, int XY, int Arg1, int Arg2) {
 	IChar IPlayer((void*)Player);
-	
+
 	if (IPlayer.IsBuff(349)) {
 		IPlayer.SystemMessage("You can not use moving scroll while riding.", TEXTCOLOR_RED);
 		if (CItem::FindInitItem(511))
@@ -1604,7 +1616,7 @@ int __fastcall MovingScrollFix(int Player, void* edx, int Map, int XY,int Arg1, 
 		IPlayer.SystemMessage("Please use the Emok NPC to port to Emok.", TEXTCOLOR_RED);
 		if (CItem::FindInitItem(511))
 			CItem::InsertItem(Player, 27, 511, 0, 1, -1);
-		else if(CItem::FindInitItem(512))
+		else if (CItem::FindInitItem(512))
 			CItem::InsertItem(Player, 27, 512, 0, 1, -1);
 		return 0;
 	}
@@ -1640,9 +1652,9 @@ int __cdecl Login(int Socket, char type, char format, char a1, int a2, char a3, 
 }
 
 int __fastcall DebuffMonster(int Monster, void* edx, int Skill) {
-	
+
 	if (Monster == (int)GuildRaid::Boss) {
-		if(Skill)
+		if (Skill)
 			CBuff::Release((void*)Skill, 1);
 		return 0;
 	}
@@ -1860,7 +1872,7 @@ void __cdecl PlayerSendCreate(void *player, unsigned char Type, const char* Form
 int __cdecl SendExclusiveCreate(unsigned char Type, const char * player, long id, const char* name, unsigned char _class, long x, long y, long z, unsigned short direction, unsigned long gState, unsigned char* Items, int ItemsLen, char face, char hair, unsigned __int64 mState64, int target, char* GuildName, long GuildID, char flag, long flagIndex)
 {
 	IChar IPlayer((void*)target);
-	
+
 	if (IPlayer.IsHide())
 		return CObject::WriteExclusive(0xFE, "d", 1);
 
@@ -1905,7 +1917,7 @@ int __cdecl SendTileChange(int Player, void* Packet, int Sight)
 
 	if (CGuild::IsWarringPeriod()) {
 		IChar IPlayer((void*)Player);
-		if(IPlayer.GetProperty(PlayerProperty::CWPlayer))
+		if (IPlayer.GetProperty(PlayerProperty::CWPlayer))
 			CChar::WriteInSight(IPlayer.GetOffset(), 46, "dI", IPlayer.GetID(), (__int64)*(DWORD *)((int)IPlayer.GetOffset() + 280));
 	}
 
@@ -1936,7 +1948,7 @@ int __fastcall ReturnToVillage(int Player, void* edx, int Map, int XY, int Arg1,
 				delete[] GetSetXY;
 				return Check;
 			}
-			 if (IPlayer.isRavenclaw() && RavenDieX && RavenDieY) {
+			if (IPlayer.isRavenclaw() && RavenDieX && RavenDieY) {
 				int *GetSetXY = new int[2];
 				GetSetXY[0] = RavenDieX;
 				GetSetXY[1] = RavenDieY;
@@ -1944,15 +1956,15 @@ int __fastcall ReturnToVillage(int Player, void* edx, int Map, int XY, int Arg1,
 				delete[] GetSetXY;
 				return Check;
 			}
-			 if (IPlayer.isHufflepuff() && HuffleDieX && HuffleDieY) {
-				 int *GetSetXY = new int[2];
-				 GetSetXY[0] = HuffleDieX;
-				 GetSetXY[1] = HuffleDieY;
-				 int Check = CPlayer::Teleport(Player, 0, (int)GetSetXY, HuffleDieZ, 1);
-				 delete[] GetSetXY;
-				 return Check;
-			 }
-			 if (GryffindorDieX && GryffindorDieY) {
+			if (IPlayer.isHufflepuff() && HuffleDieX && HuffleDieY) {
+				int *GetSetXY = new int[2];
+				GetSetXY[0] = HuffleDieX;
+				GetSetXY[1] = HuffleDieY;
+				int Check = CPlayer::Teleport(Player, 0, (int)GetSetXY, HuffleDieZ, 1);
+				delete[] GetSetXY;
+				return Check;
+			}
+			if (GryffindorDieX && GryffindorDieY) {
 				int *GetSetXY = new int[2];
 				GetSetXY[0] = GryffindorDieX;
 				GetSetXY[1] = GryffindorDieY;
@@ -1968,7 +1980,7 @@ int __fastcall ReturnToVillage(int Player, void* edx, int Map, int XY, int Arg1,
 
 int __cdecl WarCannonFix(char NPCCannon, int Player) {
 	int Check = CNPC::OpenNPC(NPCCannon, Player);
-	
+
 	IChar IPlayer((void*)Player);
 	IPlayer.OpenHTML(274);
 
@@ -2156,6 +2168,23 @@ void __cdecl SkillLearnFix(int Player, unsigned char Type, char* format, int Ski
 	CPlayer::Write((void*)Player, Type, format, SkillID, Grade);
 }
 
+int __fastcall RandItemFix(void* Player, void* edx, int Argument, int Item) {
+
+	/*IChar IPlayer(Player);
+	int Amount = 1;
+	int Level = IPlayer.GetLevel();
+
+	if (Level > 70 && Level <= 80)
+	Amount = 2;
+
+	if (Level > 80)
+	Amount = 3;
+
+	*(DWORD *)(Item + 52) = Amount;*/
+		*(DWORD*)((int)Item + 48) = 128;
+
+	return CPlayer::InsertItem(Player, Argument, Item);
+}
 int __fastcall ArtilleryFix(void* pSkill, void* edx, int SkillID) {
 	IChar IPlayer((void*)*(DWORD*)pSkill);
 
@@ -2168,7 +2197,7 @@ int __fastcall ArtilleryFix(void* pSkill, void* edx, int SkillID) {
 
 	if (IPlayer.GetClass() == 4)
 		return (CSkill::IsSkill(pSkill, 34) || CSkill::IsSkill(pSkill, 42) || CSkill::IsSkill(pSkill, SkillID));
-	
+
 	return CSkill::IsSkill(pSkill, SkillID);
 }
 
@@ -2178,10 +2207,10 @@ void __cdecl NameChangeRealTime(int Player, unsigned char Type, char* format, ch
 	IPlayer.CloseWindow("changename_msg");
 
 	std::string Name(name);
-	IPlayer.BoxMsg("Your new name is now: " + Name +".");
+	IPlayer.BoxMsg("Your new name is now: " + Name + ".");
 
 	int a4a = Player;
-	
+
 	CChar::Lock((void*)Player);
 	int Packet = SendExclusiveCreate(50, "", *(DWORD *)(a4a + 28), Name.c_str(), *(DWORD *)(a4a + 460), *(DWORD *)(a4a + 332), *(DWORD *)(a4a + 336), *(DWORD *)(a4a + 340), *(DWORD *)(a4a + 348), *(DWORD *)(a4a + 280), (unsigned char*)(a4a + 1052), 14, *(DWORD *)(a4a + 556), *(DWORD *)(a4a + 560), *(DWORD *)(a4a + 288), a4a, (char*)CPlayer::GetGuildName(a4a), *(DWORD *)(a4a + 480), *(DWORD *)(a4a + 1112), *(DWORD *)(a4a + 512));
 	CPlayer::Send(Player, Packet);
@@ -2213,6 +2242,7 @@ void ExpMultiplier()
 	int GCoinTime = GoldenCoinT * 1000;
 	int DMGLevelCheck = 24;
 	signed int ResetLevelMax = 127;
+	int randItem_nType = 3;
 
 
 	/*
@@ -2259,13 +2289,13 @@ void ExpMultiplier()
 	Memory->Copy((void*)0x0044AB95, &SiegeGunDissambleCancel, 1);
 	Memory->Copy((void*)0x00449F28, &SiegeGunAssembleCancel, 1);
 	Memory->Copy((void*)0x0044A918, &SiegeGunAssembleCancel, 1);
-	
+
 	if (AllyMemberFull > 8)
 		AllyMemberFull = 8;
 
 	if (MemberFull1 < 6)
 		MemberFull1 = 6;
-	
+
 	Memory->Hook(0x0046D0E7, NameChangeRealTime);
 
 	Memory->Hook(0x00432AB0, AuthDefaultPort);
@@ -2310,8 +2340,12 @@ void ExpMultiplier()
 	Memory->Set(0x004918e4, "\xff\x75\x08\x90\x90", 5);
 	Memory->Copy((void*)0x0045CA7D, &iceStoneValue, 1);
 
+
 	Memory->Copy((void*)0x00463497, &ResetLevelMax, 1);
 	Memory->Copy((void*)0x00463360, &ResetLevelMax, 1);
+
+	Memory->Hook(0x47AFB2, RandItemFix);
+
 	Memory->Hook(0x43EB9B, MobLevelEggFix);
 	Memory->Hook(0x43EC8A, MobLevelEggFix);
 	Memory->Hook(0x44F01F, MobLevelEggFix);
@@ -2387,7 +2421,7 @@ void ExpMultiplier()
 	Memory->Copy((void*)0x00413E25, &TempMemberFull, 1);
 	Memory->Copy((void*)0x00416E67, &AllyMemberFull, 1);
 	Memory->Copy((void*)0x00417113, &AllyMemberFull, 1);
-	
+
 	Memory->Copy((void*)0x0042670F, &ItemTimer, 4);
 	Memory->Copy((void*)0x0042F212, &EggGradeLimit, 1);
 
@@ -2459,25 +2493,25 @@ void ExpMultiplier()
 	Memory->Hook(0x00441286, WarSetup);
 	//Tools->FillMemoryEx(0x00451C65, ITools::_I_NOP, 5);
 	Tools->FillMemoryEx(0x0046D0B8, ITools::_I_NOP, 5);
-	Memory->Hook(0x00452958,FishingItem);
-	Memory->Hook(0x0042C7DD,MirrorFix);
+	Memory->Hook(0x00452958, FishingItem);
+	Memory->Hook(0x0042C7DD, MirrorFix);
 	Memory->Hook(0x00427AAC, CustomWeapFix);
 	Memory->Hook(0x0042A80E, ArmorRiding);
 	Memory->Hook(0x0042C0C6, SuitsFix);
 	Memory->Hook(0x0042BFF8, SuitsFix);
-	Memory->Hook(0x0042C1CF,SuitsFix1);
+	Memory->Hook(0x0042C1CF, SuitsFix1);
 	Memory->Hook(0x0042AC8D, ShortsFix);
 	Memory->Hook(0x004281AC, CustomWeaponsFix);
-	Memory->Hook(0x0042C4BE,MirrorFixa, 0xe8, 5);
-	Memory->Hook(0x0042BEB7,SuitsFixe, 0xe8, 5);
-	Memory->Hook(0x00455FC9,MyInventoryCheck);
-	Memory->Hook(0x004560DA,MyInventoryCheck);
-	Memory->Hook(0x0045DE7D,MyInventoryCheck);
-	Memory->Hook(0x0045E4CC,MyInventoryCheck);
-	Memory->Hook(0x0045EEFE,MyInventoryCheck);
-	Memory->Hook(0x0045F6CB,MyInventoryCheck);
-	Memory->Hook(0x00464FD3,MyInventoryCheck);
-	Memory->Hook(0x00469752,MyInventoryCheck);
+	Memory->Hook(0x0042C4BE, MirrorFixa, 0xe8, 5);
+	Memory->Hook(0x0042BEB7, SuitsFixe, 0xe8, 5);
+	Memory->Hook(0x00455FC9, MyInventoryCheck);
+	Memory->Hook(0x004560DA, MyInventoryCheck);
+	Memory->Hook(0x0045DE7D, MyInventoryCheck);
+	Memory->Hook(0x0045E4CC, MyInventoryCheck);
+	Memory->Hook(0x0045EEFE, MyInventoryCheck);
+	Memory->Hook(0x0045F6CB, MyInventoryCheck);
+	Memory->Hook(0x00464FD3, MyInventoryCheck);
+	Memory->Hook(0x00469752, MyInventoryCheck);
 	Memory->Hook(0x0043D0A5, IsNormal, 0xe8, 5);
 	Memory->Hook(0x0043E95C, IsNormal, 0xe8, 5);
 	Memory->Hook(0x0043F525, IsNormal, 0xe8, 5);
@@ -2493,24 +2527,24 @@ void ExpMultiplier()
 	Memory->Hook(0x00457127, IsStateCheck, 0xe8, 5);
 	Memory->Hook(0x004923DF, OpenPortalFix, 0xe8, 5);
 	Memory->Set(0x004B92E0, "ddddb", 6);
-	Memory->Hook(0x00458965,MyStatStr);
-	Memory->Hook(0x00459A8E,MyStatStr);
-	Memory->Hook(0x0045B361,MyStatStr);
-	Memory->Hook(0x00458AA7,MyStatHth);
-	Memory->Hook(0x00459CA8,MyStatHth);
-	Memory->Hook(0x0045B587,MyStatHth);
-	Memory->Hook(0x00458C81,MyStatInt);
-	Memory->Hook(0x00459FDF,MyStatInt);
-	Memory->Hook(0x0045B8CA,MyStatInt);
-	Memory->Hook(0x00458E05,MyStatWis);
-	Memory->Hook(0x0045A301,MyStatWis);
-	Memory->Hook(0x0045BBf8,MyStatWis);
-	Memory->Hook(0x00458F6E,MyStatAgi);
-	Memory->Hook(0x0045A56F,MyStatAgi);
-	Memory->Hook(0x0045BE72,MyStatAgi);
-	Memory->Hook(0x0045903B,MyStatCurHp1);
-	Memory->Hook(0x00459556,MyStatCurHp);
-	Memory->Hook(0x0045A61C,MyStatCurHp);
+	Memory->Hook(0x00458965, MyStatStr);
+	Memory->Hook(0x00459A8E, MyStatStr);
+	Memory->Hook(0x0045B361, MyStatStr);
+	Memory->Hook(0x00458AA7, MyStatHth);
+	Memory->Hook(0x00459CA8, MyStatHth);
+	Memory->Hook(0x0045B587, MyStatHth);
+	Memory->Hook(0x00458C81, MyStatInt);
+	Memory->Hook(0x00459FDF, MyStatInt);
+	Memory->Hook(0x0045B8CA, MyStatInt);
+	Memory->Hook(0x00458E05, MyStatWis);
+	Memory->Hook(0x0045A301, MyStatWis);
+	Memory->Hook(0x0045BBf8, MyStatWis);
+	Memory->Hook(0x00458F6E, MyStatAgi);
+	Memory->Hook(0x0045A56F, MyStatAgi);
+	Memory->Hook(0x0045BE72, MyStatAgi);
+	Memory->Hook(0x0045903B, MyStatCurHp1);
+	Memory->Hook(0x00459556, MyStatCurHp);
+	Memory->Hook(0x0045A61C, MyStatCurHp);
 	Memory->Hook(0x0045BF2B, MyStatCurHp);
 
 	//Memory->Hook(0x00459311, MyStatEXP);

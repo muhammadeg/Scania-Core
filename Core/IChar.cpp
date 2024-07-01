@@ -251,7 +251,7 @@ void IChar::SaveBuff(int BuffID, int Time, int Value, int SBName, int SBKey) {
 void IChar::UpdateSavedBuff(int BuffID, int Time, int Value, int SBName, int SBKey) {
 	int Times = (int)time(0) + Time;
 	CDBSocket::Write(95, "ddddddd", 3, this->GetPID(), BuffID, Value, SBKey, SBName, Times);
-	this->UpdateBuff(BuffID, Time, Value);
+	this->Buff(BuffID, Time, Value);
 
 	if (SBName && SBKey)
 		this->SetBuffIcon(Time * 1000, 0, SBName, SBKey);

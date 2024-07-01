@@ -1235,7 +1235,7 @@ int __fastcall Tick(void *Player, void *edx)
 				int rbBuffID = (rb.sbKey + rb.sbMsg) * 15;
 
 				if (playerBuffs.count(rbBuffID) && GetRemain(playerBuffs, rbBuffID) < 10) 
-					IPlayer.UpdateSavedBuff(rbBuffID, BuffNames::BuffTime, 0, rb.sbMsg, rb.sbKey);
+					IPlayer.UpdateSavedBuff(rbBuffID, BuffNames::BuffTime, 0, 0, 0);
 			}
 		}
 
@@ -4027,6 +4027,48 @@ int __fastcall Tick(void *Player, void *edx)
 		{
 			IPlayer.CancelBuff(BuffNames::CJBEXP);
 			IPlayer.RemoveBuffIcon(0, 0, CJBSYS, CJBSYSB);
+		}
+
+		// Party Bonus
+		if (My_PPActive) {
+			int playerID = IPlayer.GetID();
+
+			if (IPlayer.IsParty()) {
+				void *Party = (void *)CParty::FindParty(IPlayer.GetPartyID());
+
+				if (Party) {
+					int PartySize = CParty::GetSize(Party);
+
+					if (playerPartySizes[playerID] != PartySize) {
+						if (playerPartySizes.count(playerID) && playerBuffs.count(11750 + playerPartySizes[playerID])) {
+							int oldSize = playerPartySizes[playerID];
+							PerfectParty oldPP = My_PerfectParty.find(oldSize)->second;
+							IPlayer.RemoveBuffIcon(0, 0, oldPP.SBMsg, oldPP.SBKey);
+							CancelBuff(IPlayer, playerBuffs, 11750 + oldSize);
+						}
+
+						playerPartySizes[playerID] = PartySize;
+
+						if (My_PerfectParty.count(PartySize)) {
+							PerfectParty pP = My_PerfectParty.find(PartySize)->second;
+							IPlayer.SetBuffIcon(-2, -1, pP.SBMsg, pP.SBKey);
+							Buff(IPlayer, playerBuffs, 11750 + PartySize, 604800, 0);
+						}
+					}
+
+					CIOObject::Release(Party);
+				}
+			}
+			else {
+				if (playerPartySizes.count(playerID) && playerBuffs.count(11750 + playerPartySizes[playerID])) {
+					int oldSize = playerPartySizes[playerID];
+					PerfectParty oldPP = My_PerfectParty.find(oldSize)->second;
+					IPlayer.RemoveBuffIcon(0, 0, oldPP.SBMsg, oldPP.SBKey);
+					CancelBuff(IPlayer, playerBuffs, 11750 + oldSize);
+
+					playerPartySizes.erase(playerID);
+				}
+			}
 		}
 
 

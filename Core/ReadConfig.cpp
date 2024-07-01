@@ -326,7 +326,7 @@ int ScrollEM = 0;
 int RebornQuest = 0, RebornActive = 0, RebornGZ = 0;
 int MageDifference = 0;
 int PDMul = 0, PDPVP = 0, BlessPVP = 0;
-int PPSys = 0, PPSysB = 0, PPEXP = 0, CJBEXP = 0, CJBSYS = 0, CJBSYSB = 0, CJBEXPActive = 0, CJBRange = 0, PPActive = 0;
+int PPSys = 0, PPSysB = 0, PPEXP = 0, CJBEXP = 0, CJBSYS = 0, CJBSYSB = 0, CJBEXPActive = 0, CJBRange = 0, PPActive = 0, My_PPActive = 0;
 int itemIndex = 0;
 int EVGoodReward = 0, EVGoodLoser = 0, EVGoodDraw = 0;
 int PetBound = 0, TimedItemBound = 0;

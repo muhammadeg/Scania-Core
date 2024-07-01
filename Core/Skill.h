@@ -157,11 +157,10 @@ void __fastcall ExecuteSkill(void *pSkill, void* edx, signed int SkillID, int pP
 					std::string Datoe = "./Debugger/SkillRange/SKILL_" + Time::GetDay() + "_" + Time::GetMonth() + "_" + Time::GetYear() + "_" + Time::GetHour() + ".txt";
 					std::fstream CHLOG;
 					CHLOG.open(Datoe, std::fstream::in | std::fstream::out | std::fstream::app);
-					CHLOG << Time::GetTime() << " " << IPlayer.GetName() << ": " << SkillID << " | Class: " << IPlayer.GetClass() << std::endl;
+					CHLOG << Time::GetTime() << " Player: " << IPlayer.GetName() << ", SkillID: " << SkillID << ", Class: " << IPlayer.GetClass() << std::endl;
 					CHLOG.close();
 				}
 
-				//	CConsole::Red("Invalid Skill range detected (PID : %d SkillID : %d Class : %d)", IPlayer.GetPID(), SkillID, IPlayer.GetClass());
 				if (RangeKick)
 					IPlayer.Kick();
 

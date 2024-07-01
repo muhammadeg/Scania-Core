@@ -1,10 +1,7 @@
 ﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppBuild.targets(299,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
-cl : Command line warning D9030: '/Gm' is incompatible with multiprocessing; ignoring /MP switch
-  IChar.cpp
   Core.cpp
-  Generating Code...
-d:\scania developments\core - local\core\exptable.h(1486): warning C4700: uninitialized local variable 'vars0' used
-d:\scania developments\core - local\core\exptable.h(1487): warning C4700: uninitialized local variable 'retaddr' used
+d:\scania developments\core - local\core\exptable.h(1498): warning C4700: uninitialized local variable 'vars0' used
+d:\scania developments\core - local\core\exptable.h(1499): warning C4700: uninitialized local variable 'retaddr' used
 LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/OPT:ICF' specification
      Creating library ..\Release\Core.lib and object ..\Release\Core.exp
   Core.vcxproj -> D:\Scania Developments\Core - Local\Core\..\Release\Core.dll

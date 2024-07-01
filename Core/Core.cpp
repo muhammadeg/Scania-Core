@@ -2517,6 +2517,12 @@ struct Certificates {
 	int SBKey;
 	int SBMsg;
 };
+struct PerfectParty {
+	int PartySize;
+	int Exp;
+	int SBKey;
+	int SBMsg;
+};
 static int ShamanBuffs[] = { 401, 403, 407, 409, 413 };
 unsigned __int64 _ExpTable[312]; // Definition of the global variable
 Poll pollAsk;
@@ -2571,6 +2577,9 @@ std::unordered_map<int, MissionInfo> MAbandonCheck;
 std::unordered_map<int, MissionInfo> MissionQuestsItem;
 std::map<int, Certificates> AreaCert;
 std::map<int, Certificates> AreaCertMap;
+std::map<int, PerfectParty> My_PerfectParty;
+std::unordered_map<int, int> playerPartySizes;
+
 std::unordered_map<int, DailyDuty> DutyQuest;
 
 std::vector<RewardMessage> PlayerRewardNotice;

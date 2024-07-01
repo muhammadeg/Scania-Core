@@ -680,6 +680,10 @@ int __cdecl CDBProcess(char *Data)
 				if (Value) {
 					IPlayer.UpdateBuff(BuffNames::NamePad, BuffNames::BuffTime, Value);
 					CChar::WriteInSight((void*)Player, 0xFE, "ddd", 209, IPlayer.GetID(), Value);
+					Reborn rb = Reborns.find(RebornID)->second;
+
+					if (rb.sbMsg && rb.sbKey) 
+						IPlayer.SetBuffIcon(-2, -1, rb.sbMsg, rb.sbKey);
 				}
 			}
 		}

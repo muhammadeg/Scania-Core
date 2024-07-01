@@ -320,7 +320,7 @@ extern int ScrollEM;
 extern int RebornQuest, RebornActive, RebornGZ;
 extern int MageDifference;
 extern int PDMul, PDPVP, BlessPVP;
-extern int PPSys, PPSysB, PPEXP, CJBEXP, CJBSYS, CJBSYSB, CJBEXPActive, CJBRange, PPActive;
+extern int PPSys, PPSysB, PPEXP, CJBEXP, CJBSYS, CJBSYSB, CJBEXPActive, CJBRange, PPActive, My_PPActive;
 extern int itemIndex;
 extern int EVGoodReward, EVGoodLoser, EVGoodDraw;
 extern int PetBound, TimedItemBound;
@@ -407,6 +407,8 @@ void ReadConfig(bool command)
 	RebornGZ = GetPrivateProfileIntA("GzMsg", "MinReborn", 1, "./Configs/Reborn.txt");
 
 	MageDifference = GetPrivateProfileIntA("MageShaman", "LevelHit", 30, "./Configs/Protection.txt");
+	My_PPActive = GetPrivateProfileIntA("Bonus", "Active", 1, "./Configs/PerfectParty.txt");
+
 	PPActive = GetPrivateProfileIntA("PerfectParty", "Active", 1, "./Configs/Protection.txt");
 	PPSys = GetPrivateProfileIntA("PerfectParty", "SysKey", 2268, "./Configs/Protection.txt");
 	PPSysB = GetPrivateProfileIntA("PerfectParty", "BuffKey", 252, "./Configs/Protection.txt");
@@ -3367,6 +3369,7 @@ void ReadConfig(bool command)
 		}
 		std::sort(LawlessEXP.begin(), LawlessEXP.end(), sortByKey);
 	}
+
 	if (!command || (command && modifiedFiles.count("./Configs/Certificates.txt"))) {
 		FILE* filecert = fopen("./Configs/Certificates.txt", "r");
 		if (filecert != NULL) {
@@ -3391,6 +3394,29 @@ void ReadConfig(bool command)
 			fclose(filecert);
 		}
 	}
+
+	if (!command || (command && modifiedFiles.count("./Configs/PerfectParty.txt"))) {
+		FILE* fileperf = fopen("./Configs/PerfectParty.txt", "r");
+		if (fileperf != NULL) {
+			My_PerfectParty.clear();
+			char line[BUFSIZ];
+			while (fgets(line, sizeof line, fileperf) != NULL) {
+				int Size = 0, exp = 0, sbKey = 0, sbMsg = 0;
+				if (sscanf(line, "(Party (Size %d)(Exp %d)(SBKey %d)(SBMsg %d))", &Size, &exp, &sbKey, &sbMsg) == 4) {
+					PerfectParty myPP = PerfectParty();
+					myPP.PartySize = Size;
+					myPP.Exp = exp;
+					myPP.SBKey = sbKey;
+					myPP.SBMsg = sbMsg;
+
+					My_PerfectParty[Size] = myPP;
+
+				}
+			}
+			fclose(fileperf);
+		}
+	}
+
 	if (!command || (command && modifiedFiles.count("./Configs/ItemCombine.txt"))) {
 		FILE *filetx = fopen("./Configs/ItemCombine.txt", "r");
 		if (filetx != NULL)
