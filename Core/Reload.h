@@ -35,8 +35,10 @@ void QuestsReload() {
 
 		Unnamed::sub_446090(nObject, (int)&nOther, 0);
 	}
-	Unnamed::sub_446000((void*)0x4E210C);
-	Unnamed::sub_47E1C0(0x4E2118);
+	Unnamed::sub_446000((void*)0x4E210C); //Calling CCase::SetAction
+	Unnamed::sub_47E1C0(0x4E2118); // Calling CRWLock::WriteUnlock(this) at CQuest::Close
+	Unnamed::sub_425C40((int*)0x44C2B9); 
+
 	LoadConfig("Config\\Quest.txt");
 }
 

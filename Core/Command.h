@@ -845,7 +845,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 		IPlayer.SystemMessage("Current Speed: " + Int2String(IPlayer.GetSpeed()), TEXTCOLOR_RED);
 
 		CPlayer::Write(IPlayer.GetOffset(), 0xFE, "ddd", 186, IPlayer.GetID(), k);
-
+	//	IPlayer.Relog();
 		return;
 	}
 

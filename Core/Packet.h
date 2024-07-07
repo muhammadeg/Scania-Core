@@ -3283,6 +3283,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			return;
 		}
 
+
 		if (packet == 19)
 		{
 			if (IPlayer.IsBuff(3723) && !IPlayer.GetAdmin()) {
@@ -3308,11 +3309,17 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 		if ((packet == 94 || packet == C2S_MOVE) && !ScaniaLicense)
 			return;
 
-		if (IPlayer.GetMap() == BFMap && IPlayer.GetBuffValue(BuffNames::AFKTime) && packet == 20)
+		if (IPlayer.GetMap() == BFMap && IPlayer.GetBuffValue(BuffNames::AFKTime) && packet == C2S_MOVE)
 			IPlayer.CancelBuff(BuffNames::AFKTime);
 
 		//if (packet == 94)
 		//	IPlayer.SystemMessage("Open Box", TEXTCOLOR_GREEN);
+
+		//if (packet == 89) {
+		//	char Fflag = 0;
+		//	CPacket::Read((char*)pPacket, (char*)pPos, "b", &Fflag);
+		//	CConsole::Blue("Flag: %", Fflag);
+		//}
 
 		if (packet == 187)
 		{

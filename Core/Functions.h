@@ -886,6 +886,7 @@ namespace Unnamed {
 	static void(__cdecl* EBREAK)() = (void(__cdecl*)())0x422D80;
 	//static DWORD*(__stdcall* sub_496B90)(int _this, DWORD *a2, int a3) = (DWORD*(__stdcall*)(int _this, DWORD *a2, int a3))0x496B90;
 	static DWORD* (__thiscall* sub_446090)(int _this, int a2, int a3) = (DWORD * (__thiscall*)(int _this, int a2, int a3))0x446090;
+	static void (__thiscall* sub_425C40)(int *Argument) = (void (__thiscall*)(int* Argument))0x00425C40;
 
 	static DWORD* (__thiscall* sub_446000)(void* ptr) = (DWORD * (__thiscall*)(void*))0x446000;
 	static DWORD* (__thiscall* sub_47E1C0)(int _this) = (DWORD * (__thiscall*)(int))0x47E1C0;

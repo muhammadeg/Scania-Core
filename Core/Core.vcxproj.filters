@@ -338,7 +338,7 @@
     <ClInclude Include="CProtection.h">
       <Filter>Hooks</Filter>
     </ClInclude>
-    <ClInclude Include="Declarations.h">
+    <ClInclude Include="Variables.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

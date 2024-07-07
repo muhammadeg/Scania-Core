@@ -39,12 +39,11 @@
 #include "ConcurrentMap.h"
 #include "ConcurrentSet.h"
 #include "ConcurrentVector.h"
-#include "CProtection.h"
 #include "SystemRegistration.h"
 #include "RegistrationMap.h"
 #include <tlhelp32.h>
 #include <dbghelp.h> // Include this header for symbols-related functions
-#include "Declarations.h"
+#include "Variables.h"
 
 #pragma comment(lib, "Dbghelp.lib")
 #pragma pack(1)
@@ -234,19 +233,7 @@ enum ItemType {
 	Wings = 11,
 };
 
-struct CommandLink{
-	std::string Command;
-	std::string Link;
-};
-struct ShoutData {
-	COLORREF color;
-	int index;
-	int remove;
 
-	ShoutData() : color(0), index(0), remove(0) {} // Default constructor
-
-	ShoutData(COLORREF c, int i, int r) : color(c), index(i), remove(r) {}
-};
 enum TextColor
 {
 	TEXTCOLOR_GENERAL   = RGB( 255, 255, 255 ),
@@ -849,7 +836,7 @@ namespace WorldCup
 }
 namespace Scenario
 {
-	int Time = 3600;
+	int Time ;
 	int RedScore = 0;
 	int BlueScore = 0;
 	int BlueTeamSeal = 0;
@@ -898,90 +885,6 @@ namespace F10
 	DWORD CheiosSkillDelay = 0;
 }
 
-
-struct ConfigBuff
-{
-	int MinLevel;
-	int MaxLevel;
-	int Buff;
-	int Call;
-	int Delete;
-	std::string LimitMsg;
-	int StrBuff;
-	int AgiBuff;
-	int HthBuff;
-	int IntBuff;
-	int DefBuff;
-	int CritBuff;
-	int SpeedBuff;
-	int LocalHTML;
-	int RefBuff;
-	int LightningDefense;
-	int IceDefense;
-	int FireDefense;
-	int OTPCall;
-	int PhysicalAttack;
-	int CallofDefense;
-	int Time;
-	int Quest_Index;
-	int CQuest_Index;
-	int Honorindex;
-};
-
-struct BuffDisable
-{
-	int BuffDisableIndex;
-	std::vector<std::string> BuffDisableID;
-};
-struct BuffMaker
-{
-	int MinLevel;
-	int MaxLevel;
-	int Buff;
-	int Call;
-	int Maker;
-	int Delete;
-	std::string LimitMsg;
-	int MinAttack;
-	int MaxAttack;
-	int Hp;
-	int Str;
-	int Int;
-	int Wis;
-	int Agi;
-	int OTP;
-	int Eva;
-	int Def;
-	int Fire_Resistance;
-	int Ice_Resistance;
-	int Lightning_Resistance;
-	int Absorb;
-	int CritRate;
-	int CritDamage;
-	int HTML;
-	std::string BuffIcon;
-	int Time;
-	int Sys_name;
-	int BuffID;
-	int MaxMp;
-	int MaxHp;
-	int EBRate;
-	std::string save;
-	std::string mana_heal;
-	std::string hp_heal;
-	std::string Damage;
-	std::string ExpALLOW;
-	std::string Egg;
-	int hp;
-	int mana;
-	int MD;
-	int amount;
-	int count;
-	std::vector<std::string> altBuff;
-	int BuffDisableIndex;
-	int BuffDisableID;
-};
-
 namespace Hell
 {
 	bool Active = false;
@@ -1022,18 +925,8 @@ namespace DuelTournament
 	int SecondPlayer = 0;
 }
 
-struct ItemsEffects
-{
-	int index;
-	int Class;
-	std::string Effect;
-	int effectTime;
-};
-struct PVEWeaponsS{
-	int index;
-};
-std::map<int, ItemsEffects> EquipEffects;
-std::map<int, PVEWeaponsS> PVEWeapon;
+
+
 
 enum PROPERTY_TYPE
 {
@@ -1078,69 +971,11 @@ namespace GuildRaid
 	int Reward = 0;
 }
 
-struct CheckConfigCooldown
-{
-	int CooldownConfig;
-	int DelayConfig;
-};
-
-struct CheckConfigEggCooldown
-{
-	int EggCooldownConfig;
-	int EggDelayConfig;
-};
-
-struct CheckSkillBook
-{
-	int Class;
-	int Action;
-	int UpgradeAmount;
-	int UpgradeMax;
-	int DowngradeAmount;
-	int RewardPoints;
-};
-
-struct CheckSummonTimer
-{
-	int Index;
-	int Amount;
-	int Map;
-	int X;
-	int Y;
-	int Disappear;
-	std::string Msg;
-	std::string Day;
-};
-
-struct CheckCalculations
-{
-	int Class;
-	int Rate;
-};
-
-struct PimpConfig
-{
-	int Prefix;
-	int GetA;
-	int GetM;
-	int GetTOA;
-	int GetUpg;
-};
 
 struct ConfigPetLife
 {
 	int Time;
 	int Player;
-};
-
-struct ConfigBuffer
-{
-	int Index;
-	int Grade;
-	int Delete;
-	int Speed;
-	int Limit;
-	int cd;
 };
 
 struct ConfigIceArrow
@@ -1149,33 +984,6 @@ struct ConfigIceArrow
 	DWORD Delay;
 };
 
-struct ConfigRentArmor
-{
-	int Quest;
-	int Index;
-	int Prefix;
-	int Def;
-	int Eva;
-	int Bof;
-	int Dss;
-	int Coin;
-	int Time;
-};
-
-struct ConfigRentWeapon
-{
-	int Quest;
-	int Index;
-	int Prefix;
-	int Attack;
-	int Magic;
-	int Toa;
-	int Upgrade;
-	int Mix;
-	int Dss;
-	int Coin;
-	int Time;
-};
 
 struct ConfigMining
 {
@@ -1185,43 +993,6 @@ struct ConfigMining
 	int Cycle;
 };
 
-struct ConfigLevelReward
-{
-	std::vector<std::string> Indexes;
-	std::vector<std::string> Amounts;
-	int Class;
-	int Index;
-	int Prefix;
-	int Amount;
-	int Info;
-	int Attack;
-	int Magic;
-	int Toa;
-	int Upgrade;
-	int Defense;
-	int Evasion;
-	int Endurance;
-	int ID;
-	std::string Msg;
-};
-
-struct ConfigDailyQuest
-{
-	int MobAmount;
-	int Repeat;
-	int Time;
-	std::vector<std::string> Item;
-	std::vector<std::string> ItemAmount;
-	std::vector<std::string> Monsters;
-	int Level;
-	signed __int64 Exp;
-	int Honor;
-	int RewardPt;
-	int Party;
-	int Type;
-	int Resetable;
-	int HousePoints;
-};
 
 struct ConfigPlayerQuest
 {
@@ -1231,191 +1002,23 @@ struct ConfigPlayerQuest
 	int Time;
 };
 
-struct FakePlayers_Shop {
-	int amount;
-	int iid;
-	int price;
-};
-struct FakePlayers_ {
-	std::string name;
-	int id;
-	int gstate;
-	int hair;
-	int face;
-	int cclass;
-	int state;
-	int x;
-	int y;
-	int z;
-	int direction;
-	int weapon;
-	int chest;
-	int helmet;
-	int glove;
-	int boot;
-	int shield;
-	int skirt;
-	int costume;
-	int color;
-	int honor;
-	std::string msg;
-	int check;
-	ConcurrentMap<int, FakePlayers_Shop>Shop;
-};
-struct FakeItems_ {
-	int amount;
-	int price;
-	int index;
-};
-struct ConfigTimeTalisman
-{
-	int prefix;
-	int time;
-	int itemindex;
-};
-struct ConfigPetTime
-{
-	int Time;
-	int Heal;
-	int Pick;
-	int Monster;
-	int Speed;
-	int Exp;
-	int Egg;
-	int Range;
-	int AttackPet;
-	int AOEDelay;
-	int HPLimit;
-	std::vector<std::string> effects;
 
-	ConfigPetTime() {
-		Time = 0, Heal = 0, Pick = 0, HPLimit = 0, Monster = 0, Speed = 0, Exp = 0, Range = 0, AttackPet = 0;
-		effects = std::vector<std::string>();
-	}
-};
-
-struct DailyReward
-{
-	std::string Items;
-	std::string Amount;
-	int Honor;
-	int Reward;
-	int HTML;
-	int ClaimHTML;
-};
-struct TaskQ
-{
-	std::string Items;
-	std::string Amount;
-	std::string Require;
-	std::string RequireAmount;
-	int Honor;
-	int Reward;
-	int HTML;
-};
-
-
-struct ConfigItemShop
-{
-	int Type;
-	int Priority;
-	int Price;
-	int Discount;
-	int ItemIndex;
-	int Amount;
-};
-
-struct AFKCheck
-{
-	RECT rectangle;
-	int seconds;
-};
-
-struct Skills
-{
-	int Type;
-	DWORD Time;
-};
 
 struct PacketCheck
 {
 	long int FirstDelay;
 	int Type;
 };
-struct Area
-{
-	int level;
-	int item;
-	int type;
-};
 
 struct ShoutsMaps
 {
 	int item;
 };
-struct AreaMax
-{
-	int maxlevel;
-	int type;
-};
+
 struct Vote
 {
 	std::string Token;
 	int Time;
-};
-
-struct Items
-{
-	int Index;
-	int Amount;
-	int reward;
-	int Prefix;
-	int Bound;
-	int Info;
-	int Def;
-	int Eva;
-	int Bof;
-	int Time;
-	int Dss;
-	int Attack;
-	int Magic;
-	int Toa;
-	int Upgrade;
-	int Mix;
-	int ItemStat;
-	int Type;
-};
-
-struct SBoxes
-{
-	std::vector<std::string> Rewards;
-	std::vector<std::string> Amounts;
-
-	int item;
-	int Prefix;
-	int Bound;
-	int Info;
-	int Def;
-	int Eva;
-	int Bof;
-	int Time;
-	int Dss;
-	int Attack;
-	int Magic;
-	int Toa;
-	int Upgrade;
-	int Mix;
-	int ItemStat;
-};
-
-struct StarterClass
-{
-	int CoordX;
-	int CoordY;
-	int Map;
-	int HTML;
-	signed __int64 EXP;
-	std::string Msg;
 };
 
 struct Team
@@ -1424,85 +1027,6 @@ struct Team
 	std::string Name;
 	int Points;
 };
-struct Buffs
-{
-	int BuffId;
-	int Effect;
-	int Time;
-	int SBKey;
-	int SBName;
-	Buffs(int NewBuff, int NewEffect, int NewTime, int SKill, int SName) {
-		BuffId = NewBuff;
-		Effect = NewEffect;
-		Time = NewTime;
-		SBKey = SKill;
-		SBName = SName;
-	}
-};
-
-struct Msss
-{
-	int MobIndex;
-	int Time;
-	int Amount;
-	int Public;
-};
-
-struct SkillRangeConfig {
-	int maxRange;
-};
-
-struct AreaExpItem
-{
-	int level;
-	int experience;
-	int item;
-	int type;
-	int map;
-	int save;
-	int time;
-};
-
-
-struct DailyDuty {
-	int quest;
-	std::vector<std::string> NormalMob;
-	std::vector<std::string> NormalAmount;
-	std::vector<std::string> MiniBoss;
-	std::vector<std::string> BossAmount;
-	std::vector<std::string> InstanceD;
-	std::vector<std::string> IMobAmount;
-	int pLevel;
-	int cooldown;
-
-	//int Boxes;
-	//int BoxAmount;
-
-	int Reward;
-};
-
-struct SummonGuard{
-	int guard;
-	int amount;
-	int hp;
-	int boss;
-};
-struct MissionInfo {
-	int nextmission;
-	int currentmission;
-	int teleportMap;
-	int teleportX;
-	int teleportY;
-	int Monster;
-	int Item;
-	std::vector<std::string> Items;
-	std::vector<std::string> Amounts;
-	int itemAmount;
-	int Amount;
-	int rewardID;
-	int progress;
-};
-
 
 namespace CoordinatesGet
 {
@@ -1516,39 +1040,9 @@ namespace CoordinatesGet
 	int Z3 = 0;
 }
 
-struct ItemBuff
-{
-	std::vector<Buffs> BuffList;
-};
-
-struct ItemMss
-{
-	std::vector<Msss> MonsterList;
-};
-
 struct WCGroups
 {
 	std::vector<Team> Groups;
-};
-
-struct OldStats
-{
-	int Level;
-	int MinAtk;
-	int MaxAtk;
-	int DeathBlow;
-	int HP;
-	int MP;
-	int Eva;
-	int OTP;
-	int Int;
-	int Agi;
-	int Def;
-	int ATK;
-	int Str;
-	int Hth;
-	int Wis;
-	int Absorb;
 };
 
 struct UserInfo
@@ -1564,126 +1058,20 @@ struct Blocked
 	std::string Hardware;
 	std::string PCName;
 };
-struct SingleConfigBuffer
-{
-	int Index;
-	int Grade;
-	int Delete;
-	int Type;
-};
+
 struct SkillDisabling
 {
 	int Class;
 	int Map;
 };
-struct CItemUsed
-{
-	int HTML;
-	int Remove;
-};
-
-struct CItemTasty
-{
-	int index;
-	int remove;
-	int level;
-	int Time;
-	int prevent;
-	std::vector<std::string> buffs;
-	std::vector<std::string> values;
-	std::vector<std::string> cancelBuff;
-	std::vector<std::string> removeIcon;
-	int addIcon;
-
-};
 
 
-struct ItemLimit
-{
-	int Usage;
-	int Time;
-};
-struct ItemQuestRepeat {
-	int Permanent;
-	std::vector<int> Quests;
-};
-struct ItemTime
-{
-	int Time;
-	int Wearable;
-};
-struct RentalExtend
-{
-	int Time;
-	int Price;
-};
-struct QuestTime
-{
-	int Type;
-	int Time;
-	int MaxRepeat;
-};
 
-struct AreaQuest
-{
-	int Party;
-	int LevelMin;
-	int LevelMax;
-	int Time;
-	int TMap;
-	int TX;
-	int TY;
-	int BMap;
-	int BX;
-	int BY;
-};
-int round(double value) {
-	return static_cast<int>(value + 0.5);
-}
 
-struct CMonstersRewards
-{
-	int mobindex;
-	int rewardid;
-	int randomindex;
-	int itemamount;
-	int pickchance;
-	int Range;
-
-};
 struct pRewards
 {
 	int Level;
 	int Progress;
-};
-struct CQuestsNotice
-{
-	int QuestIndex;
-	int QuestItem;
-	int clearQ;
-	int qAmount;
-	int qFlag;
-	std::string Notice;
-};
-struct CMonstersBuff
-{
-	int mobindex;
-	int buffid;
-	int buffgrade;
-
-};
-struct CAutoNotice
-{
-	int minutes;
-	std::string msg;
-	int color;
-
-};
-
-struct MD5Type
-{
-	std::string filename;
-	std::string hash;
 };
 struct MD5Map
 {
@@ -1741,35 +1129,6 @@ struct PlayerFight
 	Team team;
 	int group;
 };
-struct WCReward
-{
-	int Index;
-	int Amount;
-};
-struct SkillDamage
-{
-	std::string damage;
-	std::string PVECrit;
-	std::string PVPCrit;
-
-	int PVE;
-	int PVP;
-	int Reduce;
-	int AOE;
-	int PVEDamage;
-	int PVPDamage;
-
-};
-struct ZProtection
-{
-	int maxZ;
-	int minZ;
-};
-
-struct WCRew
-{
-	std::vector<WCReward> RewardList;
-};
 
 struct BuffData
 {
@@ -1783,96 +1142,8 @@ struct FakeShop
 	std::string Name;
 };
 
-struct CreateMonsterPet
-{
-	int Material1;
-	int Count1;
-	int Material2;
-	int Count2;
-	int Money;
-	int Jewel;
-};
 
-struct SoulPocketConfig
-{
-	int Amount;
-	int Refill;
-	int Max;
-};
 
-struct HaninRate
-{
-	int Min;
-	int Max;
-};
-
-struct Restriction
-{
-	std::string Commands;
-	std::string HWIDs;
-	int Trade;
-	int Shop;
-	int Storage;
-	int Mail;
-	int Party;
-	int Duel;
-	int Attack;
-	int Drop;
-	int Pick;
-	int Skill;
-};
-
-struct MSummonConfig
-{
-	int Type;
-	int QIndex;
-	int RQuest;
-	int ItemIndex;
-	int ItemAmount;
-	int MonsterIndex;
-	int MonsterAmount;
-	int Map;
-	int X;
-	int Y;
-	std::string notice;
-	int Check;
-	int Limit;
-};
-
-struct MSummonedConfig
-{
-	int CurAmount;
-	int Spawned;
-	int Limit;
-};
-
-struct MakeItem_ {
-	int item;
-	std::string requireIndexs;
-	std::string requireAmounts;
-};
-
-struct MonsterDailyQuest {
-	int Quest;
-	int Amount;
-	int MainIndex;
-};
-
-struct MonsterDailyDuty {
-	int Quest;
-	int Index;
-	int Amount;
-};
-struct ItemStruct {
-	int Index;
-	int Amount;
-};
-
-struct TrainingLvl
-{
-	int EXP;
-	int Drop;
-};
 
 struct BetTrade
 {
@@ -1885,17 +1156,6 @@ struct ManaCost
 {
 	int ManaOriginal;
 	int ManaExtra;
-};
-
-struct SummonNPC
-{
-	int NPC;
-	int Store;
-	int Time;
-	int Model;
-	int X;
-	int Y;
-	int Z;
 };
 
 struct AuctionItem
@@ -1914,146 +1174,11 @@ struct AuctionItem
 	char ItemPacket[67];
 };
 
-struct RidingCollection {
-	std::vector<int> Indexes;
-	int Stat;
-	int Rate;
-};
 
-struct SwapMaterial {
-	int Index;
-	int Amount;
-	SwapMaterial() {
-
-	}
-	SwapMaterial(int nIndex, int nAmount) {
-		Index = nIndex;
-		Amount = nAmount;
-	}
-};
-
-struct InitSwap {
-	SwapMaterial Material1;
-	SwapMaterial Material12;
-	SwapMaterial Material2;
-	SwapMaterial Material22;
-	std::vector<SwapItem> items;
-};
-
-struct SwapMineral {
-	std::string requires;
-	std::string requireAmounts;
-	std::string itemRewards;
-	std::string itemAmounts;
-	std::string chances;
-};
 struct CenterNotice {
 	std::string Day;
 	std::string Msg;
 	int type;
-};
-
-struct AutoNoticeConf {
-	std::string Day;
-	std::string Msg;
-};
-
-struct SecretBlackSmithSkill {
-	std::string requires;
-	std::string requireAmounts;
-	std::string rewards;
-};
-
-struct IWebs {
-	std::string URL;
-	int remove;
-};
-
-struct PartyReg {
-	int PID;
-	std::string Day;
-	std::string Time;
-	int PVPArena;
-	int PartySize;
-	int ArenaTime;
-	int MinLevel;
-	int MaxLevel;
-	int Type;
-	int Quest;
-	int RewardID;
-	char Names[6][21];
-	int nWin;
-};
-
-struct PartyBattle {
-	bool FightAvailable;
-	int RedScore;
-	int BlueScore;
-	int PartySize;
-	int PTID1;
-	int PTID2;
-	int Time;
-	int Reward;
-	int Cooldown;
-	int FlagTime;
-	PartyBattle() {
-		FightAvailable = true;
-		RedScore = 0;
-		BlueScore = 0;
-		PartySize = 0;
-		PTID1 = 0;
-		PTID2 = 0;
-		Time = 0;
-		Reward = 0;
-		Cooldown = 10;
-	}
-};
-
-struct PartyReward {
-	std::vector<std::string> battleIndexes;
-	std::vector<std::string> battleAmounts;
-	std::vector<std::string> winnerIndexes;
-	std::vector<std::string> winnerAmounts;
-	int BattleReward;
-	int BattleHonor;
-	int WinnerHonor;
-	int WinnerReward;
-	PartyReward() {
-		battleIndexes = std::vector<std::string>();
-		battleAmounts = std::vector<std::string>();
-		winnerIndexes = std::vector<std::string>();
-		winnerAmounts = std::vector<std::string>();
-		BattleReward = 0;
-		BattleHonor = 0;
-		WinnerHonor = 0;
-		WinnerReward = 0;
-	}
-};
-
-struct Reward {
-	std::vector<std::string> Indexes;
-	std::vector<std::string> Amounts;
-	int HonorPts;
-	int RewardPts;
-	signed __int64 EXP;
-	int Bound;
-	int HTML;
-	int HousePoints;
-	int userKey;
-	std::string Notice;
-};
-
-struct DuelRegistre {
-	int PID;
-	std::string Name;
-	char Level;
-	char Class;
-	int nVictory;
-	DuelRegistre() {
-		PID = 0;
-		Name = "";
-		nVictory = 0;
-	}
 };
 
 enum CGenMonsterEx {
@@ -2114,19 +1239,6 @@ struct GenMonster
 	DWORD unk_144;
 };
 
-struct DKInfo
-{
-	int GID;
-	std::string Name;
-};
-
-struct RGBNotice
-{
-	std::string day;
-	std::string msg;
-	int Color;
-};
-
 struct MailItem_
 {
 	int Index;
@@ -2169,35 +1281,6 @@ struct SendCreate {
 	int GState;
 };
 
-struct eventMap {
-	std::vector<std::string> monsters;
-	std::vector<std::string> amounts; 
-	std::vector<std::string> Reward;
-	std::string Name;
-	int Duration;
-	int Lapse;
-	std::vector<std::string> X;
-	std::vector<std::string> Y;
-	std::vector<std::string> Gate;
-	std::vector<std::string> GateX;
-	std::vector<std::string> GateY;
-
-	int LvlMin;
-	int LvlMax;
-	int Quest;
-	int TX;
-	int TY;
-	std::vector<std::string> ReqItemx;
-	std::vector<std::string> ReqAmountx;
-	std::vector<std::string> ReqItemM;
-	std::vector<std::string> ReqAmountM;
-
-	std::set<int> Maps;
-	int Cooldown;
-	int PTSize;
-	int Type;
-};
-
 struct eventMapMonster {
 	int CIndex;
 	int Quest;
@@ -2208,54 +1291,7 @@ struct eventMapMonster {
 	}
 };
 
-struct MSkill
-{
-	int AOERange;
-	int Cooldown;
-	int EffectType;
-	std::string Effect;
-	int Buff;
-	int BuffTime;
-	int BuffValue;
-	int DamageMin;
-	int DamageMax;
-	int SBName;
-	int SBKey;
-};
 
-struct GuildBuff
-{
-	int BuffID;
-	int Time;
-	int Value;
-	int SBName;
-	int SBKey;
-};
-
-struct GuildBuffQuest 
-{
-	std::string Name;
-	int Flag;
-	int ReplyFlag;
-	int Index;
-	int Amount;
-	std::vector<GuildBuff> Buffs;
-};
-
-struct GuildBuffItem
-{
-	int QuestID;
-	int curAmount;
-};
-
-struct GuildRaidLevel
-{
-	int ReqAmount;
-	int MobIndex;
-	int Reward;
-	int MinPlayers;
-	int Time;
-};
 
 struct GuildTopDonator
 {
@@ -2264,104 +1300,12 @@ struct GuildTopDonator
 	int Amount;
 };
 
-struct SuitStat
-{
-	int Type;
-	int Multiply;
-};
-
-struct SkillLearn
-{
-	std::vector<int> Levels;
-	std::vector<int> Specialties;
-};
-
-struct QuestEx
-{
-	std::vector<int> Items;
-	std::vector<int> SAmounts;
-	std::vector<int> Required;
-	std::vector<int> Amounts;
-	int MinLvl;
-	int MaxLvl;
-	int html;
-	int Save;
-};
-
-struct MLMReward
-{
-	int Type;
-	int Class;
-	int Index;
-	int Prefix;
-	int Amount;
-	int Info;
-	int Attack;
-	int Magic;
-	int Toa;
-	int Upgrade;
-	int Defense;
-	int Evasion;
-	int Endurance;
-};
-
 struct PacketEncryption
 {
 	int Key;
 	int Time;
 };
 
-struct Poll
-{
-	int Quest;
-	int FlagMin;
-	int FlagMax;
-	std::string Question;
-	int HTML;
-	int Start;
-	int End;
-};
-
-struct QuestLevel
-{
-	int LevelMin;
-	int LevelMax;
-};
-
-struct Point
-{
-	int X;
-	int Y;
-	int Z;
-};
-
-struct ItemLimitConf
-{
-	int Usage;
-	int Time;
-
-	ItemLimitConf() {
-		Usage = 0;
-		Time = 0;
-	}
-};
-
-struct NecklaceBuff
-{
-	int Dmg;
-	int CritChance;
-	int Duration;
-	int Cooldown;
-	std::string Effect;
-};
-
-struct BeltBuff
-{
-	int HP;
-	int Duration;
-	int Cooldown;
-	std::string Effect;
-};
 
 struct SVParticipant
 {
@@ -2370,26 +1314,7 @@ struct SVParticipant
 	std::string Name;
 };
 
-struct MiningItem
-{
-	int NumItems;
-	std::vector<ItemStruct> Items;
-};
 
-struct F10EXP
-{
-	signed __int64 Exp;
-	int Gap;
-	int Mult;
-	int RID;
-};
-
-struct RectLevel
-{
-	RECT rectangle;
-	int LevelMin;
-	int LevelMax;
-};
 
 struct RestoreItem
 {
@@ -2415,85 +1340,6 @@ struct RestoreItem
 	int ItemStat;
 };
 
-struct Combinator
-{
-	int Index;
-	int Bound;
-};
-
-struct SinSpawner
-{
-	int Index;
-	int Amount;
-	int X;
-	int Y;
-};
-
-struct MasterEnchanting
-{
-	int IndexIn;
-	int MaterialUsed;
-	int IndexOut;
-	int Rate;
-};
-
-struct EmokCertConf
-{
-	int Time;
-	int EXP;
-};
-
-struct BossEXPMsg
-{
-	int Index;
-	int X;
-	int Y;
-	int Amount;
-	std::string message;
-};
-
-struct Reborn
-{
-	std::string NameTag;
-	int NamePad;
-	int MinLvl;
-	int ResetLevel;
-	int RewardID;
-	int sbKey;
-	int sbMsg;
-};
-
-struct RbGear{
-	int Level;
-	int Reborn;
-};
-struct RbPenalty
-{
-	int rbIndex;
-	int rbPenalty;
-};
-
-struct RbQuest
-{
-	int rbIndex;
-	int rbQuest;
-	int rbQFlag;
-};
-struct RentQuest
-{
-	int ReqItem;
-	int Amount;
-	int Index;
-	int Time;
-};
-
-struct ItemExchange
-{
-	int Material;
-	int MaterialAmount;
-	int ItemOut;
-};
-
 struct JobSystem
 {
 	int action;
@@ -2506,32 +1352,19 @@ struct RewardMessage {
 	int textColor;
 	int messageType; // Added messageType member
 };
-struct SMultiple {
-	int Multiple;
-};
-struct Certificates {
-	int itemIndex;
-	int Map;
-	int Time;
-	int Exp;
-	int SBKey;
-	int SBMsg;
-};
-struct PerfectParty {
-	int PartySize;
-	int Exp;
-	int SBKey;
-	int SBMsg;
-};
+int round(double value) {
+	return static_cast<int>(value + 0.5);
+}
+
 static int ShamanBuffs[] = { 401, 403, 407, 409, 413 };
-unsigned __int64 _ExpTable[312]; // Definition of the global variable
+unsigned __int64 _ExpTable[312];
 Poll pollAsk;
 time_t uptimestart; 
 int GuildWinnerCW = 0, AllyWinnerCW = 0, WarEndTime = 0;
 int CryptKey = 0;
 std::string ConfigCheckDB1, ConfigCheckDB2;
 int firstDig = 0;
-int BofConfigRead = 0, dgConfigRead = 0, insanityRead = 0, qigongRead = 0, ImpConfigRead = 0, ScaniaLicense = 0, NailKill = 0, Bof2ConfigRead = 0, Imp2ConfigRead = 0;
+int ScaniaLicense = 0;
 volatile LONG OnlinePlayers = 0;
 volatile LONG PlayerLevelNotice = 0;
 volatile LONG MonsterReloaded = 0;
@@ -2659,7 +1492,6 @@ ConcurrentMap<int, FakePlayers_> FakePlayers;
 ConcurrentMap<int, FakeItems_> FakeItems;
 ConcurrentMap<std::string, int> FakeNames;
 ConcurrentSet<int> DailyLoginLimits;
-
 std::map<int, SecretBlackSmithSkill>SecretBlackSmith;
 std::map<int, SwapMineral>MakeMinerals;
 std::map<int, SwapMineral>MakeChange;
@@ -2669,7 +1501,6 @@ std::set<int> InvCheck;
 std::set<int> PKDropEnable;
 std::map<int, SoulPocketConfig> SoulPockets;
 std::map<int, MiningItem> MiningItems;
-
 std::map<int, PartyReward> PartyRewards;
 std::map<int, PartyReg> PTEnabled;
 std::map<std::string, PartyReg> PTCommands;
@@ -2751,7 +1582,8 @@ std::map<int, CItemTasty> ItemTasty;
 std::map<int, CItemTasty> ItemHpDef;
 std::map<int, CItemTasty> ItemScrolls;
 std::map<int, CItemTasty> ItemExpansion;
-
+std::map<int, ItemsEffects> EquipEffects;
+std::map<int, PVEWeaponsS> PVEWeapon;
 std::map<int, CItemTasty> ItemBuffSrv;
 
 std::map<int, ItemLimit> ItemLimits;
@@ -2805,10 +1637,8 @@ std::set<int> ChannelMaps;
 std::set<int> UnReload;
 std::set<int> AntiKs;
 std::set<std::string> Filter;
-
 std::map<int, Restriction> Restrictions;
 std::map<int, Restriction> HWIDRestrictions;
-
 std::map<int, HaninRate> HaninLow;
 std::map<int, HaninRate> HaninMiddle;
 std::map<int, HaninRate> HaninHigh;
@@ -2933,6 +1763,7 @@ SystemRegistration<int> LastManRegistration;
 #include "NPC.h"
 #include "Lisans.h"
 #include "ReadConfig.h"
+#include "CProtection.h"
 #include "StatPointValue.h"
 #include "PasswordDecode.h"
 #include "ISkill.h"

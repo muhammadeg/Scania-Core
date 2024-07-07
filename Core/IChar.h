@@ -18,6 +18,7 @@ public:
 	IChar(void* Object);
 	virtual ~IChar();
 	int UpdateProperty(int Type, int Amount);
+	void Command(const char *command);
 	void *GetOffset();
 	int IsOnline();
 	void Announcement(std::string msg, int color);
@@ -96,6 +97,8 @@ public:
 	const char *GetName();
 	int GetSkillPointer(int SkillID);
 	int IsShopping();
+	int IsTransform();
+	int IsFishing();
 	int ScaniaTimer(int amount);
 	void AddMinAttack(int amount);
 	void RemoveMinAttack(int amount);

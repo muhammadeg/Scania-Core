@@ -457,122 +457,185 @@ void UpdateDailyDuty(void* Player, void* Monster) {
 	}
 }
 
-void UpdateAutoMission(void* Player, void* Monster) {
+int CountPartyMembersInRange(IChar& player, void* Party, int range) {
+	int count = 0;
+	for (int i = CParty::GetPlayerList(Party); i; i = CBaseList::Pop((void*)i)) {
+		IChar partyMember((void*)*(DWORD*)((void*)i));
+		if (partyMember.IsOnline() && player.IsInRange(partyMember, range)) {
+			count++;
+		}
+	}
+	return count;
+}
 
+void MyUpdateMissionProgress(IChar& IPlayer,  IChar& ITarget, const MissionInfo& mission) {
+	int currentMission = mission.currentmission;
+	int nextMission = mission.nextmission;
+	int questIndex = (currentMission << 16) + 1;
+
+	bool isQuest = CPlayer::CheckQuestFlag((int)IPlayer.GetOffset(), questIndex);
+	int isQuestClear = CPlayer::CheckQuestClear((int)IPlayer.GetOffset(), static_cast<char>(currentMission));
+
+	if (mission.Monster == ITarget.GetMobIndex() && isQuest && !isQuestClear) {
+		int missionMonsterAmount = mission.Amount;
+		int missionProgress = IPlayer.GetBuffValue(BuffNames::MissionMonsterBuff);
+
+		if (currentMission != 0 && missionProgress < missionMonsterAmount) {
+			++missionProgress;
+
+			if (!IPlayer.IsBuff(BuffNames::MissionMonsterBuff))
+				IPlayer.SaveBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, missionProgress, 0, 0);
+			else
+				IPlayer.UpdateSavedBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, missionProgress, 0, 0);
+
+			CPlayer::Write(IPlayer.GetOffset(), 184, "ddd", questIndex, ITarget.GetMobIndex(), missionProgress);
+
+			if (missionProgress >= missionMonsterAmount) {
+				IPlayer.systemReward(mission.rewardID);
+				missionProgress = 0;
+				if (nextMission != 0) {
+					IPlayer.RemoveSavedBuff(BuffNames::MissionMonsterBuff);
+					CQuest::Start((nextMission << 16) | 1, (int)IPlayer.GetOffset());
+
+					if (PeaceEvil)
+						IPlayer.AddHousePoints(2);
+				}
+			}
+		}
+	}
+}
+
+void UpdateAutoMission(void* Player, void* Monster) {
 	IChar IPlayer(Player);
 	IChar ITarget(Monster);
+
 	if (IPlayer.IsValid() && ITarget.IsValid() && IPlayer.GetType() == 0 && ITarget.GetType() == 1) {
 		int MissionMonsterIndex = ITarget.GetMobIndex();
 
 		if (MissionQuests.count(MissionMonsterIndex)) {
 			const MissionInfo& mission = MissionQuests.find(MissionMonsterIndex)->second;
 
-			int currentMission = mission.currentmission;
-			int nextMission = mission.nextmission;
-			int questIndex = (currentMission << 16) + 1;
-			if (IPlayer.IsParty())
-			{
+			if (IPlayer.IsParty()) {
 				int Party = CParty::FindParty(IPlayer.GetPartyID());
 
-				if (Party){
-					for (int i = CParty::GetPlayerList((void*)Party); i; i = CBaseList::Pop((void *)i))
-					{
+				if (Party) {
+					for (int i = CParty::GetPlayerList((void*)Party); i; i = CBaseList::Pop((void*)i)) {
 						IChar IMembers((void*)*(DWORD*)((void*)i));
 
-						if (IMembers.IsValid() && IMembers.IsInRange(IPlayer, 300))
-						{
-							bool isQuest = (CPlayer::CheckQuestFlag((int)IMembers.GetOffset(), questIndex) == true);
-							int isQuestClear = CPlayer::CheckQuestClear((int)IMembers.GetOffset(), static_cast<char>(currentMission));
-
-							if (mission.Monster == MissionMonsterIndex && isQuest && !isQuestClear) {
-								int missionMonsterAmount = mission.Amount;
-								int missionProgress = IMembers.GetBuffValue(BuffNames::MissionMonsterBuff);
-
-								if (currentMission != 0 && missionProgress < missionMonsterAmount) {
-
-									missionProgress++;
-
-									if (!IMembers.IsBuff(BuffNames::MissionMonsterQuest)){
-										IMembers.SaveBuff(BuffNames::MissionMonsterQuest, BuffNames::BuffTime, currentMission, 0, 0);
-										IMembers.SaveBuff(BuffNames::MissionMonsterMob, BuffNames::BuffTime, MissionMonsterIndex, 0, 0);
-									}
-									else{
-										IMembers.UpdateSavedBuff(BuffNames::MissionMonsterQuest, BuffNames::BuffTime, currentMission, 0, 0);
-										IMembers.UpdateSavedBuff(BuffNames::MissionMonsterMob, BuffNames::BuffTime, MissionMonsterIndex, 0, 0);
-									}
-
-									if (!IMembers.IsBuff(BuffNames::MissionMonsterBuff))
-										IMembers.SaveBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, 0, 0, 0);
-									else
-										IMembers.UpdateSavedBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, missionProgress, 0, 0);
-
-									CPlayer::Write(IMembers.GetOffset(), 184, "ddd", questIndex, ITarget.GetMobIndex(), missionProgress);
-
-									if (missionProgress >= missionMonsterAmount) {
-										IMembers.systemReward(mission.rewardID);
-										missionProgress = 0;
-										if (nextMission != 0) {
-											IMembers.SaveBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, 0, 0, 0);
-											CQuest::Start((nextMission << 16) | 1, (int)IMembers.GetOffset());
-
-											if (PeaceEvil)
-												IMembers.AddHousePoints(2);
-
-										}
-									}
-								}
-							}
+						if (IMembers.IsValid() && IMembers.IsInRange(IPlayer, 300)) {
+							MyUpdateMissionProgress(IMembers, ITarget, mission);
 						}
 					}
 					CIOObject::Release((void*)Party);
 				}
 			}
-			else{
-				bool isQuest = (CPlayer::CheckQuestFlag((int)IPlayer.GetOffset(), questIndex) == true);
-				int isQuestClear = CPlayer::CheckQuestClear((int)IPlayer.GetOffset(), static_cast<char>(currentMission));
-
-				if (mission.Monster == MissionMonsterIndex && isQuest && !isQuestClear) {
-					int missionMonsterAmount = mission.Amount;
-					int missionProgress = IPlayer.GetBuffValue(BuffNames::MissionMonsterBuff);
-
-					if (currentMission != 0 && missionProgress < missionMonsterAmount) {
-
-						missionProgress++;
-
-						if (!IPlayer.IsBuff(BuffNames::MissionMonsterQuest)){
-							IPlayer.SaveBuff(BuffNames::MissionMonsterQuest, BuffNames::BuffTime, currentMission, 0, 0);
-							IPlayer.SaveBuff(BuffNames::MissionMonsterMob, BuffNames::BuffTime, MissionMonsterIndex, 0, 0);
-						}
-						else{
-							IPlayer.UpdateSavedBuff(BuffNames::MissionMonsterQuest, BuffNames::BuffTime, currentMission, 0, 0);
-							IPlayer.UpdateSavedBuff(BuffNames::MissionMonsterMob, BuffNames::BuffTime, MissionMonsterIndex, 0, 0);
-						}
-
-						if (!IPlayer.IsBuff(BuffNames::MissionMonsterBuff))
-							IPlayer.SaveBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, 0, 0, 0);
-						else
-							IPlayer.UpdateSavedBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, missionProgress, 0, 0);
-
-						CPlayer::Write(IPlayer.GetOffset(), 184, "ddd", questIndex, ITarget.GetMobIndex(), missionProgress);
-
-						if (missionProgress >= missionMonsterAmount) {
-							IPlayer.systemReward(mission.rewardID);
-							missionProgress = 0;
-							if (nextMission != 0) {
-								IPlayer.SaveBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, 0, 0, 0);
-								CQuest::Start((nextMission << 16) | 1, (int)IPlayer.GetOffset());
-
-								if (PeaceEvil)
-									IPlayer.AddHousePoints(2);
-
-							}
-						}
-					}
-				}
+			else {
+				MyUpdateMissionProgress(IPlayer, ITarget, mission);
 			}
 		}
 	}
 }
+
+
+//
+//void UpdateAutoMission(void* Player, void* Monster) {
+//
+//	IChar IPlayer(Player);
+//	IChar ITarget(Monster);
+//	if (IPlayer.IsValid() && ITarget.IsValid() && IPlayer.GetType() == 0 && ITarget.GetType() == 1) {
+//		int MissionMonsterIndex = ITarget.GetMobIndex();
+//
+//		if (MissionQuests.count(MissionMonsterIndex)) {
+//			const MissionInfo& mission = MissionQuests.find(MissionMonsterIndex)->second;
+//
+//			int currentMission = mission.currentmission;
+//			int nextMission = mission.nextmission;
+//			int questIndex = (currentMission << 16) + 1;
+//			if (IPlayer.IsParty())
+//			{
+//				int Party = CParty::FindParty(IPlayer.GetPartyID());
+//
+//				if (Party){
+//					for (int i = CParty::GetPlayerList((void*)Party); i; i = CBaseList::Pop((void *)i))
+//					{
+//						IChar IMembers((void*)*(DWORD*)((void*)i));
+//
+//						if (IMembers.IsValid() && IMembers.IsInRange(IPlayer, 300))
+//						{
+//							bool isQuest = (CPlayer::CheckQuestFlag((int)IMembers.GetOffset(), questIndex) == true);
+//							int isQuestClear = CPlayer::CheckQuestClear((int)IMembers.GetOffset(), static_cast<char>(currentMission));
+//
+//							if (mission.Monster == MissionMonsterIndex && isQuest && !isQuestClear) {
+//								int missionMonsterAmount = mission.Amount;
+//								int missionProgress = IMembers.GetBuffValue(BuffNames::MissionMonsterBuff);
+//
+//								if (currentMission != 0 && missionProgress < missionMonsterAmount) {
+//
+//									missionProgress++;
+//
+//									if (!IMembers.IsBuff(BuffNames::MissionMonsterBuff))
+//										IMembers.SaveBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, 0, 0, 0);
+//									else
+//										IMembers.UpdateSavedBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, missionProgress, 0, 0);
+//
+//									CPlayer::Write(IMembers.GetOffset(), 184, "ddd", questIndex, ITarget.GetMobIndex(), missionProgress);
+//
+//									if (missionProgress >= missionMonsterAmount) {
+//										IMembers.systemReward(mission.rewardID);
+//										missionProgress = 0;
+//										if (nextMission != 0) {
+//											IMembers.RemoveSavedBuff(BuffNames::MissionMonsterBuff);
+//											CQuest::Start((nextMission << 16) | 1, (int)IMembers.GetOffset());
+//
+//											if (PeaceEvil)
+//												IMembers.AddHousePoints(2);
+//
+//										}
+//									}
+//								}
+//							}
+//						}
+//					}
+//					CIOObject::Release((void*)Party);
+//				}
+//			}
+//			else{
+//				bool isQuest = (CPlayer::CheckQuestFlag((int)IPlayer.GetOffset(), questIndex) == true);
+//				int isQuestClear = CPlayer::CheckQuestClear((int)IPlayer.GetOffset(), static_cast<char>(currentMission));
+//
+//				if (mission.Monster == MissionMonsterIndex && isQuest && !isQuestClear) {
+//					int missionMonsterAmount = mission.Amount;
+//					int missionProgress = IPlayer.GetBuffValue(BuffNames::MissionMonsterBuff);
+//
+//					if (currentMission != 0 && missionProgress < missionMonsterAmount) {
+//
+//						missionProgress++;
+//
+//						if (!IPlayer.IsBuff(BuffNames::MissionMonsterBuff))
+//							IPlayer.SaveBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, 0, 0, 0);
+//						else
+//							IPlayer.UpdateSavedBuff(BuffNames::MissionMonsterBuff, BuffNames::BuffTime, missionProgress, 0, 0);
+//
+//						CPlayer::Write(IPlayer.GetOffset(), 184, "ddd", questIndex, ITarget.GetMobIndex(), missionProgress);
+//
+//						if (missionProgress >= missionMonsterAmount) {
+//							IPlayer.systemReward(mission.rewardID);
+//							missionProgress = 0;
+//							if (nextMission != 0) {
+//								IPlayer.RemoveSavedBuff(BuffNames::MissionMonsterBuff);
+//								CQuest::Start((nextMission << 16) | 1, (int)IPlayer.GetOffset());
+//
+//								if (PeaceEvil)
+//									IPlayer.AddHousePoints(2);
+//
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
+//}
 
 void PBattlepassCheck(void* Player, void* QuestOffset){
 	IQuest Quest(QuestOffset);

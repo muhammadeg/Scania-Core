@@ -553,7 +553,7 @@ int __fastcall Process(void *Socket, void *edx, char *Data)
 					return 0;
 				}
 
-				if (CChar::IsGState((int)IPlayer.GetOffset(), 32))
+				if (IPlayer.IsFishing())
 				{
 					IPlayer.SystemMessage("You can not mine while fishing.", TEXTCOLOR_RED);
 					return 0;

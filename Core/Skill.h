@@ -72,7 +72,7 @@ void __fastcall ExecuteSkill(void *pSkill, void* edx, signed int SkillID, int pP
 		int nextExecutionTime = IPlayer.GetBuffValue(BuffNames::CDProtect + SkillID);
 		int nextPrepareTime = IPlayer.GetBuffValue(BuffNames::DelayProtect + SkillID);
 
-		if (IPlayer.GetClass() != 3 && !IPlayer.IsBuff(329)){
+		if (!IPlayer.IsBuff(329)){
 			if (Compare3 && GetTickCount() < nextExecutionTime + (Compare3 - 100)) {
 				IPlayer.SystemMessage("invalid skill cooldown time..", TEXTCOLOR_RED);
 				return;
@@ -1109,6 +1109,40 @@ void __fastcall ExecuteSkill(void *pSkill, void* edx, signed int SkillID, int pP
 				}
 
 				Around = CBaseList::Pop((void*)Around);
+			}
+		}
+
+		int KeyZ = (IPlayer.GetClass() * 1000) + SkillID;
+		if (SkillsDamage.count(KeyZ) || SkillsDamage.count(KeyZ + 100) || SkillsDamage.count(KeyZ + 200)) {
+			int range = 0;
+			if (SkillsDamage.count(KeyZ))
+				range = SkillsDamage.find(KeyZ)->second.AOE;
+			if (SkillsDamage.count(KeyZ + 100))
+				range = SkillsDamage.find(KeyZ + 100)->second.AOE;
+			if (SkillsDamage.count(KeyZ + 200))
+				range = SkillsDamage.find(KeyZ + 200)->second.AOE;
+
+			if (range) {
+				int nTargetID = 0;
+				char bType = 0;
+				void *pTarget = 0;
+				CPacket::Read((char*)pPacket, (char*)pPos, "bd", &bType, &nTargetID);
+
+				TargetFind myTarget(bType, 0, nTargetID);
+				pTarget = myTarget.getTarget();
+				IChar Target(pTarget);
+
+				int Around = IPlayer.GetObjectListAround(range);
+				while (Around)
+				{
+					IChar Object((void*)CBaseList::Offset((void*)Around));
+					int damage = IPlayer.GetDamage(SkillID, Object.GetOffset());
+
+					if (Object.IsValid() && IPlayer.IsValid() && Object.GetOffset() != Target.GetOffset() && Object.GetOffset() != IPlayer.GetOffset() && (*(int(__thiscall **)(int, int, DWORD))(*(DWORD *)IPlayer.GetOffset() + 176))((int)IPlayer.GetOffset(), (int)Object.GetOffset(), 0))
+						IPlayer.OktayDamageArea(Object, damage, SkillID);
+
+					Around = CBaseList::Pop((void*)Around);
+				}
 			}
 		}
 

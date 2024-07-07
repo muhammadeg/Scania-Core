@@ -114,7 +114,7 @@
     <ClInclude Include="CriticalLock.h" />
     <ClInclude Include="CriticalSection.h" />
     <ClInclude Include="CutDownExp.h" />
-    <ClInclude Include="Declarations.h" />
+    <ClInclude Include="Variables.h" />
     <ClInclude Include="DefenseChangePrefix.h" />
     <ClInclude Include="dirent.h" />
     <ClInclude Include="DropItem.h" />

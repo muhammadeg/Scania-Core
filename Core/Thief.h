@@ -1020,27 +1020,13 @@ void __fastcall ShadowSlash(IChar IPlayer, int pPacket, int pPos)
 
 						if (Object.IsValid() && IPlayer.IsValid() && IPlayer.GetOffset() != Object.GetOffset() && (*(int(__thiscall **)(int, int, DWORD))(*(DWORD *)IPlayer.GetOffset() + 176))((int)IPlayer.GetOffset(), (int)Object.GetOffset(), 0))
 						{
-							if (((!ShadowAOEPVE || !ShadowAOEPVP) && Target.IsValid() && Target.GetX() <= max(IPlayer.GetX(), Object.GetX()) && Target.GetX() >= min(IPlayer.GetX(), Object.GetX()) && Target.GetY() <= max(IPlayer.GetY(), Object.GetY()) && Target.GetY() >= min(IPlayer.GetY(), Object.GetY())) || ShadowAOEPVE && ShadowAOEPVP)
+							if ((!ShadowAOE && Target.IsValid() && Target.GetX() <= max(IPlayer.GetX(), Object.GetX()) && Target.GetX() >= min(IPlayer.GetX(), Object.GetX()) && Target.GetY() <= max(IPlayer.GetY(), Object.GetY()) && Target.GetY() >= min(IPlayer.GetY(), Object.GetY())) || ShadowAOE)
 							{
 								Object.Buff(7, nSkillGrade, 0);
 								int nDmg = (IPlayer.GetAttack() * TSSMul) + (nSkillGrade * CTools::Rate(TSSMin, TSSMax));
 
 								if (Object.GetType() == 0)
 									nDmg = (nDmg * TSSReduce) / 100;
-
-								IPlayer.OktayDamageArea(Object, nDmg, 32);
-							}
-							else if (ShadowAOEPVE && Object.GetType() == 1){
-
-								Object.Buff(7, nSkillGrade, 0);
-								int nDmg = (IPlayer.GetAttack() * TSSMul) + (nSkillGrade * CTools::Rate(TSSMin, TSSMax));
-								IPlayer.OktayDamageArea(Object, nDmg, 32);
-							}
-							else if (ShadowAOEPVP && Object.GetType() == 0){
-
-								Object.Buff(7, nSkillGrade, 0);
-								int nDmg = (IPlayer.GetAttack() * TSSMul) + (nSkillGrade * CTools::Rate(TSSMin, TSSMax));
-								nDmg = (nDmg * TSSReduce) / 100;
 
 								IPlayer.OktayDamageArea(Object, nDmg, 32);
 							}
@@ -1061,6 +1047,7 @@ void __fastcall ShadowSlash(IChar IPlayer, int pPacket, int pPos)
 
 	}
 }
+
 void __fastcall WrathOfHeaven(IChar IPlayer, int pPacket, int pPos)
 {
 	int pSkill = IPlayer.GetSkillPointer(33);

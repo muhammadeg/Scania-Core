@@ -1,6 +1,4 @@
 std::map<std::string, int> ipConnectionCount;
-int MAX_CONNECTIONS_PER_IP = 15;
-unsigned int CONNECTION_DELAY = 5000;
 
 Lock ipConnectionCountMutex;
 std::map<std::string, DWORD> lastConnectionTime;

@@ -21,7 +21,7 @@ void ContinuesSkill(void *Pack)
 					IPlayer.SetRefreshCheck(GetTickCount() + 990);
 				}
 
-				if (pollAsk.HTML && !CChar::IsGState((int)IPlayer.GetOffset(), 32)) {
+				if (pollAsk.HTML && !IPlayer.IsFishing()) {
 					IPlayer.OpenHTML(pollAsk.HTML);
 					IPlayer.BoxMsg(pollAsk.Question);
 				}

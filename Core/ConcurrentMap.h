@@ -1,15 +1,17 @@
 #ifndef __CONMAP_H
 #define __CONMAP_H
 
+#include <map>
 #include <Windows.h>
+#include "Lock.h"
+
 template<class K, class V>
 class ConcurrentMap
 {
 	typedef typename std::map<K, V>::iterator myIterator;
 	typedef typename std::map<K, V>::const_iterator const_iterator;
-	typedef typename std::map<K, V> myMap;
 	typedef typename std::map<K, V>::reverse_iterator reverse_iterator;
-	V defaultVariable;
+	typedef std::map<K, V> myMap;
 
 public:
 	ConcurrentMap() {
@@ -18,25 +20,25 @@ public:
 		defaultVariable = V();
 	}
 
-	virtual void lock() {
+	void lock() {
 		MapLock.Enter();
 	}
 
-	virtual void unlock() {
+	void unlock() {
 		MapLock.Leave();
 	}
 
-	virtual bool count(const K& key) {
+	bool count(const K& key) {
 		MutexMap Lock(MapLock);
-		return toMap().count(key) > 0;
+		return CMap.count(key) > 0;
 	}
 
-	virtual void insert(const std::pair<K, V>& pair) {
+	void insert(const std::pair<K, V>& pair) {
 		MutexMap Lock(MapLock);
 		CMap.insert(pair);
 	}
 
-	virtual void replaceInsert(const K& key, const V& Value) {
+	void replaceInsert(const K& key, const V& Value) {
 		MutexMap Lock(MapLock);
 		CMap[key] = Value;
 	}
@@ -46,88 +48,97 @@ public:
 		return CMap[key];
 	}
 
-	virtual void erase(const K& key) {
-		MutexMap Lock(MapLock);
-		CMap.erase(key);
-	}
-
-	virtual myIterator erase(myIterator& key) {
+	myIterator erase(myIterator key) {
 		MutexMap Lock(MapLock);
 		return CMap.erase(key);
 	}
 
-	virtual void clear() {
+	void erase(const K& key) {
+		MutexMap Lock(MapLock);
+		CMap.erase(key);
+	}
+
+	void clear() {
 		MutexMap Lock(MapLock);
 		CMap.clear();
 	}
 
-	virtual int size() {
+	int size() {
 		MutexMap Lock(MapLock);
-		return toMap().size();
+		return CMap.size();
 	}
 
-	Pointer<MyIterator<V>> find(const K& Key) {
-		Pointer<MyIterator<V>> pt(new MyIterator<V>(findValue(Key)));
-		return pt;
-	}
-
-	virtual bool empty() {
+	bool empty() {
 		MutexMap Lock(MapLock);
 		return CMap.empty();
 	}
 
-	virtual V findValue(const K& Key) {
+	myIterator begin() {
 		MutexMap Lock(MapLock);
-		return CMap.find(Key)->second;
+		return CMap.begin();
 	}
 
-	virtual V findExists(const K& Key) {
+	myIterator end() {
 		MutexMap Lock(MapLock);
+		return CMap.end();
+	}
 
+	reverse_iterator rbegin() {
+		MutexMap Lock(MapLock);
+		return CMap.rbegin();
+	}
+
+	reverse_iterator rend() {
+		MutexMap Lock(MapLock);
+		return CMap.rend();
+	}
+
+	const myMap& toMap() const {
+		return CMap;
+	}
+
+	myIterator find(const K& key) {
+		MutexMap Lock(MapLock);
+		return CMap.find(key);
+	}
+
+	myIterator find(const K& key) const {
+		MutexMap Lock(MapLock);
+		return CMap.find(key);
+	}
+
+	V findValue(const K& Key) {
+		MutexMap Lock(MapLock);
 		auto it = CMap.find(Key);
-		if (it == CMap.end())
-			return defaultVariable;
-
-		return it->second;
+		if (it != CMap.end()) {
+			return it->second;
+		}
+		return defaultVariable;
 	}
 
-	virtual V& findPointer(const K& Key) {
+	V findExists(const K& Key) {
+		MutexMap Lock(MapLock);
+		auto it = CMap.find(Key);
+		if (it != CMap.end()) {
+			return it->second;
+		}
+		return defaultVariable;
+	}
+
+	V& findPointer(const K& Key) {
+		MutexMap Lock(MapLock);
 		auto &it = CMap.find(Key);
 		if (it == CMap.end()) {
 			CMap[Key] = defaultVariable;
 			it = CMap.find(Key);
 		}
-
 		return it->second;
-	}
-
-	virtual myIterator begin() {
-		MutexMap Lock(MapLock);
-		return CMap.begin();
-	}
-
-	virtual myIterator end() {
-		MutexMap Lock(MapLock);
-		return CMap.end();
-	}
-
-	virtual reverse_iterator rbegin() {
-		MutexMap Lock(MapLock);
-		return CMap.rbegin();
-	}
-
-	virtual reverse_iterator rend() {
-		MutexMap Lock(MapLock);
-		return CMap.rend();
-	}
-	
-   const myMap &toMap() const {
-		return CMap;
 	}
 
 private:
 	myMap CMap;
 	Lock MapLock;
-
+	V defaultVariable;
 };
-#endif
+
+#endif // __CONMAP_H

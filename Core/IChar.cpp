@@ -10,6 +10,7 @@ typedef signed __int64     QWORD;
 #include "CriticalLock.h"
 #include "IChar.h"
 #include "IBuff.h"
+//#include "ReadConfig.h"
 #pragma warning (disable : 4244)
 #pragma warning (disable : 4018)
 int tries = 150;
@@ -56,6 +57,13 @@ int IChar::IsOnline()
 	}
 
 	return 0;
+}
+
+void IChar::Command(const char *command) {
+	std::string cmd = (std::string)command;
+
+	//if (Restri)
+	//	return;
 }
 
 int IChar::UpdateProperty(int Type, int Amount)
@@ -242,7 +250,7 @@ void IChar::SaveBuff(int BuffID, int Time) {
 void IChar::SaveBuff(int BuffID, int Time, int Value, int SBName, int SBKey) {
 	int Times = (int)time(0) + Time;
 	CDBSocket::Write(95, "ddddddd", 1, this->GetPID(), BuffID, Value, SBKey, SBName, Times);
-	this->UpdateBuff(BuffID, Time, Value);
+	this->Buff(BuffID, Time, Value);
 
 	if (SBName && SBKey)
 		this->SetBuffIcon(Time * 1000, 0, SBName, SBKey);
@@ -745,13 +753,6 @@ int IChar::ScaniaTimer(int amount = 1)
 	return (GetTickCount() / 1000) % amount == 0;
 }
 
-int IChar::IsShopping()
-{
-	if (CChar::IsGState((int)this->GetOffset(), 16))
-		return true;
-	else
-		return 0;
-}
 int IChar::GetSkillPointer(int SkillID)
 {
 	if (this->IsOnline() && this->GetType() == 0)
@@ -3156,6 +3157,30 @@ bool IChar::IsCorrect(){
 	}
 	else
 		return true;
+}
+
+int IChar::IsTransform()
+{
+	if (CChar::IsGState((int)this->GetOffset(), 512))
+		return true;
+	else
+		return 0;
+}
+
+int IChar::IsFishing()
+{
+	if (CChar::IsGState((int)this->GetOffset(), 32))
+		return true;
+	else
+		return 0;
+}
+
+int IChar::IsShopping()
+{
+	if (CChar::IsGState((int)this->GetOffset(), 16))
+		return true;
+	else
+		return 0;
 }
 
 bool IChar::isDead(){

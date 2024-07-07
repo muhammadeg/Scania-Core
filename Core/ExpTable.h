@@ -1476,33 +1476,6 @@ void __cdecl SendShopMsg2(void* Player, const char Type, const char* Format, int
 		CPlayer::Write(Player, Type, Format, iid, amount, a6);
 }
 
-void *__fastcall CIOCriticalSectionEnter(struct _RTL_CRITICAL_SECTION *a1)
-{
-	PRTL_CRITICAL_SECTION_DEBUG v4; // ST10_4@2
-	LONG v5; // ST14_4@2
-	LONG v8; // ST14_4@5
-	void *result; // eax@5
-	struct _RTL_CRITICAL_SECTION *lpCriticalSection; // [sp+0h] [bp-Ch]@1
-	int vars0; // [sp+Ch] [bp+0h]@0
-	void *retaddr; // [sp+10h] [bp+4h]@5
-
-	if (a1->LockCount != 0) {
-		lpCriticalSection = a1;
-		if (!TryEnterCriticalSection(a1))
-		{
-			v4 = lpCriticalSection[1].DebugInfo;
-			v5 = lpCriticalSection[1].LockCount;
-			if (lpCriticalSection->LockCount != 0)
-				EnterCriticalSection(lpCriticalSection);
-		}
-		v8 = *(DWORD *)(vars0 + 4);
-		result = retaddr;
-		lpCriticalSection[1].DebugInfo = (PRTL_CRITICAL_SECTION_DEBUG)retaddr;
-		lpCriticalSection[1].LockCount = v8;
-	}
-	return result;
-}
-
 int __cdecl FriendCheck(int Type, const char* Format, int PID, char Choice, const char* Name) {
 	if (FakeNames.count(Name)) {
 		TargetFind myTarget(0, 1, PID);
@@ -2168,6 +2141,11 @@ void __cdecl SkillLearnFix(int Player, unsigned char Type, char* format, int Ski
 	CPlayer::Write((void*)Player, Type, format, SkillID, Grade);
 }
 
+int HalfSwingAroundList(int pPlayer, int range) {
+
+	return CPlayer::GetObjectAround(*(void **)((int)pPlayer + 320), (int)pPlayer + 324, HSRange);
+}
+
 int __fastcall RandItemFix(void* Player, void* edx, int Argument, int Item) {
 
 	/*IChar IPlayer(Player);
@@ -2345,6 +2323,7 @@ void ExpMultiplier()
 	Memory->Copy((void*)0x00463360, &ResetLevelMax, 1);
 
 	Memory->Hook(0x47AFB2, RandItemFix);
+//	Memory->Hook(0x481BC3, HalfSwingAroundList);
 
 	Memory->Hook(0x43EB9B, MobLevelEggFix);
 	Memory->Hook(0x43EC8A, MobLevelEggFix);

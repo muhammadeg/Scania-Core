@@ -24,49 +24,49 @@ void __fastcall Transform(void *Player, void *edx, int Type, signed int Grade)
 		return;
 	}
 
-	if (IPlayer.IsOnline() && IPlayer.IsBuff(329) && !CChar::IsGState((int)Player, 512))
+	if (IPlayer.IsOnline() && IPlayer.IsBuff(329) && !IPlayer.IsTransform())
 	{
 		CPlayer::Write(Player, 67, "b", 67);
 		return;
 	}
 
-	if (IPlayer.IsOnline() && IPlayer.IsBuff(BuffNames::LMS) && !CChar::IsGState((int)Player, 512))
+	if (IPlayer.IsOnline() && IPlayer.IsBuff(BuffNames::LMS) && !IPlayer.IsTransform())
 	{
 		CPlayer::Write(Player, 67, "b", 67);
 		return;
 	}
 
-	if (IPlayer.IsOnline() && (IPlayer.IsBuff(160) || IPlayer.IsBuff(161) || IPlayer.IsBuff(BuffNames::PTVsPTBlue) || IPlayer.IsBuff(BuffNames::PTVsPTRed)) && !CChar::IsGState((int)Player, 512))
+	if (IPlayer.IsOnline() && (IPlayer.IsBuff(160) || IPlayer.IsBuff(161) || IPlayer.IsBuff(BuffNames::PTVsPTBlue) || IPlayer.IsBuff(BuffNames::PTVsPTRed)) && !IPlayer.IsTransform())
 	{
 		CPlayer::Write(Player, 67, "b", 67);
 		return;
 	}
 
-	if (IPlayer.IsOnline() && (IPlayer.IsBuff(162) || IPlayer.IsBuff(163)) && !CChar::IsGState((int)Player, 512))
+	if (IPlayer.IsOnline() && (IPlayer.IsBuff(162) || IPlayer.IsBuff(163)) && !IPlayer.IsTransform())
 	{
 		CPlayer::Write(Player, 67, "b", 67);
 		return;
 	}
 
-	if (IPlayer.IsOnline() && (IPlayer.IsBuff(170) || IPlayer.IsBuff(171)) && !CChar::IsGState((int)Player, 512))
+	if (IPlayer.IsOnline() && (IPlayer.IsBuff(170) || IPlayer.IsBuff(171)) && !IPlayer.IsTransform())
 	{
 		CPlayer::Write(Player, 67, "b", 67);
 		return;
 	}
 
-	if (IPlayer.IsOnline() && IPlayer.IsBuff(166) && !CChar::IsGState((int)Player, 512))
+	if (IPlayer.IsOnline() && IPlayer.IsBuff(166) && !IPlayer.IsTransform())
 	{
 		CPlayer::Write(Player, 67, "b", 67);
 		return;
 	}
 
-	if (IPlayer.IsOnline() && (IPlayer.IsBuff(373) || IPlayer.IsBuff(374)) && !CChar::IsGState((int)Player, 512))
+	if (IPlayer.IsOnline() && (IPlayer.IsBuff(373) || IPlayer.IsBuff(374)) && !IPlayer.IsTransform())
 	{
 		CPlayer::Write(Player, 67, "b", 67);
 		return;
 	}
 
-	if (IPlayer.IsOnline() && (IPlayer.IsBuff(902) || IPlayer.IsBuff(903)) && !CChar::IsGState((int)Player, 512))
+	if (IPlayer.IsOnline() && (IPlayer.IsBuff(902) || IPlayer.IsBuff(903)) && !IPlayer.IsTransform())
 	{
 		CPlayer::Write(Player, 67, "b", 67);
 		return;
@@ -89,7 +89,7 @@ void __fastcall Transform(void *Player, void *edx, int Type, signed int Grade)
 				{
 					CIOCriticalSection::Enter((void*)((int)Player + 1020));
 
-					if (!CChar::IsGState((int)Player, 512))
+					if (!IPlayer.IsTransform())
 					{
 						if (Type == 1)
 						{

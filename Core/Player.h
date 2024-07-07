@@ -2043,7 +2043,7 @@ int __fastcall Tick(void *Player, void *edx)
 		if (CheckMining.count(IPlayer.GetPID()))
 		{
 			ConfigMining pMining = CheckMining.findValue(IPlayer.GetPID());
-			if (pMining.Time && CChar::IsGState((int)IPlayer.GetOffset(), 16))
+			if (pMining.Time && IPlayer.IsShopping())
 			{
 				IPlayer.CloseWindow("minebar");
 				pMining.Time = 0;
@@ -2053,7 +2053,7 @@ int __fastcall Tick(void *Player, void *edx)
 				IPlayer.CancelBuff(3960);
 			}
 
-			if (pMining.Time && CChar::IsGState((int)IPlayer.GetOffset(), 32))
+			if (pMining.Time && IPlayer.IsFishing())
 			{
 				IPlayer.CloseWindow("minebar");
 				pMining.Time = 0;
@@ -3409,7 +3409,7 @@ int __fastcall Tick(void *Player, void *edx)
 
 		if (Scenario::Active && IPlayer.GetMap() != ScenarioMap && playerBuffs.count(162))
 		{
-			if (CChar::IsGState((int)Player, 512))
+			if (IPlayer.IsTransform())
 				CPlayer::FreeTransform(Player);
 
 			IPlayer.Teleport(ScenarioMap, 284840, 351088);
@@ -3417,7 +3417,7 @@ int __fastcall Tick(void *Player, void *edx)
 
 		if (Scenario::Active  && IPlayer.GetMap() != ScenarioMap && playerBuffs.count(163))
 		{
-			if (CChar::IsGState((int)Player, 512))
+			if (IPlayer.IsTransform())
 				CPlayer::FreeTransform(Player);
 
 			IPlayer.Teleport(ScenarioMap, 288802, 350986);
@@ -3425,7 +3425,7 @@ int __fastcall Tick(void *Player, void *edx)
 
 		if (Battlefield::Active && IPlayer.GetMap() != BFMap && playerBuffs.count(160))
 		{
-			if (CChar::IsGState((int)Player, 512))
+			if (IPlayer.IsTransform())
 				CPlayer::FreeTransform(Player);
 
 			IPlayer.Teleport(BFMap, (Battlefield::GoodVsEvil ? BFTeleRedXG : BFTeleRedX) + CTools::Rate(-BFRange, BFRange), (Battlefield::GoodVsEvil ? BFTeleRedYG : BFTeleRedY) + CTools::Rate(-BFRange, BFRange), (Battlefield::GoodVsEvil ? BFTeleRedZG : BFTeleRedZ));
@@ -3433,7 +3433,7 @@ int __fastcall Tick(void *Player, void *edx)
 
 		if (Battlefield::Active && IPlayer.GetMap() != BFMap && playerBuffs.count(161))
 		{
-			if (CChar::IsGState((int)Player, 512))
+			if (IPlayer.IsTransform())
 				CPlayer::FreeTransform(Player);
 
 			IPlayer.Teleport(BFMap, (Battlefield::GoodVsEvil ? BFTeleBlueXG : BFTeleBlueX) + CTools::Rate(-BFRange, BFRange), (Battlefield::GoodVsEvil ? BFTeleBlueYG : BFTeleBlueY) + CTools::Rate(-BFRange, BFRange), (Battlefield::GoodVsEvil ? BFTeleBlueZG : BFTeleBlueZ));
@@ -3441,7 +3441,7 @@ int __fastcall Tick(void *Player, void *edx)
 
 		if (CaptureFlag::Active  && IPlayer.GetMap() != CaptureMap && playerBuffs.count(180))
 		{
-			if (CChar::IsGState((int)Player, 512))
+			if (IPlayer.IsTransform())
 				CPlayer::FreeTransform(Player);
 
 			IPlayer.Teleport(CaptureMap, CPTeleRedX + CTools::Rate(-50, 50), CPTeleRedY + CTools::Rate(-50, 50));
@@ -3449,7 +3449,7 @@ int __fastcall Tick(void *Player, void *edx)
 
 		if (CaptureFlag::Active  && IPlayer.GetMap() != CaptureMap && playerBuffs.count(179))
 		{
-			if (CChar::IsGState((int)Player, 512))
+			if (IPlayer.IsTransform())
 				CPlayer::FreeTransform(Player);
 
 			IPlayer.Teleport(CaptureMap, CPTeleBlueX + CTools::Rate(-50, 50), CPTeleBlueY + CTools::Rate(-50, 50));
@@ -4034,12 +4034,13 @@ int __fastcall Tick(void *Player, void *edx)
 			int playerID = IPlayer.GetID();
 
 			if (IPlayer.IsParty()) {
-				void *Party = (void *)CParty::FindParty(IPlayer.GetPartyID());
+				void* Party = (void*)CParty::FindParty(IPlayer.GetPartyID());
 
 				if (Party) {
 					int PartySize = CParty::GetSize(Party);
+					int membersInRange = CountPartyMembersInRange(IPlayer, Party, My_PPRange);
 
-					if (playerPartySizes[playerID] != PartySize) {
+					if (playerPartySizes[playerID] != membersInRange) {
 						if (playerPartySizes.count(playerID) && playerBuffs.count(11750 + playerPartySizes[playerID])) {
 							int oldSize = playerPartySizes[playerID];
 							PerfectParty oldPP = My_PerfectParty.find(oldSize)->second;
@@ -4047,12 +4048,12 @@ int __fastcall Tick(void *Player, void *edx)
 							CancelBuff(IPlayer, playerBuffs, 11750 + oldSize);
 						}
 
-						playerPartySizes[playerID] = PartySize;
+						playerPartySizes[playerID] = membersInRange;
 
-						if (My_PerfectParty.count(PartySize)) {
-							PerfectParty pP = My_PerfectParty.find(PartySize)->second;
+						if (My_PerfectParty.count(membersInRange)) {
+							PerfectParty pP = My_PerfectParty.find(membersInRange)->second;
 							IPlayer.SetBuffIcon(-2, -1, pP.SBMsg, pP.SBKey);
-							Buff(IPlayer, playerBuffs, 11750 + PartySize, 604800, 0);
+							Buff(IPlayer, playerBuffs, 11750 + membersInRange, 604800, 0);
 						}
 					}
 
@@ -4572,7 +4573,7 @@ int __fastcall Tick(void *Player, void *edx)
 			CChar::SubMState(IPlayer.GetOffset(), 0, 2147483648);
 
 		// might crash check
-		if (CChar::IsGState((int)Player, 512) && GetTickCount() >= *(DWORD*)((int)Player + 1480))
+		if (IPlayer.IsTransform() && GetTickCount() >= *(DWORD*)((int)Player + 1480))
 		{
 			if (IPlayer.GetRage() <= 0)
 			{
@@ -4597,7 +4598,7 @@ int __fastcall Tick(void *Player, void *edx)
 			}
 		}
 
-		if (CChar::IsGState((int)IPlayer.GetOffset(), 16) && strlen(ShopRewardCheck) && ((std::string)ShopRewardCheck == "true" || (std::string)ShopRewardCheck == "True"))
+		if (IPlayer.IsShopping() && strlen(ShopRewardCheck) && ((std::string)ShopRewardCheck == "true" || (std::string)ShopRewardCheck == "True"))
 		{
 			if (!playerBuffs.count(169)){
 				Buff(IPlayer, playerBuffs, 169, ShopRewardTime, 0);
@@ -4625,11 +4626,11 @@ int __fastcall Tick(void *Player, void *edx)
 			}
 		}
 
-		if (!CChar::IsGState((int)IPlayer.GetOffset(), 16) && playerBuffs.count(169)){
+		if (!IPlayer.IsShopping() && playerBuffs.count(169)){
 			CancelBuff(IPlayer, playerBuffs, 169);
 		}
 		// crash check
-		if (IPlayer.IsValid() && CChar::IsGState((int)IPlayer.GetOffset(), 16) && CChar::IsGState((int)IPlayer.GetOffset(), 32))
+		if (IPlayer.IsValid() && IPlayer.IsShopping() && IPlayer.IsFishing())
 			(*(int(__thiscall **)(int, signed int))(*(DWORD*)Player + 112))((int)Player, 96);
 
 		int Map = (MapX * 1000) + MapY;
@@ -4670,7 +4671,7 @@ int __fastcall Tick(void *Player, void *edx)
 			}
 		}
 		// crash check
-		if (IPlayer.IsValid() && !CSMap::IsOnTile(*(void **)((int)Player + 320), (int)Player + 332, 131072) && !CChar::IsGState((int)IPlayer.GetOffset(), 16) && !CChar::IsGState((int)IPlayer.GetOffset(), 32))
+		if (IPlayer.IsValid() && !CSMap::IsOnTile(*(void **)((int)Player + 320), (int)Player + 332, 131072) && !IPlayer.IsShopping() && !IPlayer.IsFishing())
 		{
 			int Around = IPlayer.GetObjectListAround(10);
 
@@ -4710,7 +4711,7 @@ int __fastcall Tick(void *Player, void *edx)
 			IPlayer.SendGStateEx(IPlayer.GetGStateEx());
 
 		//new
-		if (FishLimit && !CChar::IsGState((int)IPlayer.GetOffset(), 32) && playerBuffs.count(3958))
+		if (FishLimit && !IPlayer.IsFishing() && playerBuffs.count(3958))
 		{
 			int LimitIndex = sha256(IPlayer.GetHWID() + IPlayer.GetIP());
 
@@ -4726,7 +4727,7 @@ int __fastcall Tick(void *Player, void *edx)
 			CancelBuff(IPlayer, playerBuffs, 3958);
 		}
 
-		if (ShoppingLimit && !CChar::IsGState((int)IPlayer.GetOffset(), 16) && playerBuffs.count(3959))
+		if (ShoppingLimit && !IPlayer.IsShopping() && playerBuffs.count(3959))
 		{
 			int LimitIndex = sha256(IPlayer.GetHWID() + IPlayer.GetIP());
 
@@ -4771,7 +4772,7 @@ int __fastcall Tick(void *Player, void *edx)
 				CancelBuff(IPlayer, playerBuffs, 3850);
 			}
 
-			if (CChar::IsGState((int)IPlayer.GetOffset(), 16)) {
+			if (IPlayer.IsShopping()) {
 				IPlayer.SystemMessage("You can not fish and shop at the same time.", TEXTCOLOR_RED);
 				(*(void(__thiscall **)(int, signed int))(*(DWORD *)(int)Player + 112))((int)Player, 96);
 				CItem::InsertItem((int)Player, 27, 238, 0, 1, -1);
@@ -4786,7 +4787,7 @@ int __fastcall Tick(void *Player, void *edx)
 					}
 				}
 
-				if (WeaponType == 19 || CChar::IsGState((int)Player, 512)) {
+				if (WeaponType == 19 || IPlayer.IsTransform()) {
 					if (WeaponType == 19)
 						IPlayer.SystemMessage("Please un-wear your weapon and try fishing again.", TEXTCOLOR_RED);
 					else

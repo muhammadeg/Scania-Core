@@ -673,6 +673,7 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			IPlayer.SetProperty(PlayerProperty::Reborn, NextReborn);
 			IPlayer.systemReward(rb.RewardID);
 			CDBSocket::Write(119, "dd", IPlayer.GetPID(), NextReborn);
+			IPlayer.Teleport(rb.Map, rb.X, rb.Y);
 		}
 		return;
 	}

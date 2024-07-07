@@ -606,19 +606,19 @@ void DuelTournamentTick() {
 						break;
 					}
 
-					if (CChar::IsGState((int)IPlayer2.GetOffset(), 16) || CChar::IsGState((int)IPlayer2.GetOffset(), 32)) {
+					if (IPlayer2.IsShopping() || IPlayer2.IsFishing()) {
 						fightWon(fight, fight.Player1, 0);
 						it = curFights.erase(it);
 						break;
 					}
 
-					if (CChar::IsGState((int)IPlayer1.GetOffset(), 16) || CChar::IsGState((int)IPlayer1.GetOffset(), 32)) {
+					if (IPlayer1.IsShopping() || IPlayer1.IsFishing()) {
 						fightWon(fight, fight.Player2, 0);
 						it = curFights.erase(it);
 						break;
 					}
 
-					if (CChar::IsGState((int)IPlayer2.GetOffset(), 2)) {
+					if (IPlayer2.isDead()) {
 						if (IPlayer2.IsBuff(BuffNames::RevivalCheck)) {
 							if (IPlayer2.GetBuffRemain(BuffNames::RevivalCheck) <= 1) {
 								IPlayer2.Teleport(0, DuelArenas[0][fight.Arena] + CTools::Rate(-100, 100), DuelArenas[1][fight.Arena] + CTools::Rate(-100, 100));
@@ -636,7 +636,7 @@ void DuelTournamentTick() {
 						}
 					}
 
-					if (CChar::IsGState((int)IPlayer1.GetOffset(), 2)) {
+					if (IPlayer1.isDead()) {
 						if (IPlayer1.IsBuff(BuffNames::RevivalCheck)) {
 							if (IPlayer1.GetBuffRemain(BuffNames::RevivalCheck) <= 1) {
 								IPlayer1.Teleport(0, DuelArenas[0][fight.Arena] + CTools::Rate(-100, 100), DuelArenas[1][fight.Arena] + CTools::Rate(-100, 100));
