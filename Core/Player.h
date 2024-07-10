@@ -153,19 +153,55 @@ void insertReward(void* Player, int RewardID) {
 		return;
 	IChar IPlayer(Player);
 
-	//if (IPlayer.IsOnline() && Rewards.count(RewardID) && Rewards.find(RewardID)->second.userKey){
-	//	if (F10EXPRewards.count(IPlayer.GetLevel())) {
-	//		int progressValue = F10EXPRewards.find(IPlayer.GetLevel())->second.Progress;
+	if (IPlayer.IsOnline()) {
+		int UniqueRewardID = RewardID + (IPlayer.GetLevel() * 100);
+		if (Rewards.count(UniqueRewardID)) {
+			int progressValue = Rewards[UniqueRewardID].Progress;
 
-	//		unsigned __int64 currentLevelExp = _ExpTable[IPlayer.GetLevel() - 1]; // Assuming levels start from 1
-	//		unsigned __int64 nextLevelExp = _ExpTable[IPlayer.GetLevel()]; // Assuming levels start from 1
-	//		unsigned __int64 totalExpToNextLevel = nextLevelExp - currentLevelExp;
+			unsigned __int64 currentLevelExp = _ExpTable[IPlayer.GetLevel() - 1];
+			unsigned __int64 nextLevelExp = _ExpTable[IPlayer.GetLevel()];
 
-	//		double progressCalc = (static_cast<double>(progressValue) / 1000.0) * totalExpToNextLevel;
+			// Calculate required experience based on progressValue
+			double progressCalc = (static_cast<double>(progressValue) / 1000.0) * nextLevelExp;
 
-	//		CPlayer::UpdateProperty((int)Player, 25, 1, static_cast<int>(progressCalc));
-	//	}
-	//}
+			if (progressValue > 1000) {
+				// Calculate how many levels to progress
+				int levelsToProgress = progressValue / 1000;
+
+				// Calculate total experience needed to progress levelsToProgress levels
+				unsigned __int64 totalExpToProgress = 0;
+				for (int i = 0; i < levelsToProgress; ++i) {
+					totalExpToProgress += _ExpTable[IPlayer.GetLevel() + i];
+				}
+
+				unsigned __int64 expToUpdate = static_cast<unsigned __int64>(totalExpToProgress);
+				unsigned __int64 currentExp = 0;
+
+				while (expToUpdate > 0) {
+					unsigned __int64 updateAmount = min(expToUpdate, static_cast<unsigned __int64>(2147483640));
+
+					CPlayer::UpdateProperty((int)Player, 25, 1, static_cast<int>(updateAmount));
+					currentExp += updateAmount;
+					expToUpdate -= updateAmount;
+				}
+			}
+			else {
+				unsigned __int64 expToUpdate = static_cast<unsigned __int64>(progressCalc);
+				unsigned __int64 currentExp = 0;
+
+				while (expToUpdate > 0) {
+					unsigned __int64 updateAmount = min(expToUpdate, static_cast<unsigned __int64>(2147483640));
+
+					CPlayer::UpdateProperty((int)Player, 25, 1, static_cast<int>(updateAmount));
+					currentExp += updateAmount;
+					expToUpdate -= updateAmount;
+				}
+			}
+		}
+	}
+
+
+
 	if (IPlayer.IsOnline() && Rewards.count(RewardID)) {
 		Reward pReward = Rewards.find(RewardID)->second;
 		for (int i = 0; i < pReward.Indexes.size(); i++) {

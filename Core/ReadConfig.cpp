@@ -41,7 +41,7 @@ char ConfigCheck[50], ConfigClient[50], ConfigEngine[50], ConfigEpk[50], AntiKsC
 char ServerName[50], AuthSvr[50], VoteAPIKey[50];
 char BossEXPName[50], BossEXPFinalMsg[BUFSIZ];
 char BFName[50], LMSName[50], DKName[50], PLName[50], TBName[50], SVName[50], DTName[50], CTFName[50], LotteryName[50], LottoName[50], F10Name[50], MautName[50], HuntingSysName[50], WCName[50];
-char ShoutsWebhook[BUFSIZ], LevelWebhook[BUFSIZ], BofWebhook[BUFSIZ], NoticeWebHook[BUFSIZ], Avatar[BUFSIZ], StarterWebhook[BUFSIZ], RebornWebhook[BUFSIZ], AssassinWebhook[BUFSIZ], HonorNoticeWebhook[BUFSIZ];
+char ShoutsWebhook[BUFSIZ], LevelWebhook[BUFSIZ], BofWebhook[BUFSIZ], NoticeWebHook[BUFSIZ], Avatar[BUFSIZ], StarterWebhook[BUFSIZ], RebornWebhook[BUFSIZ], AssassinWebhook[BUFSIZ], HonorNoticeWebhook[BUFSIZ], AuctionNoticeWebhook[BUFSIZ];
 int CurGroup = 1, WorldCupTime = 195;
 std::string ConfigCheckDB3 = "Hell", ConfigCheckDB4 = "Hell";
 char key1 = '\xFF', key2 = '\xFF', key3 = '\xFF', key4 = '\xFF', key5 = '\xFF', key6 = '\xFF', key7 = '\xFF';
@@ -69,7 +69,7 @@ int Snow = 0;
 int tradePVP = 0;
 int RaidRoundCounter = 0;
 double DelaySpam = 0;
-int FireStormVThief = 0;
+int FireStormVThief = 0, HealScale = 0;
 int PacketProtection = 0, AFKRange = 0;
 unsigned __int64 LotteryCheck = 0;
 int itemin = 0, itemam = 0, itempr = 0;
@@ -138,6 +138,7 @@ int WinnerHell = 0;
 int VoteReward = 0;
 int BossHuntReward = 0;
 int ExtensionTime = 0;
+int My_CDProtection = 0, My_CDValue = 0;
 int ScenarioQuestR = 0, ScenarioQuestB = 0;
 int COKQuest = 0, COKLimit = 0, COKR = 0, COKA = 0;
 unsigned __int64 Hashes = 0;
@@ -524,8 +525,6 @@ void ReadConfig(bool command)
 	t23 = GetPrivateProfileIntA("Test", "a23", 0, "./Configs/Test.txt");
 
 	BoundAllow = GetPrivateProfileIntA("Storage", "Allow", 0, "./Configs/BoundItems.txt");
-
-
 	//BossEXP
 
 	GetPrivateProfileStringA("System", "Name", "Boss EXP", BossEXPName, 50, "./Systems/BossEXP.txt");
@@ -563,6 +562,7 @@ void ReadConfig(bool command)
 	GetPrivateProfileStringA("Webhook", "Level", "https://discord.com/api/webhooks/1193728182982025286/y0YEGdScsfyJKEWHdTWWcEO1UU9xxBYr9fNoVHOtbdUYsl00IWxtasBvDphjqY7zKvtq", LevelWebhook, 512, "./Configs/Discord.txt");
 	GetPrivateProfileStringA("Webhook", "Notice", "https://discord.com/api/webhooks/1193728182982025286/y0YEGdScsfyJKEWHdTWWcEO1UU9xxBYr9fNoVHOtbdUYsl00IWxtasBvDphjqY7zKvtq", NoticeWebHook, 512, "./Configs/Discord.txt");
 	GetPrivateProfileStringA("Webhook", "HonorNotice", "https://discord.com/api/webhooks/1193728182982025286/y0YEGdScsfyJKEWHdTWWcEO1UU9xxBYr9fNoVHOtbdUYsl00IWxtasBvDphjqY7zKvtq", HonorNoticeWebhook, 512, "./Configs/Discord.txt");
+	GetPrivateProfileStringA("Webhook", "Auction", "https://discord.com/api/webhooks/1193728182982025286/y0YEGdScsfyJKEWHdTWWcEO1UU9xxBYr9fNoVHOtbdUYsl00IWxtasBvDphjqY7zKvtq", AuctionNoticeWebhook, 512, "./Configs/Discord.txt");
 
 	GetPrivateProfileStringA("Webhook", "Assassin", "https://discord.com/api/webhooks/1193728182982025286/y0YEGdScsfyJKEWHdTWWcEO1UU9xxBYr9fNoVHOtbdUYsl00IWxtasBvDphjqY7zKvtq", AssassinWebhook, 512, "./Configs/Discord.txt");
 
@@ -574,6 +574,9 @@ void ReadConfig(bool command)
 
 	MAX_CONNECTIONS_PER_IP = GetPrivateProfileIntA("FilterIP", "MaxConnection", 15, "./Configs/Protection.txt");
 	CONNECTION_DELAY = GetPrivateProfileIntA("FilterIP", "DelayTime", 5000, "./Configs/Protection.txt");
+
+	My_CDProtection = GetPrivateProfileIntA("Cooldown", "Active", 1, "./Configs/Protection.txt");
+	My_CDValue = GetPrivateProfileIntA("Cooldown", "Difference", 200, "./Configs/Protection.txt");
 
 	TestVV = GetPrivateProfileIntA("Test", "Value", 0, "./Configs/Test.txt");
 	BSOFSky = GetPrivateProfileIntA("BlessingSonOfTheSky", "ItemIndex", 0, "./Configs/Protection.txt");
@@ -901,7 +904,7 @@ void ReadConfig(bool command)
 	AssassinParty = GetPrivateProfileIntA("Assassin", "PartyEnable", 0, "./Configs/PKKill.txt");
 
 	iceStoneMax = GetPrivateProfileIntA("IceStone", "MaxTime", 10, "./Configs/Mix.txt");
-	iceStoneValue = GetPrivateProfileIntA("IceStone", "Value", 10, "./Configs/Mix.txt");
+	iceStoneValue = GetPrivateProfileIntA("IceStone", "Value", -10, "./Configs/Mix.txt");
 
 	GetPrivateProfileStringA("Effects", "Ice", "", IceStoneEffect, 512, "./Configs/Mix.txt");
 	GetPrivateProfileStringA("Effects", "Light", "", LightningStoneEffect, 512, "./Configs/Mix.txt");
@@ -925,8 +928,8 @@ void ReadConfig(bool command)
 	DamageSBKey = GetPrivateProfileIntA("Damage", "SBKey", 650, "./Systems/Damage.txt");
 	DamageSBName = GetPrivateProfileIntA("Damage", "SBName", 6150, "./Systems/Damage.txt");
 
-	FireStormVThief = GetPrivateProfileIntA("FireStorm", "Activate", 1, "./Configs/Protection.txt");
-
+	FireStormVThief = GetPrivateProfileIntA("MagesAddon", "FireStorm", 1, "./Configs/Protection.txt");
+	HealScale = GetPrivateProfileIntA("MagesAddon", "HealScale", 1, "./Configs/Protection.txt");
 
 	ExpansionIndex = GetPrivateProfileIntA("InvExpansion", "Index", 3360, "./Configs/ItemUse.txt");
 	ExpansionAmount = GetPrivateProfileIntA("InvExpansion", "Amount", 100, "./Configs/ItemUse.txt");
@@ -2878,7 +2881,7 @@ void ReadConfig(bool command)
 				char indexes[BUFSIZ], amounts[BUFSIZ], notice[BUFSIZ];
 				memset(notice, 0, sizeof(notice));
 				int ID = 0, HonorPts = 0, RewardPts = 0, HTML = 0, Bound = 0, HousePoints = 0;
-				//		int userKey = 0;
+				int userKey = 0;
 				signed __int64 EXP = 0;
 				if (sscanf(line, "(Reward (ID %d) (ItemIndex %[0-9/,]) (ItemAmount %[0-9/,]) (HonorPt %d) (RewardPt %d) (EXP %lld) (HTML %d) (Bound %d) (Msg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &ID, &indexes, &amounts, &HonorPts, &RewardPts, &EXP, &HTML, &Bound, &notice) >= 8)
 				{
@@ -2919,31 +2922,25 @@ void ReadConfig(bool command)
 					if (pReward.Indexes.size() == pReward.Amounts.size())
 						Rewards[ID] = pReward;
 				}
-				//_snprintf(keyLine, sizeof(keyLine), "ExpReward (Key %d)", userKey);
-				//if (strstr(line, keyLine)) {
-				//		int Level = 0;
-				//		int Percentage = 0;
-				//		if (sscanf(line, "(Exp (Level %d) (Percentage %d))", &Level, &Percentage) == 2) {
-				//			std::string sBIndexs = std::string((const char*)indexes);
-				//			std::string sBAmounts = std::string((const char*)amounts);
+				if (strstr(line, "(F10ExpReward")) {
+					int RewardID = 0;
+					if (sscanf(line, "(F10ExpReward (ID %d)", &RewardID) == 1) {
+						Reward pReward = Reward();
 
-				//			Reward pReward = Reward();
-				//			pReward.Indexes = explode(",", 0);
-				//			pReward.Amounts = explode(",", 0);
-				//			pReward.EXP = 0;
-				//			pReward.HonorPts = 0;
-				//			pReward.RewardPts = 0;
-				//			pReward.HTML = 0;
-				//			pReward.Bound = 0;
-				//			pReward.HousePoints = 0;
-				//			pReward.userKey = userKey;
-				//			if (pReward.Indexes.size() == pReward.Amounts.size())
-				//				Rewards[userKey] = pReward;
-				//			F10EXPRewards[Level].Level = Level;
-				//			F10EXPRewards[Level].Progress = Percentage;
+						char nextLine[sizeof(line)];
+						while (fgets(nextLine, sizeof(nextLine), filte) != NULL && strstr(nextLine, "(Level") != NULL) {
+							int Level = 0, Percentage = 0;
+							if (sscanf(nextLine, " (Level %d (Percentage %d))", &Level, &Percentage) == 2) {
+								pReward.Level = Level;
+								pReward.Progress = Percentage;
 
-				//		}
-				//	}
+								int UniqueRewardID = RewardID + (Level * 100);
+
+								Rewards[UniqueRewardID] = pReward;
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -4224,16 +4221,16 @@ void ReadConfig(bool command)
 				int GetClass = 0, GetSkillID = 0, GetDelay = 0, GetCooldown = 0, GetSkillIDx = 0, GetDelayx = 0, GetCooldownx = 0;
 				double Spam = 0;
 
-				if (sscanf(line, "(skillSpam (delay %lf))", &Spam) == 1)
+				if (sscanf_s(line, "(skillSpam (delay %lf))", &Spam) == 1)
 					DelaySpam = Spam;
 
-				if (sscanf(line, "(eggskill (action %d)(delay %d)(cooldown %d))", &GetSkillIDx, &GetDelayx, &GetCooldownx) == 3)
+				if (sscanf_s(line, "(eggskill (action %d)(delay %d)(cooldown %d))", &GetSkillIDx, &GetDelayx, &GetCooldownx) == 3)
 				{
 					CheckEggCooldownConfig[GetSkillIDx].EggCooldownConfig = GetCooldownx;
 					CheckEggCooldownConfig[GetSkillIDx].EggDelayConfig = GetDelayx;
 				}
 
-				if (sscanf(line, "(skill (class %d)(action %d)(delay %d)(cooldown %d))", &GetClass, &GetSkillID, &GetDelay, &GetCooldown) == 4)
+				if (sscanf_s(line, "(skill (class %d)(action %d)(delay %d)(cooldown %d))", &GetClass, &GetSkillID, &GetDelay, &GetCooldown) == 4)
 				{
 					CheckCooldownConfig[GetSkillID + (GetClass * 100)].CooldownConfig = GetCooldown;
 					CheckCooldownConfig[GetSkillID + (GetClass * 100)].DelayConfig = GetDelay;

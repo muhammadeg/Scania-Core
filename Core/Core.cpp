@@ -1068,11 +1068,6 @@ struct SkillDisabling
 
 
 
-struct pRewards
-{
-	int Level;
-	int Progress;
-};
 struct MD5Map
 {
 	int Index;
@@ -1516,6 +1511,8 @@ std::map<int, MSummonConfig> SummonQuest;
 ConcurrentMap<int, MSummonedConfig> SummonedQuest;
 std::map<int, ZProtection> ugog;
 ConcurrentSet<std::string> DisablePM;
+ConcurrentSet<std::string> DisableEXP;
+
 std::set<int> ugCheck;
 std::set<int> ogCheck;
 std::map<int, CreateMonsterPet> MonsterPet;

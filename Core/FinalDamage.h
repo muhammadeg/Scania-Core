@@ -562,15 +562,8 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 
 		if (ITarget.GetType() == 0)
 		{
-			if (ITarget.IsBuff(284) && CheckDamage > 10 && ITarget.GetType() == 0)
-				CheckDamage *= (PDPVP / 100);
-			if (ITarget.IsBuff(284) && CheckDamage > 10 && ITarget.GetType() != 0)
+			if (ITarget.IsBuff(284) && CheckDamage > 10)
 				CheckDamage /= 10;
-
-			//if (ITarget.IsBuff(BuffNames::Blessing) && CheckDamage > 10 && ITarget.GetType() == 0)
-			//	CheckDamage *= (BlessPVP / 100);
-			//if (ITarget.IsBuff(BuffNames::Blessing) && CheckDamage > 10 && ITarget.GetType() != 0)
-			//	CheckDamage = 0;
 		}
 
 		if (ITarget.GetType() == 0)

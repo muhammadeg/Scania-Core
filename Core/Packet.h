@@ -1373,7 +1373,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					reward.message = msg;
 					reward.textColor = NOTICECOLOR_YELLOW;
 					reward.messageType = messageType;
-					ToNoticeWebhook(msg);
+					ToAuctionNoticeWebhook(msg);
 					PlayerRewardNotice.push_back(reward);
 					return;
 				}

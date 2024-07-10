@@ -409,7 +409,29 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 		return;
 	}
 
-	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 8 && cmd.substr(0, 6) == "/pmoff") {
+
+	if (IPlayer.IsOnline() && cmd.substr(0, 6) == "/bmoff") {
+		if (DisableEXP.count((std::string)IPlayer.GetName()))
+			IPlayer.SystemMessage("Your Boosting Messages are already turned off.", TEXTCOLOR_YELLOW);
+		else {
+			DisableEXP.insert((std::string)IPlayer.GetName());
+			IPlayer.SystemMessage("Your Boosting Messages are now turned off.", TEXTCOLOR_GREEN);
+		}
+		return;
+	}
+
+	if (IPlayer.IsOnline() && cmd.substr(0, 5) == "/bmon") {
+		if (DisableEXP.count((std::string)IPlayer.GetName())) {
+			IPlayer.SystemMessage("Your Boosting Messages are now turned on.", TEXTCOLOR_GREEN);
+			DisableEXP.erase((std::string)IPlayer.GetName());
+		}
+		else
+			IPlayer.SystemMessage("Your Boosting Messages are already turned on.", TEXTCOLOR_YELLOW);
+
+		return;
+	}
+
+	if (IPlayer.IsOnline() && cmd.substr(0, 6) == "/pmoff") {
 		if (DisablePM.count((std::string)IPlayer.GetName()))
 			IPlayer.SystemMessage("Your Private Messages are already turned off.", TEXTCOLOR_YELLOW);
 		else {
@@ -419,7 +441,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 		return;
 	}
 
-	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 8 && cmd.substr(0, 5) == "/pmon") {
+	if (IPlayer.IsOnline() && cmd.substr(0, 5) == "/pmon") {
 		if (DisablePM.count((std::string)IPlayer.GetName())) {
 			IPlayer.SystemMessage("Your Private Messages are now turned on.", TEXTCOLOR_GREEN);
 			DisablePM.erase((std::string)IPlayer.GetName());
@@ -842,6 +864,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 
 		IPlayer.SystemMessage(Int2String(maxUsersII), TEXTCOLOR_RED);
 */
+		IPlayer.AddReward(k);
 		IPlayer.SystemMessage("Current Speed: " + Int2String(IPlayer.GetSpeed()), TEXTCOLOR_RED);
 
 		CPlayer::Write(IPlayer.GetOffset(), 0xFE, "ddd", 186, IPlayer.GetID(), k);

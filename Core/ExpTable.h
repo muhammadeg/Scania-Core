@@ -157,7 +157,10 @@ int __cdecl MyUpdateProperty(int Player, int Type, int InOut, signed __int64 Exp
 			if (My_PerfectParty.count(PartySize)) {
 				PerfectParty pP = My_PerfectParty.find(PartySize)->second;
 				Exp += (Exp * pP.Exp) / 100;
-				IPlayer.SystemMessage("EXP Increased by: " + Int2String(pP.Exp) + "% Party Size: " + Int2String(PartySize), TEXTCOLOR_YELLOW);
+
+				if (!DisableEXP.count((std::string)IPlayer.GetName()))
+					IPlayer.SystemMessage("EXP Increased by: " + Int2String(pP.Exp) + "% Party Size: " + Int2String(PartySize), TEXTCOLOR_YELLOW);
+
 			}
 		}
 

@@ -253,6 +253,13 @@ void ToHonorNoticeWebhook(std::string notice)
 	SendWebhookMessage(url, notice.c_str(), avatar.c_str(), thisServerName);
 }
 
+void ToAuctionNoticeWebhook(std::string notice)
+{
+	std::string url = AuctionNoticeWebhook;
+	std::string avatar = Avatar;
+	SendWebhookMessage(url, notice.c_str(), avatar.c_str(), thisServerName);
+}
+
 void ToAssassinWebhook(std::string notice)
 {
 	std::string url = AssassinWebhook;

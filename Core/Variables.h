@@ -384,10 +384,11 @@ struct Reward {
 	int HonorPts;
 	int RewardPts;
 	signed __int64 EXP;
+	int Level;
+	int Progress;
 	int Bound;
 	int HTML;
 	int HousePoints;
-	int userKey;
 	std::string Notice;
 };
 struct DailyDuty {
@@ -1226,8 +1227,13 @@ namespace Protect32
 	extern bool Selection;
 }
 
+struct pRewards
+{
+	int Level;
+	int Progress;
+};
 
-
+extern std::map<int, pRewards> F10EXPRewards;
 extern std::vector<int> ProtectLeaderList;
 extern ConcurrentMap<int, std::string> ProtectLeaderName;
 extern std::set<int> ProtectBlackList;

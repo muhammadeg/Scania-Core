@@ -73,7 +73,7 @@ void __fastcall ExecuteSkill(void *pSkill, void* edx, signed int SkillID, int pP
 		int nextPrepareTime = IPlayer.GetBuffValue(BuffNames::DelayProtect + SkillID);
 
 		if (!IPlayer.IsBuff(329)){
-			if (Compare3 && GetTickCount() < nextExecutionTime + (Compare3 - 100)) {
+			if ((Compare3 > 100) && GetTickCount() < nextExecutionTime + (Compare3 - 100)) {
 				IPlayer.SystemMessage("invalid skill cooldown time..", TEXTCOLOR_RED);
 				return;
 			}
@@ -89,7 +89,7 @@ void __fastcall ExecuteSkill(void *pSkill, void* edx, signed int SkillID, int pP
 
 			}
 		}
-		IPlayer.UpdateBuff(BuffNames::CDProtect + SkillID, BuffNames::BuffTime, (GetTickCount() + Compare4) - 140);
+		IPlayer.UpdateBuff(BuffNames::CDProtect + SkillID, BuffNames::BuffTime, (GetTickCount() + Compare4) - My_CDValue);
 	}
 
 	if (IPlayer.IsValid() && IPlayer.IsBuff(349))
@@ -169,6 +169,53 @@ void __fastcall ExecuteSkill(void *pSkill, void* edx, signed int SkillID, int pP
 		}
 	}
 
+
+	// Cure 3 // Cure 2
+	if (IPlayer.GetClass() == 1 && HealScale && (SkillID == 35 || SkillID == 22))
+	{
+		int nTargetID = 0; char bType = 0; void *pTarget = 0;
+		CPacket::Read((char*)pPacket, (char*)pPos, "bd", &bType, &nTargetID);
+
+		TargetFind myTarget(bType, 0, nTargetID);
+		pTarget = myTarget.getTarget();
+
+		if (pTarget) {
+			IChar ITarget(pTarget);
+
+			int HealAmount = 0;
+			int PlayerWisdom = CChar::GetWis((int)IPlayer.GetOffset());
+
+			if (ITarget.IsValid() && PlayerWisdom)
+			{
+				ITarget.IncreaseHp(PlayerWisdom * 3);
+			}
+		}
+	}
+
+	// Group Cure 2
+	if (IPlayer.GetClass() == 1 && HealScale && SkillID == 57)
+	{
+		int PlayerWisdom = CChar::GetWis((int)IPlayer.GetOffset());
+
+		if (IPlayer.IsParty()) {
+			void *Party = (void*)CParty::FindParty(IPlayer.GetPartyID());
+
+			if (Party)
+			{
+				for (int i = CParty::GetPlayerList(Party); i; i = CBaseList::Pop((void*)i))
+				{
+					int Members = *(DWORD*)((void*)i);
+					IChar IBuffed((void*)Members);
+
+					IBuffed.IncreaseHp(PlayerWisdom * 3);
+				}
+				CIOObject::Release(Party);
+			}
+		}
+		else
+			IPlayer.IncreaseHp(PlayerWisdom * 3);
+	}
+
 	if (IPlayer.IsValid() && !CChar::IsGState((int)IPlayer.GetOffset(), 512))
 	{
 		if (IPlayer.GetClass() == 1 && SkillID == 48 && FireStormVThief)
@@ -180,24 +227,13 @@ void __fastcall ExecuteSkill(void *pSkill, void* edx, signed int SkillID, int pP
 
 				if (Object.IsValid() && Object.GetOffset() != IPlayer.GetOffset()) {
 
-					if (!Object.IsBuff(BuffNames::StormCheck) && Object.GetClass() == 3)
-						Object.Buff(BuffNames::StormCheck, 30, 1);
-
-					if (Object.IsBuff(BuffNames::StormCheck))
-					{
-
-						if (Object.IsBuff(327))
-							Object.CancelBuff(327);
-
-						if (Object.IsBuff(329))
-							Object.CancelBuff(329);
-
+					if (Object.GetClass() == 3 && Object.GetType() == 0 && Object.IsBuff(329)) {
+						IPlayer.CancelBuff(329);
+						IPlayer.CancelBuff(40);
 					}
 				}
-
 				Around = CBaseList::Pop((void*)Around);
 			}
-
 		}
 
 		if (IPlayer.GetClass() == 1 && IPlayer.GetMap() == 21 && (SkillID == 43 || SkillID == 45 || SkillID == 48)) {
