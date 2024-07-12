@@ -4,9 +4,9 @@ void InitItemCleaner(std::string FileName, std::string message) {
 	std::string scan2 = "( " + message + " %d \"%[^\"]\")";
 
 	std::string filePath = "./Config/" + FileName + ".txt";
-	std::string cleanFilePath = "./Config/" + FileName+"Clean" + ".txt";
+	std::string cleanFilePath = "./Config/" + FileName + "Clean" + ".txt";
 
-	std::map<int, std::string> Names;
+	ConcurrentMap<int, std::string> Names;
 	FILE *filetx = fopen("./Config/Message.txt", "r");
 	if (filetx != NULL)
 	{
@@ -60,7 +60,7 @@ void InitItemCleaner(std::string FileName, std::string message) {
 			}
 		}
 
-		if(index)
+		if (index)
 			temp << ";" << (Names.count(index) ? Names.find(index)->second : "Unknown") << std::endl;
 
 		temp << line << std::endl;

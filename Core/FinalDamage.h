@@ -894,7 +894,10 @@ int __fastcall GetFinalDamage(void *Target, void *edx, int Player, int Damage, i
 		return 0;
 
 
-
+	//if (CheckDamage && IPlayer.GetType() == 0 || ITarget.GetType() == 0) {
+	//	CChar::WriteInSight(IPlayer.GetOffset(), 62, "ddddbd", IPlayer.GetID(), ITarget.GetID(), CheckDamage, 0, 0, 0);
+	//	CChar::WriteInSight(ITarget.GetOffset(), 62, "ddddbd", ITarget.GetID(), IPlayer.GetID(), CheckDamage, 0, 0, 0);
+	//}
 
 	return CheckDamage;
 }

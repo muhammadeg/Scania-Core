@@ -1997,7 +1997,7 @@ void __fastcall ModsSendItemInfo(void *player, void *_edx, char* Inventory)
 	//int PSize = *((DWORD *)Inventory + 2000) - 4;
 
 	if (!CBase::IsDeleted((int)player)) {
-		std::set<int> itemsF = std::set<int>();
+		ConcurrentSet<int> itemsF = ConcurrentSet<int>();
 		IChar IPlayer(player);
 		Interface<ITools> Tools;
 		int Class = *(DWORD*)((int)player + 460);

@@ -1,7 +1,7 @@
 void StartTournament();
 void EndTournament(int WinnerA);
 
-std::map<int, std::map<int, std::vector<DuelRegistre>>> duelGroups;
+std::map<int, ConcurrentMap<int, std::vector<DuelRegistre>>> duelGroups;
 struct curDFight
 {
 	int Time;
@@ -687,7 +687,7 @@ void DuelTournamentTick() {
 			if (WinSize > 1) {
 
 				duelLock.Enter();
-				std::map<int, std::vector<DuelRegistre>> duelGroupsx;
+				ConcurrentMap<int, std::vector<DuelRegistre>> duelGroupsx;
 				while (WinSize > 1) {
 					DuelRegistre PlayerA = DuelRegistre();
 					DuelRegistre PlayerB = DuelRegistre();

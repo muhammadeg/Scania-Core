@@ -56,7 +56,7 @@ int MaxLoginAttemps = 2;
 int IPEnable = 0;
 int SkillTestAction = 0, SkillR1 = 0, SkillR2 = 0, SkillTimer = 0, SkillIndex = 0;
 int testK = 0;
-std::set<int> disabledNPCIndices;
+ConcurrentSet<int> disabledNPCIndices;
 volatile LONG summonPets = 0;
 volatile LONG CreatePacket = 0;
 volatile LONG LastIP = 0;
@@ -381,7 +381,7 @@ int GetLevelDiff() {
 }
 time_t notices, timeReloading;
 
-std::set<std::string> modifiedFiles;
+ConcurrentSet<std::string> modifiedFiles;
 void readDir(std::string dirName)
 {
 	DIR *directory = opendir(dirName.c_str());
@@ -410,10 +410,9 @@ int GetTBMap() {
 	return TBMap;
 }
 
-
-
 void ReadConfig(bool command)
 {
+
 	if (command) {
 		modifiedFiles.clear();
 		readDir("./Configs");
@@ -1713,6 +1712,7 @@ void ReadConfig(bool command)
 		FILE *oItemShop = fopen("./Configs/ItemShop.txt", "r");
 		if (oItemShop != NULL)
 		{
+			ItemShopCheck.clear();
 			Interface<ITools> Tools;
 			char line[BUFSIZ]; int count = 0;
 			while (fgets(line, sizeof line, oItemShop) != NULL)
@@ -1991,6 +1991,7 @@ void ReadConfig(bool command)
 	if (!command || (command && modifiedFiles.count("./Configs/ExpTable.txt"))) {
 		FILE* fileExpTable = fopen("./Configs/ExpTable.txt", "r");
 		if (fileExpTable != NULL) {
+
 			char line[BUFSIZ];
 			int expTableIndex = 0;
 
@@ -2035,22 +2036,7 @@ void ReadConfig(bool command)
 			fclose(fileemote);
 		}
 	}
-	//if (!command || (command && modifiedfiles.count("./configs/emotesystem.txt"))) {
-	//	file *fileemote = fopen("./configs/emotesystem.txt", "r");
-	//	if (fileemote != null) {
-	//		emotesystem.clear();
-	//		char line[bufsiz];
-	//		while (fgets(line, sizeof line, fileemote) != null) {
-	//			int questflag = 0;
-	//			char particle[512];
 
-	//			if (sscanf(line, "(emote (questflag %d)(particle '%[a-z | a-z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &questflag, particle) == 2) {
-	//				emotesystem[questflag] = particle;
-	//			}
-	//		}
-	//		fclose(fileemote);
-	//	}
-	//}
 	if (!command || (command && modifiedFiles.count("./Configs/BuffSystem.txt"))) {
 		FILE *Sys = fopen("./Configs/BuffSystem.txt", "r");
 		if (Sys != NULL)
@@ -2058,6 +2044,7 @@ void ReadConfig(bool command)
 			BuffMakerCheck.clear();
 			BuffDisableCheck.clear();
 			BuffRemoveCheck.clear();
+			BuffCheck.clear();
 			char line[1000], LimitMsg[BUFSIZ], BuffDisableID[BUFSIZ], BuffRemoveID[BUFSIZ], BuffIcon[BUFSIZ], ExpALLOW[BUFSIZ], save[BUFSIZ], Egg[BUFSIZ], ItemN[BUFSIZ], mana_heal[BUFSIZ], hp_heal[BUFSIZ], Damage[BUFSIZ], altBuff[BUFSIZ];
 			while (fgets(line, sizeof line, Sys) != NULL)
 			{
@@ -2102,83 +2089,60 @@ void ReadConfig(bool command)
 				if (sscanf(line, "(Maker (Item_Name '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Index %d)(Permanently %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Stats-> PhyAtk %d MagAtk %d Hp %d Str %d Int %d Wis %d Agi %d OTP %d Eva %d Def %d Fire_Resistance %d Ice_Resistance %d Lightning_Resistance %d Absorb %d CritRate %d CritDamage %d MaxHp %d MaxMp %d Explosive_Blow %d)(auto_heal Active_HP'%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' amount %d Active_MP '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' amount %d)(Damage_monster-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Decrease %d)(BuffIcon-> Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Time %d Sys %d BuffID %d [Login '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'])(Exp-> Exp_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Exp %d Egg_Active '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]' Egg %d AltBuff %[0-9/,]))", &ItemN, &Maker, &Delete, &MinLevel, &MaxLevel, &LimitMsg, &MinAttack, &MaxAttack, &Hp, &Str, &Int, &Wis, &Agi, &OTP, &Eva, &Def, &Fire_Resistance, &Ice_Resistance, &Lightning_Resistance, &Absorb, &CritRate, &CritDamage, &MaxHp, &MaxMp, &EBRate, &hp_heal, &hp, &mana_heal, &mana, &Damage, &MD, &BuffIcon, &Time, &Sys_name, &BuffID, &save, &ExpALLOW, &amount, &Egg, &count, &altBuff) == 41)
 				{
 					BuffMaker buffer = BuffMaker();
-
-					buffer.Maker = Maker;
-					buffer.Delete = Delete;
-					buffer.MinLevel = MinLevel;
-					buffer.MaxLevel = MaxLevel;
-					buffer.LimitMsg = LimitMsg;
-					buffer.MinAttack = MinAttack;
-					buffer.MaxAttack = MaxAttack;
-					buffer.Hp = Hp;
-					buffer.Str = Str;
-					buffer.Int = Int;
-					buffer.Wis = Wis;
-					buffer.Agi = Agi;
-					buffer.OTP = OTP;
-					buffer.Eva = Eva;
-					buffer.Def = Def;
-					buffer.Fire_Resistance = Fire_Resistance;
-					buffer.Ice_Resistance = Ice_Resistance;
-					buffer.Lightning_Resistance = Lightning_Resistance;
-					buffer.Absorb = Absorb;
-					buffer.CritRate = CritRate;
-					buffer.CritDamage = CritDamage;
-					buffer.MaxHp = MaxHp;
-					buffer.MaxMp = MaxMp;
-					buffer.BuffIcon = BuffIcon;
-					buffer.Time = Time;
-					buffer.Sys_name = Sys_name;
-					buffer.BuffID = BuffID;
-					buffer.EBRate = EBRate;
-					buffer.save = save;
-					buffer.mana = mana;
-					buffer.hp = hp;
-					buffer.mana_heal = mana_heal;
-					buffer.hp_heal = hp_heal;
-					buffer.Damage = Damage;
-					buffer.MD = MD;
-					buffer.ExpALLOW = ExpALLOW;
-					buffer.amount = amount;
-					buffer.Egg = Egg;
+					buffer.Maker = Maker;					buffer.Delete = Delete;
+					buffer.MinLevel = MinLevel;					buffer.MaxLevel = MaxLevel;
+					buffer.LimitMsg = LimitMsg;					buffer.MinAttack = MinAttack;
+					buffer.MaxAttack = MaxAttack;					buffer.Hp = Hp;
+					buffer.Str = Str;					buffer.Int = Int;
+					buffer.Wis = Wis;					buffer.Agi = Agi;
+					buffer.OTP = OTP;					buffer.Eva = Eva;
+					buffer.Def = Def;					buffer.Fire_Resistance = Fire_Resistance;
+					buffer.Ice_Resistance = Ice_Resistance;					buffer.Lightning_Resistance = Lightning_Resistance;
+					buffer.Absorb = Absorb;					buffer.CritRate = CritRate;
+					buffer.CritDamage = CritDamage;					buffer.MaxHp = MaxHp;
+					buffer.MaxMp = MaxMp;					buffer.BuffIcon = BuffIcon;
+					buffer.Time = Time;					buffer.Sys_name = Sys_name;
+					buffer.BuffID = BuffID;					buffer.EBRate = EBRate;
+					buffer.save = save;					buffer.mana = mana;
+					buffer.hp = hp;					buffer.mana_heal = mana_heal;
+					buffer.hp_heal = hp_heal;					buffer.Damage = Damage;
+					buffer.MD = MD;					buffer.ExpALLOW = ExpALLOW;
+					buffer.amount = amount;					buffer.Egg = Egg;
 					buffer.count = count;
-
 					std::string alternativeBuffs = std::string((const char*)altBuff);
-
 					buffer.altBuff = explode(",", alternativeBuffs);
+
 					BuffMakerCheck[Maker] = buffer;
 				}
 
 				if (sscanf(line, "(NPC_Buff (Quest_Index %d)(Str %d)(Agi %d)(Hth %d)(Int %d)(Def %d)(Crit %d)(Speed %d)(Ref %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))",
 					&Quest_Index, &StrBuff, &AgiBuff, &HthBuff, &IntBuff, &DefBuff, &CritBuff, &SpeedBuff, &RefBuff, &MinLevel, &MaxLevel, &LimitMsg) == 12)
 				{
-					BuffCheck[Quest_Index].Quest_Index = Quest_Index;
-					BuffCheck[Quest_Index].MinLevel = MinLevel;
-					BuffCheck[Quest_Index].MaxLevel = MaxLevel;
-					BuffCheck[Quest_Index].LimitMsg = LimitMsg;
-					BuffCheck[Quest_Index].StrBuff = StrBuff;
-					BuffCheck[Quest_Index].AgiBuff = AgiBuff;
-					BuffCheck[Quest_Index].HthBuff = HthBuff;
-					BuffCheck[Quest_Index].IntBuff = IntBuff;
-					BuffCheck[Quest_Index].DefBuff = DefBuff;
-					BuffCheck[Quest_Index].CritBuff = CritBuff;
-					BuffCheck[Quest_Index].RefBuff = RefBuff;
-					BuffCheck[Quest_Index].SpeedBuff = SpeedBuff;
+					ConfigBuff buff = ConfigBuff();
+
+					buff.Quest_Index = Quest_Index;
+					buff.MinLevel = MinLevel;					buff.MaxLevel = MaxLevel;
+					buff.LimitMsg = LimitMsg;					buff.StrBuff = StrBuff;
+					buff.AgiBuff = AgiBuff;					buff.HthBuff = HthBuff;
+					buff.IntBuff = IntBuff;					buff.DefBuff = DefBuff;
+					buff.CritBuff = CritBuff;					buff.RefBuff = RefBuff;
+					buff.SpeedBuff = SpeedBuff;
+
+					BuffCheck[Quest_Index] = buff;
 				}
 
 				if (sscanf(line, "(NPC_Call (Quest_Index %d)(Level-> Min %d Max %d LimitMsg '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]')(Call-> LightningDefense %d IceDefense %d FireDefense %d OTPCall %d PhysicalAttack %d CallofDefense %d))"
 					, &CQuest_Index, &MinLevel, &MaxLevel, &LimitMsg, &LightningDefense, &IceDefense, &FireDefense, &OTPCall, &PhysicalAttack, &CallofDefense) == 10)
 				{
-					BuffCheck[CQuest_Index].CQuest_Index = CQuest_Index;
-					BuffCheck[CQuest_Index].MinLevel = MinLevel;
-					BuffCheck[CQuest_Index].MaxLevel = MaxLevel;
-					BuffCheck[CQuest_Index].LimitMsg = LimitMsg;
-					BuffCheck[CQuest_Index].LightningDefense = LightningDefense;
-					BuffCheck[CQuest_Index].IceDefense = IceDefense;
-					BuffCheck[CQuest_Index].FireDefense = FireDefense;
-					BuffCheck[CQuest_Index].OTPCall = OTPCall;
-					BuffCheck[CQuest_Index].PhysicalAttack = PhysicalAttack;
-					BuffCheck[CQuest_Index].CallofDefense = CallofDefense;
+					ConfigBuff buff = ConfigBuff();
+
+					buff.CQuest_Index = CQuest_Index;		buff.MinLevel = MinLevel;
+					buff.MaxLevel = MaxLevel;					buff.LimitMsg = LimitMsg;
+					buff.LightningDefense = LightningDefense; buff.IceDefense = IceDefense;
+					buff.FireDefense = FireDefense;			buff.OTPCall = OTPCall;
+					buff.PhysicalAttack = PhysicalAttack;		buff.CallofDefense = CallofDefense;
+
+					BuffCheck[CQuest_Index] = buff;
 				}
 			}
 			fclose(Sys);
@@ -2207,7 +2171,7 @@ void ReadConfig(bool command)
 		Interface<ITools> Tools;
 		RShopItems.clear();
 		RShopAmounts.clear();
-
+		RShopLevels.clear();
 		std::vector<std::string> shopiex = Tools->Explode(ShopRewardIndex, ",");
 		std::vector<std::string> amountiex = Tools->Explode(ShopRewardAmount, ",");
 		std::vector<std::string> levelx = Tools->Explode(ShopRewardLvl, ",");
@@ -2227,7 +2191,6 @@ void ReadConfig(bool command)
 		if (filepa != NULL)
 		{
 			SkillsDamage.clear();
-
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filepa) != NULL)
 			{
@@ -2292,6 +2255,7 @@ void ReadConfig(bool command)
 		if (file != NULL)
 		{
 			PetTime.clear();
+			MobPets.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, file) != NULL)
 			{
@@ -2360,6 +2324,7 @@ void ReadConfig(bool command)
 		if (initSwapF != NULL)
 		{
 			ItemExchanges.clear();
+			InitPetSwap.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, initSwapF) != NULL)
 			{
@@ -2444,6 +2409,7 @@ void ReadConfig(bool command)
 		FILE *filekop = fopen("./Configs/State.txt", "r");
 		if (filekop != NULL)
 		{
+			PlayerStats.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filekop) != NULL)
 			{
@@ -2463,18 +2429,22 @@ void ReadConfig(bool command)
 					}
 					for (int i = 0; i < 2; i++) {
 						if (specs[i]) {
-							PlayerStats[(Class * 1000) + (specs[i] * 1000)].Level = Level;
-							PlayerStats[(Level * 100) + (Class * 1000) + (specs[i] * 1000)].Agi += AGI;
-							PlayerStats[(Level * 100) + (Class * 1000) + (specs[i] * 1000)].OTP += OTP;
-							PlayerStats[(Level * 100) + (Class * 1000) + (specs[i] * 1000)].Eva += EVA;
-							PlayerStats[(Level * 100) + (Class * 1000) + (specs[i] * 1000)].HP += HP;
-							PlayerStats[(Level * 100) + (Class * 1000) + (specs[i] * 1000)].MP += MP;
-							PlayerStats[(Level * 100) + (Class * 1000) + (specs[i] * 1000)].Def += DEF;
-							PlayerStats[(Level * 100) + (Class * 1000) + (specs[i] * 1000)].Int += INT;
-							PlayerStats[(Level * 100) + (Class * 1000) + (specs[i] * 1000)].Wis += WIS;
-							PlayerStats[(Level * 100) + (Class * 1000) + (specs[i] * 1000)].ATK += ATK;
-							PlayerStats[(Level * 100) + (Class * 1000) + (specs[i] * 1000)].Absorb += ABSORB;
-							PlayerStats[(Level * 100) + (Class * 1000) + (specs[i] * 1000)].Str += STR;
+							OldStats playerStats = OldStats();
+
+							playerStats.Level = Level;
+							playerStats.Agi += AGI;
+							playerStats.OTP += OTP;
+							playerStats.Eva += EVA;
+							playerStats.HP += HP;
+							playerStats.MP += MP;
+							playerStats.Def += DEF;
+							playerStats.Int += INT;
+							playerStats.Wis += WIS;
+							playerStats.ATK += ATK;
+							playerStats.Absorb += ABSORB;
+							playerStats.Str += STR;
+
+							PlayerStats[(Level * 100) + (Class * 1000) + (specs[i] * 1000)] = playerStats;
 						}
 					}
 				}
@@ -2488,6 +2458,15 @@ void ReadConfig(bool command)
 		FILE *filewe = fopen("./Configs/ItemUse.txt", "r");
 		if (filewe != NULL)
 		{
+			NormalPetTalisman.clear();			MonsterPetTalisman.clear();
+			SkinTalisman.clear();					CostumeTalisman.clear();
+			ItemUsed.clear();						AuctionItemDisable.clear();
+			ItemTasty.clear();						ItemDisable.clear();
+			ItemHpDef.clear();					ItemNPC.clear();
+			ItemScrolls.clear();					ItemReward.clear();
+			ItemBuffSrv.clear();					ItemNPCSummoned.clear();
+			ItemExpansion.clear();				ItemWebsite.clear();
+			ItemQuest.clear();					ItemLimits.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filewe) != NULL)
 			{
@@ -2721,6 +2700,7 @@ void ReadConfig(bool command)
 		FILE *AntiKsFile = fopen("./Configs/AntiKs.txt", "r");
 		if (AntiKsFile != NULL)
 		{
+			AntiKs.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, AntiKsFile) != NULL)
 			{
@@ -2740,6 +2720,7 @@ void ReadConfig(bool command)
 		if (StarterFile != NULL)
 		{
 			StarterItems.clear();
+			Starters.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, StarterFile) != NULL)
 			{
@@ -2874,6 +2855,7 @@ void ReadConfig(bool command)
 		FILE *filte = fopen("./Configs/Rewards.txt", "r");
 		if (filte != NULL)
 		{
+			Rewards.clear();
 			Interface<ITools> ITools;
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filte) != NULL)
@@ -2950,7 +2932,10 @@ void ReadConfig(bool command)
 		FILE *filte = fopen("./Systems/PartyVsParty.txt", "r");
 		if (filte != NULL)
 		{
+			PTEnabled.clear();
 			PartyTimer.clear();
+			PTCommands.clear();
+			PartyRewards.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filte) != NULL)
 			{
@@ -3386,7 +3371,7 @@ void ReadConfig(bool command)
 				int Type, ID = 0;
 
 				if (sscanf(line, "(Blacklist (Type %d)(ID %d))", &Type, &ID) == 2) {
-					std::set<int> BL = SystemBlacklist.count(Type) ? SystemBlacklist.find(Type)->second : std::set<int>();
+					ConcurrentSet<int> BL = SystemBlacklist.count(Type) ? SystemBlacklist.find(Type)->second : ConcurrentSet<int>();
 					BL.insert(ID);
 					SystemBlacklist[Type] = BL;
 				}
@@ -3499,6 +3484,8 @@ void ReadConfig(bool command)
 		FILE *fileyt = fopen("./Configs/SinDisable.txt", "r");
 		if (fileyt != NULL)
 		{
+			SinDisable.clear();
+			PKDropEnable.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, fileyt) != NULL)
 			{
@@ -3526,6 +3513,7 @@ void ReadConfig(bool command)
 		FILE *filewytu = fopen("./Configs/UgOg.txt", "r");
 		if (filewytu != NULL)
 		{
+			ugog.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filewytu) != NULL)
 			{
@@ -3603,6 +3591,7 @@ void ReadConfig(bool command)
 		FILE *filewu = fopen("./Configs/Single.txt", "r");
 		if (filewu != NULL)
 		{
+			SingleBufferCheck.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filewu) != NULL)
 			{
@@ -3625,6 +3614,8 @@ void ReadConfig(bool command)
 		FILE *filetwu = fopen("./Configs/SoulPocket.txt", "r");
 		if (filetwu != NULL)
 		{
+			SoulPockets.clear();
+			SoulPocketEffect.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filetwu) != NULL)
 			{
@@ -3988,7 +3979,7 @@ void ReadConfig(bool command)
 		FILE *filehogw = fopen("./Configs/Hogwarts.txt", "r");
 		if (filehogw != NULL)
 		{
-			RGBAutoNotice.clear();
+			CustomHouse.clear();
 
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filehogw) != NULL)
@@ -4047,6 +4038,7 @@ void ReadConfig(bool command)
 		if (filewwu != NULL)
 		{
 			AFKMap.clear();
+			Macro.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filewwu) != NULL)
 			{
@@ -4188,6 +4180,8 @@ void ReadConfig(bool command)
 		FILE *filey = fopen("./Configs/SkillBook.txt", "r");
 		if (filey != NULL)
 		{
+			SkillBook.clear();
+			SkillDowngrade.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filey) != NULL)
 			{
@@ -4215,22 +4209,24 @@ void ReadConfig(bool command)
 		FILE *filez = fopen("./Configs/Cooldown.txt", "r");
 		if (filez != NULL)
 		{
+			CheckEggCooldownConfig.clear();
+			CheckCooldownConfig.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filez) != NULL)
 			{
 				int GetClass = 0, GetSkillID = 0, GetDelay = 0, GetCooldown = 0, GetSkillIDx = 0, GetDelayx = 0, GetCooldownx = 0;
 				double Spam = 0;
 
-				if (sscanf_s(line, "(skillSpam (delay %lf))", &Spam) == 1)
+				if (sscanf(line, "(skillSpam (delay %lf))", &Spam) == 1)
 					DelaySpam = Spam;
 
-				if (sscanf_s(line, "(eggskill (action %d)(delay %d)(cooldown %d))", &GetSkillIDx, &GetDelayx, &GetCooldownx) == 3)
+				if (sscanf(line, "(eggskill (action %d)(delay %d)(cooldown %d))", &GetSkillIDx, &GetDelayx, &GetCooldownx) == 3)
 				{
 					CheckEggCooldownConfig[GetSkillIDx].EggCooldownConfig = GetCooldownx;
 					CheckEggCooldownConfig[GetSkillIDx].EggDelayConfig = GetDelayx;
 				}
 
-				if (sscanf_s(line, "(skill (class %d)(action %d)(delay %d)(cooldown %d))", &GetClass, &GetSkillID, &GetDelay, &GetCooldown) == 4)
+				if (sscanf(line, "(skill (class %d)(action %d)(delay %d)(cooldown %d))", &GetClass, &GetSkillID, &GetDelay, &GetCooldown) == 4)
 				{
 					CheckCooldownConfig[GetSkillID + (GetClass * 100)].CooldownConfig = GetCooldown;
 					CheckCooldownConfig[GetSkillID + (GetClass * 100)].DelayConfig = GetDelay;
@@ -4244,6 +4240,8 @@ void ReadConfig(bool command)
 		FILE *filegw = fopen("./Configs/PvPSkillDamage.txt", "r");
 		if (filegw != NULL)
 		{
+			SkillsPVP.clear();
+			PVPConfigCalculations.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filegw) != NULL)
 			{
@@ -4338,6 +4336,9 @@ void ReadConfig(bool command)
 		FILE *filqew = fopen("./Configs/SkillDisable.txt", "r");
 		if (filqew != NULL)
 		{
+			DisableSkill.clear();
+			DisableSkillFile.clear();
+			RidingDisableSkill.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filqew) != NULL)
 			{
@@ -5130,7 +5131,6 @@ void ReadConfig(bool command)
 		FILE *filefsh = fopen("./Configs/Fishing.txt", "r");
 		if (filefsh != NULL)
 		{
-			FishingList.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filefsh) != NULL)
 			{
@@ -5507,7 +5507,6 @@ void ReadConfig(bool command)
 		FILE *filetm = fopen("./Configs/TimedItems.txt", "r");
 		if (filetm != NULL)
 		{
-			TimedItems.clear();
 			RentalItems.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filetm) != NULL)
@@ -6198,7 +6197,7 @@ void ReadConfig(bool command)
 				if (sscanf(line.c_str(), "(PollVote (Index %d) (Vote %d) (Hash '%[a-z | A-Z | 0-9/<>|.,~*;`:!^+%&=?_-£#$€]'))", &Index, &Vote, &Hash) == 3)
 				{
 					if (Polls.count(Index)) {
-						std::set<int> votes = PollVotes.count(Hash) ? PollVotes.findValue(Hash) : std::set<int>();
+						ConcurrentSet<int> votes = PollVotes.count(Hash) ? PollVotes.findValue(Hash) : ConcurrentSet<int>();
 						votes.insert(Index);
 						PollVotes.replaceInsert(Hash, votes);
 						int CurVotes = PollVoteAmount.count((Index * 1000) + Vote) ? PollVoteAmount.findValue((Index * 1000) + Vote) : 0;
@@ -6285,11 +6284,9 @@ void reloadBlock() {
 				}
 
 				PlayerBlockCheck.insert(uid);
-				//blockLock.Enter();
 				BlockList.insert(sha256(HWID));
 				BlockList.insert(sha256(MAC));
 				BlockList.insert(sha256(IP));
-				//blockLock.Leave();
 			}
 		}
 		fclose(filekx);

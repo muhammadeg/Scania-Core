@@ -1377,85 +1377,76 @@ char FakePlayerPacket[14];
 std::string thisServerName = "";
 Lock itemStat = Lock();
 Lock npcLock = Lock();
-Lock summonLock = Lock();
 Lock itemBet = Lock();
-Lock auctionLock = Lock();
 Lock auctionVecLock = Lock();
-Lock offsetLock = Lock();
-Lock playerQuestLock = Lock();
 Lock petLifeLock = Lock();
 Lock itemLockLock = Lock();
-Lock userLock = Lock();
 Lock duelLock = Lock();
 Lock duelShowLock = Lock();
-Lock monsterKillLock = Lock();
-Lock blockLock = Lock();
-Lock packetLock = Lock();
-Lock rewardLock = Lock();
-std::map<int, SkillRangeConfig> CheckRangeConfig;
+ConcurrentMap<int, SkillRangeConfig> CheckRangeConfig;
 
-std::map<int, AreaExpItem> AreasExpItems; // declare a vector to hold the areas
-std::map<int, int> HighGradeBof;
-std::map<int, int> HighGradeImperial;
+ConcurrentMap<int, AreaExpItem> AreasExpItems; // declare a vector to hold the areas
+ConcurrentMap<int, int> HighGradeBof;
+ConcurrentMap<int, int> HighGradeImperial;
 std::unordered_map<int, std::pair<std::string, int>> EmoteSystem;
 //std::unordered_map<int, std::string> EmoteSystem;
 std::unordered_map<int, MissionInfo> MissionQuests;
 std::unordered_map<int, MissionInfo> MAbandonCheck;
 
 std::unordered_map<int, MissionInfo> MissionQuestsItem;
-std::map<int, Certificates> AreaCert;
-std::map<int, Certificates> AreaCertMap;
-std::map<int, PerfectParty> My_PerfectParty;
+ConcurrentMap<int, Certificates> AreaCert;
+ConcurrentMap<int, Certificates> AreaCertMap;
+ConcurrentMap<int, PerfectParty> My_PerfectParty;
 std::unordered_map<int, int> playerPartySizes;
 
 std::unordered_map<int, DailyDuty> DutyQuest;
 
 std::vector<RewardMessage> PlayerRewardNotice;
-std::set<int> BoundAllowedItems;
-std::map<int, std::vector<MLMReward>> MLMRewards;
-std::map<int, Combinator> Combinators;
-std::map<int, Items> RentQuests;
-std::map<int, EmokCertConf> EmokCerts;
-std::map<int, int> PlayerVsPlayerDmg;
+ConcurrentSet<int> BoundAllowedItems;
+ConcurrentMap<int, std::vector<MLMReward>> MLMRewards;
+ConcurrentMap<int, Combinator> Combinators;
+ConcurrentMap<int, Items> RentQuests;
+ConcurrentMap<int, EmokCertConf> EmokCerts;
+ConcurrentMap<int, int> PlayerVsPlayerDmg;
 std::vector<SinSpawner> SinSpawners;
 
 ConcurrentMap<int, int> RestoredIIDs;
 ConcurrentMap<long, std::vector<GuildBuff>> ActiveGuildBuffs;
 ConcurrentMap<int, std::vector<GuildTopDonator>> GuildTopDonatorList;
-std::map<int, GuildBuffQuest> GuildBuffQuests;
+ConcurrentMap<int, GuildBuffQuest> GuildBuffQuests;
 RegistrationMap<long, int> GuildBuffItems;
 std::vector<int> GuildBuffs;
 RegistrationMap<int, int> GuildRaidItems;
 ConcurrentMap<int, SVParticipant> SVParticipantsRed;
 ConcurrentMap<int, SVParticipant> SVParticipantsBlue;
 ConcurrentMap<int, int> ChannelItems;
-std::map<int, GuildRaidLevel> GuildRaidLevels;
-std::map<int, NecklaceBuff> NecklaceBuffs;
-std::map<int, BeltBuff> BeltBuffs;
-std::map<int, ConfigBuff> BuffCheck;
-std::map<int, BuffMaker> BuffMakerCheck;
-std::map<int, BuffDisable> BuffDisableCheck;
-std::map<int, BuffDisable> BuffRemoveCheck;
-std::map<std::string, ShoutData> CustomShouts;
-std::map<std::string, CommandLink> CustomCommands;
-std::map<std::string, ShoutData> CustomHouse;
+ConcurrentMap<int, GuildRaidLevel> GuildRaidLevels;
+ConcurrentMap<int, NecklaceBuff> NecklaceBuffs;
+ConcurrentMap<int, BeltBuff> BeltBuffs;
+ConcurrentMap<int, ConfigBuff> BuffCheck;
+ConcurrentMap<int, BuffMaker> BuffMakerCheck;
+ConcurrentMap<int, BuffDisable> BuffDisableCheck;
+ConcurrentMap<int, BuffDisable> BuffRemoveCheck;
+ConcurrentMap<std::string, ShoutData> CustomShouts;
+ConcurrentMap<std::string, CommandLink> CustomCommands;
+ConcurrentMap<std::string, ShoutData> CustomHouse;
 std::unordered_map<int, int> PlayerMissionProgress;
 std::unordered_map<char, int> npcMap;
-std::map<int, ItemExchange> ItemExchanges;
-std::map<int, SMultiple> EXPMultipliers;
+ConcurrentMap<int, ItemExchange> ItemExchanges;
+ConcurrentMap<int, SMultiple> EXPMultipliers;
 	
-std::map<int, Reborn> Reborns;
-std::map<int, RbPenalty> RebornsPenalty;
-std::map<int, RbPenalty> NonRebornsPenalty;
-std::map<int, RbGear> RebornGear;
-std::map<int, RbQuest> RebornsMaps;
-std::map<int, int> FatalDmg;
-std::map<int, MSkill> MSkills;
-std::map<int, std::vector<int>> MonsterSkills;
-std::map<int, int> CostumeEffects;
-std::map<int, int> CostWeaponsEffects;
+ConcurrentMap<int, Reborn> Reborns;
+ConcurrentMap<int, RbPenalty> RebornsPenalty;
+ConcurrentMap<int, RbPenalty> NonRebornsPenalty;
+ConcurrentMap<int, RbGear> RebornGear;
+ConcurrentMap<int, RbQuest> RebornsMaps;
+ConcurrentMap<int, int> FatalDmg;
+ConcurrentMap<int, MSkill> MSkills;
+ConcurrentMap<int, std::vector<int>> MonsterSkills;
+ConcurrentMap<int, int> CostumeEffects;
+ConcurrentMap<int, int> CostWeaponsEffects;
 ConcurrentMap<int, ConcurrentSet<int>> EventMapsRegistration;
-std::map<int, eventMap> EventMapsQuests;
+ConcurrentMap<int, eventMap> EventMapsQuests;
 ConcurrentMap<int, int> LoginAttempts;
 ConcurrentSet<int> EventMapsQuestsOn;
 ConcurrentSet<int> EventMaps;
@@ -1465,20 +1456,20 @@ ConcurrentMap<int, int> InstancesCD;
 ConcurrentMap<int, eventMapMonster> EventMapsMobsOn;
 ConcurrentMap<int, int> ObjectChannels;
 std::vector<Point> JailCoords;
-std::map<int, Reward> Rewards;
-std::map<int, SBoxes> Boxes;
-std::map<int, F10EXP> F10EXPs;
-std::map<int, F10EXP> MautEXPs;
-std::map<int, F10EXP> BossEXPs;
-std::map<int, BossEXPMsg> BossEXPMsgs;
+ConcurrentMap<int, Reward> Rewards;
+ConcurrentMap<int, SBoxes> Boxes;
+ConcurrentMap<int, F10EXP> F10EXPs;
+ConcurrentMap<int, F10EXP> MautEXPs;
+ConcurrentMap<int, F10EXP> BossEXPs;
+ConcurrentMap<int, BossEXPMsg> BossEXPMsgs;
 ConcurrentMap<int, SendCreate> SendCreatePlayer;
 RegistrationMap<int,int> SummonQuestRegistration;
 RegistrationMap<int, int> EventQuests;
 SystemRegistration<int> Lottery;
 SystemRegistration<int> XLottery;
 ConcurrentMap<int, ConcurrentMap<long int, int>> BuffList;
-std::map<int, int> MobPets;
-std::set<int> PKIgnoreItem;
+ConcurrentMap<int, int> MobPets;
+ConcurrentSet<int> PKIgnoreItem;
 ConcurrentMap<int, std::vector<DuelRegistre>> DuelRegistrationList;
 ConcurrentMap<int, std::string> DuelNames;
 std::vector<int> DuelUnbuff;
@@ -1487,201 +1478,200 @@ ConcurrentMap<int, FakePlayers_> FakePlayers;
 ConcurrentMap<int, FakeItems_> FakeItems;
 ConcurrentMap<std::string, int> FakeNames;
 ConcurrentSet<int> DailyLoginLimits;
-std::map<int, SecretBlackSmithSkill>SecretBlackSmith;
-std::map<int, SwapMineral>MakeMinerals;
-std::map<int, SwapMineral>MakeChange;
-std::map<int, MakeItem_>MakeItem;
-//std::map<int, std::map<int,int>>DailyQuestMonsterKilled;
-std::set<int> InvCheck;
-std::set<int> PKDropEnable;
-std::map<int, SoulPocketConfig> SoulPockets;
-std::map<int, MiningItem> MiningItems;
-std::map<int, PartyReward> PartyRewards;
-std::map<int, PartyReg> PTEnabled;
-std::map<std::string, PartyReg> PTCommands;
-std::map<std::string, std::vector<PartyReg>> PartyTimer;
+ConcurrentMap<int, SecretBlackSmithSkill>SecretBlackSmith;
+ConcurrentMap<int, SwapMineral>MakeMinerals;
+ConcurrentMap<int, SwapMineral>MakeChange;
+ConcurrentMap<int, MakeItem_>MakeItem;
+//ConcurrentMap<int, ConcurrentMap<int,int>>DailyQuestMonsterKilled;
+ConcurrentSet<int> InvCheck;
+ConcurrentSet<int> PKDropEnable;
+ConcurrentMap<int, SoulPocketConfig> SoulPockets;
+ConcurrentMap<int, MiningItem> MiningItems;
+ConcurrentMap<int, PartyReward> PartyRewards;
+ConcurrentMap<int, PartyReg> PTEnabled;
+ConcurrentMap<std::string, PartyReg> PTCommands;
+ConcurrentMap<std::string, std::vector<PartyReg>> PartyTimer;
 std::vector<PartyReg> PartyRegistrations;
-std::map<int, PartyBattle> CurPartys;
-std::set<int> MQuest;
-std::map<int, QuestEx> QuestExs;
-std::map<int, std::string> EventTimer;
-std::map<int, std::string> EventMapsTimer;
-std::map<int, std::string> EndTimer;
-std::map<int, MSummonConfig> SummonQuest;
+ConcurrentMap<int, PartyBattle> CurPartys;
+ConcurrentSet<int> MQuest;
+ConcurrentMap<int, QuestEx> QuestExs;
+ConcurrentMap<int, std::string> EventTimer;
+ConcurrentMap<int, std::string> EventMapsTimer;
+ConcurrentMap<int, std::string> EndTimer;
+ConcurrentMap<int, MSummonConfig> SummonQuest;
 ConcurrentMap<int, MSummonedConfig> SummonedQuest;
-std::map<int, ZProtection> ugog;
+ConcurrentMap<int, ZProtection> ugog;
 ConcurrentSet<std::string> DisablePM;
 ConcurrentSet<std::string> DisableEXP;
 
-std::set<int> ugCheck;
-std::set<int> ogCheck;
-std::map<int, CreateMonsterPet> MonsterPet;
-std::map<int, int> ItemQuest;
-std::map<int, IWebs> ItemWebsite;
-std::map<int, int> ItemReward;
-std::map<int, std::string> QuestWebsite;
-std::map<std::string, std::string> Tracker;
-std::map<int, int> NewItemType;
-std::map<int,Winners> FinalsWinners;
-std::map<int, std::vector<Items>> StarterItems;
-std::map<int, StarterClass> Starters;
-std::map<int, InitSwap> InitPetSwap;
-std::map<int, std::vector<int>> QuestRentItem;
+ConcurrentSet<int> ugCheck;
+ConcurrentSet<int> ogCheck;
+ConcurrentMap<int, CreateMonsterPet> MonsterPet;
+ConcurrentMap<int, int> ItemQuest;
+ConcurrentMap<int, IWebs> ItemWebsite;
+ConcurrentMap<int, int> ItemReward;
+ConcurrentMap<int, std::string> QuestWebsite;
+ConcurrentMap<std::string, std::string> Tracker;
+ConcurrentMap<int, int> NewItemType;
+ConcurrentMap<int,Winners> FinalsWinners;
+ConcurrentMap<int, std::vector<Items>> StarterItems;
+ConcurrentMap<int, StarterClass> Starters;
+ConcurrentMap<int, InitSwap> InitPetSwap;
+ConcurrentMap<int, std::vector<int>> QuestRentItem;
 ConcurrentMap<int,PlayerFight> CupRegistration;
 ConcurrentMap<int, Vote> PlayerVote;
 ConcurrentMap<uint32_t, int> VoteList;
-std::map<int, std::vector<RectLevel>> RectArea;
-std::map<int, std::vector<AFKCheck>> AFKMap;
-std::map<int, int> EnchantCount;
+ConcurrentMap<int, std::vector<RectLevel>> RectArea;
+ConcurrentMap<int, std::vector<AFKCheck>> AFKMap;
+ConcurrentMap<int, int> EnchantCount;
 std::set<int> Macro;
-std::map<int, MasterEnchanting> MasterEnchant;
-std::map<int, RidingCollection> RidingCollections;
-std::map<int, SummonGuard> SGuard;
-std::map<int, int> RidingCollectionIndex;
-std::map<int, ItemTime> TimedItems;
-std::map<int, RentalExtend> RentalItems;
-std::map<int, ItemBuff> BuffedItems;
-std::map<int, ItemMss> MSS;
-std::map<int, int> PacketSpamConf;
+ConcurrentMap<int, MasterEnchanting> MasterEnchant;
+ConcurrentMap<int, RidingCollection> RidingCollections;
+ConcurrentMap<int, SummonGuard> SGuard;
+ConcurrentMap<int, int> RidingCollectionIndex;
+ConcurrentMap<int, ItemTime> TimedItems;
+ConcurrentMap<int, RentalExtend> RentalItems;
+ConcurrentMap<int, ItemBuff> BuffedItems;
+ConcurrentMap<int, ItemMss> MSS;
+ConcurrentMap<int, int> PacketSpamConf;
 ConcurrentMap<int, int> EmblemDropped;
 ConcurrentMap<int, int> PacketSpam;
 ConcurrentMap<int,PacketCheck> PacketDelay;
-std::map<int,WCGroups> CupOfKal;
-std::map<int,Fights> FirstFight;
-std::map<int,Fights> SecondFight;
-std::map<int, Fights> ThirdFight;
+ConcurrentMap<int,WCGroups> CupOfKal;
+ConcurrentMap<int,Fights> FirstFight;
+ConcurrentMap<int,Fights> SecondFight;
+ConcurrentMap<int, Fights> ThirdFight;
 std::map<int, std::vector<BetTrade>> BetItems;
 ConcurrentSet<std::string> RewardLimit;
 ConcurrentMap<uint32_t, int> MiningLimit;
 ConcurrentMap<uint32_t, int> FishingLimit;
 ConcurrentMap<uint32_t, int> ShopLimit;
-std::map<int,std::vector<ChanceItem>> FishingList;
+ConcurrentMap<int,std::vector<ChanceItem>> FishingList;
 std::vector<ChanceItem> F10Items;
 std::vector<ChanceItem> MautItem;
 std::vector<ChanceItem> BossExpItem;
 std::vector<ChanceItem> MonstersItem;
 
 SystemRegistration<int> RaidSystem;
-std::map<int, OldStats> PlayerStats;
-std::map<int, int> NPCIDs;
-std::map<int, Poll> Polls;
-std::map<int, Poll> PollTimer;
-ConcurrentMap<std::string, std::set<int>> PollVotes;
+ConcurrentMap<int, OldStats> PlayerStats;
+ConcurrentMap<int, int> NPCIDs;
+ConcurrentMap<int, Poll> Polls;
+ConcurrentMap<int, Poll> PollTimer;
+ConcurrentMap<std::string, ConcurrentSet<int>> PollVotes;
 ConcurrentMap<int, int> PollVoteAmount;
-std::map<int,SingleConfigBuffer> SingleBufferCheck;
-std::set<int> SinDisable;
-std::map<int, std::set<int>> DisableSkill;
+ConcurrentMap<int,SingleConfigBuffer> SingleBufferCheck;
+ConcurrentSet<int> SinDisable;
+ConcurrentMap<int, ConcurrentSet<int>> DisableSkill;
 std::vector<int> MD5FileChecker;
-std::map<int, std::set<int>> DisableSkillFile;
-std::set<int> RidingDisableSkill;
-std::map<int, CItemUsed> ItemUsed;
-std::map<int, CItemTasty> ItemTasty;
-std::map<int, CItemTasty> ItemHpDef;
-std::map<int, CItemTasty> ItemScrolls;
-std::map<int, CItemTasty> ItemExpansion;
-std::map<int, ItemsEffects> EquipEffects;
-std::map<int, PVEWeaponsS> PVEWeapon;
-std::map<int, CItemTasty> ItemBuffSrv;
+ConcurrentMap<int, ConcurrentSet<int>> DisableSkillFile;
+ConcurrentSet<int> RidingDisableSkill;
+ConcurrentMap<int, CItemUsed> ItemUsed;
+ConcurrentMap<int, CItemTasty> ItemTasty;
+ConcurrentMap<int, CItemTasty> ItemHpDef;
+ConcurrentMap<int, CItemTasty> ItemScrolls;
+ConcurrentMap<int, CItemTasty> ItemExpansion;
+ConcurrentMap<int, ItemsEffects> EquipEffects;
+ConcurrentMap<int, PVEWeaponsS> PVEWeapon;
+ConcurrentMap<int, CItemTasty> ItemBuffSrv;
 
-std::map<int, ItemLimit> ItemLimits;
-std::map<int, ItemQuestRepeat> ItemQuestRepeats;
+ConcurrentMap<int, ItemLimit> ItemLimits;
+ConcurrentMap<int, ItemQuestRepeat> ItemQuestRepeats;
 ConcurrentMap<int, ItemLimitConf> ItemLimitUsage;
-std::map<int, int> ItemNPC;
+ConcurrentMap<int, int> ItemNPC;
 std::map<int, SummonNPC> ItemNPCSummoned;
 std::map<int, SummonNPC> NPCSummoned;
-std::map<int, CAutoNotice> AutoNotices;
-std::map<int, CMonstersBuff> MonstersBuff;
-std::map<int, CMonstersBuff> RMonstersBuff;
-std::map<int, CQuestsNotice> QuestsNotice;
-std::map<int, CQuestsNotice> cQuestsNotice;
-std::map<int, pRewards> F10EXPRewards;
+ConcurrentMap<int, CAutoNotice> AutoNotices;
+ConcurrentMap<int, CMonstersBuff> MonstersBuff;
+ConcurrentMap<int, CMonstersBuff> RMonstersBuff;
+ConcurrentMap<int, CQuestsNotice> QuestsNotice;
+ConcurrentMap<int, CQuestsNotice> cQuestsNotice;
 
-std::map<int, CMonstersRewards> MonstersRewards;
+ConcurrentMap<int, CMonstersRewards> MonstersRewards;
 
-std::set<int> QuestDisable;
-std::set<int> QBattleEnable;
-std::map<int, QuestTime> TimedQuest;
-std::map<int, AreaQuest> AreaQuests;
-std::set<int> TimedMaps;
+ConcurrentSet<int> QuestDisable;
+ConcurrentSet<int> QBattleEnable;
+ConcurrentMap<int, QuestTime> TimedQuest;
+ConcurrentMap<int, AreaQuest> AreaQuests;
+ConcurrentSet<int> TimedMaps;
 ConcurrentMap<long, QuestTime> PlayerTimedQuest;
 ConcurrentMap<long int, AuctionItem> AuctionItems;
 std::vector<AuctionItem> AuctionVec;
-std::map<int,Area> MapLvl;
-std::map<int, ShoutsMaps> ShoutMap;
+ConcurrentMap<int,Area> MapLvl;
+ConcurrentMap<int, ShoutsMaps> ShoutMap;
 
-std::set<int> PacketBlock;
-std::map<int,int> MD5Checks;
+ConcurrentSet<int> PacketBlock;
+ConcurrentMap<int,int> MD5Checks;
 std::vector<MD5Type> MD5File;
-std::map<int, QuestLevel> QuestLevels;
-std::map<int, MD5Type> MD5MapsKCM;
-std::map<int, MD5Type> MD5MapsOPL;
-std::map<int, SkillDamage> SkillsDamage;
+ConcurrentMap<int, QuestLevel> QuestLevels;
+ConcurrentMap<int, MD5Type> MD5MapsKCM;
+ConcurrentMap<int, MD5Type> MD5MapsOPL;
+ConcurrentMap<int, SkillDamage> SkillsDamage;
 ConcurrentMap<int, UserInfo> User;
 ConcurrentMap<int, int> SocketInfos;
 ConcurrentMap<int, int> SocketPacket;
 ConcurrentMap<int, PacketEncryption> SocketNewInfos;
 ConcurrentSet<uint32_t> BlockList;
-std::set<int> SkillsPVP;
-std::map<int,int> WCDamage;
-std::map<int,WCRew> WCRewards;
-std::map<int, AreaMax> MapMax;
-std::set<int> UnGap;
-std::set<int> UnAggro;
-std::set<int> UnBreak;
+ConcurrentSet<int> SkillsPVP;
+ConcurrentMap<int,int> WCDamage;
+ConcurrentMap<int,WCRew> WCRewards;
+ConcurrentMap<int, AreaMax> MapMax;
+ConcurrentSet<int> UnGap;
+ConcurrentSet<int> UnAggro;
+ConcurrentSet<int> UnBreak;
 std::vector<int> LawlessEXP;
-std::set<int> UnChannel;
-std::set<int> ChannelMaps;
-std::set<int> UnReload;
-std::set<int> AntiKs;
-std::set<std::string> Filter;
-std::map<int, Restriction> Restrictions;
-std::map<int, Restriction> HWIDRestrictions;
-std::map<int, HaninRate> HaninLow;
-std::map<int, HaninRate> HaninMiddle;
-std::map<int, HaninRate> HaninHigh;
-std::map<int,CheckCalculations> PVPConfigCalculations;
-std::set<int> ItemDisable;
-std::set<int> AuctionItemDisable;
+ConcurrentSet<int> UnChannel;
+ConcurrentSet<int> ChannelMaps;
+ConcurrentSet<int> UnReload;
+ConcurrentSet<int> AntiKs;
+ConcurrentSet<std::string> Filter;
+ConcurrentMap<int, Restriction> Restrictions;
+ConcurrentMap<int, Restriction> HWIDRestrictions;
+ConcurrentMap<int, HaninRate> HaninLow;
+ConcurrentMap<int, HaninRate> HaninMiddle;
+ConcurrentMap<int, HaninRate> HaninHigh;
+ConcurrentMap<int,CheckCalculations> PVPConfigCalculations;
+ConcurrentSet<int> ItemDisable;
+ConcurrentSet<int> AuctionItemDisable;
 ConcurrentMap<int,int> PlayerOffset;
-std::map<__int16,ConfigItemShop> ItemShopCheck;
-//std::map<__int64,ConfigPlayerQuest> PlayerQuest;
-std::map<int, ConfigDailyQuest> DailyQuest;
-std::map<int, std::vector<MonsterDailyQuest>> MonsterQuests;
-std::map<int, std::vector<MonsterDailyDuty>> DutyMonsterQuests;
+ConcurrentMap<__int16,ConfigItemShop> ItemShopCheck;
+//ConcurrentMap<__int64,ConfigPlayerQuest> PlayerQuest;
+ConcurrentMap<int, ConfigDailyQuest> DailyQuest;
+ConcurrentMap<int, std::vector<MonsterDailyQuest>> MonsterQuests;
+ConcurrentMap<int, std::vector<MonsterDailyDuty>> DutyMonsterQuests;
 
-std::map<int, std::vector<ConfigLevelReward>> LevelReward;
-std::map<int, std::vector<ConfigLevelReward>> BattlepassReward;
-std::map<int, std::vector<ConfigLevelReward>> PremiumPass;
+ConcurrentMap<int, std::vector<ConfigLevelReward>> LevelReward;
+ConcurrentMap<int, std::vector<ConfigLevelReward>> BattlepassReward;
+ConcurrentMap<int, std::vector<ConfigLevelReward>> PremiumPass;
 ConcurrentMap<int,ConfigMining> CheckMining;
 std::map<int, int> GetItemStat;
 ConcurrentSet<int> ItemStatDisable;
 ConcurrentSet<int> ItemTimerDisable;
-std::map<int,ConfigBuffer> BufferCheck;
+ConcurrentMap<int,ConfigBuffer> BufferCheck;
 std::set<int> summonedGuardians;
-std::map<int,ConfigRentArmor> RentArmor;
-std::map<int, ConfigRentWeapon> RentWeapon;
-std::map<int,CheckSkillBook> SkillBook;
-std::map<int, CheckSkillBook> SkillDowngrade;
-std::map<int,CheckConfigCooldown> CheckCooldownConfig;
-std::map<int, JobSystem> Cooldowns;
-std::map<int,CheckConfigEggCooldown> CheckEggCooldownConfig;
-std::map<int,CheckCalculations> ConfigCalculations;
-std::map<int,PimpConfig> CheckPimp;
-std::map<int, std::vector<CheckSummonTimer>> SummonTimer;
-std::map<std::string, std::vector<RGBNotice>> RGBAutoNotice;
-std::map<std::string, int> CustomNotices;
-std::map<std::string, int> AutoNoticesRGB;
+ConcurrentMap<int,ConfigRentArmor> RentArmor;
+ConcurrentMap<int, ConfigRentWeapon> RentWeapon;
+ConcurrentMap<int,CheckSkillBook> SkillBook;
+ConcurrentMap<int, CheckSkillBook> SkillDowngrade;
+ConcurrentMap<int,CheckConfigCooldown> CheckCooldownConfig;
+ConcurrentMap<int, JobSystem> Cooldowns;
+ConcurrentMap<int,CheckConfigEggCooldown> CheckEggCooldownConfig;
+ConcurrentMap<int,CheckCalculations> ConfigCalculations;
+ConcurrentMap<int,PimpConfig> CheckPimp;
+ConcurrentMap<int, std::vector<CheckSummonTimer>> SummonTimer;
+ConcurrentMap<std::string, std::vector<RGBNotice>> RGBAutoNotice;
+ConcurrentMap<std::string, int> CustomNotices;
+ConcurrentMap<std::string, int> AutoNoticesRGB;
 
 ConcurrentMap<int, int> PetLifeCheck;
 ConcurrentMap<int, int> PetLifeExtend;
-std::set<int> SocketCheck;
+ConcurrentSet<int> SocketCheck;
 
 ConcurrentMap<std::string,std::string> Read2ndPwd;
-std::set<int> UnBlob;
-std::map<int, std::set<int>> StoreItems;
-std::set<int> MixConfigPrefix;
-std::map<int, int> MixConfigInfo;
-std::map<int,std::string> MixConfigMsg;
+ConcurrentSet<int> UnBlob;
+ConcurrentMap<int, ConcurrentSet<int>> StoreItems;
+ConcurrentSet<int> MixConfigPrefix;
+ConcurrentMap<int, int> MixConfigInfo;
+ConcurrentMap<int,std::string> MixConfigMsg;
 SystemRegistration<int> BattlefieldRegistration;
 SystemRegistration<std::string> BattlefieldHWID;
 SystemRegistration<std::string> LastManHWID;
@@ -1691,54 +1681,54 @@ SystemRegistration<int> SVGuild1;
 SystemRegistration<int> SVGuild2;
 SystemRegistration<int> TBRegistration;
 ConcurrentSet<int> ScenarioRegistration;
-std::set<int> SummonTrack;
+ConcurrentSet<int> SummonTrack;
 std::vector<DKInfo> ScenarioGuild;
-std::map<int, std::vector<AutoNoticeConf>> AutoCenterNotices;
+ConcurrentMap<int, std::vector<AutoNoticeConf>> AutoCenterNotices;
 std::vector<int> RShopItems;
 std::vector<int> RShopAmounts;
 std::vector<int> RShopLevels;
 
-std::map<int, double> LevelGap;
-std::map<int, TrainingLvl> TrainingEXP;
-std::map<int, ChanceItem> TrainingDrops;
-std::map<int,int> HonorShop;
-std::map<int, int> HonorIndex;
-std::map<int, std::set<int>> SystemBlacklist;
+ConcurrentMap<int, double> LevelGap;
+ConcurrentMap<int, TrainingLvl> TrainingEXP;
+ConcurrentMap<int, ChanceItem> TrainingDrops;
+ConcurrentMap<int,int> HonorShop;
+ConcurrentMap<int, int> HonorIndex;
+ConcurrentMap<int, ConcurrentSet<int>> SystemBlacklist;
 SystemRegistration<int> F10Registration;
 SystemRegistration<int> MautRegistration;
 SystemRegistration<int> BossEXPRegistration;
-std::map<int,int> WeaponReplace;
+ConcurrentMap<int,int> WeaponReplace;
 SystemRegistration<int> CaptureRegistration;
-std::map<int,int> WeaponReplaceIndex;
+ConcurrentMap<int,int> WeaponReplaceIndex;
 std::unordered_map<int, std::string> WeaponReplaceMsg;
 
 //std::vector<int> HighestDamage;
-std::set<int> WeaponReplacePrefix;
-std::set<int> DisablePrefix;
-std::map<int, int> ArmorPimpConfig;
-std::map<int, int> PVEDamagePimp;
-std::map<int, int> PVPDamagePimp;
+ConcurrentSet<int> WeaponReplacePrefix;
+ConcurrentSet<int> DisablePrefix;
+ConcurrentMap<int, int> ArmorPimpConfig;
+ConcurrentMap<int, int> PVEDamagePimp;
+ConcurrentMap<int, int> PVPDamagePimp;
 std::map<int,std::string> ItemLockCheck;
-std::map<int, ConfigPetTime> PetTime;
-std::map<int, ConfigTimeTalisman> NormalPetTalisman;
-std::map<int, ConfigTimeTalisman> MonsterPetTalisman;
-std::map<int, ConfigTimeTalisman> CostumeTalisman;
-std::map<int, ConfigTimeTalisman> SkinTalisman;
+ConcurrentMap<int, ConfigPetTime> PetTime;
+ConcurrentMap<int, ConfigTimeTalisman> NormalPetTalisman;
+ConcurrentMap<int, ConfigTimeTalisman> MonsterPetTalisman;
+ConcurrentMap<int, ConfigTimeTalisman> CostumeTalisman;
+ConcurrentMap<int, ConfigTimeTalisman> SkinTalisman;
 
-std::map<int, int> SoulPocketEffect;
-std::map<int, SuitStat> SuitStats;
-std::map<int, SkillLearn> SkillChecks;
-std::map<int, DailyReward> DailyLogins;
-std::map<int, TaskQ> TaskQuests;
+ConcurrentMap<int, int> SoulPocketEffect;
+ConcurrentMap<int, SuitStat> SuitStats;
+ConcurrentMap<int, SkillLearn> SkillChecks;
+ConcurrentMap<int, DailyReward> DailyLogins;
+ConcurrentMap<int, TaskQ> TaskQuests;
 
 ConcurrentSet<int> PlayerBlockCheck;
 std::vector<int> ProtectLeaderList;
 ConcurrentMap<int,std::string> ProtectLeaderName;
-std::set<int> ProtectBlackList;
-std::set<int> DestructingBlackList;
-std::set<int> SVBlackList;
+ConcurrentSet<int> ProtectBlackList;
+ConcurrentSet<int> DestructingBlackList;
+ConcurrentSet<int> SVBlackList;
 SystemRegistration<int> LastManRegistration;
-//std::map<int, std::string> FriendsName;
+//ConcurrentMap<int, std::string> FriendsName;
 
 
 
@@ -1846,190 +1836,7 @@ SystemRegistration<int> LastManRegistration;
 #include "Storage.h"
 #include "ItemFixes.h"
 #include "Menu.h"
-//void LogModuleList(std::ostream& logFile) {
-//	HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, GetCurrentProcessId());
-//	if (hSnap == INVALID_HANDLE_VALUE) {
-//		// Handle error (you can log it or handle it as needed)
-//		logFile << "Error creating module snapshot: " << GetLastError() << std::endl;
-//		return;
-//	}
-//
-//	MODULEENTRY32 me32;
-//	me32.dwSize = sizeof(MODULEENTRY32);
-//
-//	if (Module32First(hSnap, &me32)) {
-//		do {
-//			logFile << me32.szExePath << ", loaded at 0x" << std::hex << (DWORD_PTR)me32.modBaseAddr << std::dec << std::endl;
-//		} while (Module32Next(hSnap, &me32));
-//	}
-//	else {
-//		// Handle error (you can log it or handle it as needed)
-//		logFile << "Error enumerating modules: " << GetLastError() << std::endl;
-//	}
-//
-//	CloseHandle(hSnap);
-//}
-//
-//void LogCallStack(std::ostream& logFile, CONTEXT* context) {
-//	HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
-//	if (hSnap == INVALID_HANDLE_VALUE) {
-//		// Handle error (you can log it or handle it as needed)
-//		logFile << "Error creating thread snapshot: " << GetLastError() << std::endl;
-//		return;
-//	}
-//
-//	THREADENTRY32 te32;
-//	te32.dwSize = sizeof(THREADENTRY32);
-//
-//	if (Thread32First(hSnap, &te32)) {
-//		do {
-//			if (te32.th32OwnerProcessID == GetCurrentProcessId()) {
-//				HANDLE hThread = OpenThread(THREAD_ALL_ACCESS, FALSE, te32.th32ThreadID);
-//				if (hThread != NULL) {
-//					CONTEXT threadContext;
-//					threadContext.ContextFlags = CONTEXT_FULL;
-//					if (GetThreadContext(hThread, &threadContext)) {
-//						// Log the call stack information
-//						STACKFRAME64 stackFrame;
-//						memset(&stackFrame, 0, sizeof(STACKFRAME64));
-//
-//						stackFrame.AddrPC.Offset = threadContext.Eip;
-//						stackFrame.AddrPC.Mode = AddrModeFlat;
-//						stackFrame.AddrStack.Offset = threadContext.Esp;
-//						stackFrame.AddrStack.Mode = AddrModeFlat;
-//						stackFrame.AddrFrame.Offset = threadContext.Ebp;
-//						stackFrame.AddrFrame.Mode = AddrModeFlat;
-//
-//						logFile << "\nCall Stack Information (Thread ID: " << te32.th32ThreadID << "):\n";
-//
-//						while (StackWalk64(IMAGE_FILE_MACHINE_I386, GetCurrentProcess(), hThread, &stackFrame, &threadContext, nullptr, SymFunctionTableAccess64, SymGetModuleBase64, nullptr)) {
-//							CHAR szBuffer[sizeof(SYMBOL_INFO)+MAX_SYM_NAME * sizeof(TCHAR)];
-//							PSYMBOL_INFO pSymbol = (PSYMBOL_INFO)szBuffer;
-//							pSymbol->SizeOfStruct = sizeof(SYMBOL_INFO);
-//							pSymbol->MaxNameLen = MAX_SYM_NAME;
-//
-//							DWORD64 displacement;
-//							if (SymFromAddr(GetCurrentProcess(), stackFrame.AddrPC.Offset, &displacement, pSymbol)) {
-//								logFile << std::hex << stackFrame.AddrPC.Offset << " " << pSymbol->Name << " + " << displacement << std::dec << std::endl;
-//							}
-//							else {
-//								logFile << std::hex << stackFrame.AddrPC.Offset << " (No symbol information)" << std::dec << std::endl;
-//							}
-//						}
-//					}
-//					else {
-//						// Handle error (you can log it or handle it as needed)
-//						logFile << "Error getting thread context: " << GetLastError() << std::endl;
-//					}
-//
-//					CloseHandle(hThread);
-//				}
-//				else {
-//					// Handle error (you can log it or handle it as needed)
-//					logFile << "Error opening thread: " << GetLastError() << std::endl;
-//				}
-//			}
-//		} while (Thread32Next(hSnap, &te32));
-//	}
-//	else {
-//		// Handle error (you can log it or handle it as needed)
-//		logFile << "Error enumerating threads: " << GetLastError() << std::endl;
-//	}
-//
-//	CloseHandle(hSnap);
-//}
-//
-//LONG WINAPI CustomExceptionHandler(EXCEPTION_POINTERS* exceptionInfo) {
-//	// Log the exception information to a file
-//	std::ofstream logFile("exception_log.txt", std::ios::app);
-//
-//	SYSTEMTIME st;
-//	GetLocalTime(&st);
-//
-//	// Log the header
-//	logFile << "[" << std::setw(4) << std::setfill('0') << st.wYear
-//		<< "/" << std::setw(2) << st.wMonth
-//		<< "/" << std::setw(2) << st.wDay
-//		<< " " << std::setw(2) << st.wHour
-//		<< ":" << std::setw(2) << st.wMinute
-//		<< ":" << std::setw(2) << st.wSecond << "]: =======================" << std::endl;
-//
-//	// Log additional information
-//	logFile << "start at " << std::setw(2) << st.wDay
-//		<< "/" << std::setw(2) << st.wMonth
-//		<< "/" << st.wYear
-//		<< " " << std::setw(2) << st.wHour
-//		<< ":" << std::setw(2) << st.wMinute
-//		<< ":" << std::setw(2) << st.wSecond << std::endl;
-//
-//	SYSTEM_INFO systemInfo;
-//	GetSystemInfo(&systemInfo);
-//
-//	logFile << "Processor(s): " << systemInfo.dwNumberOfProcessors << ", Type: " << systemInfo.dwProcessorType << std::endl;
-//
-//	MEMORYSTATUS memoryStatus;
-//	GlobalMemoryStatus(&memoryStatus);
-//
-//	logFile << memoryStatus.dwTotalPhys / (1024 * 1024) << " MBytes physical memory." << std::endl;
-//
-//	// Log the exception details
-//	logFile << "An Access Violation in module ";
-//
-//	HANDLE hProcess = GetCurrentProcess();
-//	DWORD64 baseAddress = SymGetModuleBase64(hProcess, reinterpret_cast<DWORD64>(exceptionInfo->ExceptionRecord->ExceptionAddress));
-//
-//	if (baseAddress != 0) {
-//		IMAGEHLP_MODULE64 moduleInfo;
-//		memset(&moduleInfo, 0, sizeof(moduleInfo));
-//		moduleInfo.SizeOfStruct = sizeof(moduleInfo);
-//
-//		if (SymGetModuleInfo64(hProcess, baseAddress, &moduleInfo)) {
-//			logFile << moduleInfo.ModuleName << " at " << std::hex << exceptionInfo->ExceptionRecord->ExceptionAddress;
-//		}
-//		else {
-//			logFile << "Unknown module at " << std::hex << exceptionInfo->ExceptionRecord->ExceptionAddress;
-//		}
-//	}
-//	else {
-//		logFile << "Unknown module at " << std::hex << exceptionInfo->ExceptionRecord->ExceptionAddress;
-//	}
-//
-//	logFile << ".\nRead from location " << std::hex << exceptionInfo->ExceptionRecord->ExceptionInformation[1]
-//		<< " caused an access violation." << std::endl;
-//
-//	// Log registers
-//	CONTEXT* context = exceptionInfo->ContextRecord;
-//	logFile << "\nRegisters:\n";
-//	logFile << "EAX=" << std::hex << context->Eax << " CS=" << std::setw(4) << std::hex << context->SegCs
-//		<< " EIP=" << std::setw(8) << std::hex << context->Eip << " EFLGS=" << std::setw(8) << std::hex << context->EFlags << std::endl;
-//	logFile << "EBX=" << std::hex << context->Ebx << " SS=" << std::setw(4) << std::hex << context->SegSs
-//		<< " ESP=" << std::setw(8) << std::hex << context->Esp << " EBP=" << std::setw(8) << std::hex << context->Ebp << std::endl;
-//	logFile << "ECX=" << std::hex << context->Ecx << " DS=" << std::setw(4) << std::hex << context->SegDs
-//		<< " ESI=" << std::setw(8) << std::hex << context->Esi << " FS=" << std::setw(4) << std::hex << context->SegFs << std::endl;
-//	logFile << "EDX=" << std::hex << context->Edx << " ES=" << std::setw(4) << std::hex << context->SegEs
-//		<< " EDI=" << std::setw(8) << std::hex << context->Edi << " GS=" << std::setw(4) << std::hex << context->SegGs << std::endl;
-//
-//	// Log stack dump
-//	logFile << "\nStack dump:\n";
-//	DWORD* stack = reinterpret_cast<DWORD*>(context->Esp);
-//	for (int i = 0; i < 32; ++i) {
-//		logFile << std::setw(8) << std::setfill('0') << std::hex << stack[i] << " ";
-//		if (i % 8 == 7)
-//			logFile << std::endl;
-//	}
-//
-//	// Log call stack information
-//	LogCallStack(logFile, context);
-//
-//	// Log module list
-//	logFile << "\nModule list:\n";
-//	LogModuleList(logFile);
-//
-//	logFile.close();
-//
-//	// Return EXCEPTION_CONTINUE_SEARCH to allow the program to continue processing other exception handlers
-//	return EXCEPTION_CONTINUE_SEARCH;
-//}
+
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {

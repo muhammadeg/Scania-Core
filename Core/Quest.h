@@ -789,9 +789,7 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 	}
 
 	if (IPlayer.IsOnline() && Quest.GetIndex() == (VoteQuest % 65536)) {
-		//userLock.Enter();
 		UserInfo playerInfo = User.find(IPlayer.GetPID())->second;
-		//userLock.Leave();
 		if (VoteList.count(sha256(IPlayer.GetIP())) || VoteList.count(sha256(playerInfo.Hardware))) {
 			if (VoteList.count(sha256(IPlayer.GetIP())) && VoteList.find(sha256(IPlayer.GetIP()))->second >= (int)time(0)) {
 				int Time = VoteList.find(sha256(IPlayer.GetIP()))->second - (int)time(0);
@@ -932,7 +930,7 @@ void __fastcall Quest(void *QuestOffset, void *edx, int PlayerOffset)
 			return;
 		}
 
-		std::set<int> votes = std::set<int>();
+		ConcurrentSet<int> votes = ConcurrentSet<int>();
 
 		if (PollVotes.count(HWID)) {
 			votes = PollVotes.findValue(HWID);

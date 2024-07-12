@@ -96,6 +96,6 @@ time_t ConvertToTimeT(const char* timestamp)
 	timeinfo.tm_year -= 1900; // Years since 1900
 	timeinfo.tm_mon -= 1;      // Months since January
 
-	// Convert struct tm to time_t
+							   // Convert struct tm to time_t
 	return mktime(&timeinfo);
 }

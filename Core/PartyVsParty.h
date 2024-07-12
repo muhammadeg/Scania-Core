@@ -301,7 +301,7 @@ void PartyVsPartyOnTick() {
 	int Reward = 0;
 	int PTTime = 0;
 
-	std::map<int, PartyBattle> CurPartysClone = CurPartys;
+	ConcurrentMap<int, PartyBattle> CurPartysClone = CurPartys;
 
 	for (auto x = CurPartysClone.begin(); x != CurPartysClone.end(); x++)
 	{

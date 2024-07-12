@@ -180,7 +180,7 @@ int __fastcall _GetBuffStat(int a5, void* edx, int BuffID)
 	return v8;
 }
 
-void __fastcall getAllBuffs(void* a5, void* edx, std::map<int, PlayerBuffs>& buffs)
+void __fastcall getAllBuffs(void* a5, void* edx, ConcurrentMap<int, PlayerBuffs>& buffs)
 {
 	int v6; // [sp+0h] [bp-Ch]@1
 

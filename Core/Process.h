@@ -18,9 +18,7 @@ void MainAtkDebug(int Socket, char *IP, int Parameter){
 
 void __fastcall CIOSocketEnter(int Socket, void *edx) {
 	char* IP = inet_ntoa(*(struct in_addr *)(Socket + 140));
-	//blockLock.Enter();
 	int Blocked = BlockList.count(sha256(IP));
-	//blockLock.Leave();
 
 	if (Blocked)
 		CIOSocket::CIOSocket__Close(Socket);
@@ -45,9 +43,7 @@ int __fastcall CIOSocketCreate(int CServerThisPointer, void *edx, int Socket, in
 		if (!IPNum || !IP || !Port)
 			return 0;
 
-		//blockLock.Enter();
 		int Blocked = BlockList.count(sha256(IP));
-		//blockLock.Leave();
 
 		if (Blocked)
 			return 0;
@@ -311,9 +307,7 @@ int __fastcall Process(void *Socket, void *edx, char *Data)
 			return 0;
 		}
 
-		//blockLock.Enter();
 		bool Blocked = (hwid && BlockList.count(sha256(hwid))) || (strlen(mac) == 12 && BlockList.count(sha256(mac)));
-		//blockLock.Leave();
 
 		if (Blocked) {
 			CDBSocket::ProcessHtml((int)Socket, (char)0xFE, (unsigned int)"d", 219);
@@ -332,9 +326,7 @@ int __fastcall Process(void *Socket, void *edx, char *Data)
 					thisUser.PCName.assign(pcname);
 				if(mac && strlen(mac) == 12)
 					thisUser.MAC.assign(mac);
-				////userLock.Enter();
 				User.replaceInsert(IPlayer.GetPID(),thisUser);
-				//userLock.Leave();
 			}
 		}
 

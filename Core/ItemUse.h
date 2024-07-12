@@ -1425,22 +1425,17 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 		ConfigTimeTalisman t = NormalPetTalisman.find(Item.CheckIndex())->second;
 
 		bool itemFound = false;
-
 		if (IPlayer.GetBuffValue(BuffNames::PetOwner)) {
-
 			int PetItem = IPlayer.GetBuffValue(BuffNames::PetIID);
-
-			if (!PetLifeCheck.count(PetItem))
-			{
+			if (!PetLifeCheck.count(PetItem)){
 				IPlayer.BoxMsg("Pet has no time to extend.");
 				return Item.GetAmount();
 			}
 
 			if (PetItem) {
-				int ItemP = IPlayer.ItemPointerLock(PetItem);
 
-				if (ItemP)
-				{
+				int ItemP = CPlayer::FindItem((void*)PlayerOffset, PetItem, 1);
+				if (ItemP){
 					IItem Itemx((void*)ItemP);
 
 					if (CItem::IsState(ItemP, 1)){

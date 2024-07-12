@@ -1,7 +1,7 @@
-std::map<std::string, int> ipConnectionCount;
+ConcurrentMap<std::string, int> ipConnectionCount;
 
 Lock ipConnectionCountMutex;
-std::map<std::string, DWORD> lastConnectionTime;
+ConcurrentMap<std::string, DWORD> lastConnectionTime;
 
 int __fastcall OnCloseSocket(DWORD pSocket, void* /*unused*/)
 {

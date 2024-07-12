@@ -465,7 +465,7 @@ void __fastcall CBaseDelete(void *Object, void *edx)
 				int MobAmount = EventMapsOn.findValue(evMonster.Quest);
 				if (MobAmount == 1) {
 					if (EventMapsQuests.count(evMonster.Quest)) {
-						std::set<std::string> RLimit;
+						ConcurrentSet<std::string> RLimit;
 						eventMap evMap = EventMapsQuests.find(evMonster.Quest)->second;
 						int TimeLeft = MonsterDisappear.findValue(Erase);
 						if (TimeLeft > GetTickCount() && evMap.monsters.size() > evMonster.CIndex + 1) {
@@ -564,9 +564,7 @@ void __fastcall CBaseDelete(void *Object, void *edx)
 
 	if (Type == 0 && PID && Erase && CBase::IsDeleted(Erase))
 	{
-		//userLock.Enter();
 		User.erase(PID);
-		//userLock.Leave(); 
 		CheckMining.erase(PID);
 
 		for (auto x = PacketSpamConf.begin(); x != PacketSpamConf.end(); x++)

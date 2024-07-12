@@ -24,7 +24,7 @@ extern int MaxLoginAttemps;
 extern int IPEnable;
 extern int SkillTestAction, SkillR1, SkillR2, SkillTimer, SkillIndex;
 extern int testK;
-extern std::set<int> disabledNPCIndices;
+extern ConcurrentSet<int> disabledNPCIndices;
 extern volatile LONG summonPets;
 extern volatile LONG CreatePacket;
 extern volatile LONG LastIP;
@@ -337,7 +337,7 @@ extern bool sortByKey(const int &a, const int &b);
 extern int GetLevelDiff();
 extern time_t notices, timeReloading;
 //endnew
-extern std::set<std::string> modifiedFiles;
+extern ConcurrentSet<std::string> modifiedFiles;
 extern void readDir(std::string dirName);
 extern int IntTime(int day, int hour, int minute, int second);
 extern int GetTBMap();

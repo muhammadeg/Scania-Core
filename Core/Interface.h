@@ -81,7 +81,7 @@ class InterfaceManager
 {
 private:
 	static InterfaceManager* _pInstance;
-	std::map<size_t, void*> _Instances;
+	ConcurrentMap<size_t, void*> _Instances;
 
 public:
 	InterfaceManager() { this->_Instances.clear(); }

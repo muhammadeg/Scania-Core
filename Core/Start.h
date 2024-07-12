@@ -310,9 +310,7 @@ bool compareByTime(const AuctionItem &a, const AuctionItem &b)
 }
 
 void UpdateAuction() {
-	//auctionLock.Enter();
 	ConcurrentMap<long, AuctionItem> cloneA = AuctionItems;
-	//auctionLock.Leave();
 
 	auctionVecLock.Enter();
 

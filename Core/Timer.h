@@ -1797,7 +1797,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 								if (Quest != poll.Quest)
 									temp << line << endl;
 								else if (PollVotes.count(Hash)) {
-									std::set<int> votes = PollVotes.findValue(Hash);
+									ConcurrentSet<int> votes = PollVotes.findValue(Hash);
 									votes.erase(Quest);
 									PollVotes[Hash] = votes;
 								}
@@ -1935,9 +1935,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 		}
 
 		if ((GetTickCount() / 1000) % 30 == 0 && InterlockedExchangeAdd(&auctionItemsNum, 0) >= 1) {
-			//auctionLock.Enter();
 			ConcurrentMap<long, AuctionItem> cloneAuction = AuctionItems;
-			//auctionLock.Leave();
 			for (auto x = cloneAuction.begin(); x != cloneAuction.end(); x++)
 			{
 				if (x->second.BidRemain <= (int)time(0)) {
@@ -1960,9 +1958,7 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 							CDBSocket::Write(108, "dd", x->second.PID, x->first);
 					}
 					CDBSocket::Write(107, "d", x->first);
-					//auctionLock.Enter();
 					AuctionItems.erase(x->first);
-					//auctionLock.Leave();
 					UpdateAuction();
 					InterlockedIncrement(&auctionItemsNum);
 				}

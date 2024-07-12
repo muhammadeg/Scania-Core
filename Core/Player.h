@@ -665,12 +665,10 @@ void __fastcall MyGameStart(void *Player, void *edx)
 			if (loginDebug == 1) {
 				std::string PC = "none";
 				std::string MAC = "none";
-				//userLock.Enter();
 				if (User.count(IPlayer.GetPID())) {
 					PC = User.find(IPlayer.GetPID())->second.PCName;
 					MAC = User.find(IPlayer.GetPID())->second.MAC;
 				}
-				//userLock.Leave();
 				std::string Date = "./Debugger/Login/IP_LOG_" + Time::GetDay() + "_" + Time::GetMonth() + "_" + Time::GetYear() + ".txt";
 				std::fstream IPLOG;
 				IPLOG.open(Date, std::fstream::in | std::fstream::out | std::fstream::app);
@@ -760,14 +758,12 @@ void __fastcall MyGameStart(void *Player, void *edx)
 				std::string PC = "";
 				std::string MAC = "";
 				std::string HWID = "";
-				//userLock.Enter();
 				if (User.count(IPlayer.GetPID())) {
 					UserInfo userInfo = User.findValue(IPlayer.GetPID());
 					PC = userInfo.PCName;
 					MAC = userInfo.MAC;
 					HWID = userInfo.Hardware;
 				}
-				//userLock.Leave();
 
 				const char* playerHWID = HWID.c_str();
 				const std::string& allowedHWIDs = HWIDRestrictions.find(IPlayer.GetPID())->second.HWIDs;
@@ -1172,22 +1168,22 @@ void __fastcall MySendCreate(void *Player, void *edx, int Object, void *Argument
 	}
 }
 
-int GetRemain(std::map<int, PlayerBuffs> &p, int BuffID) {
+int GetRemain(ConcurrentMap<int, PlayerBuffs> &p, int BuffID) {
 	auto it = p.find(BuffID);
 	return it != p.end() ? it->second.Remain : 0;
 }
 
-int GetValue(std::map<int, PlayerBuffs> &p, int BuffID) {
+int GetValue(ConcurrentMap<int, PlayerBuffs> &p, int BuffID) {
 	auto it = p.find(BuffID);
 	return it != p.end() ? it->second.Value : 0;
 }
 
-void CancelBuff(IChar IPlayer, std::map<int, PlayerBuffs> &p, int BuffID) {
+void CancelBuff(IChar IPlayer, ConcurrentMap<int, PlayerBuffs> &p, int BuffID) {
 	IPlayer.CancelBuff(BuffID);
 	p.erase(BuffID);
 }
 
-void Buff(IChar IPlayer, std::map<int, PlayerBuffs> &p, int BuffID, int Time, int Value) {
+void Buff(IChar IPlayer, ConcurrentMap<int, PlayerBuffs> &p, int BuffID, int Time, int Value) {
 	IPlayer.Buff(BuffID, Time, Value);
 	PlayerBuffs pBuff = PlayerBuffs();
 	pBuff.Value = Value;
@@ -1195,7 +1191,7 @@ void Buff(IChar IPlayer, std::map<int, PlayerBuffs> &p, int BuffID, int Time, in
 	p[BuffID] = pBuff;
 }
 
-void UpdateBuff(IChar IPlayer, std::map<int, PlayerBuffs> &p, int BuffID, int Time, int Value) {
+void UpdateBuff(IChar IPlayer, ConcurrentMap<int, PlayerBuffs> &p, int BuffID, int Time, int Value) {
 	IPlayer.UpdateBuff(BuffID, Time, Value);
 	PlayerBuffs pBuff = PlayerBuffs();
 	pBuff.Value = Value;
@@ -1224,7 +1220,7 @@ int __fastcall Tick(void *Player, void *edx)
 			IPlayer.SetRefreshCheck(GetTickCount() + 990);
 		}
 
-		std::map<int, PlayerBuffs> playerBuffs;
+		ConcurrentMap<int, PlayerBuffs> playerBuffs;
 
 		getAllBuffs(Player, 0, playerBuffs);
 

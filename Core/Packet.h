@@ -320,9 +320,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 		if (TrackerActive && Tracker.count(IPlayer.GetName())) {
 			std::string PCName = "Unknown";
-			//userLock.Enter();
 			PCName = User.find(IPlayer.GetPID())->second.PCName;
-			//userLock.Leave();
 
 			std::string Dato = "./Tracker/" + Tracker.find(IPlayer.GetName())->second;
 			std::fstream DGLOG;
@@ -473,7 +471,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 							pt.nPosition = 0;
 							pt.nWinCnt = 0;
 						}
-
+							
 						Tools->Compile(PlayerPack + Packetsize, "s", pt.szName);
 						Tools->Compile(PlayerPack + Packetsize + 128, "dddd", pt.bAbsence, pt.bNULL, pt.nPosition, pt.nWinCnt);
 						Packetsize += 144;
@@ -644,14 +642,10 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			CPacket::Read((char*)pPacket, (char*)pPos, "ddbb", &AuctionType, &iid, &Type1, &Type2);
 
 			if (AuctionType == 2513) {
-				//auctionLock.Enter();
 				int Counted = AuctionItems.count(iid);
-				//auctionLock.Leave();
 
 				if (Counted) {
-					//auctionLock.Enter();
 					AuctionItem item = AuctionItems.find(iid)->second;
-					//auctionLock.Leave();
 					if (CPlayer::RemoveItem((void*)Player, 9, 31, item.Price)) {
 
 						if (item.RPID)
@@ -660,9 +654,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 						CDBSocket::Write(104, "dddd", item.PID, 31, item.Price, 0);
 						CDBSocket::Write(30, "dbdbbssdbwbdds", -1, 0, -1, 0, 1, "Kal Online", IPlayer.GetName(), iid, item.SetGem, item.Index, item.Prefix, item.Amount, 0, "Congratulations, you have won the auction for this item.");
 
-						//auctionLock.Enter();
 						AuctionItems.erase(iid);
-						//auctionLock.Leave();
 
 						InterlockedDecrement(&auctionItemsNum);
 						UpdateAuction();
@@ -701,9 +693,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			CPacket::Read((char*)pPacket, (char*)pPos, "dwdd", &iid, &Hours, &CurrentBid, &Price);
 
 			if (Hours > 0 && Price > 0) {
-				//auctionLock.Enter();
 				int Counted = AuctionItems.count(iid);
-				//auctionLock.Leave();
 
 				if (Counted)
 					return;
@@ -769,9 +759,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 
 					if (AuctionLimit) {
 						int count = 0;
-						//auctionLock.Enter();
 						ConcurrentMap<long, AuctionItem> cloneAuction = AuctionItems;
-						//auctionLock.Leave();
 
 						for (auto x = cloneAuction.rbegin(); x != cloneAuction.rend(); x++) {
 							if (x->second.PID == IPlayer.GetPID())
@@ -1353,9 +1341,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					memset(item.ItemPacket, 0, sizeof item.ItemPacket);
 					Tools->Compile(item.ItemPacket, "wdbddbbbbbbbbwbbbbbdbwwwwbbbbbbbbbbdbbwbbd", index, iid, prefix, info, amount, maxend, curend, setgem, xatk, xmagic, xdefense, xhit, xevasion, xprotect, upgrlvl, upgrrate, x, y, z, remaintime, dsstype, phyatk, magatk, def, absorb, eva, otp, hpinc, mpinc, str, hp, intel, wis, agi, PerfShotCheck, QigongGrade, dg1stat, dg1type, a, dg2stat, dg2type, refill);
 
-					//auctionLock.Enter();
 					AuctionItems[iid] = item;
-					//auctionLock.Leave();
 					UpdateAuction();
 					ShowAuction((void*)Player, 0, 1);
 					CDBSocket::Write(105, "sddsdmd", IPlayer.GetName(), (int)time(0) + (3600 * Hours), Price, "", CurrentBid, item.ItemPacket, 67, IPlayer.GetPID());
@@ -1403,14 +1389,10 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			char Type = 0, Type2 = 0;
 			CPacket::Read((char*)pPacket, (char*)pPos, "ddbbd", &BidType, &IID, &Type, &Type2, &BidPrice);
 
-			//auctionLock.Enter();
 			int Counted = AuctionItems.count(IID);
-			//auctionLock.Leave();
 
 			if (Counted) {
-				//auctionLock.Enter();
 				AuctionItem item = AuctionItems.find(IID)->second;
-				//auctionLock.Leave();
 
 				if (BidPrice == item.Price - 1000) {
 					CPlayer::Write((void*)Player, 0xFE, "db", 206, 0x11);
@@ -1435,9 +1417,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 					item.RPID = IPlayer.GetPID();
 					item.CurrentBid = BidPrice;
 
-					//auctionLock.Enter();
 					AuctionItems[IID] = item;
-					//auctionLock.Leave();
 					UpdateAuction();
 					IPlayer.CloseWindow("auction_main");
 					ShowAuction((void*)Player, 1, 1);
@@ -2330,7 +2310,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			if (Value < 0 && FakePlayers.count(Value) && (EFakePlayers*-1) <= Value) {
 				FakePlayers_ fPlayer = FakePlayers.findValue(Value);
 				if (fPlayer.state == 2) {
-					std::map<int, int>Insert;
+					ConcurrentMap<int, int>Insert;
 					Insert.clear();
 					int totalprice = 0;
 					for (int i = 0; i < Items; ++i)
@@ -2628,7 +2608,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 				return;
 
 			bool StoreCheck = !StoreItems.empty();
-			std::set<int> StoreItem;
+			ConcurrentSet<int> StoreItem;
 
 			if (StoreCheck) {
 				auto it = StoreItems.find(Store);

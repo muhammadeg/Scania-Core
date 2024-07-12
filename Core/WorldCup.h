@@ -366,7 +366,7 @@ void StartFight(Fight fight) {
 void StartGroupFights(int start, int end) {
 
 	int round = WorldCup::Round;
-	std::map<int, Fights> FightRounds = FirstFight;
+	ConcurrentMap<int, Fights> FightRounds = FirstFight;
 	if (round == 2 || round == 2.5)
 		FightRounds = SecondFight;
 	if (round == 3 || round == 3.5)
@@ -401,7 +401,7 @@ void StartFinalRounds() {
 	if (WorldCup::Round == 5) {
 		CupOfKal.clear();
 
-		std::map<int, Winners> sFinalsWinners = FinalsWinners;
+		ConcurrentMap<int, Winners> sFinalsWinners = FinalsWinners;
 		FinalsWinners.clear();
 		for (int i = 1; i <= 2; i++) {
 			if (!sFinalsWinners.count(i))
@@ -425,7 +425,7 @@ void StartFinalRounds() {
 	}
 
 	if (WorldCup::Round == 6) {
-		std::map<int, Winners> sFinalsWinners = FinalsWinners;
+		ConcurrentMap<int, Winners> sFinalsWinners = FinalsWinners;
 		FinalsWinners.clear();
 		for (int i = 1; i <= 2; i++) {
 			if (!sFinalsWinners.count(i)) {
@@ -448,7 +448,7 @@ void StartFinalRounds() {
 	}
 
 	if (WorldCup::Round == 7) {
-		std::map<int, Winners> sFinalsWinners = FinalsWinners;
+		ConcurrentMap<int, Winners> sFinalsWinners = FinalsWinners;
 		FinalsWinners.clear();
 
 		if (!sFinalsWinners.count(1))
