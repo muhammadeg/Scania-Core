@@ -574,7 +574,36 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 		return;
 	}
 
-	int dmg = 0;
+	int dmg = 0, mobI = 0;
+	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 8 && sscanf(command, "/kill %d %d", &killmobs, &mobI) == 2) {
+		int Around = IPlayer.GetObjectListAround(killmobs);
+		int Count = 0;
+		while (Around)
+		{
+			IChar Object((void*)CBaseList::Offset((void*)Around));
+
+			if (Object.IsValid() && (*(int(__thiscall **)(int, int, DWORD))(*(DWORD *)IPlayer.GetOffset() + 176))((int)IPlayer.GetOffset(), (int)Object.GetOffset(), 0)) {
+				if (Object.GetType() == 0 && Object.GetMobIndex() == mobI) {
+					Count++;
+
+					*(DWORD *)((int)Object.GetOffset() + 272) = 1;
+					int DMG = *(DWORD *)((int)Object.GetOffset() + 272) * 10000;
+					int NormalDamage = 0, DamageArgument = 0, EBDamage = 0, Check = 0, TypeKind = 0, GetType = 0;
+					//IPlayer.OktayDamageArea(Object, DMG, 40);
+
+					(*(int(__thiscall**)(LONG, void*, unsigned int, int*, int*, int*, DWORD))(*(DWORD*)Object.GetOffset() + 72))((int)Object.GetOffset(), IPlayer.GetOffset(), DMG, &NormalDamage, &DamageArgument, &EBDamage, 0);
+				}
+			}
+
+			Around = CBaseList::Pop((void*)Around);
+		}
+		if (Count)
+			IPlayer.SystemMessage("You have killed " + Int2String(Count) + " monsters.", TEXTCOLOR_GREEN);
+		else
+			IPlayer.SystemMessage("No monsters were found, try a bigger range.", TEXTCOLOR_YELLOW);
+		return;
+	}
+
 	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 8 && sscanf(command, "/kill %d", &killmobs) == 1) {
 		int Around = IPlayer.GetObjectListAround(killmobs);
 		int Count = 0;
@@ -869,6 +898,17 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 
 		CPlayer::Write(IPlayer.GetOffset(), 0xFE, "ddd", 186, IPlayer.GetID(), k);
 		//	IPlayer.Relog();
+		return;
+	}
+
+	int setmax = 0;
+	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 8 && sscanf(command, "/setmax %d", &setmax) == 1) {
+		Interface<IMemory> Memory;
+
+		Memory->Copy((void*)0x0047E718, &setmax, 1);
+
+		IPlayer.SystemMessage("Current Max Count: " + Int2String(MSocket::GetMaxConnectionsCount()), TEXTCOLOR_RED);
+
 		return;
 	}
 
@@ -1917,7 +1957,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 		IPlayer.SystemMessage(Targe, TEXTCOLOR_INFOMSG);
 		return;
 	}
-
+/*
 	if (IPlayer.IsOnline() && IPlayer.GetAdmin() >= 3 && sscanf(command, "/resetlevel %d", &amount) == 1)
 	{
 		IPlayer.ResetLevel(amount);
@@ -1925,7 +1965,7 @@ void __fastcall ChatCommand(int Player, void *edx, const char *command)
 		IPlayer.SystemMessage(Targe, TEXTCOLOR_INFOMSG);
 		return;
 	}
-
+*/
 	if (IPlayer.IsOnline() && cmd.substr(0, 7) == "/invite") {
 		if (GuildLimit < 64) {
 			int Guild = CPlayer::GetGuild(Player);

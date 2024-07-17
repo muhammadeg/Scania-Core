@@ -1,20 +1,3 @@
-void MainAtkDebug(int Socket, char *IP, int Parameter){
-	if (attackDebug == 1) {
-		std::string debug = "[DEBUG]";
-		if (Parameter)
-			debug = "[[DEBUG]]";
-
-		std::string Datoe = "./Debugger/DDoSCheck/Prevention_" + Time::GetDay() + "_" + Time::GetMonth() + "_" + Time::GetYear() + "_" + Time::GetHour() + ".txt";
-		std::fstream CHLOG;
-		CHLOG.open(Datoe, std::fstream::in | std::fstream::out | std::fstream::app);
-		CHLOG << "[" << Time::GetTime() << "] " << debug << " MainServer: Incoming attack prevented."
-			<< " Details: { Socket: " << (int)Socket
-			<< ", IP Address: " << IP
-			<< ", Description: Unauthorized access attempt detected and blocked }"
-			<< std::endl;
-		CHLOG.close();
-	}
-}
 
 void __fastcall CIOSocketEnter(int Socket, void *edx) {
 	char* IP = inet_ntoa(*(struct in_addr *)(Socket + 140));
@@ -111,7 +94,7 @@ int __fastcall GetInventorySize(int Player, void *edx) {
 }
 
 int __fastcall Process(void *Socket, void *edx, char *Data)
-{
+{ 
 	char* IP = inet_ntoa(*(struct in_addr *)((int)Socket + 140));
 	int Player = (*(DWORD *)((int)Socket + 120));
 
@@ -208,8 +191,8 @@ int __fastcall Process(void *Socket, void *edx, char *Data)
 		//	SocketCheck.insert((int)Socket);
 			Close((int)Socket, 0, 3);
 
-			MainAtkDebug((int)Socket, IP, 1);
-
+	//		MainAtkDebug((int)Socket, IP, 1);
+	//		CIOSocket::GraceFulClose((int)Socket);
 			return 0;
 		}	
 
@@ -226,6 +209,10 @@ int __fastcall Process(void *Socket, void *edx, char *Data)
 			CDBSocket::ProcessHtml((int)Socket, (char)0xFF, (unsigned int)"d", 219);
 			Close((int)Socket, 0, 3); 
 			MainAtkDebug((int)Socket, IP, 0);
+			if (My_PacketProtection) {
+				std::string ipString(IP);
+				ipBlocked[ipString] = 1;
+			}
 			return 0;
 		}
 	}
@@ -267,6 +254,7 @@ int __fastcall Process(void *Socket, void *edx, char *Data)
 			if ((PacketProtection && Value != uptimestart) || (Type != 211 && Type != 13 && Type != 1) || strlen(engineCheck) != 32) {
 				CDBSocket::ProcessHtml((int)Socket, (char)0xFE, (unsigned int)"d", 218);
 				Close((int)Socket, 0, 3);
+				CIOSocket::GraceFulClose((int)Socket);
 				return 0;
 			}
 
@@ -909,8 +897,28 @@ int __fastcall Process(void *Socket, void *edx, char *Data)
 		exit(1);
 
 	if (Data[2] == 8 || Data[2] == 2 || Data[2] == 9){
-		CDBSocket::ProcessHtml((int)Socket, (char)0xFF, (unsigned int)"dd", 254, 1325039837);
+		CDBSocket::ProcessHtml((int)Socket, (char)0xFF, (unsigned int)"dd", 254, 1115794514);
 	}
+
+	if (Data[2] == 8 && My_PacketProtection) {
+		auto my_Socket = 0, Value2 = 0, Value3 = 0, Value4 = 0, Value5 = 0, Value6 = 0, My_Value = 0;
+
+		CPacket::Read((char*)((void*)(Data + 3)), (char*)(Data + *(WORD*)Data), "dddddbd", &my_Socket, &Value2, &Value3, &Value4, &Value5, &Value6, &My_Value);
+		int my2ndValue = 2;
+		unsigned long complexKey = (((my2ndValue * 3 + 17) << 2) + 123456) % 65536 ^ 0xABCD;
+		std::string ipString(IP);
+
+		if (My_Value != complexKey) {
+			Close((int)Socket, 0, 3);
+			CIOSocket::GraceFulClose((int)Socket);
+			MainAtkDebug((int)Socket, IP, 2);
+			ipBlocked[ipString];
+			return 0;
+		}
+		else 
+			ipConnectionCheck[ipString].Allow = 1;
+
+	 }
 
 	if ((unsigned char)Data[2] == 4)
 	{

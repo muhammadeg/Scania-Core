@@ -82,7 +82,50 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 		}
 	}
 
+	if (IPlayer.IsOnline() && AreaCert.count(Item.CheckIndex()))
+	{
+		Certificates eCert = AreaCert.find(Item.CheckIndex())->second;
+		int uniqueKey = GenerateUniqueKey(IPlayer.GetPID(), eCert.Map);
 
+		int CRemain = IPlayer.GetBuffRemain(BuffNames::Certificates + eCert.Map);
+		int CertificateTimeLeft = certPlayer.find(uniqueKey)->second.Time;
+
+		if (CRemain || CertificateTimeLeft) {
+			IPlayer.SystemMessage("You already have a timer running out. Please use this certificate once its ended.", TEXTCOLOR_RED);
+			return Item.GetAmount();
+		}
+
+		int Time = CRemain + eCert.Time;
+
+		if (certPlayer.count(uniqueKey))
+			CDBSocket::Write(125, "dddddd", 7, IPlayer.GetPID(), 1, eCert.Map, Time, String2Int(Time::GetDay()));
+		else
+			CDBSocket::Write(125, "dddddd", 7, IPlayer.GetPID(), 1, eCert.Map, Time, String2Int(Time::GetDay()));
+
+		certPlayer[uniqueKey].Time = CRemain + eCert.Time;
+		certPlayer[uniqueKey].Map = eCert.Map;
+
+
+		if (!CRemain) {
+			Time += CertificateTimeLeft;
+			certPlayer[uniqueKey].Time += CertificateTimeLeft;
+		}
+
+		int timeInMin = Time / 60;
+
+		if (eCert.Exp) {
+			CertificatesPlayer pCert = CertificatesPlayer();
+			certPlayer[uniqueKey].Exp = static_cast<unsigned __int64>(eCert.Exp);
+		}
+
+		certPlayer[uniqueKey].Day = String2Int(Time::GetDay());
+
+
+		IPlayer.SystemMessage("Area Certificate applied for " + Int2String(timeInMin) + " minutes.", LIME_GREEN);
+		(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), *(DWORD *)(*(DWORD *)((int)ItemOffset + 40) + 156) != 0 ? 43 : 9, -1);
+		return Item.GetAmount();
+	}
+/*
 	if (IPlayer.IsOnline() && AreaCert.count(Item.CheckIndex())) {
 
 		Certificates area = AreaCert.find(Item.CheckIndex())->second;
@@ -94,9 +137,7 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 		int timeInMin = Time / 60;
 
 		if (!IPlayer.IsBuff(buffID)) {
-			IPlayer.SaveBuff(buffID, Time, Exp, sbMsg, sbKey);
 			IPlayer.SystemMessage("Area Certificate applied for " + Int2String(timeInMin) + " minutes.", LIME_GREEN);
-
 			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), 9, -1);
 			return Item.GetAmount();
 		}
@@ -104,12 +145,13 @@ int __fastcall ItemUse(void *ItemOffset, void *edx, int PlayerOffset)
 			int remainingTime = IPlayer.GetBuffRemain(buffID);
 			IPlayer.UpdateSavedBuff(buffID, remainingTime + Time, Exp, sbMsg, sbKey);
 			IPlayer.SystemMessage("Area Certificate extended by " + Int2String(timeInMin) + " minutes.", LIME_GREEN);
+			CDBSocket::Write(125, "dddd", 7, IPlayer.GetPID(), 0, area.Map, Time);
 
 			(*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)ItemOffset + 120))((int)ItemOffset, IPlayer.GetOffset(), 9, -1);
 			return Item.GetAmount();
 		}
 		return Item.GetAmount();
-	}
+	}*/
 	//Calls
 	if (IPlayer.IsOnline() && BuffCheck.count(Item.CheckIndex()))
 	{

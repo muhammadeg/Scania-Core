@@ -1010,7 +1010,7 @@ void __fastcall ShadowSlash(IChar IPlayer, int pPacket, int pPos)
 
 			if (IPlayer.IsValid() && Target.IsValid())
 			{
-				if (IPlayer.CheckHit(Target, 30))
+				if (IPlayer.CheckHit(Target, 40))
 				{
 					int Around = Target.GetObjectListAround(ShadowRange);
 

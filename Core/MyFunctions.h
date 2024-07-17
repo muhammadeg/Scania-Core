@@ -20,118 +20,86 @@ void ShowMySkin(void* Player){
 	}
 }
 
-//int TimedItemExtend(void* Item, int Player, int NewPrefix)
-//{
-//	IChar IPlayer((void*)Player);
-//	IItem IItem(Item);
-//
-//	if (TimeTalisman.count(NewPrefix))
-//	{
-//		ConfigTimeTalisman t = TimeTalisman.find(NewPrefix)->second;
-//
-//		int TotalItems = t.items.size();
-//		bool itemFound = false;
-//		for (int i = 0; i < TotalItems; i++)
-//		{
-//			int Index = String2Int(t.items[i]);
-//			if (IItem.CheckIndex() == Index)
-//			{
-//
-//				if (CBase::IsDeleted((int)Item))
-//					return 0;
-//
-//				if (IPlayer.IsBuff(328))
-//					return 0;
-//				else
-//					IPlayer.Buff(328, 3, 0);
-//
-//				int ReplacePrefix = 0, ReplaceItem = 0, ReplaceInfo = 0, ReplaceDef = 0, ReplaceEva = 0, ReplaceGem = 0;
-//				int ItemStat = 0;
-//
-//				itemStat.Enter();
-//				if (GetItemStat.count(IItem.GetIID()))
-//					ItemStat = GetItemStat.find(IItem.GetIID())->second;
-//				itemStat.Leave();
-//
-//				if (*(DWORD *)((int)Item + 44))
-//					ReplacePrefix = *(DWORD *)(*(DWORD *)((int)Item + 44) + 32);
-//
-//				if (*(DWORD *)((int)Item + 48))
-//					ReplaceInfo = *(DWORD *)((int)Item + 48);
-//
-//				if (*(DWORD *)((int)Item + 108))
-//					ReplaceDef = *(DWORD *)((int)Item + 108);
-//
-//				if (IItem.HighMemory()) {
-//					if (*(DWORD *)((int)Item + 116))
-//						ReplaceEva = *(DWORD *)((int)Item + 116);
-//
-//					if (*(DWORD *)((int)Item + 84))
-//						ReplaceGem = *(DWORD *)((int)Item + 84);
-//				}
-//
-//				int ItemNewIndex = IItem.CheckIndex();
-//				int DeleteCheck = (*(int(__thiscall **)(DWORD, void *, signed int, signed int))(*(DWORD*)Item + 120))((int)Item, IPlayer.GetOffset(), 9, -1);
-//
-//				if (!DeleteCheck)
-//				{
-//					ReplaceItem = CItem::CreateItem(ItemNewIndex, ReplacePrefix, 1, -1);
-//
-//					if (ReplaceItem)
-//					{
-//						CIOObject::AddRef(ReplaceItem);
-//						if (ReplaceInfo)
-//							*(DWORD *)(ReplaceItem + 48) = ReplaceInfo;
-//						if (ReplaceDef)
-//							*(DWORD *)(ReplaceItem + 108) = ReplaceDef;
-//						if (ReplaceEva)
-//							*(DWORD *)(ReplaceItem + 116) = ReplaceEva;
-//						if (ReplaceGem)
-//							*(DWORD *)(ReplaceItem + 84) = ReplaceGem;
-//
-//						if (CPlayer::_InsertItem(IPlayer.GetOffset(), 27, ReplaceItem) != 1)
-//						{
-//							CConsole::Red("Real time armor insert item Null error [PID (%d)] ", IPlayer.GetPID());
-//							CBase::Delete((void *)ReplaceItem);
-//							CIOObject::Release((void *)ReplaceItem);
-//							return 0;
-//						}
-//
-//						CIOObject::Release((void *)ReplaceItem);
-//						itemStat.Enter();
-//						GetItemStat[*(DWORD *)(ReplaceItem + 36)] = ItemStat;
-//						itemStat.Leave();
-//
-//						CDBSocket::Write(90, "dd", ItemStat, *(DWORD *)(ReplaceItem + 36));
-//						CDBSocket::Write(87, "ddd", IPlayer.GetPID(), *(DWORD *)(ReplaceItem + 84), *(DWORD *)(ReplaceItem + 36));
-//						CDBSocket::Write(21, "dddbb", *(DWORD *)(ReplaceItem + 36), *(DWORD *)(ReplaceItem + 32), *(DWORD *)(ReplaceItem + 48), 8, 7);
-//
-//						if (ReplaceDef)
-//							CDBSocket::Write(17, "ddbbb", *(DWORD *)(ReplaceItem + 36), *(DWORD *)(ReplaceItem + 32), 15, *(DWORD *)(ReplaceItem + 108), 0);
-//						if (ReplaceEva)
-//							CDBSocket::Write(17, "ddbbb", *(DWORD *)(ReplaceItem + 36), *(DWORD *)(ReplaceItem + 32), 10, *(DWORD *)(ReplaceItem + 116), 0);
-//
-//						CItem::SendItemInfo((void*)ReplaceItem, (int)IPlayer.GetOffset(), 92);
-//						CPlayer::Write(IPlayer.GetOffset(), 0xFF, "ddddd", 242, 0, 0, 128, 255);
-//
-//
-//						IPlayer.SystemMessage("Your item's rental period has been increased.", TEXTCOLOR_GREEN);
-//						itemFound = true;
-//
-//					}
-//				}
-//				else {
-//					IPlayer.BoxMsg("Extension can not be used on this item.");
-//
-//					return 0;
-//				}
-//
-//				return 1;
-//
-//			}
-//		}
-//	}
-//}
+inline int GenerateUniqueKey(int PID, int Map) {
+	return (PID * 10000) + Map;
+}
+
+void HandleCertExpiration(IChar& IPlayer, int playerMap, int CertDay, int CertSBKey, int uniqueKey) {
+	IPlayer.PortToVillage();
+	IPlayer.SystemMessage("Area Certificate expired. Renew to rejoin.", TEXTCOLOR_RED);
+	CDBSocket::Write(125, "dddd", 7, IPlayer.GetPID(), 2, playerMap);
+	IPlayer.CancelBuff(BuffNames::Certificates + playerMap);
+	IPlayer.RemoveBuffIcon(0, 0, 0, CertSBKey);
+
+	activeMapsByPID.erase(IPlayer.GetPID());
+	CertificatesPlayer pCert;
+	pCert.Day = CertDay;
+	pCert.Time = 0;
+	pCert.Map = playerMap;
+	certPlayer[uniqueKey] = pCert;
+}
+
+void CertificatesTick(IChar IPlayer, int playerMap) {
+	int uniqueKey = GenerateUniqueKey(IPlayer.GetPID(), playerMap);
+
+	int CertRemain = IPlayer.GetBuffRemain(BuffNames::Certificates + playerMap);
+	int CertMRemain = certPlayer[uniqueKey].Time;
+	int CertDay = String2Int(Time::GetDay());
+	auto areaCertInfo = AreaCertMap[playerMap];
+	int CertExp = areaCertInfo.SBMsg;
+	int CertMap = areaCertInfo.Map;
+	int CertSBKey = areaCertInfo.SBKey;
+
+	if ((GetTickCount() / 1000) % 5 == 0 && CertRemain >= 10) {
+		certPlayer[uniqueKey].Time = CertRemain;
+		certPlayer[uniqueKey].Day = CertDay;
+
+		CDBSocket::Write(125, "dddddd", 7, IPlayer.GetPID(), 0, playerMap, CertRemain, CertDay);
+	}
+
+	if (CertMap) {
+		int isPlayerMapBuffed = IPlayer.IsBuff(BuffNames::Certificates + CertMap);
+		bool certPlayerHasTime = certPlayer.count(uniqueKey) && certPlayer.find(uniqueKey)->second.Time > 10;
+
+		if (!isPlayerMapBuffed && certPlayerHasTime) {
+			IPlayer.Buff(BuffNames::Certificates + CertMap, CertMRemain, CertExp);
+			IPlayer.SetBuffIcon(CertMRemain * 1000, 0, CertExp, CertSBKey);
+			CDBSocket::Write(125, "dddddd", 7, IPlayer.GetPID(), 0, CertMap, CertMRemain, CertDay);
+
+			CertificatesPlayer pCert;
+			pCert.Day = CertDay;
+			pCert.Time = CertMRemain;
+			pCert.Map = CertMap;
+			certPlayer[uniqueKey] = pCert;
+			activeMapsByPID[IPlayer.GetPID()].insert(CertMap);
+		}
+		else if (isPlayerMapBuffed && CertRemain < 10) {
+			HandleCertExpiration(IPlayer, playerMap, CertDay, CertSBKey, uniqueKey);
+		}
+		else if (!isPlayerMapBuffed) {
+			HandleCertExpiration(IPlayer, playerMap, CertDay, CertSBKey, uniqueKey);
+		}
+	}
+
+	auto activeMaps = activeMapsByPID[IPlayer.GetPID()];
+	if (!activeMaps.empty() && *activeMaps.begin() != playerMap) {
+		int mapIndex = *activeMaps.begin();
+		uniqueKey = GenerateUniqueKey(IPlayer.GetPID(), mapIndex);
+		CertMRemain = certPlayer[uniqueKey].Time;
+		CertSBKey = AreaCertMap[mapIndex].SBKey;
+
+		IPlayer.CancelBuff(BuffNames::Certificates + mapIndex);
+		IPlayer.RemoveBuffIcon(0, 0, 0, CertSBKey);
+		CDBSocket::Write(125, "dddddd", 7, IPlayer.GetPID(), 0, mapIndex, CertMRemain, CertDay);
+
+		activeMapsByPID.erase(IPlayer.GetPID());
+		CertificatesPlayer pCert;
+		pCert.Day = CertDay;
+		pCert.Time = CertMRemain;
+		pCert.Map = mapIndex;
+		certPlayer[uniqueKey] = pCert;
+	}
+}
 
 void SendShoutWebhookMessage(const std::string& webhookUrl, const std::string& message, const std::string& avatarUrl, const std::string& username) {
 	//// Check if the message is empty or contains only whitespace

@@ -31,7 +31,7 @@ HMENU CreateMainWindowMenu(HMENU hBaseMenu) {
 	AppendMenu(hMenuPopupConfig, MF_STRING, KXMENU_ReloadInitNPC, TEXT("InitNPC.txt Reload"));
 	AppendMenu(hMenuPopupConfig, MF_STRING, KXMENU_ReloadInitItem, TEXT("InitItem.txt Reload"));
 	AppendMenu(hMenuPopupConfig, MF_STRING, KXMENU_ReloadCfg, TEXT("Core Configs Reload"));
-	AppendMenu(hMenuPopupConfig, MF_STRING, KXMENU_ReloadCleanCfg, TEXT("Core Configs Clean Load"));
+	//AppendMenu(hMenuPopupConfig, MF_STRING, KXMENU_ReloadCleanCfg, TEXT("Core Configs Clean Load"));
 
 	AppendMenu(hBaseMenu, MF_STRING, KXMENU_FakePlayers, TEXT("Load Fake Players"));
 	AppendMenu(hBaseMenu, MF_STRING, KXMENU_Uptime, TEXT("Uptime"));
@@ -81,11 +81,11 @@ LRESULT CALLBACK Proc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
 								   break;
 		}
 
-		case KXMENU_ReloadCleanCfg: {
-										CleanLoadConfig();
-										CConsole::Blue("Configs have been cleaned and reloaded.");
-										break;
-		}
+		//case KXMENU_ReloadCleanCfg: {
+		//								CleanLoadConfig();
+		//								CConsole::Blue("Configs have been cleaned and reloaded.");
+		//								break;
+		//}
 
 		case KXMENU_FakePlayers: {
 									 Console();
@@ -178,30 +178,7 @@ LRESULT CALLBACK Proc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
 										cin.ignore();
 									}
 									else {
-										/* think of another solution, this is not good for mainsrv (iterating + deleting on same collection)
-										CIOCriticalSection::Enter((void*)0x004e2078);
-										CIOCriticalSection::Enter((void*)0x004e2098);
-										CLink::MoveTo((void*)0x004e200c, (int)0x004e2004);
-										CIOCriticalSection::Leave((void*)0x004e2098);
-										for (DWORD a = *(DWORD*)0x004E2004; a != 0x004E2004; a = *(DWORD*)a)
-										{
-											if ((void*)(a - 428))
-											{
-												IChar IPlayer((void*)(a - 428));
-												if (IPlayer.IsOnline() && IPlayer.GetName() == playerName){
-													IPlayer.Kick();
-													CConsole::Blue("Player %s was kicked", playerName.c_str());
-													playerFound = true;
-												}
-												else {
-													CConsole::Red("Player is not online.");
-													playerFound = true;
-												}
-
-											}
-										}
-										CIOCriticalSection::Leave((void*)0x004e2078);
-										*/
+										
 									}
 									if (!playerFound)
 										CConsole::Red("Player name is incorrect");

@@ -246,15 +246,38 @@ void startBF(bool EvilVsGood) {
 				}
 			}
 			else {
-				int BFBuff = 161;
-				for (int i = 0; i < Team.size(); i++) {
-					IChar IPlayer((void*)Team[i]);
-					IPlayer.Buff(BFBuff, 3650, 0);
+				//int BFBuff = 161;
+				//for (int i = 0; i < Team.size(); i++) {
+				//	IChar IPlayer((void*)Team[i]);
+				//	IPlayer.Buff(BFBuff, 3650, 0);
 
-					if (BFBuff == 161)
-						BFBuff = 160;
-					else
-						BFBuff = 161;
+				//	if (BFBuff == 161)
+				//		BFBuff = 160;
+				//	else
+				//		BFBuff = 161;
+				//}
+
+				std::vector<int> TeamBuff161;
+				std::vector<int> TeamBuff160;
+
+				for (size_t i = 0; i < Team.size(); ++i) {
+					if (i % 2 == 0) {
+						TeamBuff161.push_back(Team[i]);
+					}
+					else {
+						TeamBuff160.push_back(Team[i]);
+					}
+				}
+
+				// Apply buffs based on team
+				for (auto it = TeamBuff161.begin(); it != TeamBuff161.end(); ++it) {
+					IChar IPlayer((void*)*it);
+					IPlayer.Buff(161, 3650, 0);
+				}
+
+				for (auto it = TeamBuff160.begin(); it != TeamBuff160.end(); ++it) {
+					IChar IPlayer((void*)*it);
+					IPlayer.Buff(160, 3650, 0);
 				}
 			}
 
@@ -646,6 +669,9 @@ void __fastcall OnTimer(void *Value, void *edx, int Argument)
 		if (!TriangularBattle::CDActive && !TriangularBattle::Active && isSystemTime("TriangularBattle"))
 			StartTriangularBattle();
 
+		if ((GetTickCount() / 1000) % 60 == 0 && !ipBlocked.empty())
+			ipBlocked.clear();
+		
 		if (!Battlefield::Active && isSystemTime("Battlefield"))
 			startBF(false);
 

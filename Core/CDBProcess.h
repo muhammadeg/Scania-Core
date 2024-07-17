@@ -80,6 +80,31 @@ int __cdecl CDBProcess(char *Data)
 		return 0;
 	}
 
+	if ((unsigned char)Data[2] == 75) {
+		int PID = 0, Time = 0, Map = 0, Day = 0, Exp = 0;
+		Interface<ITools> Tools;
+		CPacket::xRead((char*)(void*)(Data + 3), "dddd", &PID, &Time, &Day, &Map);
+		if (PID && Day) {
+			TargetFind myTarget(0, 1, PID);
+			int Player = (int)myTarget.getTarget();
+			IChar IPlayer((void*)Player);
+
+			if (IPlayer.IsOnline() && Time && Map) {
+				int uniqueKey = GenerateUniqueKey(PID, Map);
+					CertificatesPlayer newCertPlayer;
+					newCertPlayer.Map = Map;
+					newCertPlayer.Time = Time;
+					newCertPlayer.Day = Day;
+					newCertPlayer.Exp = static_cast<unsigned __int64>(Exp);
+					certPlayer[uniqueKey] = newCertPlayer;
+
+
+			}
+		}
+		return 0;
+	}
+
+
 	if ((unsigned char)Data[2] == 52)
 	{
 		int Remain = 0, Type = 0, PID = 0; Interface<ITools> Tools;

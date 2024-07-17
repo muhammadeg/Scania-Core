@@ -9,6 +9,61 @@
 #include "ConcurrentMap.h"
 #include "ConcurrentSet.h"
 
+enum TextColor
+{
+	TEXTCOLOR_GENERAL = RGB(255, 255, 255),
+	TEXTCOLOR_INFOMSG = RGB(70, 227, 232),
+	TEXTCOLOR_SHUTDOWN = RGB(240, 116, 15),
+	TEXTCOLOR_ORANGE = RGB(255, 128, 64),
+	TEXTCOLOR_BLUE = RGB(0, 128, 255),
+	TEXTCOLOR_BLUELIGHT = RGB(0, 255, 255),
+	TEXTCOLOR_YELLOW = RGB(255, 255, 128),
+	TEXTCOLOR_RED = RGB(255, 0, 0),
+	TEXTCOLOR_PARTY = RGB(210, 64, 0),
+	TEXTCOLOR_GUILD = RGB(10, 255, 229),
+	TEXTCOLOR_ALLIANCE = RGB(128, 128, 192),
+	TEXTCOLOR_GREEN = RGB(0, 255, 0),
+	TEXTCOLOR_DARKGREEN = RGB(0, 170, 0),
+	TEXTCOLOR_FAILED = RGB(250, 210, 0),
+	TEXTCOLOR_CLASSMATE = RGB(0, 128, 0),
+	TEXTCOLOR_PUPIL = RGB(255, 128, 64),
+	TEXTCOLOR_PINK = RGB(255, 155, 255),
+	TEXTCOLOR_Undefined = RGB(152, 155, 189),
+	TEXTCOLOR_UndefinedI = RGB(150, 10, 25),
+	TEXTCOLOR_DARK_MAGENTA = RGB(139, 0, 139),
+	TEXTCOLOR_DAMAGE = RGB(255, 187, 153),
+	GRAY = RGB(190, 190, 190),
+	RED = RGB(255, 0, 0),
+	DARK_RED = RGB(139, 0, 0),
+	ORANGE_RED = RGB(255, 69, 0),
+	BLUE = RGB(0, 128, 255),
+	DARK_BLUE = RGB(0, 0, 139),
+	DARK_SKYBLUE = RGB(0, 178, 238),
+	STEAL_BLUE = RGB(99, 184, 255),
+	YELLOW = RGB(238, 238, 0),
+	GREEN_YELLOW = RGB(173, 255, 47),
+	ORANGE = RGB(255, 165, 0),
+	DARK_ORANGE = RGB(255, 140, 0),
+	GREEN = RGB(0, 255, 0),
+	LIME_GREEN = RGB(50, 205, 50),
+	DARK_GREEN = RGB(0, 100, 0),
+	LAWN_GREEN = RGB(124, 252, 0),
+	FOREST_GREEN = RGB(34, 139, 34),
+	CYAN = RGB(0, 255, 255),
+	DARK_CYAN = RGB(0, 139, 139),
+	SADDLE_BROWN = RGB(139, 69, 19),
+	SANDY_BROWN = RGB(244, 164, 96),
+	PERU = RGB(205, 133, 63),
+	MAGENTA = RGB(255, 0, 255),
+	DARK_MAGENTA = RGB(139, 0, 139),
+	DARK_ORCHID = RGB(153, 50, 204),
+	PURPLE = RGB(160, 32, 240),
+	DEEP_PURPLE = RGB(255, 20, 147),
+	GOLD = RGB(255, 215, 0),
+	DARK_GOLD = RGB(184, 134, 11),
+	MyOrange = RGB(184, 80, 11),
+
+};
 struct ChanceItem {
 	int Index;
 	int Amount;
@@ -776,6 +831,12 @@ struct PerfectParty {
 	int SBKey;
 	int SBMsg;
 };
+struct CertificatesPlayer {
+	int Map;
+	int Time;
+	int Day;
+	unsigned __int64 Exp;
+};
 struct Combinator
 {
 	int Index;
@@ -1187,6 +1248,20 @@ struct DKInfo
 	int GID;
 	std::string Name;
 };
+
+namespace DuelTournament
+{
+	extern	bool Active;
+	extern	int RoundTime;
+	extern	int RedScore;
+	extern	int BlueScore;
+	extern	int RegisterAmount;
+	extern	int Delay;
+	extern	bool SelectPlayers;
+	extern	int FirstPlayer;
+	extern	int SecondPlayer;
+}
+
 namespace Scenario
 {
 	extern int Time;
@@ -1472,6 +1547,8 @@ extern std::unordered_map<int, DailyDuty> DutyQuest;
 extern int String2Int(std::string String);
 extern char ItemShopPacket[9000];
 extern unsigned __int64 _ExpTable[312];
+extern std::string ConfigCheckDB1, ConfigCheckDB2;;
+extern std::string WCWinner;
 
 
 #endif  // VARIABLES_H

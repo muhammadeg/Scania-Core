@@ -18,6 +18,8 @@
 #include <algorithm>
 #include "base64.h"
 #include <time.h>
+#include <sqltypes.h>
+#include <sql.h>
 #pragma warning(disable: 4018)
 #pragma warning(disable: 4129)
 #pragma warning (disable : 4244)
@@ -70,7 +72,7 @@ int tradePVP = 0;
 int RaidRoundCounter = 0;
 double DelaySpam = 0;
 int FireStormVThief = 0, HealScale = 0;
-int PacketProtection = 0, AFKRange = 0;
+int PacketProtection = 0, AFKRange = 0, My_PacketProtection = 0;
 unsigned __int64 LotteryCheck = 0;
 int itemin = 0, itemam = 0, itempr = 0;
 int JewelIndex = 0;
@@ -138,7 +140,7 @@ int WinnerHell = 0;
 int VoteReward = 0;
 int BossHuntReward = 0;
 int ExtensionTime = 0;
-int My_CDProtection = 0, My_CDValue = 0;
+int My_CDProtection = 0, My_CDValue = 0, My_DelayValue = 0;
 int ScenarioQuestR = 0, ScenarioQuestB = 0;
 int COKQuest = 0, COKLimit = 0, COKR = 0, COKA = 0;
 unsigned __int64 Hashes = 0;
@@ -571,11 +573,12 @@ void ReadConfig(bool command)
 
 	GetPrivateProfileStringA("Avatar", "URL", "https://cdn.discordapp.com/attachments/1048039559360958465/1197387263571673119/Kal_Online_Logo.png?ex=65bb14ca&is=65a89fca&hm=4701133d38b57a71fec995b1e36d72f56829d71be89b1cd7ca878f726736d9dd&", Avatar, 512, "./Configs/Discord.txt");
 
-	MAX_CONNECTIONS_PER_IP = GetPrivateProfileIntA("FilterIP", "MaxConnection", 15, "./Configs/Protection.txt");
-	CONNECTION_DELAY = GetPrivateProfileIntA("FilterIP", "DelayTime", 5000, "./Configs/Protection.txt");
+	MAX_CONNECTIONS_PER_IP = GetPrivateProfileIntA("FilterIP", "MaxConnection", 25, "./Configs/Protection.txt");
+	CONNECTION_DELAY = GetPrivateProfileIntA("FilterIP", "Delay", 100, "./Configs/Protection.txt");
 
 	My_CDProtection = GetPrivateProfileIntA("Cooldown", "Active", 1, "./Configs/Protection.txt");
-	My_CDValue = GetPrivateProfileIntA("Cooldown", "Difference", 200, "./Configs/Protection.txt");
+	My_CDValue = GetPrivateProfileIntA("Cooldown", "CD", 200, "./Configs/Protection.txt");
+	My_DelayValue = GetPrivateProfileIntA("Cooldown", "Delay", 200, "./Configs/Protection.txt");
 
 	TestVV = GetPrivateProfileIntA("Test", "Value", 0, "./Configs/Test.txt");
 	BSOFSky = GetPrivateProfileIntA("BlessingSonOfTheSky", "ItemIndex", 0, "./Configs/Protection.txt");
@@ -1103,6 +1106,8 @@ void ReadConfig(bool command)
 	EXPLimit = GetPrivateProfileIntA("MaxEXP", "Active", 0, "./Configs/Protection.txt");
 	MaxEXP = GetPrivateProfileIntA("MaxEXP", "EXP", 2147483647, "./Configs/Protection.txt");
 	PacketProtection = GetPrivateProfileIntA("PacketCheck", "Active", 1, "./Configs/Protection.txt");
+	My_PacketProtection = GetPrivateProfileIntA("PacketCheck", "Extra", 0, "./Configs/Protection.txt");
+
 	DNPCQ = GetPrivateProfileIntA("Quest", "Index", 0, "./Configs/DamageNPC.txt");
 	DNPCRQ = GetPrivateProfileIntA("ReplyQuest", "Index", 0, "./Configs/DamageNPC.txt");
 	DNPCDL = GetPrivateProfileIntA("Daily", "Limit", 0, "./Configs/DamageNPC.txt");
@@ -3412,26 +3417,18 @@ void ReadConfig(bool command)
 		}
 		std::sort(LawlessEXP.begin(), LawlessEXP.end(), sortByKey);
 	}
-
 	if (!command || (command && modifiedFiles.count("./Configs/Certificates.txt"))) {
 		FILE* filecert = fopen("./Configs/Certificates.txt", "r");
 		if (filecert != NULL) {
 			AreaCert.clear();
+			AreaCertMap.clear();
 			char line[BUFSIZ];
 			while (fgets(line, sizeof line, filecert) != NULL) {
 				int itemIndex = 0, map = 0, time = 0, exp = 0, sbKey = 0, sbMsg = 0;
 				if (sscanf(line, "(MapCert (Index %d)(Map %d)(Time %d)(Exp %d)(SBKey %d)(SBMsg %d))", &itemIndex, &map, &time, &exp, &sbKey, &sbMsg) == 6) {
-					Certificates Cert = Certificates();
-					Cert.itemIndex = itemIndex;
-					Cert.Map = map;
-					Cert.Time = time;
-					Cert.Exp = exp;
-					Cert.SBKey = sbKey;
-					Cert.SBMsg = sbMsg;
-
+					Certificates Cert = { itemIndex, map, time, exp, sbKey, sbMsg };
 					AreaCert[itemIndex] = Cert;
 					AreaCertMap[map] = Cert;
-
 				}
 			}
 			fclose(filecert);
@@ -6501,4 +6498,51 @@ void CleanLoadConfig() {
 	DutyMonsterQuests.clear();
 
 	ReadConfig(false);
+}
+
+
+int DBCheck()
+{
+	int x = 0, y = 0;
+	RETCODE rc; HENV henv; HDBC hdbc;
+	const char *db = ConfigCheckDB1.c_str();
+	SQLAllocEnv(&henv);
+	SQLAllocConnect(henv, &hdbc);
+	rc = SQLConnect(hdbc, (unsigned char*)db, SQL_NTS, 0, 0, 0, 0);
+
+	if ((rc != SQL_SUCCESS) && (rc != SQL_SUCCESS_WITH_INFO))
+	{
+		SQLFreeConnect(hdbc);
+		SQLFreeEnv(henv);
+	}
+	else {
+		x = 1;
+	}
+
+	SQLDisconnect(hdbc);
+	SQLFreeConnect(hdbc);
+	SQLFreeEnv(henv);
+	RETCODE rcx; HENV henvx; HDBC hdbcx;
+	const char *dbx = ConfigCheckDB2.c_str();
+	SQLAllocEnv(&henvx);
+	SQLAllocConnect(henvx, &hdbcx);
+	rcx = SQLConnect(hdbcx, (unsigned char*)dbx, SQL_NTS, 0, 0, 0, 0);
+
+	if ((rcx != SQL_SUCCESS) && (rcx != SQL_SUCCESS_WITH_INFO))
+	{
+		SQLFreeConnect(hdbcx);
+		SQLFreeEnv(henvx);
+	}
+	else {
+		y = 1;
+	}
+
+	SQLDisconnect(hdbcx);
+	SQLFreeConnect(hdbcx);
+	SQLFreeEnv(henvx);
+
+	if (!x || !y)
+		return 1;
+	else
+		return 1;
 }

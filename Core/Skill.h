@@ -12,7 +12,7 @@ int __fastcall PrepSkill(void* pSkill, void* _edx, signed int SkillID, int nTarg
 
 	if (Cooldowns.count(sekey)) {
 		int Compare3 = Cooldowns[sekey].compare3;
-		IPlayer.UpdateBuff(BuffNames::DelayProtect + SkillID, BuffNames::BuffTime, (GetTickCount() + Compare3) - 350);
+		IPlayer.UpdateBuff(BuffNames::DelayProtect + SkillID, BuffNames::BuffTime, (GetTickCount() + Compare3) - My_DelayValue);
 	}
 
 	return CSkill::PrepareSkill(pSkill, SkillID, nTargetID);

@@ -7,6 +7,7 @@
 #include <math.h>
 #include <map>
 #include <unordered_map>
+#include <unordered_set>
 #include <set>
 #include <iostream>
 #include <fstream>
@@ -234,61 +235,6 @@ enum ItemType {
 };
 
 
-enum TextColor
-{
-	TEXTCOLOR_GENERAL   = RGB( 255, 255, 255 ),
-	TEXTCOLOR_INFOMSG   = RGB(  70, 227, 232 ),
-	TEXTCOLOR_SHUTDOWN  = RGB( 240, 116,  15 ),
-	TEXTCOLOR_ORANGE    = RGB( 255, 128,  64 ),
-	TEXTCOLOR_BLUE      = RGB(   0, 128, 255 ),
-	TEXTCOLOR_BLUELIGHT = RGB(   0, 255, 255 ),
-	TEXTCOLOR_YELLOW    = RGB( 255, 255, 128 ),
-	TEXTCOLOR_RED       = RGB( 255,   0,   0 ),
-	TEXTCOLOR_PARTY     = RGB( 210,  64,   0 ),
-	TEXTCOLOR_GUILD     = RGB(  10, 255, 229 ),
-	TEXTCOLOR_ALLIANCE  = RGB( 128, 128, 192 ),
-	TEXTCOLOR_GREEN     = RGB(   0, 255,   0 ),
-	TEXTCOLOR_DARKGREEN = RGB(   0, 170,   0 ),
-	TEXTCOLOR_FAILED    = RGB( 250, 210,   0 ),
-	TEXTCOLOR_CLASSMATE = RGB(   0, 128,   0 ),
-	TEXTCOLOR_PUPIL     = RGB( 255, 128,  64 ),
-	TEXTCOLOR_PINK      = RGB( 255, 155, 255 ),
-	TEXTCOLOR_Undefined = RGB(152, 155, 189),
-	TEXTCOLOR_UndefinedI = RGB(150, 10, 25),
-	TEXTCOLOR_DARK_MAGENTA = RGB(139, 0, 139),
-	TEXTCOLOR_DAMAGE = RGB(255, 187, 153),
-	GRAY = RGB(190, 190, 190),
-	RED = RGB(255, 0, 0),
-	DARK_RED = RGB(139, 0, 0),
-	ORANGE_RED = RGB(255, 69, 0),
-	BLUE = RGB(0, 128, 255),
-	DARK_BLUE = RGB(0, 0, 139),
-	DARK_SKYBLUE = RGB(0, 178, 238),
-	STEAL_BLUE = RGB(99, 184, 255),
-	YELLOW = RGB(238, 238, 0),
-	GREEN_YELLOW = RGB(173, 255, 47),
-	ORANGE = RGB(255, 165, 0),
-	DARK_ORANGE = RGB(255, 140, 0),
-	GREEN = RGB(0, 255, 0),
-	LIME_GREEN = RGB(50, 205, 50),
-	DARK_GREEN = RGB(0, 100, 0),
-	LAWN_GREEN = RGB(124, 252, 0),
-	FOREST_GREEN = RGB(34, 139, 34),
-	CYAN = RGB(0, 255, 255),
-	DARK_CYAN = RGB(0, 139, 139),
-	SADDLE_BROWN = RGB(139, 69, 19),
-	SANDY_BROWN = RGB(244, 164, 96),
-	PERU = RGB(205, 133, 63),
-	MAGENTA = RGB(255, 0, 255),
-	DARK_MAGENTA = RGB(139, 0, 139),
-	DARK_ORCHID = RGB(153, 50, 204),
-	PURPLE = RGB(160, 32, 240),
-	DEEP_PURPLE = RGB(255, 20, 147),
-	GOLD = RGB(255, 215, 0),
-	DARK_GOLD = RGB(184, 134, 11),
-	MyOrange = RGB(184, 80, 11),
-
-};
 //#define ConsoleColAdr *(DWORD*)0x4D62A8
 //
 //void ConsoleWrite(COLORREF Color, const char *Text, ...)
@@ -642,7 +588,8 @@ namespace BuffNames {
 		EffectsIID = 61584,
 		WeaponUp = 61585,
 		WeaponsEffects = 61586,
-		WEffectIID = 61587
+		WEffectIID = 61587,
+		Certificates = 62500,
 
 	};
 }
@@ -1392,10 +1339,13 @@ std::unordered_map<int, std::pair<std::string, int>> EmoteSystem;
 //std::unordered_map<int, std::string> EmoteSystem;
 std::unordered_map<int, MissionInfo> MissionQuests;
 std::unordered_map<int, MissionInfo> MAbandonCheck;
+std::unordered_map<int, CertificatesPlayer> certPlayer;
+std::unordered_map<int, std::unordered_set<int>> activeMapsByPID;
 
 std::unordered_map<int, MissionInfo> MissionQuestsItem;
 ConcurrentMap<int, Certificates> AreaCert;
 ConcurrentMap<int, Certificates> AreaCertMap;
+
 ConcurrentMap<int, PerfectParty> My_PerfectParty;
 std::unordered_map<int, int> playerPartySizes;
 

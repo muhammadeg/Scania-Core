@@ -218,7 +218,7 @@ void insertReward(void* Player, int RewardID) {
 		if (pReward.EXP)
 			CPlayer::UpdateProperty((int)Player, 25, 1, pReward.EXP);
 
-		if (!pReward.Notice.empty() && IPlayer.IsValid()){
+		if (!pReward.Notice.empty() && IPlayer.IsValid()) {
 			std::string msg = (std::string)IPlayer.GetName() + " " + pReward.Notice;
 			if (!msg.empty()) {
 				int textColor = TEXTCOLOR_GREEN;
@@ -382,7 +382,7 @@ void updateRidingCollection(void* Player, int Collection, int Type, int Stat, in
 				IPlayer.IncreaseMaxHp(Rate);
 				IPlayer.IncreaseMaxMp(Rate);
 			}
-			else{
+			else {
 				IPlayer.DecreaseMaxHp(Rate);
 				IPlayer.DecreaseMaxMp(Rate);
 			}
@@ -576,7 +576,7 @@ void __fastcall MyGameStart(void *Player, void *edx)
 
 			IPlayer.CancelBuff(104);
 
-			if (IPlayer.GetLevel() == 1){
+			if (IPlayer.GetLevel() == 1) {
 				CDBSocket::Write(110, "d", IPlayer.GetPID());
 				if (BattlepassActive)
 					CDBSocket::Write(122, "dd", IPlayer.GetPID(), 2);
@@ -648,10 +648,10 @@ void __fastcall MyGameStart(void *Player, void *edx)
 					{
 						int type = 0, pid = 0;
 						if (sscanf(line.c_str(), "(registration (type %d)(PID %d)", &type, &pid) == 2)
-						if (pid != IPlayer.GetPID())
-							temp << line << endl;
-						else
-							temp << "(registration (type " << IPlayer.GetDTArena() << ")(PID " << IPlayer.GetPID() << ")(name '" << IPlayer.GetName() << "')(class " << IPlayer.GetClass() << ")(level " << IPlayer.GetLevel() << "))" << std::endl;
+							if (pid != IPlayer.GetPID())
+								temp << line << endl;
+							else
+								temp << "(registration (type " << IPlayer.GetDTArena() << ")(PID " << IPlayer.GetPID() << ")(name '" << IPlayer.GetName() << "')(class " << IPlayer.GetClass() << ")(level " << IPlayer.GetLevel() << "))" << std::endl;
 					}
 
 					temp.close();
@@ -875,7 +875,7 @@ void __fastcall MyGameStart(void *Player, void *edx)
 	//New Forest
 	UpdateNewMyst(Player);
 	UpdateHonorStats(Player);
-	if (!DefaultSkinView){
+	if (!DefaultSkinView) {
 		IPlayer.setSkinView(IPlayer.IsHide() ? -2 : 1);
 
 		if (IPlayer.GetBuffValue(BuffNames::SuitsUsing))
@@ -1234,6 +1234,7 @@ int __fastcall Tick(void *Player, void *edx)
 		TBPlayerTick(IPlayer);
 		SVPlayerTick(IPlayer);
 		BuffMakerLoad(Player);
+		CertificatesTick(IPlayer, playerMap);
 
 		if (AreasExpItems.count(playerMap)) {
 			auto expAreaIterator = AreasExpItems.find(playerMap);
@@ -1250,15 +1251,6 @@ int __fastcall Tick(void *Player, void *edx)
 		if (IPlayer.IsBuff(82) && !IPlayer.GetAdmin() && IPlayer.GetBuffRemain(82) <= 1)
 			IPlayer.CheckSpeed(maxAllowedSpeed);
 
-		if (AreaCertMap.count(playerMap)) {
-			Certificates area = AreaCertMap.find(playerMap)->second;
-			int buffID = ((area.itemIndex * 2) + area.Map);
-
-			if (!playerBuffs.count(buffID)) {
-				IPlayer.PortToVillage();
-				IPlayer.SystemMessage("Area Certificate expired. Renew to rejoin.", TEXTCOLOR_RED);
-			}
-		}
 
 		if (Reborns.count(IPlayer.GetProperty(PlayerProperty::Reborn))) {
 			Reborn rb = Reborns.find(IPlayer.GetProperty(PlayerProperty::Reborn))->second;
@@ -1266,12 +1258,12 @@ int __fastcall Tick(void *Player, void *edx)
 			if (rb.sbMsg && rb.sbKey) {
 				int rbBuffID = (rb.sbKey + rb.sbMsg) * 15;
 
-				if (playerBuffs.count(rbBuffID) && GetRemain(playerBuffs, rbBuffID) < 10) 
+				if (playerBuffs.count(rbBuffID) && GetRemain(playerBuffs, rbBuffID) < 10)
 					IPlayer.UpdateSavedBuff(rbBuffID, BuffNames::BuffTime, 0, 0, 0);
 			}
 		}
 
-		if (NewcomerActive && !IPlayer.IsBuff(BuffNames::NewComer) && playerLvl <= NewcomerLevel){
+		if (NewcomerActive && !IPlayer.IsBuff(BuffNames::NewComer) && playerLvl <= NewcomerLevel) {
 
 			IPlayer.Buff(BuffNames::NewComer, 86400, NewcomerValue);
 			//	Buff(IPlayer, playerBuffs, BuffNames::NewComer, 86400, NewcomerValue);
@@ -1293,7 +1285,7 @@ int __fastcall Tick(void *Player, void *edx)
 		}
 
 		//F10 BuffSystem
-		if (IPlayer.IsOnline() && IPlayer.IsBuff(BuffNames::F10Buff) && !IPlayer.IsBuff(BuffNames::F10BuffCancel)){
+		if (IPlayer.IsOnline() && IPlayer.IsBuff(BuffNames::F10Buff) && !IPlayer.IsBuff(BuffNames::F10BuffCancel)) {
 			IPlayer.AddStr(F10Str); IPlayer.AddHp(F10Hth); IPlayer.AddInt(F10Int);
 			IPlayer.AddWis(F10Wis); IPlayer.AddAgi(F10Agi); IPlayer.AddMinAttack(F10Min);
 			IPlayer.AddMaxAttack(F10Max); IPlayer.Buff(BuffNames::F10BuffCancel, 1800, 1);
@@ -1348,7 +1340,7 @@ int __fastcall Tick(void *Player, void *edx)
 		//	IPlayer.AddFxToTarget("davi_M630_71", 0, 0, 1);
 		//}
 
-		if (playerBuffs.count(BuffNames::MissionBuff)){
+		if (playerBuffs.count(BuffNames::MissionBuff)) {
 			int currentMission = IPlayer.GetBuffValue(BuffNames::MissionBuff);
 			if (!currentMission)
 				currentMission = AutoMissionQuest;
@@ -1374,7 +1366,7 @@ int __fastcall Tick(void *Player, void *edx)
 			}
 		}
 
-		if (playerBuffs.count(BuffNames::Emote)){
+		if (playerBuffs.count(BuffNames::Emote)) {
 			int eFlag = GetValue(playerBuffs, BuffNames::Emote);
 			const std::pair<std::string, int>& emoteData = EmoteSystem.find(eFlag)->second;
 			const std::string& particle = emoteData.first;
@@ -1416,17 +1408,17 @@ int __fastcall Tick(void *Player, void *edx)
 			if (!CWRLimit || !isRewarded(IPlayer)) {
 				int PlayerGuild = CPlayer::GetGuild((int)IPlayer.GetOffset());
 				if (PlayerGuild) {
-					if (PlayerGuild == GuildWinnerCW){
+					if (PlayerGuild == GuildWinnerCW) {
 						IPlayer.systemReward(CwRewardGuild);
 						IPlayer.SaveBuff(BuffNames::CastleWarBuffW, 86400, 1, 14142, 14142);
 					}
 					else
-					if (AllyWinnerCW && *(DWORD *)(PlayerGuild + 396) == AllyWinnerCW){
-						IPlayer.systemReward(CwRewardAlly);
-						IPlayer.SaveBuff(BuffNames::CastleWarBuffW, 86400, 1, 14142, 14142);
-					}
-					else
-						IPlayer.systemReward(CwRewardOther);
+						if (AllyWinnerCW && *(DWORD *)(PlayerGuild + 396) == AllyWinnerCW) {
+							IPlayer.systemReward(CwRewardAlly);
+							IPlayer.SaveBuff(BuffNames::CastleWarBuffW, 86400, 1, 14142, 14142);
+						}
+						else
+							IPlayer.systemReward(CwRewardOther);
 
 					CSkill::ObjectRelease((void*)PlayerGuild, (LONG)(PlayerGuild + 40));
 				}
@@ -1476,16 +1468,16 @@ int __fastcall Tick(void *Player, void *edx)
 							int NScore = pBattle.BlueScore + 1;
 							IPlayer.Scenario3_3Score(TimeLeft, pBattle.RedScore, NScore);
 							if (IsPartyAlive(IPlayer.GetPartyID(), 0))
-							if (GetRemain(playerBuffs, BuffNames::RevivalCheck) <= 1) {
-								IPlayer.Teleport(0, PartyArenas[0][Arena] + CTools::Rate(-200, 200), PartyArenas[1][Arena] + CTools::Rate(-200, 200));
-								Buff(IPlayer, playerBuffs, 24, 3, 40);
-								IPlayer.RemoveBuffIcon(0, 0, 703, 34);
-								IPlayer.SetBuffIcon(3000, 0, 1793, 201);
-								CurPartys[Arena].BlueScore = NScore;
+								if (GetRemain(playerBuffs, BuffNames::RevivalCheck) <= 1) {
+									IPlayer.Teleport(0, PartyArenas[0][Arena] + CTools::Rate(-200, 200), PartyArenas[1][Arena] + CTools::Rate(-200, 200));
+									Buff(IPlayer, playerBuffs, 24, 3, 40);
+									IPlayer.RemoveBuffIcon(0, 0, 703, 34);
+									IPlayer.SetBuffIcon(3000, 0, 1793, 201);
+									CurPartys[Arena].BlueScore = NScore;
 
-							}
-							else
-								IPlayer.SystemMessage("[Party Arena] Reviving in " + Int2String(GetRemain(playerBuffs, BuffNames::RevivalCheck) - 1) + "...", TEXTCOLOR_DARKGREEN);
+								}
+								else
+									IPlayer.SystemMessage("[Party Arena] Reviving in " + Int2String(GetRemain(playerBuffs, BuffNames::RevivalCheck) - 1) + "...", TEXTCOLOR_DARKGREEN);
 						}
 						else {
 							IPlayer.SystemMessage("[Party Arena] Reviving in " + Int2String(PartyReviveCD) + "...", TEXTCOLOR_DARKGREEN);
@@ -1514,16 +1506,16 @@ int __fastcall Tick(void *Player, void *edx)
 							int NScore = pBattle.RedScore + 1;
 							IPlayer.Scenario3_3Score((pBattle.Time - GetTickCount()) / 1000, NScore, pBattle.BlueScore);
 							if (IsPartyAlive(IPlayer.GetPartyID(), 1))
-							if (GetRemain(playerBuffs, BuffNames::RevivalCheck) <= 1) {
-								IPlayer.Teleport(0, PartyArenas[0][Arena] + CTools::Rate(-200, 200), PartyArenas[1][Arena] + CTools::Rate(-200, 200));
-								Buff(IPlayer, playerBuffs, 24, 3, 40);
-								IPlayer.RemoveBuffIcon(0, 0, 703, 34);
-								IPlayer.SetBuffIcon(3000, 0, 1793, 201);
-								CurPartys[Arena].RedScore = NScore;
+								if (GetRemain(playerBuffs, BuffNames::RevivalCheck) <= 1) {
+									IPlayer.Teleport(0, PartyArenas[0][Arena] + CTools::Rate(-200, 200), PartyArenas[1][Arena] + CTools::Rate(-200, 200));
+									Buff(IPlayer, playerBuffs, 24, 3, 40);
+									IPlayer.RemoveBuffIcon(0, 0, 703, 34);
+									IPlayer.SetBuffIcon(3000, 0, 1793, 201);
+									CurPartys[Arena].RedScore = NScore;
 
-							}
-							else
-								IPlayer.SystemMessage("[Party Arena] Reviving in " + Int2String(GetRemain(playerBuffs, BuffNames::RevivalCheck) - 1) + "...", TEXTCOLOR_DARKGREEN);
+								}
+								else
+									IPlayer.SystemMessage("[Party Arena] Reviving in " + Int2String(GetRemain(playerBuffs, BuffNames::RevivalCheck) - 1) + "...", TEXTCOLOR_DARKGREEN);
 						}
 						else {
 							IPlayer.SystemMessage("[Party Arena] Reviving in " + Int2String(PartyReviveCD) + "...", TEXTCOLOR_DARKGREEN);
@@ -1559,8 +1551,8 @@ int __fastcall Tick(void *Player, void *edx)
 
 			}
 			else
-			if (IPlayer.GetGID() != GuildRaid::GID && MapX == 29 && MapY == 42)
-				IPlayer.PortToVillage();
+				if (IPlayer.GetGID() != GuildRaid::GID && MapX == 29 && MapY == 42)
+					IPlayer.PortToVillage();
 		}
 
 		if ((GetTickCount() / 1000) % 2 == 0 && playerBuffs.count(414) && !playerBuffs.count(413))
@@ -1978,7 +1970,7 @@ int __fastcall Tick(void *Player, void *edx)
 			IPlayer.DisableRiding();
 
 		// Emergency Escape Ride
-		if (playerBuffs.count(82) && playerBuffs.count(349)){
+		if (playerBuffs.count(82) && playerBuffs.count(349)) {
 			IPlayer.DisableRiding();
 			IPlayer.SystemMessage("Riding with Emergency Escape skill is disabled.", TEXTCOLOR_RED);
 		}
@@ -2245,8 +2237,8 @@ int __fastcall Tick(void *Player, void *edx)
 				IPlayer.SetHonor(0, 0, 0, 0, 0, 0, 1, 0, 0, 0);
 			}
 			else
-			if (Protect32::Winner && IPlayer.GetGID() != Protect32::Winner && (playerBuffs.count(170) || playerBuffs.count(171)))
-				IPlayer.systemReward(LoserPL);
+				if (Protect32::Winner && IPlayer.GetGID() != Protect32::Winner && (playerBuffs.count(170) || playerBuffs.count(171)))
+					IPlayer.systemReward(LoserPL);
 
 			IPlayer.RemoveSetBlue();
 			IPlayer.RemoveSetRed();
@@ -2310,10 +2302,10 @@ int __fastcall Tick(void *Player, void *edx)
 				IPlayer.Teleport(0, PartyArenas[0][Arena] + CTools::Rate(-100, 100), PartyArenas[1][Arena] + CTools::Rate(-100, 100));
 			}
 			else
-			if (CupRegistration.count(IPlayer.GetPID()) && (playerBuffs.count(902) || playerBuffs.count(903))) {
-				Fight playerFight = CupRegistration.find(IPlayer.GetPID())->second.fight;
-				IPlayer.Teleport(0, playerFight.CoordX + CTools::Rate(-100, 100), playerFight.CoordY + CTools::Rate(-100, 100));
-			}
+				if (CupRegistration.count(IPlayer.GetPID()) && (playerBuffs.count(902) || playerBuffs.count(903))) {
+					Fight playerFight = CupRegistration.find(IPlayer.GetPID())->second.fight;
+					IPlayer.Teleport(0, playerFight.CoordX + CTools::Rate(-100, 100), playerFight.CoordY + CTools::Rate(-100, 100));
+				}
 		}
 
 		if (Protect32::Active == true && Protect32::GuildSecond && IPlayer.GetGID() == Protect32::GuildSecond)
@@ -2823,7 +2815,7 @@ int __fastcall Tick(void *Player, void *edx)
 			else if (IPlayer.isRavenclaw()) {
 				ItemPE = CItem::CreateItem(RavenGCIndex, 0, AmountEP, -1);
 			}
-			else if (IPlayer.isHufflepuff()){
+			else if (IPlayer.isHufflepuff()) {
 				ItemPE = CItem::CreateItem(HuffleGCIndex, 0, AmountEP, -1);
 
 			}
@@ -2870,7 +2862,7 @@ int __fastcall Tick(void *Player, void *edx)
 			}
 		}
 
-		if (MapLvl.count(IPlayer.GetMap())){
+		if (MapLvl.count(IPlayer.GetMap())) {
 			Area mArea = MapLvl.find(IPlayer.GetMap())->second;
 			if (!mArea.type) {
 				if (IPlayer.GetLevel() < mArea.level || (mArea.item != 0 && !CPlayer::FindItem(Player, mArea.item, 1))) {
@@ -2888,7 +2880,7 @@ int __fastcall Tick(void *Player, void *edx)
 			}
 		}
 
-		if (MapMax.count(IPlayer.GetMap())){
+		if (MapMax.count(IPlayer.GetMap())) {
 			AreaMax mArea = MapMax.find(IPlayer.GetMap())->second;
 			if (!mArea.type) {
 				if (IPlayer.GetLevel() >= mArea.maxlevel)
@@ -3051,7 +3043,7 @@ int __fastcall Tick(void *Player, void *edx)
 		//	IPlayer.RemoveMinAttack(50);
 		//}
 
-		if (ReviveLvl && IPlayer.isDead() && playerLvl <= ReviveLvl){
+		if (ReviveLvl && IPlayer.isDead() && playerLvl <= ReviveLvl) {
 			if (IPlayer.IsBuff(BuffNames::RevivalCheck)) {
 				if (IPlayer.GetBuffRemain(BuffNames::RevivalCheck) <= 1) {
 					IPlayer.Revive();
@@ -3074,10 +3066,10 @@ int __fastcall Tick(void *Player, void *edx)
 					IPlayer.Teleport(BFMap, (Battlefield::GoodVsEvil ? BFTeleRedXG : BFTeleRedX) + CTools::Rate(-BFRange, BFRange), (Battlefield::GoodVsEvil ? BFTeleRedYG : BFTeleRedY) + CTools::Rate(-BFRange, BFRange), (Battlefield::GoodVsEvil ? BFTeleRedZG : BFTeleRedZ));
 			}
 			else
-			if (playerBuffs.count(161)) {
-				if (PtInRect(Battlefield::GoodVsEvil ? &rectRedSafeG : &rectRedSafe, pt))
-					IPlayer.Teleport(BFMap, (Battlefield::GoodVsEvil ? BFTeleBlueXG : BFTeleBlueX) + CTools::Rate(-BFRange, BFRange), (Battlefield::GoodVsEvil ? BFTeleBlueYG : BFTeleBlueY) + CTools::Rate(-BFRange, BFRange), (Battlefield::GoodVsEvil ? BFTeleBlueZG : BFTeleBlueZ));
-			}
+				if (playerBuffs.count(161)) {
+					if (PtInRect(Battlefield::GoodVsEvil ? &rectRedSafeG : &rectRedSafe, pt))
+						IPlayer.Teleport(BFMap, (Battlefield::GoodVsEvil ? BFTeleBlueXG : BFTeleBlueX) + CTools::Rate(-BFRange, BFRange), (Battlefield::GoodVsEvil ? BFTeleBlueYG : BFTeleBlueY) + CTools::Rate(-BFRange, BFRange), (Battlefield::GoodVsEvil ? BFTeleBlueZG : BFTeleBlueZ));
+				}
 		}
 
 		if (SinEvent::Active && MapX == SEMapX && MapY == SEMapY) {
@@ -3114,7 +3106,7 @@ int __fastcall Tick(void *Player, void *edx)
 			IPlayer.PortToVillage();
 
 		if (LastManStand::Active && IPlayer.GetMap() != LMSMap && playerBuffs.count(BuffNames::LMS)) {
-			IPlayer.Teleport(LMSMap, LMSX + CTools::Rate(-300, 300), LMSY + CTools::Rate(-300, 300));
+			IPlayer.Teleport(LMSMap, LMSX + CTools::Rate(-150, 150), LMSY + CTools::Rate(-150, 150));
 			CPlayer::Write(IPlayer.GetOffset(), 46, "dI", IPlayer.GetID(), __int64(0x40000) << 32);
 		}
 
@@ -4031,7 +4023,7 @@ int __fastcall Tick(void *Player, void *edx)
 		}
 		// CJB Party
 
-		if (IPlayer.IsParty() && CJBEXPActive){
+		if (IPlayer.IsParty() && CJBEXPActive) {
 			void *Party = (void *)CParty::FindParty(IPlayer.GetPartyID());
 
 			if (Party)
@@ -4045,7 +4037,7 @@ int __fastcall Tick(void *Player, void *edx)
 						Buff(IPlayer, playerBuffs, BuffNames::CJBEXP, 604800, 0);
 					}
 					else {
-						if (playerBuffs.count(BuffNames::CJBEXP)){
+						if (playerBuffs.count(BuffNames::CJBEXP)) {
 							IPlayer.CancelBuff(BuffNames::CJBEXP);
 							IPlayer.RemoveBuffIcon(0, 0, CJBSYS, CJBSYSB);
 						}
@@ -4632,7 +4624,7 @@ int __fastcall Tick(void *Player, void *edx)
 
 		if (IPlayer.IsShopping() && strlen(ShopRewardCheck) && ((std::string)ShopRewardCheck == "true" || (std::string)ShopRewardCheck == "True"))
 		{
-			if (!playerBuffs.count(169)){
+			if (!playerBuffs.count(169)) {
 				Buff(IPlayer, playerBuffs, 169, ShopRewardTime, 0);
 			}
 
@@ -4658,7 +4650,7 @@ int __fastcall Tick(void *Player, void *edx)
 			}
 		}
 
-		if (!IPlayer.IsShopping() && playerBuffs.count(169)){
+		if (!IPlayer.IsShopping() && playerBuffs.count(169)) {
 			CancelBuff(IPlayer, playerBuffs, 169);
 		}
 		// crash check
@@ -4900,7 +4892,7 @@ int __fastcall Tick(void *Player, void *edx)
 				int BAFKTime = GetValue(playerBuffs, BuffNames::AFKTime);
 				if (BAFKTime)
 				{
-					if (BAFKTime <= GetTickCount()){
+					if (BAFKTime <= GetTickCount()) {
 						IPlayer.PortToVillage();
 						IPlayer.RemoveSetRed();
 						IPlayer.RemoveSetBlue();

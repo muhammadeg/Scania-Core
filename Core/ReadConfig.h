@@ -38,7 +38,7 @@ extern int tradePVP;
 extern int RaidRoundCounter;
 extern double DelaySpam;
 extern int FireStormVThief, HealScale;
-extern int PacketProtection, AFKRange;
+extern int PacketProtection, AFKRange, My_PacketProtection;
 extern unsigned __int64 LotteryCheck;
 extern int itemin,itemam,itempr;
 extern int JewelIndex;
@@ -312,7 +312,7 @@ extern int RupPVPAoe, RupRange, RupAOE;
 extern int PSActive, PSHonor, PSReward, PSLimit, KrPSsysReward, KdPSsysReward;
 extern int BSOFSky, BSOFSkyMax;
 extern int PVPLvLDiffDmg;
-extern int My_CDProtection, My_CDValue;
+extern int My_CDProtection, My_CDValue, My_DelayValue;
 extern int MiningPCLimit, MiningAreaLimit;
 extern int SlytherinDieX, SlytherinDieY, SlytherinDieZ, GryffindorDieX, GryffindorDieY, GryffindorDieZ, RavenDieX, RavenDieY, RavenDieZ, HuffleDieX, HuffleDieY, HuffleDieZ;
 extern int DQuestGap;
@@ -343,59 +343,4 @@ extern int IntTime(int day, int hour, int minute, int second);
 extern int GetTBMap();
 extern void ReadConfig(bool command);
 extern void CleanLoadConfig();
-//
-//void logLastExecutedCode(const std::string& message) {
-//	std::string Dato = "./Debugger/CrashCheck/Debugger.txt";
-//
-//	std::ofstream DGLOG(Dato, std::ofstream::app);
-//
-//	if (DGLOG.is_open()) {
-//		DGLOG << Time::GetDay() << "_" << Time::GetMonth() << "_" << Time::GetTime() << "(Message: " << message << ")" << endl;
-//		DGLOG.flush();  // Flush the stream
-//	}
-//}
-
-
-int DBCheck()
-{
-	int x = 0, y = 0;
-	RETCODE rc; HENV henv; HDBC hdbc;
-	const char *db = ConfigCheckDB1.c_str();
-	SQLAllocEnv(&henv);
-	SQLAllocConnect(henv, &hdbc);
-	rc = SQLConnect(hdbc, (unsigned char*)db, SQL_NTS, 0, 0, 0, 0);
-
-	if ((rc != SQL_SUCCESS) && (rc != SQL_SUCCESS_WITH_INFO))
-	{
-		SQLFreeConnect(hdbc);
-		SQLFreeEnv(henv);
-	} else {
-		x = 1;
-	}
-
-	SQLDisconnect(hdbc);
-	SQLFreeConnect(hdbc);
-	SQLFreeEnv(henv);
-	RETCODE rcx; HENV henvx; HDBC hdbcx;
-	const char *dbx = ConfigCheckDB2.c_str();
-	SQLAllocEnv(&henvx);
-	SQLAllocConnect(henvx, &hdbcx);
-	rcx = SQLConnect(hdbcx, (unsigned char*)dbx, SQL_NTS, 0, 0, 0, 0);
-
-	if ((rcx != SQL_SUCCESS) && (rcx != SQL_SUCCESS_WITH_INFO))
-	{
-		SQLFreeConnect(hdbcx);
-		SQLFreeEnv(henvx);
-	} else {
-		y = 1;
-	}
-
-	SQLDisconnect(hdbcx);
-	SQLFreeConnect(hdbcx);
-	SQLFreeEnv(henvx);
-
-	if (!x || !y)
-		return 1;
-	else
-		return 1;
-}
+extern int DBCheck();

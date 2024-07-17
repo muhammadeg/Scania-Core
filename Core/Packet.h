@@ -7867,7 +7867,7 @@ void __fastcall Packet(__int32 Player, void *edx, int packet, void *pPacket, int
 			int sekey = AnimationID + (IPlayer.GetClass() * 100);
 			if (Cooldowns.count(sekey)) {
 				int Compare3 = Cooldowns[sekey].compare3;
-				IPlayer.UpdateBuff(BuffNames::DelayProtect + AnimationID, BuffNames::BuffTime, (GetTickCount() + Compare3) - 350);
+				IPlayer.UpdateBuff(BuffNames::DelayProtect + AnimationID, BuffNames::BuffTime, (GetTickCount() + Compare3) - My_DelayValue);
 			}
 
 

@@ -107,7 +107,9 @@ int __fastcall OnLoadPlayer(void *Player, void *edx, int Value)
 		IPlayer.SetRefreshCheck(0);
 		CDBSocket::Write(82,"d",IPlayer.GetPID());
 		CDBSocket::Write(84, "d", IPlayer.GetPID());
-		
+		//Certificates
+		CDBSocket::Write(125, "ddd", 7, IPlayer.GetPID(), 3);
+
 		if (PeaceEvil) {
 			int SQuest = (SlytherinQuest << 16) + 1;
 			bool checkFlag = CPlayer::CheckQuestFlag((int)Player, SQuest);
